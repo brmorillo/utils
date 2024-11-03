@@ -1,0 +1,22 @@
+{
+  "name": "@brunormorillo/date-utils",
+  "version": "1.0.0",
+  "description": "Biblioteca privada com utils",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "private": false,
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/luxon": "^3.4.2",
+    "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "luxon": "^3.5.0"
+  }
+}
