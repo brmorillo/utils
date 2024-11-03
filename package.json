@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "build": "tsc",
-    "publish": "pnpm publish --access public"
+    "pub": "pnpm publish --access public"
   },
   "devDependencies": {
     "@types/luxon": "^3.4.2",
