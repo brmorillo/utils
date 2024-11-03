@@ -1,13 +1,10 @@
 {
-  "name": "@brunormorillo/date-utils",
+  "name": "@brunormorillo/js-util-library",
   "version": "1.0.0",
-  "description": "Biblioteca privada com utils",
+  "description": "Public utility library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "private": false,
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
   "files": ["dist"],
   "scripts": {
     "build": "tsc"
