@@ -1,6 +1,6 @@
 {
   "name": "@brunormorillo/js-util-library",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Public utility library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,14 +10,13 @@
   ],
   "scripts": {
     "build": "tsc",
-    "pub": "pnpm publish --access public"
+    "pub": "pnpm run build && pnpm publish --access public"
   },
   "devDependencies": {
     "@types/luxon": "^3.4.2",
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "@brunormorillo/js-util-library": "^1.0.0",
     "luxon": "^3.5.0"
   }
 }
