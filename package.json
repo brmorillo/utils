@@ -1,6 +1,6 @@
 {
   "name": "@brunormorillo/js-util-library",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Public utility library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,7 +9,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "publish": "pnpm publish --access public"
   },
   "devDependencies": {
     "@types/luxon": "^3.4.2",
