@@ -5,7 +5,9 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "private": false,
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc"
   },
@@ -14,6 +16,7 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
+    "@brunormorillo/js-util-library": "^1.0.0",
     "luxon": "^3.5.0"
   }
 }

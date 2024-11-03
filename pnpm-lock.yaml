@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@brunormorillo/js-util-library':
+        specifier: ^1.0.0
+        version: 1.0.0
       luxon:
         specifier: ^3.5.0
         version: 3.5.0
@@ -20,6 +23,9 @@ importers:
         version: 4.9.5
 
 packages:
+
+  '@brunormorillo/js-util-library@1.0.0':
+    resolution: {integrity: sha512-zy9fM5of1FtXAOD6ccuMeyrJq+v2D4Ljs+tzfiEfSrMXTBevxcP79yruOgCQq8aCP3HSLa0QjpVGxplosomW2w==}
 
   '@types/luxon@3.4.2':
     resolution: {integrity: sha512-TifLZlFudklWlMBfhubvgqTXRzLDI5pCbGa4P8a3wPyUQSW+1xQ5eDsreP9DWHX3tjq1ke96uYG/nwundroWcA==}
@@ -34,6 +40,10 @@ packages:
     hasBin: true
 
 snapshots:
+
+  '@brunormorillo/js-util-library@1.0.0':
+    dependencies:
+      luxon: 3.5.0
 
   '@types/luxon@3.4.2': {}
 
