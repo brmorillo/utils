@@ -1,152 +1,152 @@
 
 # @brunormorillo/js-util-library
 
-Uma biblioteca de utilitários para manipulação de datas com TypeScript, usando a poderosa biblioteca [Luxon](https://moment.github.io/luxon/).
+A utility library for date manipulation with TypeScript, using the powerful [Luxon](https://moment.github.io/luxon/) library.
 
-## Índice
-- [Instalação](#instalação)
-- [Uso](#uso)
-- [Funções Disponíveis](#funções-disponíveis)
-- [Exemplos](#exemplos)
-- [Contribuindo](#contribuindo)
-- [Licença](#licença)
+## Table of Contents
+- [Installation](#installation)
+- [Usage](#usage)
+- [Available Functions](#available-functions)
+- [Examples](#examples)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Instalação
+## Installation
 
-Instale a biblioteca usando `pnpm`:
+Install the library using `pnpm`:
 
 ```bash
 pnpm add @brunormorillo/js-util-library
 ```
 
-Ou, com `npm`:
+Or, with `npm`:
 
 ```bash
 npm install @brunormorillo/js-util-library
 ```
 
-## Uso
+## Usage
 
-Importe as funções utilitárias para seu projeto:
+Import the utility functions into your project:
 
 ```typescript
 import { dateNow, createInterval, addTime, removeTime, diffBetweenDates, toUTC, toUserTimeZone } from '@brunormorillo/js-util-library';
 ```
 
-## Funções Disponíveis
+## Available Functions
 
-Abaixo estão as principais funções oferecidas por esta biblioteca:
+Below are the main functions offered by this library:
 
 ### `dateNow`
 
-Retorna a data e hora atual, em UTC ou no fuso horário do sistema.
+Returns the current date and time, in UTC or the system's time zone.
 
 ```typescript
 function dateNow(utc: boolean = false): DateTime;
 ```
 
-- **Parâmetro**: `utc` (opcional) - Define se a data deve estar em UTC (padrão: `false`).
-- **Retorno**: `DateTime` da data atual.
+- **Parameter**: `utc` (optional) - Defines if the date should be in UTC (default: `false`).
+- **Return**: `DateTime` of the current date.
 
 ### `createInterval`
 
-Cria um intervalo entre duas datas.
+Creates an interval between two dates.
 
 ```typescript
 function createInterval(startDate: DateTime | string, endDate: DateTime | string): Interval;
 ```
 
-- **Parâmetros**:
-  - `startDate`: Data de início (DateTime ou string ISO).
-  - `endDate`: Data de término (DateTime ou string ISO).
-- **Retorno**: Um `Interval` entre as datas.
+- **Parameters**:
+  - `startDate`: Start date (DateTime or ISO string).
+  - `endDate`: End date (DateTime or ISO string).
+- **Return**: An `Interval` between the dates.
 
 ### `addTime`
 
-Adiciona um tempo específico a uma data.
+Adds a specific amount of time to a date.
 
 ```typescript
 function addTime(date: DateTime | string, timeToAdd: Duration | object): DateTime;
 ```
 
-- **Parâmetros**:
-  - `date`: Data inicial (DateTime ou string ISO).
-  - `timeToAdd`: Objeto representando o tempo a adicionar (ex: `{ days: 1, hours: 5 }`).
-- **Retorno**: `DateTime` com o tempo adicionado.
+- **Parameters**:
+  - `date`: Starting date (DateTime or ISO string).
+  - `timeToAdd`: Object representing the time to add (e.g., `{ days: 1, hours: 5 }`).
+- **Return**: `DateTime` with the added time.
 
 ### `removeTime`
 
-Remove um tempo específico de uma data.
+Removes a specific amount of time from a date.
 
 ```typescript
 function removeTime(date: DateTime | string, timeToRemove: Duration | object): DateTime;
 ```
 
-- **Parâmetros**:
-  - `date`: Data inicial (DateTime ou string ISO).
-  - `timeToRemove`: Objeto representando o tempo a remover (ex: `{ weeks: 2 }`).
-- **Retorno**: `DateTime` com o tempo subtraído.
+- **Parameters**:
+  - `date`: Starting date (DateTime or ISO string).
+  - `timeToRemove`: Object representing the time to remove (e.g., `{ weeks: 2 }`).
+- **Return**: `DateTime` with the subtracted time.
 
 ### `diffBetweenDates`
 
-Calcula a diferença entre duas datas em unidades específicas.
+Calculates the difference between two dates in specific units.
 
 ```typescript
 function diffBetweenDates(startDate: DateTime | string, endDate: DateTime | string, units: (keyof DurationLikeObject)[]): Duration;
 ```
 
-- **Parâmetros**:
-  - `startDate`: Data de início (DateTime ou string).
-  - `endDate`: Data de término (DateTime ou string).
-  - `units`: Unidades de tempo para o cálculo (ex: 'days', 'hours').
-- **Retorno**: `Duration` com as unidades e a diferença calculada.
+- **Parameters**:
+  - `startDate`: Start date (DateTime or string).
+  - `endDate`: End date (DateTime or string).
+  - `units`: Time units for the calculation (e.g., 'days', 'hours').
+- **Return**: `Duration` with the units and calculated difference.
 
 ### `toUTC`
 
-Converte uma data para UTC.
+Converts a date to UTC.
 
 ```typescript
 function toUTC(date: DateTime | string): DateTime;
 ```
 
-- **Parâmetro**: `date` - Data para conversão (DateTime ou string).
-- **Retorno**: `DateTime` em UTC.
+- **Parameter**: `date` - Date to convert (DateTime or string).
+- **Return**: `DateTime` in UTC.
 
 ### `toUserTimeZone`
 
-Converte uma data para o fuso horário especificado.
+Converts a date to the specified time zone.
 
 ```typescript
 function toUserTimeZone(date: DateTime | string, timeZone: string): DateTime;
 ```
 
-- **Parâmetros**:
-  - `date`: Data para conversão (DateTime ou string).
-  - `timeZone`: String do fuso horário (ex: 'America/New_York').
-- **Retorno**: `DateTime` no fuso horário do usuário.
+- **Parameters**:
+  - `date`: Date to convert (DateTime or string).
+  - `timeZone`: Time zone string (e.g., 'America/New_York').
+- **Return**: `DateTime` in the user's time zone.
 
-## Exemplos
+## Examples
 
-Aqui estão alguns exemplos de como usar as funções desta biblioteca:
+Here are some examples of how to use the functions in this library:
 
 ```typescript
 import { dateNow, createInterval, addTime, removeTime } from '@brunormorillo/js-util-library';
 
-// Obtendo a data atual
+// Getting the current date
 const currentDate = dateNow();
 
-// Criando um intervalo entre duas datas
+// Creating an interval between two dates
 const interval = createInterval('2023-01-01', '2023-12-31');
 
-// Adicionando e removendo tempo
+// Adding and removing time
 const futureDate = addTime(currentDate, { days: 10 });
 const pastDate = removeTime(currentDate, { weeks: 1 });
 ```
 
-## Contribuindo
+## Contributing
 
-Contribuições são bem-vindas! Para contribuir, por favor, faça um fork deste repositório e envie um pull request com suas melhorias.
+Contributions are welcome! To contribute, please fork this repository and submit a pull request with your improvements.
 
-## Licença
+## License
 
-Este projeto está licenciado sob a licença MIT.
+This project is licensed under the MIT License.
