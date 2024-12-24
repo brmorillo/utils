@@ -1,6 +1,6 @@
 {
   "name": "@brunormorillo/js-util-library",
-  "version": "1.0.5",
+  "version": "1.1.1",
   "description": "Public utility library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,6 +13,7 @@
     "pub": "pnpm run build && pnpm publish --access public"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/luxon": "^3.4.2",
     "typescript": "^4.9.5"
   },
