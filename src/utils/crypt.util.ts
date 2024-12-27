@@ -5,7 +5,7 @@ import * as bcrypt from 'bcryptjs'
  * @param value Value to be encrypted
  * @returns Encrypted value or error
  */
-export async function encrypt({
+export async function cryptEncrypt({
   value,
   saltRounds = 10,
 }: {
@@ -25,7 +25,7 @@ export async function encrypt({
  * @param encryptedValue Encrypted value
  * @returns True if the value matches the encrypted value, false otherwise
  */
-export async function compare({
+export async function cryptCompareValues({
   value,
   encryptedValue,
 }: {
@@ -44,7 +44,7 @@ export async function compare({
  * @param length Length of the string to be generated
  * @returns Random string
  */
-export async function generateRandomString({
+export async function cryptGenerateRandomString({
   length = 10,
 }: {
   length?: number
