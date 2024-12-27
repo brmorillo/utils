@@ -81,55 +81,55 @@ export function convertVolume(
 }
 
 /**
- * Converts a string to an integer.
- * @param value The string to convert
- * @returns The converted integer
+ * Types of values that can be converted.
  */
-export function stringToInt(value: string): number {
-  return parseInt(value, 10)
+export const TypeOfValueToConvert = {
+  string: 'string',
+  number: 'number',
+  bigint: 'bigint',
 }
 
 /**
- * Converts a string to a bigint.
- * @param value The string to convert
- * @returns The converted bigint
+ * Converts a value between types by inferring the type of the input.
+ * @param value The value to convert
+ * @param toType The desired output type ('string', 'number', or 'bigint')
+ * @returns The converted value
  */
-export function stringToBigInt(value: string): bigint {
-  return BigInt(value)
-}
+export function convertValue(
+  value: any,
+  toType: keyof typeof TypeOfValueToConvert,
+): any {
+  const typeOfValue = typeof value
 
-/**
- * Converts an integer to a bigint.
- * @param value The integer to convert
- * @returns The converted bigint
- */
-export function intToBigInt(value: number): bigint {
-  return BigInt(value)
-}
+  if (!(typeOfValue in TypeOfValueToConvert)) {
+    throw new Error(`Unsupported conversion from type: ${typeOfValue}`)
+  }
 
-/**
- * Converts a bigint to a string.
- * @param value The bigint to convert
- * @returns The converted string
- */
-export function bigIntToString(value: bigint): string {
-  return value.toString()
-}
+  if (typeOfValue === toType) {
+    return value
+  }
 
-/**
- * Converts an integer to a string.
- * @param value The integer to convert
- * @returns The converted string
- */
-export function intToString(value: number): string {
-  return value.toString()
-}
+  if (toType === 'string') {
+    return value.toString()
+  }
 
-/**
- * Converts a bigint to an integer.
- * @param value The bigint to convert
- * @returns The converted integer
- */
-export function bigIntToInt(value: bigint): number {
-  return Number(value)
+  if (toType === 'number') {
+    if (typeOfValue === 'bigint') {
+      return Number(value)
+    }
+    if (typeOfValue === 'string') {
+      return parseFloat(value)
+    }
+  }
+
+  if (toType === 'bigint') {
+    if (typeOfValue === 'number') {
+      return BigInt(Math.trunc(value))
+    }
+    if (typeOfValue === 'string') {
+      return BigInt(value)
+    }
+  }
+
+  throw new Error(`Unsupported conversion to type: ${toType}`)
 }
