@@ -1,6 +1,6 @@
 {
   "name": "@brunormorillo/js-util-library",
-  "version": "1.1.1",
+  "version": "2.0.1",
   "description": "Public utility library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
