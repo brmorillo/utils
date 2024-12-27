@@ -12,6 +12,7 @@
 
 1. **Configure npm:**
    Make sure you are logged in to npm:
+
    ```bash
    npm login
    ```
@@ -28,6 +29,7 @@
 
 1. **Bump the version:**
    Use the following command to update the version according to [SemVer](https://semver.org/):
+
    ```bash
    npm version patch   # For small fixes
    npm version minor   # For new features

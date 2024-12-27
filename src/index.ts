@@ -1,4 +1,5 @@
 export * from './utils/array.util'
+export * from './utils/convert.util'
 export * from './utils/crypt.util'
 export * from './utils/date.util'
 export * from './utils/math.util'
