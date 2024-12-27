@@ -12,6 +12,7 @@
 
 1. **Configure npm:**
    Make sure you are logged in to npm:
+
    ```bash
    npm login
    ```
@@ -28,6 +29,7 @@
 
 1. **Bump the version:**
    Use the following command to update the version according to [SemVer](https://semver.org/):
+
    ```bash
    npm version patch   # For small fixes
    npm version minor   # For new features
@@ -43,11 +45,21 @@
 
 ## Project Features
 
-1. **Feature 1**: *(Brief description of the feature)*
-2. **Feature 2**: *(Brief description of the feature)*
-3. **Feature 3**: *(Brief description of the feature)*
+### Date Utility Functions
 
-*(Replace the placeholders above as you inform the project features.)*
+1. **`dateNow`**: Returns the current date and time, either in UTC or the system's timezone.
+2. **`dateCreateInterval`**: Creates an interval between two dates.
+3. **`dateAddTime`**: Adds a specific duration to a date.
+4. **`dateRemoveTime`**: Subtracts a specific duration from a date.
+5. **`dateDiffBetween`**: Calculates the difference between two dates in specified units.
+6. **`dateToUTC`**: Converts a date to UTC.
+7. **`dateToTimeZone`**: Converts a date to a specified timezone.
+
+### Cryptography Utility Functions
+
+1. **`cryptEncrypt`**: Encrypts a string value using bcrypt.
+2. **`cryptCompareValues`**: Compares a string value with an encrypted value.
+3. **`cryptGenerateRandomString`**: Generates a random string using bcrypt.
 
 ---
 
