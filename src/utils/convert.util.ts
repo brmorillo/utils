@@ -10,7 +10,7 @@ export const spaceType = {
   inches: 39.3701,
   feet: 3.28084,
   yards: 1.09361,
-};
+}
 
 /**
  * Converts a value from one space measurement to another using meters as the base unit.
@@ -22,10 +22,10 @@ export const spaceType = {
 export function convertSpace(
   value: number,
   fromType: keyof typeof spaceType,
-  toType: keyof typeof spaceType
+  toType: keyof typeof spaceType,
 ): number {
-  const valueInMeters = value / spaceType[fromType]; // Convert to base unit (meters)
-  return valueInMeters * spaceType[toType]; // Convert from meters to the target unit
+  const valueInMeters = value / spaceType[fromType] // Convert to base unit (meters)
+  return valueInMeters * spaceType[toType] // Convert from meters to the target unit
 }
 
 /**
@@ -36,7 +36,7 @@ export const weightType = {
   pounds: 2.20462,
   ounces: 35.274,
   grams: 1000,
-};
+}
 
 /**
  * Converts a value from one weight measurement to another using kilograms as the base unit.
@@ -48,10 +48,10 @@ export const weightType = {
 export function convertWeight(
   value: number,
   fromType: keyof typeof weightType,
-  toType: keyof typeof weightType
+  toType: keyof typeof weightType,
 ): number {
-  const valueInKilograms = value / weightType[fromType]; // Convert to base unit (kilograms)
-  return valueInKilograms * weightType[toType]; // Convert from kilograms to the target unit
+  const valueInKilograms = value / weightType[fromType] // Convert to base unit (kilograms)
+  return valueInKilograms * weightType[toType] // Convert from kilograms to the target unit
 }
 
 /**
@@ -62,7 +62,7 @@ export const volumeType = {
   gallons: 0.264172,
   milliliters: 1000,
   cubicMeters: 0.001,
-};
+}
 
 /**
  * Converts a value from one volume measurement to another using liters as the base unit.
@@ -74,8 +74,62 @@ export const volumeType = {
 export function convertVolume(
   value: number,
   fromType: keyof typeof volumeType,
-  toType: keyof typeof volumeType
+  toType: keyof typeof volumeType,
 ): number {
-  const valueInLiters = value / volumeType[fromType]; // Convert to base unit (liters)
-  return valueInLiters * volumeType[toType]; // Convert from liters to the target unit
+  const valueInLiters = value / volumeType[fromType] // Convert to base unit (liters)
+  return valueInLiters * volumeType[toType] // Convert from liters to the target unit
+}
+
+/**
+ * Converts a string to an integer.
+ * @param value The string to convert
+ * @returns The converted integer
+ */
+export function stringToInt(value: string): number {
+  return parseInt(value, 10)
+}
+
+/**
+ * Converts a string to a bigint.
+ * @param value The string to convert
+ * @returns The converted bigint
+ */
+export function stringToBigInt(value: string): bigint {
+  return BigInt(value)
+}
+
+/**
+ * Converts an integer to a bigint.
+ * @param value The integer to convert
+ * @returns The converted bigint
+ */
+export function intToBigInt(value: number): bigint {
+  return BigInt(value)
+}
+
+/**
+ * Converts a bigint to a string.
+ * @param value The bigint to convert
+ * @returns The converted string
+ */
+export function bigIntToString(value: bigint): string {
+  return value.toString()
+}
+
+/**
+ * Converts an integer to a string.
+ * @param value The integer to convert
+ * @returns The converted string
+ */
+export function intToString(value: number): string {
+  return value.toString()
+}
+
+/**
+ * Converts a bigint to an integer.
+ * @param value The bigint to convert
+ * @returns The converted integer
+ */
+export function bigIntToInt(value: bigint): number {
+  return Number(value)
 }
