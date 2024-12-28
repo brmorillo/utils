@@ -145,6 +145,24 @@ console.log(utils.convertSpace(1, 'meters', 'miles')) // Converts 1 meter to mil
 11. **`clamp`**: Clamps a number within a specified range.
 12. **`isPrime`**: Checks if a number is a prime number.
 
+### Request Utility Functions
+
+1. **`extractRequestData`**: Extracts all possible relevant data from the request object.
+
+   - **Parameters**:
+     - `request` (object): The incoming HTTP request object.
+   - **Returns**: An object containing:
+     - **`userAgent`**: The user-agent string from the request headers.
+     - **`ipAddress`**: The IP address of the client.
+     - **`xForwardedFor`**: The first IP address in the `x-forwarded-for` header.
+     - **`xRealIp`**: The IP address in the `x-real-ip` header.
+     - **`referer`**: The `referer` header from the request.
+     - **`origin`**: The `origin` header from the request.
+     - **`host`**: The `host` header from the request.
+     - **`browser`**: The name of the browser parsed from the user-agent.
+     - **`os`**: The operating system parsed from the user-agent.
+     - **`device`**: The type of device parsed from the user-agent (e.g., desktop, mobile).
+
 ### String Utility Functions
 
 1. **`capitalizeFirstLetter`**: Capitalizes the first letter of a string.
