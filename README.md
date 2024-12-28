@@ -30,15 +30,25 @@ pnpm add @brmorillo/utils
 
 ### Usage
 
-Import the specific utilities you need:
+##### Import the specific utilities you need:
 
 ```javascript
-import { isEven, dateNow, convertSpace } from '@brmorillo/utils';
+import { isEven, dateNow, convertSpace } from '@brmorillo/utils'
 
 // Example usage
-console.log(isEven(4)); // true
-console.log(dateNow()); // Current date and time
-console.log(convertSpace(1, 'meters', 'miles')); // Converts 1 meter to miles
+console.log(isEven(4)) // true
+console.log(dateNow()) // Current date and time
+console.log(convertSpace(1, 'meters', 'miles')) // Converts 1 meter to miles
+```
+
+##### Or import the entire library:
+
+```javascript
+import utils from '@brmorillo/utils'
+
+console.log(utils.isEven(4)) // true
+console.log(utils.dateNow()) // Current date and time
+console.log(utils.convertSpace(1, 'meters', 'miles')) // Converts 1 meter to miles
 ```
 
 ---
