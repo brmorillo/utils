@@ -45,6 +45,27 @@
 
 ## Project Features
 
+### Array Utility Functions
+
+1. **`removeDuplicates`**: Removes duplicate values from an array.
+2. **`intersectArrays`**: Finds the intersection of two arrays.
+3. **`flattenArray`**: Flattens a multi-dimensional array into a single-dimensional array.
+4. **`groupBy`**: Groups elements of an array based on a grouping function.
+5. **`shuffleArray`**: Shuffles the elements of an array randomly.
+
+### Conversion Utility Functions
+
+1. **`convertSpace`**: Converts a value from one space measurement to another using meters as the base unit.
+2. **`convertWeight`**: Converts a value from one weight measurement to another using kilograms as the base unit.
+3. **`convertVolume`**: Converts a value from one volume measurement to another using liters as the base unit.
+4. **`convertValue`**: Converts a value between `string`, `number`, and `bigint` by inferring the type of the input.
+
+### Cryptography Utility Functions
+
+1. **`cryptEncrypt`**: Encrypts a string value using bcrypt.
+2. **`cryptCompareValues`**: Compares a string value with an encrypted value.
+3. **`cryptGenerateRandomString`**: Generates a random string using bcrypt.
+
 ### Date Utility Functions
 
 1. **`dateNow`**: Returns the current date and time, either in UTC or the system's timezone.
@@ -55,19 +76,64 @@
 6. **`dateToUTC`**: Converts a date to UTC.
 7. **`dateToTimeZone`**: Converts a date to a specified timezone.
 
-### Cryptography Utility Functions
+### Math Utility Functions
 
-1. **`cryptEncrypt`**: Encrypts a string value using bcrypt.
-2. **`cryptCompareValues`**: Compares a string value with an encrypted value.
-3. **`cryptGenerateRandomString`**: Generates a random string using bcrypt.
+1. **`roundToDecimals`**: Rounds a number to the specified number of decimal places.
 
-### Array Utility Functions
+   - **Parameters**:
+     - `value` (number): The number to be rounded.
+     - `decimals` (number): The number of decimal places.
+   - **Returns**: The rounded number.
 
-1. **`removeDuplicates`**: Removes duplicate values from an array.
-2. **`intersectArrays`**: Finds the intersection of two arrays.
-3. **`flattenArray`**: Flattens a multi-dimensional array into a single-dimensional array.
-4. **`groupBy`**: Groups elements of an array based on a grouping function.
-5. **`shuffleArray`**: Shuffles the elements of an array randomly.
+2. **`calculatePercentage`**: Calculates the percentage of a value.
+
+   - **Parameters**:
+     - `total` (number): The total value.
+     - `part` (number): The part value.
+   - **Returns**: The percentage of the part relative to the total.
+
+3. **`gcd`**: Finds the greatest common divisor (GCD) of two numbers.
+
+   - **Parameters**:
+     - `a` (number): First number.
+     - `b` (number): Second number.
+   - **Returns**: The GCD of the two numbers.
+
+4. **`lcm`**: Finds the least common multiple (LCM) of two numbers.
+
+   - **Parameters**:
+     - `a` (number): First number.
+     - `b` (number): Second number.
+   - **Returns**: The LCM of the two numbers.
+
+5. **`randomInRange`**: Generates a random number within a given range.
+
+   - **Parameters**:
+     - `min` (number): Minimum value (inclusive).
+     - `max` (number): Maximum value (inclusive).
+   - **Returns**: A random number within the range.
+
+6. **`clamp`**: Clamps a number within a specified range.
+   - **Parameters**:
+     - `value` (number): The number to clamp.
+     - `min` (number): Minimum value.
+     - `max` (number): Maximum value.
+   - **Returns**: The clamped number.
+
+### Number Utility Functions
+
+1. **`isEven`**: Checks if a number is even.
+2. **`isOdd`**: Checks if a number is odd.
+3. **`roundDown`**: Rounds a number down to the nearest integer.
+4. **`roundUp`**: Rounds a number up to the nearest integer.
+5. **`roundToNearest`**: Rounds a number to the nearest integer.
+6. **`toCents`**: Converts a number to cents (removes decimal places).
+7. **`addDecimalPlaces`**: Adds decimal places to a number.
+8. **`removeDecimalPlaces`**: Removes all decimal places from a number.
+9. **`randomIntegerInRange`**: Generates a random integer within a specified range.
+10. **`factorial`**: Calculates the factorial of a number.
+11. **`clamp`**: Clamps a number within a specified range.
+12. **`isPrime`**: Checks if a number is a prime number.
 
 ### String Utility Functions
 
@@ -88,21 +154,6 @@
 5. **`isValidHexColor`**: Validates if a string is a valid hexadecimal color code.
 6. **`hasMinLength`**: Validates if a string has a minimum length.
 7. **`isValidJSON`**: Validates if a string is a valid JSON string.
-
-### Number Utility Functions
-
-1. **`isEven`**: Checks if a number is even.
-2. **`isOdd`**: Checks if a number is odd.
-3. **`roundDown`**: Rounds a number down to the nearest integer.
-4. **`roundUp`**: Rounds a number up to the nearest integer.
-5. **`roundToNearest`**: Rounds a number to the nearest integer.
-6. **`toCents`**: Converts a number to cents (removes decimal places).
-7. **`addDecimalPlaces`**: Adds decimal places to a number.
-8. **`removeDecimalPlaces`**: Removes all decimal places from a number.
-9. **`randomIntegerInRange`**: Generates a random integer within a specified range.
-10. **`factorial`**: Calculates the factorial of a number.
-11. **`clamp`**: Clamps a number within a specified range.
-12. **`isPrime`**: Checks if a number is a prime number.
 
 ---
 
