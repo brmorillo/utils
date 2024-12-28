@@ -49,13 +49,3 @@ export function randomInRange(min: number, max: number): number {
   return Math.random() * (max - min) + min;
 }
 
-/**
- * Clamps a number within a specified range.
- * @param value The number to clamp
- * @param min Minimum value
- * @param max Maximum value
- * @returns Clamped number
- */
-export function clamp(value: number, min: number, max: number): number {
-  return Math.max(min, Math.min(max, value));
-}
