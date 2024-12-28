@@ -1,8 +1,8 @@
-# @brmorillo/js-util-library
+# @brmorillo/utils
 
 ## Project Description
 
-**@brmorillo/js-util-library** is a JavaScript utility library designed to simplify common tasks by providing straightforward and efficient implementations for developers. It is designed to work seamlessly in both Node.js and browser environments, ensuring flexibility and usability.
+**@brmorillo/utils** is a JavaScript utility library designed to simplify common tasks by providing straightforward and efficient implementations for developers. It is designed to work seamlessly in both Node.js and browser environments, ensuring flexibility and usability.
 
 ---
 
@@ -18,7 +18,7 @@
    ```
 
 2. **Check `package.json`:**
-   Ensure the `name` field is set to `@brmorillo/js-util-library` and the `version` field is correct.
+   Ensure the `name` field is set to `@brmorillo/utils` and the `version` field is correct.
 
 3. **Publish the package:**
    ```bash
