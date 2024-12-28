@@ -6,40 +6,40 @@
 
 ---
 
-## How to Publish and Update on npm
+## Installation and Usage
 
-### Publish for the First Time
+### Install
 
-1. **Configure npm:**
-   Make sure you are logged in to npm:
+To add the library to your project, use:
 
-   ```bash
-   npm login
-   ```
+```bash
+npm install @brmorillo/utils
+```
 
-2. **Check `package.json`:**
-   Ensure the `name` field is set to `@brmorillo/utils` and the `version` field is correct.
+or if you use Yarn:
 
-3. **Publish the package:**
-   ```bash
-   npm publish --access public
-   ```
+```bash
+yarn add @brmorillo/utils
+```
 
-### Update an Existing Version
+or with pnpm:
 
-1. **Bump the version:**
-   Use the following command to update the version according to [SemVer](https://semver.org/):
+```bash
+pnpm add @brmorillo/utils
+```
 
-   ```bash
-   npm version patch   # For small fixes
-   npm version minor   # For new features
-   npm version major   # For breaking changes
-   ```
+### Usage
 
-2. **Publish again:**
-   ```bash
-   npm publish
-   ```
+Import the specific utilities you need:
+
+```javascript
+import { isEven, dateNow, convertSpace } from '@brmorillo/utils';
+
+// Example usage
+console.log(isEven(4)); // true
+console.log(dateNow()); // Current date and time
+console.log(convertSpace(1, 'meters', 'miles')); // Converts 1 meter to miles
+```
 
 ---
 
@@ -154,6 +154,30 @@
 5. **`isValidHexColor`**: Validates if a string is a valid hexadecimal color code.
 6. **`hasMinLength`**: Validates if a string has a minimum length.
 7. **`isValidJSON`**: Validates if a string is a valid JSON string.
+
+---
+
+## Contributing
+
+### How to Publish
+
+If you want to contribute and publish updates to this library:
+
+1. **Bump the version:**
+   Use the following command to update the version according to [SemVer](https://semver.org/):
+
+   ```bash
+   npm version patch   # For small fixes
+   npm version minor   # For new features
+   npm version major   # For breaking changes
+   ```
+
+2. **Publish the package:**
+   ```bash
+   npm publish
+   ```
+
+Feel free to fork, contribute, and submit pull requests! Any contributions are welcome.
 
 ---
 
