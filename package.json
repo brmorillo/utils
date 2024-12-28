@@ -18,6 +18,9 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "luxon": "^3.5.0"
+    "@sapphire/snowflake": "^3.5.5",
+    "cuid": "^3.0.0",
+    "luxon": "^3.5.0",
+    "uuid": "^11.0.3"
   }
 }
