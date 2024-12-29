@@ -1,6 +1,6 @@
 {
   "name": "@brmorillo/utils",
-  "version": "2.5.0",
+  "version": "3.0.0",
   "description": "Public utility library",
   "main": "dist/index.js",
   "types": "dist/index.d.js",
