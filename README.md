@@ -89,46 +89,11 @@ console.log(utils.convertSpace(1, 'meters', 'miles')) // Converts 1 meter to mil
 ### Math Utility Functions
 
 1. **`roundToDecimals`**: Rounds a number to the specified number of decimal places.
-
-   - **Parameters**:
-     - `value` (number): The number to be rounded.
-     - `decimals` (number): The number of decimal places.
-   - **Returns**: The rounded number.
-
 2. **`calculatePercentage`**: Calculates the percentage of a value.
-
-   - **Parameters**:
-     - `total` (number): The total value.
-     - `part` (number): The part value.
-   - **Returns**: The percentage of the part relative to the total.
-
 3. **`gcd`**: Finds the greatest common divisor (GCD) of two numbers.
-
-   - **Parameters**:
-     - `a` (number): First number.
-     - `b` (number): Second number.
-   - **Returns**: The GCD of the two numbers.
-
 4. **`lcm`**: Finds the least common multiple (LCM) of two numbers.
-
-   - **Parameters**:
-     - `a` (number): First number.
-     - `b` (number): Second number.
-   - **Returns**: The LCM of the two numbers.
-
 5. **`randomInRange`**: Generates a random number within a given range.
-
-   - **Parameters**:
-     - `min` (number): Minimum value (inclusive).
-     - `max` (number): Maximum value (inclusive).
-   - **Returns**: A random number within the range.
-
 6. **`clamp`**: Clamps a number within a specified range.
-   - **Parameters**:
-     - `value` (number): The number to clamp.
-     - `min` (number): Minimum value.
-     - `max` (number): Maximum value.
-   - **Returns**: The clamped number.
 
 ### Number Utility Functions
 
@@ -149,20 +114,6 @@ console.log(utils.convertSpace(1, 'meters', 'miles')) // Converts 1 meter to mil
 
 1. **`extractRequestData`**: Extracts all possible relevant data from the request object.
 
-   - **Parameters**:
-     - `request` (object): The incoming HTTP request object.
-   - **Returns**: An object containing:
-     - **`userAgent`**: The user-agent string from the request headers.
-     - **`ipAddress`**: The IP address of the client.
-     - **`xForwardedFor`**: The first IP address in the `x-forwarded-for` header.
-     - **`xRealIp`**: The IP address in the `x-real-ip` header.
-     - **`referer`**: The `referer` header from the request.
-     - **`origin`**: The `origin` header from the request.
-     - **`host`**: The `host` header from the request.
-     - **`browser`**: The name of the browser parsed from the user-agent.
-     - **`os`**: The operating system parsed from the user-agent.
-     - **`device`**: The type of device parsed from the user-agent (e.g., desktop, mobile).
-
 ### String Utility Functions
 
 1. **`capitalizeFirstLetter`**: Capitalizes the first letter of a string.
@@ -182,6 +133,11 @@ console.log(utils.convertSpace(1, 'meters', 'miles')) // Converts 1 meter to mil
 5. **`isValidHexColor`**: Validates if a string is a valid hexadecimal color code.
 6. **`hasMinLength`**: Validates if a string has a minimum length.
 7. **`isValidJSON`**: Validates if a string is a valid JSON string.
+
+### CUID Utility Functions
+
+1. **`cuidGenerate`**: Generates a collision-resistant unique identifier (CUID2).
+2. **`cuidIsValid`**: Checks if a string is a valid CUID2.
 
 ---
 

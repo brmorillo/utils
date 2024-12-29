@@ -1,26 +1,20 @@
-import cuid from 'cuid'
+import { init, isCuid } from '@paralleldrive/cuid2'
 
 /**
- * @description Generates a collision-resistant unique identifier (CUID).
- * @returns A unique CUID string.
+ * @description Gera um identificador único e seguro (CUID2).
+ * @param length O comprimento opcional do CUID. Se não fornecido, será usado o comprimento padrão.
+ * @returns Uma string representando o CUID2 gerado.
  */
-export function cuidGenerate(): string {
-  return cuid()
+export function cuidGenerate(length?: number): string {
+  const createId = length ? init({ length }) : init()
+  return createId()
 }
 
 /**
- * @description Checks if a string is a valid CUID.
- * @param id The string to validate.
- * @returns True if the string is a valid CUID, false otherwise.
+ * @description Verifica se uma string é um CUID2 válido.
+ * @param id A string a ser validada.
+ * @returns Verdadeiro se a string for um CUID2 válido; caso contrário, falso.
  */
 export function cuidIsValid(id: string): boolean {
-  return cuid.isCuid(id)
-}
-
-/**
- * @description Generates a collision-resistant unique identifier (CUID) slug.
- * @returns A shorter unique CUID slug string.
- */
-export function cuidGenerateSlug(): string {
-  return cuid.slug()
+  return isCuid(id)
 }
