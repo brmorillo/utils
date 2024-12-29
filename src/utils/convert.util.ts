@@ -81,15 +81,6 @@ export function convertVolume(
 }
 
 /**
- * Types of values that can be converted.
- */
-export const TypeOfValueToConvert = {
-  string: 'string',
-  number: 'number',
-  bigint: 'bigint',
-}
-
-/**
  * Converts a value between types by inferring the type of the input.
  * @param value The value to convert
  * @param toType The desired output type ('string', 'number', or 'bigint')
@@ -97,13 +88,9 @@ export const TypeOfValueToConvert = {
  */
 export function convertValue(
   value: any,
-  toType: keyof typeof TypeOfValueToConvert,
+  toType: 'string' | 'number' | 'bigint',
 ): any {
   const typeOfValue = typeof value
-
-  if (!(typeOfValue in TypeOfValueToConvert)) {
-    throw new Error(`Unsupported conversion from type: ${typeOfValue}`)
-  }
 
   if (typeOfValue === toType) {
     return value
