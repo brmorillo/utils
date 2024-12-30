@@ -1,3 +1,46 @@
+## [5.0.2](https://github.com/brmorillo/util/compare/v5.0.1...v5.0.2) (2024-12-30)
+
+
+
+## [5.0.3](https://github.com/brmorillo/util/compare/v5.0.2...v5.0.3) (2024-12-30)
+
+
+
+## [5.0.2](https://github.com/brmorillo/util/compare/v5.0.1...v5.0.2) (2024-12-30)
+
+
+### Reverts
+
+* node-version ([3098bcc](https://github.com/brmorillo/util/commit/3098bcc74cb09ee6510bfb2b6ef685392cb51ed7))
+
+
+
+## [5.0.1](https://github.com/brmorillo/util/compare/v5.0.0...v5.0.1) (2024-12-30)
+
+
+### Bug Fixes
+
+* release.yml ([f9e88e8](https://github.com/brmorillo/util/commit/f9e88e8c00f12b77ff1c40851ed9cfbd0b2dc566))
+
+
+
+# [5.0.0](https://github.com/brmorillo/util/compare/v4.0.0...v5.0.0) (2024-12-30)
+
+
+### Bug Fixes
+
+* dlx usage on release ([387d41e](https://github.com/brmorillo/util/commit/387d41e32e8da8852e24c2323a92e093d776df5a))
+* pnpm deploy dependency ([efc747a](https://github.com/brmorillo/util/commit/efc747a3fb0bf64657a8ff1239c3a3ffefdd6c23))
+* scripts and installed dependencies ([b3768fc](https://github.com/brmorillo/util/commit/b3768fc1f6e86bd64444961cdeb0df981fc46ec7))
+
+
+### Features
+
+* Auto changelog and release ([d93dda5](https://github.com/brmorillo/util/commit/d93dda5f0e7c6d68de0e3adcea2b4623c83cedf5))
+* Rebuild the library with the same pattern ([4a44062](https://github.com/brmorillo/util/commit/4a440622dd6a2bbcdfe81fbc24c6df5394aad5d9))
+
+
+
 # [4.0.0](https://github.com/brmorillo/util/compare/v3.0.0...v4.0.0) (2024-12-29)
 
 
