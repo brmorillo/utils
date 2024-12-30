@@ -18,7 +18,7 @@ export class SnowflakeUtils {
    * @example
    * const id = SnowflakeUtils.generateSnowflake();
    */
-  static generateSnowflake(): string {
+  public static generateSnowflake(): string {
     return SnowflakeUtils.snowflake
       .generate({
         workerId: DEFAULT_WORKER_ID,
@@ -34,7 +34,7 @@ export class SnowflakeUtils {
    * @example
    * const isValid = SnowflakeUtils.isValidSnowflake({ id: "123456789" });
    */
-  static isValidSnowflake({ id }: { id: string }): boolean {
+  public static isValidSnowflake({ id }: { id: string }): boolean {
     try {
       const bigIntId = BigInt(id);
       const { timestamp, workerId, processId, increment } =

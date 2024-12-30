@@ -8,7 +8,7 @@ export class CuidUtils {
    * @example
    * CuidUtils.generate({ length: 10 }) // "ckvlwbkni0001rd3ediyjf3ih"
    */
-  static generate({ length }: { length?: number } = {}): string {
+  public static generate({ length }: { length?: number } = {}): string {
     const createId = length ? init({ length }) : init();
     return createId();
   }
@@ -20,7 +20,7 @@ export class CuidUtils {
    * @example
    * CuidUtils.isValid({ id: "ckvlwbkni0001rd3ediyjf3ih" }) // true
    */
-  static isValid({ id }: { id: string }): boolean {
+  public static isValid({ id }: { id: string }): boolean {
     return isCuid(id);
   }
 }

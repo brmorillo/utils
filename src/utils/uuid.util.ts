@@ -12,7 +12,7 @@ export class UUIDUtils {
    * @example
    * UUIDUtils.uuidV1Generate(); // "f47ac10b-58cc-4372-a567-0e02b2c3d479"
    */
-  static uuidV1Generate(): string {
+  public static uuidV1Generate(): string {
     return uuidv1();
   }
 
@@ -22,7 +22,7 @@ export class UUIDUtils {
    * @example
    * UUIDUtils.uuidV4Generate(); // "3d6f0eb0-5e26-4b2c-a073-84d55dff3d51"
    */
-  static uuidV4Generate(): string {
+  public static uuidV4Generate(): string {
     return uuidv4();
   }
 
@@ -38,7 +38,7 @@ export class UUIDUtils {
    *   name: 'example'
    * }); // Deterministic UUID
    */
-  static uuidV5Generate({
+  public static uuidV5Generate({
     namespace,
     name,
   }: {
@@ -59,7 +59,7 @@ export class UUIDUtils {
    * UUIDUtils.uuidIsValid({ id: '3d6f0eb0-5e26-4b2c-a073-84d55dff3d51' }); // true
    * UUIDUtils.uuidIsValid({ id: 'invalid-uuid' }); // false
    */
-  static uuidIsValid({ id }: { id: string }): boolean {
+  public static uuidIsValid({ id }: { id: string }): boolean {
     return validateUuid(id);
   }
 }

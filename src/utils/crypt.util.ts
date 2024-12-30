@@ -9,7 +9,7 @@ export class CryptUtils {
    * @example
    * CryptUtils.encrypt({ value: 'password123', saltRounds: 12 }) // Encrypted string
    */
-  static encrypt({
+  public static encrypt({
     value,
     saltRounds = 10,
   }: {
@@ -32,7 +32,7 @@ export class CryptUtils {
    * @example
    * CryptUtils.compare({ value: 'password123', encryptedValue: 'encryptedString' }) // true or false
    */
-  static compare({
+  public static compare({
     value,
     encryptedValue,
   }: {
@@ -54,7 +54,7 @@ export class CryptUtils {
    * @example
    * CryptUtils.generateRandomString({ length: 12 }) // Randomly generated string
    */
-  static generateRandomString({
+  public static generateRandomString({
     length = 10,
   }: {
     length?: number;

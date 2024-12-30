@@ -8,7 +8,7 @@ export class DateUtils {
    * @example
    * DateUtils.now({ utc: true }) // Current UTC DateTime
    */
-  static now({ utc = false }: { utc?: boolean } = {}): DateTime {
+  public static now({ utc = false }: { utc?: boolean } = {}): DateTime {
     return utc ? DateTime.utc() : DateTime.now();
   }
 
@@ -20,7 +20,7 @@ export class DateUtils {
    * @example
    * DateUtils.createInterval({ startDate: '2024-01-01', endDate: '2024-12-31' })
    */
-  static createInterval({
+  public static createInterval({
     startDate,
     endDate,
   }: {
@@ -42,15 +42,15 @@ export class DateUtils {
    * @example
    * DateUtils.addTime({ date: '2024-01-01', timeToAdd: { days: 5 } })
    */
-  static addTime({
+  public static addTime({
     date,
     timeToAdd,
   }: {
     date: DateTime | string;
     timeToAdd: Duration | Record<string, number>;
   }): DateTime {
-    const startDate = typeof date === 'string' ? DateTime.fromISO(date) : date;
-    return startDate.plus(Duration.fromObject(timeToAdd));
+    const parsedDate = typeof date === 'string' ? DateTime.fromISO(date) : date;
+    return parsedDate.plus(Duration.fromObject(timeToAdd));
   }
 
   /**
@@ -61,15 +61,15 @@ export class DateUtils {
    * @example
    * DateUtils.removeTime({ date: '2024-01-01', timeToRemove: { days: 5 } })
    */
-  static removeTime({
+  public static removeTime({
     date,
     timeToRemove,
   }: {
     date: DateTime | string;
     timeToRemove: Duration | Record<string, number>;
   }): DateTime {
-    const startDate = typeof date === 'string' ? DateTime.fromISO(date) : date;
-    return startDate.minus(Duration.fromObject(timeToRemove));
+    const parsedDate = typeof date === 'string' ? DateTime.fromISO(date) : date;
+    return parsedDate.minus(Duration.fromObject(timeToRemove));
   }
 
   /**
@@ -81,7 +81,7 @@ export class DateUtils {
    * @example
    * DateUtils.diffBetween({ startDate: '2024-01-01', endDate: '2024-12-31', units: ['days'] })
    */
-  static diffBetween({
+  public static diffBetween({
     startDate,
     endDate,
     units,
@@ -104,7 +104,7 @@ export class DateUtils {
    * @example
    * DateUtils.toUTC({ date: '2024-01-01T12:00:00+03:00' })
    */
-  static toUTC({ date }: { date: DateTime | string }): DateTime {
+  public static toUTC({ date }: { date: DateTime | string }): DateTime {
     const dateTime = typeof date === 'string' ? DateTime.fromISO(date) : date;
     return dateTime.toUTC();
   }
@@ -117,7 +117,7 @@ export class DateUtils {
    * @example
    * DateUtils.toTimeZone({ date: '2024-01-01T12:00:00Z', timeZone: 'America/New_York' })
    */
-  static toTimeZone({
+  public static toTimeZone({
     date,
     timeZone,
   }: {

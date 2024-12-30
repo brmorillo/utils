@@ -6,7 +6,7 @@ export class NumberUtils {
    * @example
    * NumberUtils.isEven({ value: 4 }) // true
    */
-  static isEven({ value }: { value: number }): boolean {
+  public static isEven({ value }: { value: number }): boolean {
     return value % 2 === 0;
   }
 
@@ -17,7 +17,7 @@ export class NumberUtils {
    * @example
    * NumberUtils.isOdd({ value: 3 }) // true
    */
-  static isOdd({ value }: { value: number }): boolean {
+  public static isOdd({ value }: { value: number }): boolean {
     return value % 2 !== 0;
   }
 
@@ -28,7 +28,7 @@ export class NumberUtils {
    * @example
    * NumberUtils.roundDown({ value: 4.7 }) // 4
    */
-  static roundDown({ value }: { value: number }): number {
+  public static roundDown({ value }: { value: number }): number {
     return Math.floor(value);
   }
 
@@ -39,7 +39,7 @@ export class NumberUtils {
    * @example
    * NumberUtils.roundUp({ value: 4.2 }) // 5
    */
-  static roundUp({ value }: { value: number }): number {
+  public static roundUp({ value }: { value: number }): number {
     return Math.ceil(value);
   }
 
@@ -50,7 +50,7 @@ export class NumberUtils {
    * @example
    * NumberUtils.roundToNearest({ value: 4.5 }) // 5
    */
-  static roundToNearest({ value }: { value: number }): number {
+  public static roundToNearest({ value }: { value: number }): number {
     return Math.round(value);
   }
 
@@ -61,7 +61,7 @@ export class NumberUtils {
    * @example
    * NumberUtils.toCents({ value: 10.56 }) // 1056
    */
-  static toCents({ value }: { value: number }): number {
+  public static toCents({ value }: { value: number }): number {
     return Math.round(value * 100);
   }
 
@@ -73,7 +73,7 @@ export class NumberUtils {
    * @example
    * NumberUtils.addDecimalPlaces({ value: 10.5, decimalPlaces: 3 }) // "10.500"
    */
-  static addDecimalPlaces({
+  public static addDecimalPlaces({
     value,
     decimalPlaces,
   }: {
@@ -90,7 +90,7 @@ export class NumberUtils {
    * @example
    * NumberUtils.removeDecimalPlaces({ value: 10.56 }) // 10
    */
-  static removeDecimalPlaces({ value }: { value: number }): number {
+  public static removeDecimalPlaces({ value }: { value: number }): number {
     return Math.trunc(value);
   }
 
@@ -102,7 +102,7 @@ export class NumberUtils {
    * @example
    * NumberUtils.randomIntegerInRange({ min: 1, max: 10 }) // e.g., 7
    */
-  static randomIntegerInRange({
+  public static randomIntegerInRange({
     min,
     max,
   }: {
@@ -119,7 +119,7 @@ export class NumberUtils {
    * @example
    * NumberUtils.factorial({ value: 5 }) // 120
    */
-  static factorial({ value }: { value: number }): number {
+  public static factorial({ value }: { value: number }): number {
     if (value < 0) {
       return 0;
     }
@@ -135,7 +135,7 @@ export class NumberUtils {
    * @example
    * NumberUtils.clamp({ value: 15, min: 0, max: 10 }) // 10
    */
-  static clamp({
+  public static clamp({
     value,
     min,
     max,
@@ -154,7 +154,7 @@ export class NumberUtils {
    * @example
    * NumberUtils.isPrime({ value: 7 }) // true
    */
-  static isPrime({ value }: { value: number }): boolean {
+  public static isPrime({ value }: { value: number }): boolean {
     if (value <= 1) return false;
     if (value <= 3) return true;
     if (value % 2 === 0 || value % 3 === 0) return false;

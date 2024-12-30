@@ -7,7 +7,7 @@ export class ValidationUtils {
    * ValidationUtils.isValidEmail({ email: 'test@example.com' }); // true
    * ValidationUtils.isValidEmail({ email: 'invalid-email' }); // false
    */
-  static isValidEmail({ email }: { email: string }): boolean {
+  public static isValidEmail({ email }: { email: string }): boolean {
     const emailRegex = /^[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(email);
   }
@@ -20,7 +20,7 @@ export class ValidationUtils {
    * ValidationUtils.isValidURL({ inputUrl: 'https://example.com' }); // true
    * ValidationUtils.isValidURL({ inputUrl: 'invalid-url' }); // false
    */
-  static isValidURL({ inputUrl }: { inputUrl: string }): boolean {
+  public static isValidURL({ inputUrl }: { inputUrl: string }): boolean {
     try {
       new URL(inputUrl);
       return true;
@@ -37,7 +37,11 @@ export class ValidationUtils {
    * ValidationUtils.isValidPhoneNumber({ phoneNumber: '+1234567890' }); // true
    * ValidationUtils.isValidPhoneNumber({ phoneNumber: '12345' }); // false
    */
-  static isValidPhoneNumber({ phoneNumber }: { phoneNumber: string }): boolean {
+  public static isValidPhoneNumber({
+    phoneNumber,
+  }: {
+    phoneNumber: string;
+  }): boolean {
     const phoneRegex = /^\+?[1-9]\d{1,14}$/;
     return phoneRegex.test(phoneNumber);
   }
@@ -50,7 +54,7 @@ export class ValidationUtils {
    * ValidationUtils.isNumber({ value: 123 }); // true
    * ValidationUtils.isNumber({ value: 'abc' }); // false
    */
-  static isNumber({ value }: { value: any }): boolean {
+  public static isNumber({ value }: { value: any }): boolean {
     return !isNaN(parseFloat(value)) && isFinite(value);
   }
 
@@ -62,7 +66,7 @@ export class ValidationUtils {
    * ValidationUtils.isValidHexColor({ hexColor: '#FFFFFF' }); // true
    * ValidationUtils.isValidHexColor({ hexColor: '123456' }); // false
    */
-  static isValidHexColor({ hexColor }: { hexColor: string }): boolean {
+  public static isValidHexColor({ hexColor }: { hexColor: string }): boolean {
     const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
     return hexColorRegex.test(hexColor);
   }
@@ -76,7 +80,7 @@ export class ValidationUtils {
    * ValidationUtils.hasMinLength({ input: 'hello', minLength: 3 }); // true
    * ValidationUtils.hasMinLength({ input: 'hi', minLength: 3 }); // false
    */
-  static hasMinLength({
+  public static hasMinLength({
     input,
     minLength,
   }: {
@@ -95,7 +99,7 @@ export class ValidationUtils {
    * ValidationUtils.hasMaxLength({ input: 'hello', maxLength: 10 }); // true
    * ValidationUtils.hasMaxLength({ input: 'this is too long', maxLength: 5 }); // false
    */
-  static hasMaxLength({
+  public static hasMaxLength({
     input,
     maxLength,
   }: {
@@ -113,7 +117,7 @@ export class ValidationUtils {
    * ValidationUtils.isValidJSON({ jsonString: '{"key": "value"}' }); // true
    * ValidationUtils.isValidJSON({ jsonString: '{invalid: json}' }); // false
    */
-  static isValidJSON({ jsonString }: { jsonString: string }): boolean {
+  public static isValidJSON({ jsonString }: { jsonString: string }): boolean {
     try {
       JSON.parse(jsonString);
       return true;

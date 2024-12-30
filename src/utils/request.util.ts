@@ -8,7 +8,7 @@ export class RequestUtils {
    * @example
    * const requestData = RequestUtils.extractRequestData({ request });
    */
-  static extractRequestData({ request }: { request: any }): {
+  public static extractRequestData({ request }: { request: any }): {
     userAgent: string | undefined;
     ipAddress: string | undefined;
     xForwardedFor: string | undefined;

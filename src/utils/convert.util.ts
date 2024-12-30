@@ -2,7 +2,7 @@ export class ConvertUtils {
   /**
    * Conversion constants for space measurements using meters as the base unit.
    */
-  static spaceType = {
+  public static spaceType = {
     meters: 1,
     miles: 0.000621371,
     kilometers: 0.001,
@@ -22,7 +22,7 @@ export class ConvertUtils {
    * @example
    * ConvertUtils.convertSpace({ value: 1000, fromType: 'meters', toType: 'kilometers' }) // 1
    */
-  static convertSpace({
+  public static convertSpace({
     value,
     fromType,
     toType,
@@ -38,7 +38,7 @@ export class ConvertUtils {
   /**
    * Conversion constants for weight measurements using kilograms as the base unit.
    */
-  static weightType = {
+  public static weightType = {
     kilograms: 1,
     pounds: 2.20462,
     ounces: 35.274,
@@ -54,7 +54,7 @@ export class ConvertUtils {
    * @example
    * ConvertUtils.convertWeight({ value: 1, fromType: 'kilograms', toType: 'pounds' }) // 2.20462
    */
-  static convertWeight({
+  public static convertWeight({
     value,
     fromType,
     toType,
@@ -70,7 +70,7 @@ export class ConvertUtils {
   /**
    * Conversion constants for volume measurements using liters as the base unit.
    */
-  static volumeType = {
+  public static volumeType = {
     liters: 1,
     gallons: 0.264172,
     milliliters: 1000,
@@ -86,7 +86,7 @@ export class ConvertUtils {
    * @example
    * ConvertUtils.convertVolume({ value: 1, fromType: 'liters', toType: 'gallons' }) // 0.264172
    */
-  static convertVolume({
+  public static convertVolume({
     value,
     fromType,
     toType,
@@ -109,7 +109,7 @@ export class ConvertUtils {
    * ConvertUtils.convertValue({ value: 42, toType: "string" }) // "42"
    * ConvertUtils.convertValue({ value: "42", toType: "bigint" }) // 42n
    */
-  static convertValue({
+  public static convertValue({
     value,
     toType,
   }: {

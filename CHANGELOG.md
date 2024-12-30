@@ -1,3 +1,20 @@
+## [5.0.6](https://github.com/brmorillo/util/compare/v5.0.5...v5.0.6) (2024-12-30)
+
+
+### Bug Fixes
+
+* all classes access ([01e58da](https://github.com/brmorillo/util/commit/01e58dab80abcc006e7bc6c79b200f7a1b6233aa))
+
+
+
+## [5.0.5](https://github.com/brmorillo/util/compare/v5.0.4...v5.0.5) (2024-12-30)
+
+
+
+## [5.0.4](https://github.com/brmorillo/util/compare/v5.0.3...v5.0.4) (2024-12-30)
+
+
+
 ## [5.0.2](https://github.com/brmorillo/util/compare/v5.0.1...v5.0.2) (2024-12-30)
 
 
