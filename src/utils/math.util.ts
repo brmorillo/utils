@@ -7,7 +7,7 @@ export class MathUtils {
    * @example
    * MathUtils.roundToDecimals({ value: 3.14159, decimals: 2 }) // 3.14
    */
-  static roundToDecimals({
+  public static roundToDecimals({
     value,
     decimals = 2,
   }: {
@@ -26,7 +26,7 @@ export class MathUtils {
    * @example
    * MathUtils.calculatePercentage({ total: 200, part: 50 }) // 25
    */
-  static calculatePercentage({
+  public static calculatePercentage({
     total,
     part,
   }: {
@@ -44,7 +44,7 @@ export class MathUtils {
    * @example
    * MathUtils.gcd({ a: 24, b: 36 }) // 12
    */
-  static gcd({ a, b }: { a: number; b: number }): number {
+  public static gcd({ a, b }: { a: number; b: number }): number {
     return b === 0 ? a : MathUtils.gcd({ a: b, b: a % b });
   }
 
@@ -56,7 +56,7 @@ export class MathUtils {
    * @example
    * MathUtils.lcm({ a: 4, b: 6 }) // 12
    */
-  static lcm({ a, b }: { a: number; b: number }): number {
+  public static lcm({ a, b }: { a: number; b: number }): number {
     return (a * b) / MathUtils.gcd({ a, b });
   }
 
@@ -68,7 +68,13 @@ export class MathUtils {
    * @example
    * MathUtils.randomInRange({ min: 1, max: 10 }) // e.g., 5.432 (varies)
    */
-  static randomInRange({ min, max }: { min: number; max: number }): number {
+  public static randomInRange({
+    min,
+    max,
+  }: {
+    min: number;
+    max: number;
+  }): number {
     return Math.random() * (max - min) + min;
   }
 }

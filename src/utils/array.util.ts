@@ -11,7 +11,7 @@ export class ArrayUtils {
    *   keyFn: (item) => item.id,
    * }) // [{ id: 1 }, { id: 2 }]
    */
-  static removeDuplicates<T>({
+  public static removeDuplicates<T>({
     array,
     keyFn,
   }: {
@@ -37,7 +37,13 @@ export class ArrayUtils {
    * @example
    * ArrayUtils.intersect({ array1: [1, 2, 3], array2: [2, 3, 4] }) // [2, 3]
    */
-  static intersect<T>({ array1, array2 }: { array1: T[]; array2: T[] }): T[] {
+  public static intersect<T>({
+    array1,
+    array2,
+  }: {
+    array1: T[];
+    array2: T[];
+  }): T[] {
     const set2 = new Set(array2);
     return array1.filter((value) => set2.delete(value));
   }
@@ -49,7 +55,7 @@ export class ArrayUtils {
    * @example
    * ArrayUtils.flatten({ array: [1, [2, [3, 4]], 5] }) // [1, 2, 3, 4, 5]
    */
-  static flatten<T>({ array }: { array: (T | T[])[] }): T[] {
+  public static flatten<T>({ array }: { array: (T | T[])[] }): T[] {
     const result: T[] = [];
     const stack = [...array];
 
@@ -87,21 +93,22 @@ export class ArrayUtils {
    * //   vegetable: [{ type: 'vegetable', name: 'carrot' }],
    * // }
    */
-  static groupBy<T>({
+  public static groupBy<T>({
     array,
     keyFn,
   }: {
     array: T[];
     keyFn: (item: T) => string | number;
   }): Record<string | number, T[]> {
-    return array.reduce<Record<string | number, T[]>>((acc, item) => {
-      const key = keyFn(item);
-      if (!acc[key]) {
-        acc[key] = [];
-      }
-      acc[key].push(item);
-      return acc;
-    }, {});
+    return array.reduce(
+      (acc, item) => {
+        const key = keyFn(item);
+        acc[key] = acc[key] || [];
+        acc[key].push(item);
+        return acc;
+      },
+      {} as Record<string | number, T[]>,
+    );
   }
 
   /**
@@ -111,7 +118,7 @@ export class ArrayUtils {
    * @example
    * ArrayUtils.shuffle({ array: [1, 2, 3, 4] }) // e.g., [3, 1, 4, 2]
    */
-  static shuffle<T>({ array }: { array: T[] }): T[] {
+  public static shuffle<T>({ array }: { array: T[] }): T[] {
     if (!Array.isArray(array)) {
       throw new Error('Input must be an array');
     }

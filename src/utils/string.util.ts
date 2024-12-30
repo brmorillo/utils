@@ -6,7 +6,7 @@ export class StringUtils {
    * @example
    * StringUtils.capitalizeFirstLetter({ input: 'hello' }); // "Hello"
    */
-  static capitalizeFirstLetter({ input }: { input: string }): string {
+  public static capitalizeFirstLetter({ input }: { input: string }): string {
     return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
   }
 
@@ -17,7 +17,7 @@ export class StringUtils {
    * @example
    * StringUtils.reverseString({ input: 'hello' }); // "olleh"
    */
-  static reverseString({ input }: { input: string }): string {
+  public static reverseString({ input }: { input: string }): string {
     return input.split('').reverse().join('');
   }
 
@@ -28,7 +28,7 @@ export class StringUtils {
    * @example
    * StringUtils.isPalindrome({ input: 'racecar' }); // true
    */
-  static isPalindrome({ input }: { input: string }): boolean {
+  public static isPalindrome({ input }: { input: string }): boolean {
     const cleaned = input.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
     return cleaned === StringUtils.reverseString({ input: cleaned });
   }
@@ -41,7 +41,7 @@ export class StringUtils {
    * @example
    * StringUtils.truncateString({ input: 'This is a long string', maxLength: 10 }); // "This is a..."
    */
-  static truncateString({
+  public static truncateString({
     input,
     maxLength,
   }: {
@@ -58,7 +58,7 @@ export class StringUtils {
    * @example
    * StringUtils.toKebabCase({ input: 'Hello World' }); // "hello-world"
    */
-  static toKebabCase({ input }: { input: string }): string {
+  public static toKebabCase({ input }: { input: string }): string {
     return input
       .replace(/([a-z])([A-Z])/g, '$1-$2')
       .replace(/\s+/g, '-')
@@ -72,7 +72,7 @@ export class StringUtils {
    * @example
    * StringUtils.toSnakeCase({ input: 'Hello World' }); // "hello_world"
    */
-  static toSnakeCase({ input }: { input: string }): string {
+  public static toSnakeCase({ input }: { input: string }): string {
     return input
       .replace(/([a-z])([A-Z])/g, '$1_$2')
       .replace(/\s+/g, '_')
@@ -87,7 +87,7 @@ export class StringUtils {
    * @example
    * StringUtils.countOccurrences({ input: 'hello world hello', substring: 'hello' }); // 2
    */
-  static countOccurrences({
+  public static countOccurrences({
     input,
     substring,
   }: {
