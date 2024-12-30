@@ -11,14 +11,15 @@
     "dist"
   ],
   "scripts": {
+    "build": "tsc",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "lint:fix": "eslint \"src/**/*.{ts,tsx}\" --fix",
     "format": "prettier --check \"src/**/*.{ts,tsx,js,json,md}\"",
     "format:fix": "prettier --write \"src/**/*.{ts,tsx,js,json,md}\"",
-    "validate": "pnpm run lint && pnpm run format",
-    "fix": "pnpm run lint:fix && pnpm run format:fix",
+    "validate": "npm run lint && npm run format",
+    "fix": "npm run lint:fix && npm run format:fix",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
-    "pub": "pnpm run fix && pnpm run check && pnpm run validate && pnpm run build && pnpm publish --access public"
+    "pub": "npm run fix && npm run check && npm run validate && npm run build && npm publish --access public"
   },
   "repository": {
     "type": "git",
