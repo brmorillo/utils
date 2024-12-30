@@ -1,28 +1,54 @@
 {
+  "type": "module",
   "name": "@brmorillo/utils",
   "version": "4.0.0",
   "description": "Public utility library",
   "main": "dist/index.js",
-  "types": "dist/index.d.js",
+  "types": "dist/index.d.ts",
   "private": false,
   "license": "MIT",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
-    "pub": "pnpm run build && pnpm publish --access public"
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
+    "lint:fix": "eslint \"src/**/*.{ts,tsx}\" --fix",
+    "format": "prettier --check \"src/**/*.{ts,tsx,js,json,md}\"",
+    "format:fix": "prettier --write \"src/**/*.{ts,tsx,js,json,md}\"",
+    "validate": "pnpm run lint && pnpm run format",
+    "fix": "pnpm run lint:fix && pnpm run format:fix",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "pub": "pnpm run fix && pnpm run check && pnpm run validate && pnpm run build && pnpm publish --access public"
   },
-  "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
-    "@types/luxon": "^3.4.2",
-    "typescript": "^4.9.5"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brmorillo/util.git"
   },
+  "keywords": [
+    "utility",
+    "typescript",
+    "library",
+    "uuid",
+    "validation",
+    "array"
+  ],
   "dependencies": {
     "@paralleldrive/cuid2": "^2.2.2",
     "@sapphire/snowflake": "^3.5.5",
     "luxon": "^3.5.0",
     "ua-parser-js": "^2.0.0",
     "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/luxon": "^3.4.2",
+    "@typescript-eslint/eslint-plugin": "^8.18.2",
+    "@typescript-eslint/parser": "^8.18.2",
+    "conventional-changelog-cli": "^5.0.0",
+    "eslint": "^9.17.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "prettier": "^3.4.2",
+    "typescript": "^4.9.5"
   }
 }

@@ -1,51 +1,74 @@
-/**
- * Rounds a number to the specified number of decimal places.
- * @param value The number to be rounded
- * @param decimals The number of decimal places
- * @returns Rounded number
- */
-export function roundToDecimals(value: number, decimals: number): number {
-  const factor = Math.pow(10, decimals);
-  return Math.round(value * factor) / factor;
-}
+export class MathUtils {
+  /**
+   * Rounds a number to the specified number of decimal places.
+   * @param value The number to be rounded
+   * @param decimals The number of decimal places
+   * @returns Rounded number
+   * @example
+   * MathUtils.roundToDecimals({ value: 3.14159, decimals: 2 }) // 3.14
+   */
+  static roundToDecimals({
+    value,
+    decimals = 2,
+  }: {
+    value: number;
+    decimals: number;
+  }): number {
+    const factor = Math.pow(10, decimals);
+    return Math.round(value * factor) / factor;
+  }
 
-/**
- * Calculates the percentage of a value.
- * @param total The total value
- * @param part The part value
- * @returns Percentage of the part relative to the total
- */
-export function calculatePercentage(total: number, part: number): number {
-  return (part / total) * 100;
-}
+  /**
+   * Calculates the percentage of a value.
+   * @param total The total value
+   * @param part The part value
+   * @returns Percentage of the part relative to the total
+   * @example
+   * MathUtils.calculatePercentage({ total: 200, part: 50 }) // 25
+   */
+  static calculatePercentage({
+    total,
+    part,
+  }: {
+    total: number;
+    part: number;
+  }): number {
+    return (part / total) * 100;
+  }
 
-/**
- * Finds the greatest common divisor (GCD) of two numbers.
- * @param a First number
- * @param b Second number
- * @returns GCD of the two numbers
- */
-export function gcd(a: number, b: number): number {
-  return b === 0 ? a : gcd(b, a % b);
-}
+  /**
+   * Finds the greatest common divisor (GCD) of two numbers.
+   * @param a First number
+   * @param b Second number
+   * @returns GCD of the two numbers
+   * @example
+   * MathUtils.gcd({ a: 24, b: 36 }) // 12
+   */
+  static gcd({ a, b }: { a: number; b: number }): number {
+    return b === 0 ? a : MathUtils.gcd({ a: b, b: a % b });
+  }
 
-/**
- * Finds the least common multiple (LCM) of two numbers.
- * @param a First number
- * @param b Second number
- * @returns LCM of the two numbers
- */
-export function lcm(a: number, b: number): number {
-  return (a * b) / gcd(a, b);
-}
+  /**
+   * Finds the least common multiple (LCM) of two numbers.
+   * @param a First number
+   * @param b Second number
+   * @returns LCM of the two numbers
+   * @example
+   * MathUtils.lcm({ a: 4, b: 6 }) // 12
+   */
+  static lcm({ a, b }: { a: number; b: number }): number {
+    return (a * b) / MathUtils.gcd({ a, b });
+  }
 
-/**
- * Generates a random number within a given range.
- * @param min Minimum value (inclusive)
- * @param max Maximum value (inclusive)
- * @returns Random number within the range
- */
-export function randomInRange(min: number, max: number): number {
-  return Math.random() * (max - min) + min;
+  /**
+   * Generates a random number within a given range.
+   * @param min Minimum value (inclusive)
+   * @param max Maximum value (inclusive)
+   * @returns Random number within the range
+   * @example
+   * MathUtils.randomInRange({ min: 1, max: 10 }) // e.g., 5.432 (varies)
+   */
+  static randomInRange({ min, max }: { min: number; max: number }): number {
+    return Math.random() * (max - min) + min;
+  }
 }
-

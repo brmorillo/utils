@@ -1,57 +1,69 @@
-import * as bcrypt from 'bcryptjs'
+import * as bcrypt from 'bcryptjs';
 
-/**
- * @description Encrypts a string value using bcrypt.
- * @param value Value to be encrypted
- * @returns Encrypted value or error
- */
-export async function cryptEncrypt({
-  value,
-  saltRounds = 10,
-}: {
-  value: string
-  saltRounds?: number
-}): Promise<string> {
-  try {
-    return await bcrypt.hash(value, saltRounds)
-  } catch (error) {
-    return Promise.reject(error)
+export class CryptUtils {
+  /**
+   * Encrypts a string value using bcrypt synchronously.
+   * @param value Value to be encrypted
+   * @param saltRounds Number of salt rounds for hashing (default: 10)
+   * @returns The encrypted value or null if an error occurs
+   * @example
+   * CryptUtils.encrypt({ value: 'password123', saltRounds: 12 }) // Encrypted string
+   */
+  static encrypt({
+    value,
+    saltRounds = 10,
+  }: {
+    value: string;
+    saltRounds?: number;
+  }): string | null {
+    try {
+      return bcrypt.hashSync(value, saltRounds);
+    } catch (error) {
+      console.error(`Error encrypting value: ${error}`);
+      return null;
+    }
   }
-}
 
-/**
- * @description Compares a string value with an encrypted value.
- * @param value Value to be compared
- * @param encryptedValue Encrypted value
- * @returns True if the value matches the encrypted value, false otherwise
- */
-export async function cryptCompareValues({
-  value,
-  encryptedValue,
-}: {
-  value: string
-  encryptedValue: string
-}): Promise<boolean> {
-  try {
-    return await bcrypt.compare(value, encryptedValue)
-  } catch (error) {
-    return Promise.reject(error)
+  /**
+   * Compares a string value with an encrypted value synchronously.
+   * @param value Value to be compared
+   * @param encryptedValue Encrypted value
+   * @returns True if the values match, false otherwise
+   * @example
+   * CryptUtils.compare({ value: 'password123', encryptedValue: 'encryptedString' }) // true or false
+   */
+  static compare({
+    value,
+    encryptedValue,
+  }: {
+    value: string;
+    encryptedValue: string;
+  }): boolean {
+    try {
+      return bcrypt.compareSync(value, encryptedValue);
+    } catch (error) {
+      console.error(`Error comparing values: ${error}`);
+      return false;
+    }
   }
-}
 
-/**
- * @description Generates a random string using bcrypt.
- * @param length Length of the string to be generated
- * @returns Random string
- */
-export async function cryptGenerateRandomString({
-  length = 10,
-}: {
-  length?: number
-}): Promise<string> {
-  try {
-    return await bcrypt.hash(Math.random().toString(), length)
-  } catch (error) {
-    return Promise.reject(error)
+  /**
+   * Generates a random string using bcrypt synchronously.
+   * @param length Number of salt rounds to generate the string (default: 10)
+   * @returns The generated string or null if an error occurs
+   * @example
+   * CryptUtils.generateRandomString({ length: 12 }) // Randomly generated string
+   */
+  static generateRandomString({
+    length = 10,
+  }: {
+    length?: number;
+  }): string | null {
+    try {
+      return bcrypt.hashSync(Math.random().toString(), length);
+    } catch (error) {
+      console.error(`Error generating random string: ${error}`);
+      return null;
+    }
   }
 }

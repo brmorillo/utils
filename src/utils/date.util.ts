@@ -1,102 +1,130 @@
-import {
-  DateTime,
-  Duration,
-  DurationLikeObject,
-  DurationUnits,
-  Interval,
-} from 'luxon'
+import { DateTime, Duration, DurationUnit, Interval } from 'luxon';
 
-/**
- * Retorna a data e hora atual, em UTC ou no fuso horário do sistema.
- * @param utc Define se a data deve estar em UTC (padrão: false)
- * @returns DateTime da data atual
- */
-export function dateNow(utc: boolean = false): DateTime {
-  return utc ? DateTime.utc() : DateTime.now()
-}
+export class DateUtils {
+  /**
+   * Gets the current date and time, either in UTC or the system's timezone.
+   * @param utc If true, returns the current date in UTC (default: false)
+   * @returns The current DateTime
+   * @example
+   * DateUtils.now({ utc: true }) // Current UTC DateTime
+   */
+  static now({ utc = false }: { utc?: boolean } = {}): DateTime {
+    return utc ? DateTime.utc() : DateTime.now();
+  }
 
-/**
- * Cria um intervalo entre duas datas.
- * @param startDate Data de início (DateTime ou string ISO)
- * @param endDate Data de término (DateTime ou string ISO)
- * @returns Interval entre as datas
- */
-export function dateCreateInterval(
-  startDate: DateTime | string,
-  endDate: DateTime | string,
-): Interval {
-  const start =
-    typeof startDate === 'string' ? DateTime.fromISO(startDate) : startDate
-  const end = typeof endDate === 'string' ? DateTime.fromISO(endDate) : endDate
-  return Interval.fromDateTimes(start, end)
-}
+  /**
+   * Creates an interval between two dates.
+   * @param startDate The start date (DateTime or ISO string)
+   * @param endDate The end date (DateTime or ISO string)
+   * @returns The Interval between the dates
+   * @example
+   * DateUtils.createInterval({ startDate: '2024-01-01', endDate: '2024-12-31' })
+   */
+  static createInterval({
+    startDate,
+    endDate,
+  }: {
+    startDate: DateTime | string;
+    endDate: DateTime | string;
+  }): Interval {
+    const start =
+      typeof startDate === 'string' ? DateTime.fromISO(startDate) : startDate;
+    const end =
+      typeof endDate === 'string' ? DateTime.fromISO(endDate) : endDate;
+    return Interval.fromDateTimes(start, end);
+  }
 
-/**
- * Adiciona um tempo específico a uma data.
- * @param date Data inicial (DateTime ou string ISO)
- * @param timeToAdd Objeto representando o tempo a adicionar (ex: { days: 1, hours: 5 })
- * @returns DateTime com o tempo adicionado
- */
-export function dateAddTime(
-  date: DateTime | string,
-  timeToAdd: Duration | object,
-): DateTime {
-  const startDate = typeof date === 'string' ? DateTime.fromISO(date) : date
-  return startDate.plus(Duration.fromObject(timeToAdd))
-}
+  /**
+   * Adds a specific duration to a date.
+   * @param date The initial date (DateTime or ISO string)
+   * @param timeToAdd The duration to add (e.g., { days: 1, hours: 5 })
+   * @returns The DateTime with the time added
+   * @example
+   * DateUtils.addTime({ date: '2024-01-01', timeToAdd: { days: 5 } })
+   */
+  static addTime({
+    date,
+    timeToAdd,
+  }: {
+    date: DateTime | string;
+    timeToAdd: Duration | Record<string, number>;
+  }): DateTime {
+    const startDate = typeof date === 'string' ? DateTime.fromISO(date) : date;
+    return startDate.plus(Duration.fromObject(timeToAdd));
+  }
 
-/**
- * Remove um tempo específico de uma data.
- * @param date Data inicial (DateTime ou string ISO)
- * @param timeToRemove Objeto representando o tempo a remover (ex: { weeks: 2 })
- * @returns DateTime com o tempo subtraído
- */
-export function dateRemoveTime(
-  date: DateTime | string,
-  timeToRemove: Duration | object,
-): DateTime {
-  const startDate = typeof date === 'string' ? DateTime.fromISO(date) : date
-  return startDate.minus(Duration.fromObject(timeToRemove))
-}
+  /**
+   * Subtracts a specific duration from a date.
+   * @param date The initial date (DateTime or ISO string)
+   * @param timeToRemove The duration to subtract (e.g., { weeks: 2 })
+   * @returns The DateTime with the time subtracted
+   * @example
+   * DateUtils.removeTime({ date: '2024-01-01', timeToRemove: { days: 5 } })
+   */
+  static removeTime({
+    date,
+    timeToRemove,
+  }: {
+    date: DateTime | string;
+    timeToRemove: Duration | Record<string, number>;
+  }): DateTime {
+    const startDate = typeof date === 'string' ? DateTime.fromISO(date) : date;
+    return startDate.minus(Duration.fromObject(timeToRemove));
+  }
 
-/**
- * Calcula a diferença entre duas datas em unidades específicas.
- * @param startDate Data de início (DateTime ou string)
- * @param endDate Data de término (DateTime ou string)
- * @param units Unidades de tempo para o cálculo (ex: 'days', 'hours')
- * @returns Duration com as unidades e a diferença calculada
- */
-export function dateDiffBetween(
-  startDate: DateTime | string,
-  endDate: DateTime | string,
-  units: (keyof DurationLikeObject)[],
-): Duration {
-  const start =
-    typeof startDate === 'string' ? DateTime.fromISO(startDate) : startDate
-  const end = typeof endDate === 'string' ? DateTime.fromISO(endDate) : endDate
-  return end.diff(start, units)
-}
+  /**
+   * Calculates the difference between two dates in specific units.
+   * @param startDate The start date (DateTime or ISO string)
+   * @param endDate The end date (DateTime or ISO string)
+   * @param units The units of time for the difference (e.g., 'days', 'hours')
+   * @returns The Duration of the difference in the specified units
+   * @example
+   * DateUtils.diffBetween({ startDate: '2024-01-01', endDate: '2024-12-31', units: ['days'] })
+   */
+  static diffBetween({
+    startDate,
+    endDate,
+    units,
+  }: {
+    startDate: DateTime | string;
+    endDate: DateTime | string;
+    units: DurationUnit[];
+  }): Duration {
+    const start =
+      typeof startDate === 'string' ? DateTime.fromISO(startDate) : startDate;
+    const end =
+      typeof endDate === 'string' ? DateTime.fromISO(endDate) : endDate;
+    return end.diff(start, units);
+  }
 
-/**
- * Converte uma data para UTC.
- * @param date Data para conversão (DateTime ou string)
- * @returns DateTime em UTC
- */
-export function dateToUTC(date: DateTime | string): DateTime {
-  const dateTime = typeof date === 'string' ? DateTime.fromISO(date) : date
-  return dateTime.toUTC()
-}
+  /**
+   * Converts a date to UTC.
+   * @param date The date to convert (DateTime or ISO string)
+   * @returns The DateTime in UTC
+   * @example
+   * DateUtils.toUTC({ date: '2024-01-01T12:00:00+03:00' })
+   */
+  static toUTC({ date }: { date: DateTime | string }): DateTime {
+    const dateTime = typeof date === 'string' ? DateTime.fromISO(date) : date;
+    return dateTime.toUTC();
+  }
 
-/**
- * Converte uma data para o fuso horário especificado.
- * @param date Data para conversão (DateTime ou string)
- * @param timeZone String do fuso horário (ex: 'America/New_York')
- * @returns DateTime no fuso horário do usuário
- */
-export function dateToTimeZone(
-  date: DateTime | string,
-  timeZone: string,
-): DateTime {
-  const dateTime = typeof date === 'string' ? DateTime.fromISO(date) : date
-  return dateTime.setZone(timeZone)
+  /**
+   * Converts a date to a specified timezone.
+   * @param date The date to convert (DateTime or ISO string)
+   * @param timeZone The target timezone (e.g., 'America/New_York')
+   * @returns The DateTime in the specified timezone
+   * @example
+   * DateUtils.toTimeZone({ date: '2024-01-01T12:00:00Z', timeZone: 'America/New_York' })
+   */
+  static toTimeZone({
+    date,
+    timeZone,
+  }: {
+    date: DateTime | string;
+    timeZone: string;
+  }): DateTime {
+    const dateTime = typeof date === 'string' ? DateTime.fromISO(date) : date;
+    return dateTime.setZone(timeZone);
+  }
 }

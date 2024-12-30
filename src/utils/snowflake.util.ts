@@ -1,45 +1,53 @@
-import { Snowflake } from '@sapphire/snowflake'
+import { Snowflake } from '@sapphire/snowflake';
 import {
   DEFAULT_EPOCH,
-  DEFAULT_WORKER_ID,
   DEFAULT_PROCESS_ID,
-} from '../config/snowflake.config'
-
-// Defina o epoch personalizado (por exemplo, 1º de janeiro de 2024)
-const epoch = DEFAULT_EPOCH
-const snowflake = new Snowflake(epoch)
+  DEFAULT_WORKER_ID,
+} from '../config/snowflake.config';
 
 /**
- * @description Gera um identificador único do tipo Snowflake.
- * @returns Uma string representando o Snowflake gerado.
+ * Snowflake utilities encapsulated in a class for better modularity.
  */
-export function generateSnowflake(): string {
-  return snowflake
-    .generate({
-      workerId: DEFAULT_WORKER_ID,
-      processId: DEFAULT_PROCESS_ID,
-    })
-    .toString()
-}
+export class SnowflakeUtils {
+  private static epoch = DEFAULT_EPOCH;
+  private static snowflake = new Snowflake(SnowflakeUtils.epoch);
 
-/**
- * @description Valida se uma string é um Snowflake válido.
- * @param id A string a ser validada.
- * @returns Verdadeiro se a string for um Snowflake válido; caso contrário, falso.
- */
-export function isValidSnowflake(id: string): boolean {
-  try {
-    const bigIntId = BigInt(id)
-    const { timestamp, workerId, processId, increment } =
-      snowflake.deconstruct(bigIntId)
-    // Verifica se os componentes decompostos são válidos
-    return (
-      timestamp >= new Date(epoch).getTime() &&
-      workerId >= 0 &&
-      processId >= 0 &&
-      increment >= 0
-    )
-  } catch {
-    return false
+  /**
+   * Generates a unique identifier using the Snowflake algorithm.
+   * @returns The generated Snowflake ID as a string
+   * @example
+   * const id = SnowflakeUtils.generateSnowflake();
+   */
+  static generateSnowflake(): string {
+    return SnowflakeUtils.snowflake
+      .generate({
+        workerId: DEFAULT_WORKER_ID,
+        processId: DEFAULT_PROCESS_ID,
+      })
+      .toString();
+  }
+
+  /**
+   * Validates if a string is a valid Snowflake ID.
+   * @param id The ID to validate
+   * @returns True if the ID is valid, false otherwise
+   * @example
+   * const isValid = SnowflakeUtils.isValidSnowflake({ id: "123456789" });
+   */
+  static isValidSnowflake({ id }: { id: string }): boolean {
+    try {
+      const bigIntId = BigInt(id);
+      const { timestamp, workerId, processId, increment } =
+        SnowflakeUtils.snowflake.deconstruct(bigIntId);
+
+      return (
+        timestamp >= new Date(SnowflakeUtils.epoch).getTime() &&
+        workerId >= 0 &&
+        processId >= 0 &&
+        increment >= 0
+      );
+    } catch {
+      return false;
+    }
   }
 }
