@@ -108,13 +108,14 @@ export class ConvertUtils {
    * ConvertUtils.convertValue({ value: "42", toType: "number" }) // 42
    * ConvertUtils.convertValue({ value: 42, toType: "string" }) // "42"
    * ConvertUtils.convertValue({ value: "42", toType: "bigint" }) // 42n
+   * ConvertUtils.convertValue({ value: 42n, toType: "roman" }) // "XLII"
    */
   public static convertValue({
     value,
     toType,
   }: {
     value: any;
-    toType: 'string' | 'number' | 'bigint';
+    toType: 'string' | 'integer' | 'number' | 'bigint' | 'roman';
   }): any {
     const typeOfValue = typeof value;
 
@@ -124,6 +125,16 @@ export class ConvertUtils {
 
     if (toType === 'string') {
       return value.toString();
+    }
+
+    if (toType === 'integer') {
+      if (typeOfValue === 'bigint') {
+        return Number(value);
+      }
+      if (typeOfValue === 'string') {
+        const parsed = parseInt(value);
+        return isNaN(parsed) ? null : parsed;
+      }
     }
 
     if (toType === 'number') {
@@ -149,6 +160,36 @@ export class ConvertUtils {
       }
     }
 
-    return null;
+    if (toType === 'roman') {
+      let result = '';
+
+      const romanNumerals: {
+        [key: string]: number;
+      } = {
+        M: 1000,
+        D: 500,
+        C: 100,
+        L: 50,
+        X: 10,
+        V: 5,
+        I: 1,
+      };
+
+      // Iterate through the Roman numeral map from largest to smallest
+      for (const [num, roman] of Object.entries(romanNumerals)) {
+        const numericValue = ConvertUtils.convertValue({
+          value: num,
+          toType: 'integer',
+        });
+
+        // Append Roman numeral while subtracting its value from the number
+        while (value >= numericValue) {
+          result += roman;
+          value -= numericValue;
+        }
+      }
+
+      return result;
+    }
   }
 }
