@@ -61,6 +61,8 @@ console.log(Utils.MathUtils.randomInRange({ min: 5, max: 10 })); // Random value
 3. **`flatten`**: Flattens a multi-dimensional array into a single-dimensional array.
 4. **`groupBy`**: Groups elements of an array based on a grouping function.
 5. **`shuffle`**: Shuffles the elements of an array randomly.
+6. **`findSubset`**: Finds the first object in an array where the subset matches the superset.
+7. **`isSubset`**: Checks if a subset object is fully contained within a superset object.
 
 ### Conversion Utility Functions
 
@@ -135,7 +137,29 @@ console.log(Utils.MathUtils.randomInRange({ min: 5, max: 10 })); // Random value
 
 ---
 
-## Contributing
+## Contribution Guidelines
+
+### How to Contribute
+
+1. **No direct commits to the `main` branch:**
+   All development must be done in separate branches.
+
+2. **Branch naming:**
+   Use descriptive names for your branches. Examples:
+
+   - `feat/new-feature`
+   - `fix/login-error`
+
+3. **Pull Requests:**
+
+   - Every pull request (PR) must be reviewed and approved before merging into `main`.
+   - Ensure you follow the commit message standards.
+
+4. **Commit Messages:**
+   Follow the project's commit message conventions (based on Angular):
+   - `feat: description of the new feature`
+   - `fix: description of the bug fix`
+   - `docs: documentation updates`
 
 ### How to Publish
 
