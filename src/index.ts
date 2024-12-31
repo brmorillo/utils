@@ -1,4 +1,19 @@
-// Import all utility modules
+// Export individual utilities para ESM direto
+export * from './utils/array.util';
+export * from './utils/convert.util';
+export * from './utils/crypt.util';
+export * from './utils/cuid.util';
+export * from './utils/date.util';
+export * from './utils/math.util';
+export * from './utils/native-snowflake.util';
+export * from './utils/number.util';
+export * from './utils/request.util';
+export * from './utils/snowflake.util';
+export * from './utils/string.util';
+export * from './utils/uuid.util';
+export * from './utils/validation.util';
+
+// Export default como um único objeto
 import * as arrayUtils from './utils/array.util';
 import * as convertUtils from './utils/convert.util';
 import * as cryptUtils from './utils/crypt.util';
@@ -13,7 +28,6 @@ import * as stringUtils from './utils/string.util';
 import * as uuidV4Utils from './utils/uuid.util';
 import * as validationUtils from './utils/validation.util';
 
-// Combine all utilities into a single object
 const Utils = {
   ...arrayUtils,
   ...convertUtils,
@@ -30,20 +44,4 @@ const Utils = {
   ...validationUtils,
 };
 
-// Export individual utilities for named imports
-export * from './utils/array.util';
-export * from './utils/convert.util';
-export * from './utils/crypt.util';
-export * from './utils/cuid.util';
-export * from './utils/date.util';
-export * from './utils/math.util';
-export * from './utils/native-snowflake.util';
-export * from './utils/number.util';
-export * from './utils/request.util';
-export * from './utils/snowflake.util';
-export * from './utils/string.util';
-export * from './utils/uuid.util';
-export * from './utils/validation.util';
-
-// Export the combined object as default
 export default Utils;

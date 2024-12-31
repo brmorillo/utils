@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "es2022",
+    "module": "esnext",
     "lib": ["es2022", "dom"],
-    "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -10,7 +10,9 @@
     "outDir": "./dist",
     "declaration": true,
     "declarationMap": true,
-    "emitDeclarationOnly": false
+    "emitDeclarationOnly": false,
+    "moduleResolution": "node",
+    "resolveJsonModule": true
   },
   "include": ["src"]
 }
