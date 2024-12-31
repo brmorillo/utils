@@ -130,4 +130,100 @@ export class ArrayUtils {
     }
     return result;
   }
+
+  /**
+   * Finds the first object in an array where the subset matches the superset.
+   * @template T The type of objects in the array, which must extend Record<string, any>.
+   * @param array Array of objects to search.
+   * @param subset Object containing key-value pairs to match against objects in the array.
+   * @returns The first object from the array that contains the subset, or `null` if no match is found.
+   * @example
+   * ArrayUtils.findSubset({
+   *   array: [
+   *     { id: '1', name: 'John', age: 30 },
+   *     { id: '2', name: 'Jane', age: 25 },
+   *   ],
+   *   subset: { name: 'John' },
+   * });
+   * // Returns: { id: '1', name: 'John', age: 30 }
+   *
+   * ArrayUtils.findSubset({
+   *   array: [
+   *     { id: '1', name: 'John', age: 30 },
+   *     { id: '2', name: 'Jane', age: 25 },
+   *   ],
+   *   subset: { age: 40 },
+   * });
+   * // Returns: null
+   */
+  public static findSubset<T extends Record<string, any>>({
+    array,
+    subset,
+  }: {
+    array: T[];
+    subset: Partial<T>;
+  }): T | null {
+    return (
+      array.find((item) =>
+        Object.entries(subset).every(([key, value]) => {
+          if (value === undefined) return true; // Ignora campos não definidos
+          if (Array.isArray(value)) {
+            // Verifica arrays (e.g., economicGroups)
+            return (
+              Array.isArray(item[key]) &&
+              value.every((val) => (item[key] as any[]).includes(val))
+            );
+          }
+          // Verifica outros tipos de valores
+          return item[key] === value;
+        }),
+      ) || null
+    );
+  }
+
+  /**
+   * Checks if a subset object is fully contained within a superset object.
+   * @template T The type of the objects being compared, which must extend Record<string, any>.
+   * @param superset The object to check against.
+   * @param subset The object containing the key-value pairs to match.
+   * @returns `true` if the superset contains all key-value pairs in the subset, otherwise `false`.
+   * @example
+   * ArrayUtils.isSubset({
+   *   superset: { id: '1', name: 'John', age: 30 },
+   *   subset: { name: 'John' },
+   * });
+   * // Returns: true
+   *
+   * ArrayUtils.isSubset({
+   *   superset: { id: '1', name: 'John', age: 30 },
+   *   subset: { name: 'Jane' },
+   * });
+   * // Returns: false
+   *
+   * ArrayUtils.isSubset({
+   *   superset: { id: '1', name: 'John', tags: ['admin', 'user'] },
+   *   subset: { tags: ['admin'] },
+   * });
+   * // Returns: true
+   */
+  public static isSubset<T extends Record<string, any>>({
+    superset,
+    subset,
+  }: {
+    superset: T;
+    subset: Partial<T>;
+  }): boolean {
+    return Object.entries(subset).every(([key, value]) => {
+      if (value === undefined) return true; // Ignora campos não definidos
+      if (Array.isArray(value)) {
+        // Verifica arrays (e.g., economicGroups)
+        return (
+          Array.isArray(superset[key]) &&
+          value.every((val) => (superset[key] as any[]).includes(val))
+        );
+      }
+      // Verifica outros tipos de valores
+      return superset[key] === value;
+    });
+  }
 }
