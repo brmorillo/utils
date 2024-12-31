@@ -61,6 +61,8 @@ console.log(Utils.MathUtils.randomInRange({ min: 5, max: 10 })); // Random value
 3. **`flatten`**: Flattens a multi-dimensional array into a single-dimensional array.
 4. **`groupBy`**: Groups elements of an array based on a grouping function.
 5. **`shuffle`**: Shuffles the elements of an array randomly.
+6. **`findSubset`**: Finds the first object in an array where the subset matches the superset.
+7. **`isSubset`**: Checks if a subset object is fully contained within a superset object.
 
 ### Conversion Utility Functions
 
