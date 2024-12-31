@@ -1,3 +1,20 @@
+## <small>5.3.2 (2024-12-31)</small>
+
+* Chore/contribuiting docs and update readme.md (#6) ([d64ab47](https://github.com/brmorillo/util/commit/d64ab47)), closes [#6](https://github.com/brmorillo/util/issues/6)
+
+
+
+## <small>5.3.1 (2024-12-31)</small>
+
+* 5.3.1 ([81f4305](https://github.com/brmorillo/util/commit/81f4305))
+* chore: auto changelog on workflow ([7f48093](https://github.com/brmorillo/util/commit/7f48093))
+* chore: comments ([d06fca2](https://github.com/brmorillo/util/commit/d06fca2))
+* chore: remove unused dependencies ([b73568e](https://github.com/brmorillo/util/commit/b73568e))
+* chore(generate changelog): auto generate changelog ([b1f2c6f](https://github.com/brmorillo/util/commit/b1f2c6f))
+* test: testing pre-commit hook ([d1c01bf](https://github.com/brmorillo/util/commit/d1c01bf))
+
+
+
 ## 5.3.0 (2024-12-31)
 
 * 5.3.0 ([f342576](https://github.com/brmorillo/util/commit/f342576))
