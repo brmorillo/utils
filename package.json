@@ -36,25 +36,20 @@
   "dependencies": {
     "@paralleldrive/cuid2": "^2.2.2",
     "@sapphire/snowflake": "^3.5.5",
+    "bcryptjs": "^2.4.3",
     "ua-parser-js": "^2.0.0",
     "uuid": "^11.0.3"
   },
   "devDependencies": {
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/git": "^10.0.1",
-    "@semantic-release/github": "^11.0.1",
-    "@semantic-release/npm": "^12.0.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/luxon": "^3.4.2",
     "@typescript-eslint/eslint-plugin": "^8.18.2",
     "@typescript-eslint/parser": "^8.18.2",
-    "conventional-changelog-cli": "^5.0.0",
     "eslint": "^9.17.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "luxon": "^3.5.0",
     "prettier": "^3.4.2",
-    "semantic-release": "^24.2.0",
     "typescript": "^4.9.5"
   }
 }
