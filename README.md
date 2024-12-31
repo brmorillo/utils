@@ -33,21 +33,21 @@ pnpm add @brmorillo/utils
 #### Import the specific utilities you need:
 
 ```typescript
-import { ArrayUtils, MathUtils, StringUtils } from '@brmorillo/utils'
+import { ArrayUtils, MathUtils, StringUtils } from '@brmorillo/utils';
 
 // Example usage
-console.log(ArrayUtils.removeDuplicates({ array: [1, 2, 2, 3] })) // [1, 2, 3]
-console.log(MathUtils.roundToDecimals({ value: 3.14159, decimals: 2 })) // 3.14
-console.log(StringUtils.capitalizeFirstLetter({ input: 'hello' })) // "Hello"
+console.log(ArrayUtils.removeDuplicates({ array: [1, 2, 2, 3] })); // [1, 2, 3]
+console.log(MathUtils.roundToDecimals({ value: 3.14159, decimals: 2 })); // 3.14
+console.log(StringUtils.capitalizeFirstLetter({ input: 'hello' })); // "Hello"
 ```
 
 #### Or import the entire library:
 
 ```typescript
-import Utils from '@brmorillo/utils'
+import Utils from '@brmorillo/utils';
 
-console.log(Utils.ArrayUtils.removeDuplicates({ array: [1, 2, 3, 3] })) // [1, 2, 3]
-console.log(Utils.MathUtils.randomInRange({ min: 5, max: 10 })) // Random value
+console.log(Utils.ArrayUtils.removeDuplicates({ array: [1, 2, 3, 3] })); // [1, 2, 3]
+console.log(Utils.MathUtils.randomInRange({ min: 5, max: 10 })); // Random value
 ```
 
 ---
