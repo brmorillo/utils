@@ -24,9 +24,9 @@ export class NumberUtils {
   /**
    * Checks if a number is negative.
    * @param value The number to check
-   * @returns True if the number is negative, false otherwise
+   * @returns True if the number is negative, false otherwise*
    * @example
-   * NumberUtils.isPositive({ value: -1 }) // false
+   * NumberUtils.isPositive({ value: 5 }) // true
    */
   public static isPositive({ value }: { value: number }): boolean {
     return value > 0;
@@ -105,13 +105,14 @@ export class NumberUtils {
     return Math.trunc(value);
   }
 
+  // TODO: Unify random functions into a single function with optional parameters (randomIntegerInRange and randomFloatInRange)
   /**
    * Generates a random integer within a specified range.
    * @param min Minimum value (inclusive)
    * @param max Maximum value (inclusive)
    * @returns A random integer within the range
    * @example
-   * NumberUtils.randomIntegerInRange({ min: 1, max: 10 }) // e.g., 7
+   * NumberUtils.randomIntegerInRange({ min: 1, max: 10 }) // 7
    */
   public static randomIntegerInRange({
     min,
@@ -120,7 +121,32 @@ export class NumberUtils {
     min: number;
     max: number;
   }): number {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+    return (
+      this.roundDown({
+        value: this.randomFloatInRange({ min: 0, max: 1 }) * (max - min + 1),
+      }) + min
+    );
+  }
+
+  /**
+   * Generates a random float within a specified range.
+   * @param min Minimum value (inclusive)
+   * @param max Maximum value (exclusive)
+   * @returns A random float within the range
+   * @example
+   * NumberUtils.randomFloatInRange({ min: 1, max: 10 }) // 7.42
+   */
+  public static randomFloatInRange({
+    min,
+    max,
+    decimals = 2, // Número padrão de casas decimais
+  }: {
+    min: number;
+    max: number;
+    decimals?: number;
+  }): number {
+    const randomValue = Math.random() * (max - min) + min;
+    return parseFloat(randomValue.toFixed(decimals));
   }
 
   /**
