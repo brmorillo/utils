@@ -17,7 +17,7 @@ export class StringUtils {
    * @example
    * StringUtils.reverseString({ input: 'hello' }); // "olleh"
    */
-  public static reverseString({ input }: { input: string }): string {
+  public static reverse({ input }: { input: string }): string {
     return input.split('').reverse().join('');
   }
 
@@ -30,7 +30,7 @@ export class StringUtils {
    */
   public static isPalindrome({ input }: { input: string }): boolean {
     const cleaned = input.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-    return cleaned === StringUtils.reverseString({ input: cleaned });
+    return cleaned === StringUtils.reverse({ input: cleaned });
   }
 
   /**
@@ -41,7 +41,7 @@ export class StringUtils {
    * @example
    * StringUtils.truncateString({ input: 'This is a long string', maxLength: 10 }); // "This is a..."
    */
-  public static truncateString({
+  public static truncate({
     input,
     maxLength,
   }: {
@@ -80,6 +80,34 @@ export class StringUtils {
   }
 
   /**
+   * Converts a string to camelCase.
+   * @param input The string to convert
+   * @returns The camelCased string
+   * @example
+   * StringUtils.toCamelCase({ input: 'Hello World' }); // "helloWorld"
+   */
+  public static toCamelCase({ input }: { input: string }): string {
+    return input
+      .toLowerCase()
+      .replace(/[^a-zA-Z0-9]+(.)/g, (_, match) => match.toUpperCase());
+  }
+
+  /**
+   * Converts a string to title case.
+   * @param input The string to convert
+   * @returns The title-cased string
+   * @example
+   * StringUtils.toTitleCase({ input: 'hello world' }); // "Hello World"
+   */
+  public static toTitleCase({ input }: { input: string }): string {
+    return input
+      .toLowerCase()
+      .split(' ')
+      .map((word) => StringUtils.capitalizeFirstLetter({ input: word }))
+      .join(' ');
+  }
+
+  /**
    * Counts the occurrences of a substring in a string.
    * @param input The string to search within
    * @param substring The substring to count
@@ -95,5 +123,52 @@ export class StringUtils {
     substring: string;
   }): number {
     return (input.match(new RegExp(substring, 'g')) || []).length;
+  }
+
+  /**
+   * Replaces all occurrences of a substring in a string.
+   * @param input The string to search within
+   * @param substring The substring to replace
+   * @param replacement The string to replace the substring
+   * @returns The string with all occurrences of the substring replaced
+   * @example
+   * StringUtils.replaceAll({ input: 'hello world hello', substring: 'hello', replacement: 'hi' }); // "hi world hi"
+   */
+  public static replaceAll({
+    input,
+    substring,
+    replacement,
+  }: {
+    input: string;
+    substring: string;
+    replacement: string;
+  }): string {
+    return input.split(substring).join(replacement);
+  }
+
+  /**
+   * replaceXOccurrences replaces the first x occurrences of a substring in a string.
+   * @param input The string to search within
+   * @param substring The substring to replace
+   * @param replacement The string to replace the substring
+   * @param occurrences The number of occurrences to replace
+   * @returns The string with the first x occurrences of the substring replaced
+   * @example
+   * StringUtils.replaceXOccurrences({ input: 'hello world hello', substring: 'hello', replacement: 'hi', occurrences: 1 }); // "hi world hello"
+   */
+  public static replaceOccurrences({
+    input,
+    substring,
+    replacement,
+    occurrences,
+  }: {
+    input: string;
+    substring: string;
+    replacement: string;
+    occurrences: number;
+  }): string {
+    return input.replace(new RegExp(substring, 'g'), (_, i) =>
+      i < occurrences ? replacement : substring,
+    );
   }
 }

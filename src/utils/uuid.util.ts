@@ -42,13 +42,12 @@ export class UUIDUtils {
     namespace,
     name,
   }: {
-    namespace: string;
+    namespace?: string;
     name: string;
   }): string {
-    if (!validateUuid(namespace)) {
-      namespace = uuidv4();
-    }
-    return uuidv5(name, namespace);
+    const requiredNamespace: string = namespace ? namespace : uuidv4();
+
+    return uuidv5(name, requiredNamespace);
   }
 
   /**

@@ -22,6 +22,17 @@ export class NumberUtils {
   }
 
   /**
+   * Checks if a number is negative.
+   * @param value The number to check
+   * @returns True if the number is negative, false otherwise
+   * @example
+   * NumberUtils.isPositive({ value: -1 }) // false
+   */
+  public static isPositive({ value }: { value: number }): boolean {
+    return value > 0;
+  }
+
+  /**
    * Rounds a number down to the nearest integer.
    * @param value The number to round down
    * @returns Rounded down number
