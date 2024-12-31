@@ -1,8 +1,11 @@
-## <small>5.3.2 (2024-12-31)</small>
+## 5.5.0 (2024-12-31)
 
+* 5.4.0 ([14adc1b](https://github.com/brmorillo/util/commit/14adc1b))
+* 5.5.0 ([82d88fc](https://github.com/brmorillo/util/commit/82d88fc))
+* Chore/contribuiting docs and update readme.md (#6) ([d64ab47](https://github.com/brmorillo/util/commit/d64ab47)), closes [#6](https://github.com/brmorillo/util/issues/6)
+* docs: changelog ([8e30ebb](https://github.com/brmorillo/util/commit/8e30ebb))
 * feat: randomFloatInRange ([5f7700d](https://github.com/brmorillo/util/commit/5f7700d))
 * chore: fix not generated changelog ([5f67e09](https://github.com/brmorillo/util/commit/5f67e09))
-* Chore/contribuiting docs and update readme.md (#6) ([d64ab47](https://github.com/brmorillo/util/commit/d64ab47)), closes [#6](https://github.com/brmorillo/util/issues/6)
 
 
 
