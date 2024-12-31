@@ -1,5 +1,7 @@
 ## <small>5.3.2 (2024-12-31)</small>
 
+* feat: randomFloatInRange ([5f7700d](https://github.com/brmorillo/util/commit/5f7700d))
+* chore: fix not generated changelog ([5f67e09](https://github.com/brmorillo/util/commit/5f67e09))
 * Chore/contribuiting docs and update readme.md (#6) ([d64ab47](https://github.com/brmorillo/util/commit/d64ab47)), closes [#6](https://github.com/brmorillo/util/issues/6)
 
 
