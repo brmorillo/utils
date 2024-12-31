@@ -161,28 +161,30 @@ export class ConvertUtils {
     }
 
     if (toType === 'roman') {
-      let result = '';
+      if (typeof value !== 'number' || value <= 0 || !Number.isInteger(value)) {
+        throw new Error(
+          'Value must be a positive integer to convert to Roman.',
+        );
+      }
 
-      const romanNumerals: {
-        [key: string]: number;
-      } = {
+      let result = '';
+      const romanNumerals: { [key: string]: number } = {
         M: 1000,
+        CM: 900,
         D: 500,
+        CD: 400,
         C: 100,
+        XC: 90,
         L: 50,
+        XL: 40,
         X: 10,
+        IX: 9,
         V: 5,
+        IV: 4,
         I: 1,
       };
 
-      // Iterate through the Roman numeral map from largest to smallest
-      for (const [num, roman] of Object.entries(romanNumerals)) {
-        const numericValue = ConvertUtils.convertValue({
-          value: num,
-          toType: 'integer',
-        });
-
-        // Append Roman numeral while subtracting its value from the number
+      for (const [roman, numericValue] of Object.entries(romanNumerals)) {
         while (value >= numericValue) {
           result += roman;
           value -= numericValue;

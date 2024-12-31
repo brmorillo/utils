@@ -3,8 +3,8 @@ import {
   DEFAULT_PROCESS_ID,
   DEFAULT_WORKER_ID,
 } from '../config/snowflake.config';
-import { ConvertUtils } from './convert.util';
-import { DateUtils } from './date.util';
+import { ConvertUtils } from '../services/convert.service';
+import { DateUtils } from '../services/date.service';
 
 /**
  * Snowflake Generator Configuration Interface

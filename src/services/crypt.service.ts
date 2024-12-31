@@ -16,10 +16,12 @@ export class CryptUtils {
     value: string;
     saltRounds?: number;
   }): string | null {
+    if (!value || typeof saltRounds !== 'number' || saltRounds < 4) {
+      return null;
+    }
     try {
       return bcrypt.hashSync(value, saltRounds);
     } catch (error) {
-      console.error(`Error encrypting value: ${error}`);
       return null;
     }
   }
@@ -42,7 +44,6 @@ export class CryptUtils {
     try {
       return bcrypt.compareSync(value, encryptedValue);
     } catch (error) {
-      console.error(`Error comparing values: ${error}`);
       return false;
     }
   }
@@ -59,10 +60,12 @@ export class CryptUtils {
   }: {
     length?: number;
   }): string | null {
+    if (length < 4) {
+      return null; // Salt rounds mínimo para bcrypt é 4
+    }
     try {
       return bcrypt.hashSync(Math.random().toString(), length);
     } catch (error) {
-      console.error(`Error generating random string: ${error}`);
       return null;
     }
   }

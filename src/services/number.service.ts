@@ -1,3 +1,6 @@
+import { Normalize } from '../middleware/normalize.middleware';
+
+@Normalize
 export class NumberUtils {
   /**
    * Checks if a number is even.
@@ -40,7 +43,8 @@ export class NumberUtils {
    * NumberUtils.roundDown({ value: 4.7 }) // 4
    */
   public static roundDown({ value }: { value: number }): number {
-    return Math.floor(value);
+    const result = Math.floor(value);
+    return result === -0 ? 0 : result;
   }
 
   /**
@@ -51,7 +55,8 @@ export class NumberUtils {
    * NumberUtils.roundUp({ value: 4.2 }) // 5
    */
   public static roundUp({ value }: { value: number }): number {
-    return Math.ceil(value);
+    const result = Math.ceil(value);
+    return result === -0 ? 0 : result;
   }
 
   /**
@@ -121,11 +126,10 @@ export class NumberUtils {
     min: number;
     max: number;
   }): number {
-    return (
-      this.roundDown({
-        value: this.randomFloatInRange({ min: 0, max: 1 }) * (max - min + 1),
-      }) + min
-    );
+    const randomValue = Math.random() * (max - min + 1) + min;
+    return NumberUtils.roundDown({
+      value: randomValue <= max ? randomValue : max,
+    });
   }
 
   /**
@@ -146,7 +150,7 @@ export class NumberUtils {
     decimals?: number;
   }): number {
     const randomValue = Math.random() * (max - min) + min;
-    return parseFloat(randomValue.toFixed(decimals));
+    return parseFloat(randomValue.toFixed(decimals)); // Garante precisão decimal
   }
 
   /**
@@ -181,6 +185,9 @@ export class NumberUtils {
     min: number;
     max: number;
   }): number {
+    if (min > max) {
+      [min, max] = [max, min];
+    }
     return Math.max(min, Math.min(max, value));
   }
 
