@@ -214,15 +214,14 @@ export class ArrayUtils {
     subset: Partial<T>;
   }): boolean {
     return Object.entries(subset).every(([key, value]) => {
-      if (value === undefined) return true; // Ignora campos não definidos
+      if (value === undefined) return true; // Ignore undefined fields
       if (Array.isArray(value)) {
-        // Verifica arrays (e.g., economicGroups)
         return (
           Array.isArray(superset[key]) &&
           value.every((val) => (superset[key] as any[]).includes(val))
         );
       }
-      // Verifica outros tipos de valores
+      // Check other types of values
       return superset[key] === value;
     });
   }
