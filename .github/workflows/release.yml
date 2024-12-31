@@ -2,32 +2,33 @@ name: Release
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*'
 
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
-          registry-url: 'https://registry.npmjs.org/'
-
-      - name: Configure npm authentication
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          node-version: '16'
 
       - name: Install dependencies
         run: npm install
 
-      - name: Run Semantic Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx semantic-release
+      - name: Generate changelog
+        run: npm run changelog
+
+      - name: Commit changelog
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add CHANGELOG.md
+          git commit -m "chore(release): update changelog"
+
+      - name: Push changes
+        run: git push
