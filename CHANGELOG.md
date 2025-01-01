@@ -1,4 +1,9 @@
-## [6.0.1](https://github.com/brmorillo/util/compare/v5.6.1...v6.0.1) (2025-01-01)
+## [6.0.2](https://github.com/brmorillo/util/compare/v5.6.1...v6.0.2) (2025-01-01)
+
+
+### Bug Fixes
+
+* snowflake generates ([60b9a3b](https://github.com/brmorillo/util/commit/60b9a3b5f5d56e6c1ff946a1808ac892dbd56b19))
 
 
 
