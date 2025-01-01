@@ -1,11 +1,11 @@
 export class MathUtils {
   /**
    * Rounds a number to the specified number of decimal places.
-   * @param value The number to be rounded
-   * @param decimals The number of decimal places
-   * @returns Rounded number
+   * @param value The number to be rounded.
+   * @param decimals The number of decimal places. Defaults to `2`.
+   * @returns The rounded number.
    * @example
-   * MathUtils.roundToDecimals({ value: 3.14159, decimals: 2 }) // 3.14
+   * MathUtils.roundToDecimals({ value: 3.14159, decimals: 2 }); // 3.14
    */
   public static roundToDecimals({
     value,
@@ -20,11 +20,11 @@ export class MathUtils {
 
   /**
    * Calculates the percentage of a value.
-   * @param total The total value
-   * @param part The part value
-   * @returns Percentage of the part relative to the total
+   * @param total The total value.
+   * @param part The part value.
+   * @returns The percentage of the part relative to the total.
    * @example
-   * MathUtils.calculatePercentage({ total: 200, part: 50 }) // 25
+   * MathUtils.calculatePercentage({ total: 200, part: 50 }); // 25
    */
   public static calculatePercentage({
     total,
@@ -38,11 +38,11 @@ export class MathUtils {
 
   /**
    * Finds the greatest common divisor (GCD) of two numbers.
-   * @param a First number
-   * @param b Second number
-   * @returns GCD of the two numbers
+   * @param a The first number.
+   * @param b The second number.
+   * @returns The greatest common divisor of the two numbers.
    * @example
-   * MathUtils.gcd({ a: 24, b: 36 }) // 12
+   * MathUtils.gcd({ a: 24, b: 36 }); // 12
    */
   public static gcd({ a, b }: { a: number; b: number }): number {
     return b === 0 ? a : MathUtils.gcd({ a: b, b: a % b });
@@ -50,11 +50,11 @@ export class MathUtils {
 
   /**
    * Finds the least common multiple (LCM) of two numbers.
-   * @param a First number
-   * @param b Second number
-   * @returns LCM of the two numbers
+   * @param a The first number.
+   * @param b The second number.
+   * @returns The least common multiple of the two numbers.
    * @example
-   * MathUtils.lcm({ a: 4, b: 6 }) // 12
+   * MathUtils.lcm({ a: 4, b: 6 }); // 12
    */
   public static lcm({ a, b }: { a: number; b: number }): number {
     return (a * b) / MathUtils.gcd({ a, b });
@@ -62,11 +62,11 @@ export class MathUtils {
 
   /**
    * Generates a random number within a given range.
-   * @param min Minimum value (inclusive)
-   * @param max Maximum value (inclusive)
-   * @returns Random number within the range
+   * @param min The minimum value (inclusive).
+   * @param max The maximum value (inclusive).
+   * @returns A random number within the specified range.
    * @example
-   * MathUtils.randomInRange({ min: 1, max: 10 }) // e.g., 5.432 (varies)
+   * MathUtils.randomInRange({ min: 1, max: 10 }); // e.g., 5.432 (varies)
    */
   public static randomInRange({
     min,

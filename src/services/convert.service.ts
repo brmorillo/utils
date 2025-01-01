@@ -15,14 +15,14 @@ export class ConvertUtils {
 
   /**
    * Converts a value from one space measurement to another using meters as the base unit.
-   * @param value The value to be converted
-   * @param fromType The source unit type (e.g., 'meters')
-   * @param toType The target unit type (e.g., 'kilometers')
-   * @returns The converted value
+   * @param value The value to be converted.
+   * @param fromType The source unit type (e.g., 'meters').
+   * @param toType The target unit type (e.g., 'kilometers').
+   * @returns The converted value.
    * @example
-   * ConvertUtils.convertSpace({ value: 1000, fromType: 'meters', toType: 'kilometers' }) // 1
+   * ConvertUtils.convertSpace({ value: 1000, fromType: 'meters', toType: 'kilometers' }); // 1
    */
-  public static convertSpace({
+  public static space({
     value,
     fromType,
     toType,
@@ -31,8 +31,8 @@ export class ConvertUtils {
     fromType: keyof typeof ConvertUtils.spaceType;
     toType: keyof typeof ConvertUtils.spaceType;
   }): number {
-    const valueInMeters = value / ConvertUtils.spaceType[fromType]; // Convert to base unit (meters)
-    return valueInMeters * ConvertUtils.spaceType[toType]; // Convert from meters to the target unit
+    const valueInMeters = value / ConvertUtils.spaceType[fromType];
+    return valueInMeters * ConvertUtils.spaceType[toType];
   }
 
   /**
@@ -47,14 +47,14 @@ export class ConvertUtils {
 
   /**
    * Converts a value from one weight measurement to another using kilograms as the base unit.
-   * @param value The value to be converted
-   * @param fromType The source unit type (e.g., 'kilograms')
-   * @param toType The target unit type (e.g., 'pounds')
-   * @returns The converted value
+   * @param value The value to be converted.
+   * @param fromType The source unit type (e.g., 'kilograms').
+   * @param toType The target unit type (e.g., 'pounds').
+   * @returns The converted value.
    * @example
-   * ConvertUtils.convertWeight({ value: 1, fromType: 'kilograms', toType: 'pounds' }) // 2.20462
+   * ConvertUtils.convertWeight({ value: 1, fromType: 'kilograms', toType: 'pounds' }); // 2.20462
    */
-  public static convertWeight({
+  public static weight({
     value,
     fromType,
     toType,
@@ -63,8 +63,8 @@ export class ConvertUtils {
     fromType: keyof typeof ConvertUtils.weightType;
     toType: keyof typeof ConvertUtils.weightType;
   }): number {
-    const valueInKilograms = value / ConvertUtils.weightType[fromType]; // Convert to base unit (kilograms)
-    return valueInKilograms * ConvertUtils.weightType[toType]; // Convert from kilograms to the target unit
+    const valueInKilograms = value / ConvertUtils.weightType[fromType];
+    return valueInKilograms * ConvertUtils.weightType[toType];
   }
 
   /**
@@ -79,14 +79,14 @@ export class ConvertUtils {
 
   /**
    * Converts a value from one volume measurement to another using liters as the base unit.
-   * @param value The value to be converted
-   * @param fromType The source unit type (e.g., 'liters')
-   * @param toType The target unit type (e.g., 'gallons')
-   * @returns The converted value
+   * @param value The value to be converted.
+   * @param fromType The source unit type (e.g., 'liters').
+   * @param toType The target unit type (e.g., 'gallons').
+   * @returns The converted value.
    * @example
-   * ConvertUtils.convertVolume({ value: 1, fromType: 'liters', toType: 'gallons' }) // 0.264172
+   * ConvertUtils.convertVolume({ value: 1, fromType: 'liters', toType: 'gallons' }); // 0.264172
    */
-  public static convertVolume({
+  public static volume({
     value,
     fromType,
     toType,
@@ -95,22 +95,22 @@ export class ConvertUtils {
     fromType: keyof typeof ConvertUtils.volumeType;
     toType: keyof typeof ConvertUtils.volumeType;
   }): number {
-    const valueInLiters = value / ConvertUtils.volumeType[fromType]; // Convert to base unit (liters)
-    return valueInLiters * ConvertUtils.volumeType[toType]; // Convert from liters to the target unit
+    const valueInLiters = value / ConvertUtils.volumeType[fromType];
+    return valueInLiters * ConvertUtils.volumeType[toType];
   }
 
   /**
    * Converts a value between types by inferring the type of the input.
-   * @param value The value to be converted
-   * @param toType The target type ('string', 'number', or 'bigint')
-   * @returns The converted value or null if conversion is not possible
+   * @param value The value to be converted.
+   * @param toType The target type ('string', 'integer', 'number', 'bigint', or 'roman').
+   * @returns The converted value or `null` if conversion is not possible.
    * @example
-   * ConvertUtils.convertValue({ value: "42", toType: "number" }) // 42
-   * ConvertUtils.convertValue({ value: 42, toType: "string" }) // "42"
-   * ConvertUtils.convertValue({ value: "42", toType: "bigint" }) // 42n
-   * ConvertUtils.convertValue({ value: 42n, toType: "roman" }) // "XLII"
+   * ConvertUtils.convertValue({ value: "42", toType: "number" }); // 42
+   * ConvertUtils.convertValue({ value: 42, toType: "string" }); // "42"
+   * ConvertUtils.convertValue({ value: "42", toType: "bigint" }); // 42n
+   * ConvertUtils.convertValue({ value: 42, toType: "roman" }); // "XLII"
    */
-  public static convertValue({
+  public static value({
     value,
     toType,
   }: {
@@ -119,28 +119,20 @@ export class ConvertUtils {
   }): any {
     const typeOfValue = typeof value;
 
-    if (typeOfValue === toType) {
-      return value;
-    }
+    if (typeOfValue === toType) return value;
 
-    if (toType === 'string') {
-      return value.toString();
-    }
+    if (toType === 'string') return value.toString();
 
     if (toType === 'integer') {
-      if (typeOfValue === 'bigint') {
-        return Number(value);
-      }
+      if (typeOfValue === 'bigint') return Number(value);
       if (typeOfValue === 'string') {
-        const parsed = parseInt(value);
+        const parsed = parseInt(value, 10);
         return isNaN(parsed) ? null : parsed;
       }
     }
 
     if (toType === 'number') {
-      if (typeOfValue === 'bigint') {
-        return Number(value);
-      }
+      if (typeOfValue === 'bigint') return Number(value);
       if (typeOfValue === 'string') {
         const parsed = parseFloat(value);
         return isNaN(parsed) ? null : parsed;
@@ -148,9 +140,7 @@ export class ConvertUtils {
     }
 
     if (toType === 'bigint') {
-      if (typeOfValue === 'number') {
-        return BigInt(Math.trunc(value));
-      }
+      if (typeOfValue === 'number') return BigInt(Math.trunc(value));
       if (typeOfValue === 'string') {
         try {
           return BigInt(value);
@@ -193,5 +183,7 @@ export class ConvertUtils {
 
       return result;
     }
+
+    return null;
   }
 }

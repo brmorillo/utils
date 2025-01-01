@@ -4,7 +4,7 @@ describe('ConvertUtils', () => {
   describe('convertSpace', () => {
     it('should convert meters to kilometers', () => {
       expect(
-        ConvertUtils.convertSpace({
+        ConvertUtils.space({
           value: 1000,
           fromType: 'meters',
           toType: 'kilometers',
@@ -14,7 +14,7 @@ describe('ConvertUtils', () => {
 
     it('should convert miles to meters', () => {
       expect(
-        ConvertUtils.convertSpace({
+        ConvertUtils.space({
           value: 1,
           fromType: 'miles',
           toType: 'meters',
@@ -24,7 +24,7 @@ describe('ConvertUtils', () => {
 
     it('should handle conversions with the same units', () => {
       expect(
-        ConvertUtils.convertSpace({
+        ConvertUtils.space({
           value: 42,
           fromType: 'meters',
           toType: 'meters',
@@ -36,7 +36,7 @@ describe('ConvertUtils', () => {
   describe('convertWeight', () => {
     it('should convert kilograms to pounds', () => {
       expect(
-        ConvertUtils.convertWeight({
+        ConvertUtils.weight({
           value: 1,
           fromType: 'kilograms',
           toType: 'pounds',
@@ -46,7 +46,7 @@ describe('ConvertUtils', () => {
 
     it('should convert grams to ounces', () => {
       expect(
-        ConvertUtils.convertWeight({
+        ConvertUtils.weight({
           value: 1000,
           fromType: 'grams',
           toType: 'ounces',
@@ -56,7 +56,7 @@ describe('ConvertUtils', () => {
 
     it('should handle conversions with the same units', () => {
       expect(
-        ConvertUtils.convertWeight({
+        ConvertUtils.weight({
           value: 5,
           fromType: 'kilograms',
           toType: 'kilograms',
@@ -68,7 +68,7 @@ describe('ConvertUtils', () => {
   describe('convertVolume', () => {
     it('should convert liters to gallons', () => {
       expect(
-        ConvertUtils.convertVolume({
+        ConvertUtils.volume({
           value: 1,
           fromType: 'liters',
           toType: 'gallons',
@@ -78,7 +78,7 @@ describe('ConvertUtils', () => {
 
     it('should convert milliliters to liters', () => {
       expect(
-        ConvertUtils.convertVolume({
+        ConvertUtils.volume({
           value: 1000,
           fromType: 'milliliters',
           toType: 'liters',
@@ -88,7 +88,7 @@ describe('ConvertUtils', () => {
 
     it('should handle conversions with the same units', () => {
       expect(
-        ConvertUtils.convertVolume({
+        ConvertUtils.volume({
           value: 10,
           fromType: 'liters',
           toType: 'liters',
@@ -99,33 +99,25 @@ describe('ConvertUtils', () => {
 
   describe('convertValue', () => {
     it('should convert a string to a number', () => {
-      expect(ConvertUtils.convertValue({ value: '42', toType: 'number' })).toBe(
-        42,
-      );
+      expect(ConvertUtils.value({ value: '42', toType: 'number' })).toBe(42);
     });
 
     it('should convert a number to a string', () => {
-      expect(ConvertUtils.convertValue({ value: 42, toType: 'string' })).toBe(
-        '42',
-      );
+      expect(ConvertUtils.value({ value: 42, toType: 'string' })).toBe('42');
     });
 
     it('should convert a string to a bigint', () => {
-      expect(ConvertUtils.convertValue({ value: '42', toType: 'bigint' })).toBe(
-        42n,
-      );
+      expect(ConvertUtils.value({ value: '42', toType: 'bigint' })).toBe(42n);
     });
 
     it('should return null for invalid conversions', () => {
       expect(
-        ConvertUtils.convertValue({ value: 'invalid', toType: 'number' }),
+        ConvertUtils.value({ value: 'invalid', toType: 'number' }),
       ).toBeNull();
     });
 
     it('should handle roman numeral conversions', () => {
-      expect(ConvertUtils.convertValue({ value: 42, toType: 'roman' })).toBe(
-        'XLII',
-      );
+      expect(ConvertUtils.value({ value: 42, toType: 'roman' })).toBe('XLII');
     });
   });
 });

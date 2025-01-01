@@ -4,10 +4,10 @@ import { Normalize } from '../middleware/normalize.middleware';
 export class NumberUtils {
   /**
    * Checks if a number is even.
-   * @param value The number to check
-   * @returns True if the number is even, false otherwise
+   * @param value The number to check.
+   * @returns `true` if the number is even, otherwise `false`.
    * @example
-   * NumberUtils.isEven({ value: 4 }) // true
+   * NumberUtils.isEven({ value: 4 }); // true
    */
   public static isEven({ value }: { value: number }): boolean {
     return value % 2 === 0;
@@ -15,21 +15,21 @@ export class NumberUtils {
 
   /**
    * Checks if a number is odd.
-   * @param value The number to check
-   * @returns True if the number is odd, false otherwise
+   * @param value The number to check.
+   * @returns `true` if the number is odd, otherwise `false`.
    * @example
-   * NumberUtils.isOdd({ value: 3 }) // true
+   * NumberUtils.isOdd({ value: 3 }); // true
    */
   public static isOdd({ value }: { value: number }): boolean {
     return value % 2 !== 0;
   }
 
   /**
-   * Checks if a number is negative.
-   * @param value The number to check
-   * @returns True if the number is negative, false otherwise*
+   * Checks if a number is positive.
+   * @param value The number to check.
+   * @returns `true` if the number is positive, otherwise `false`.
    * @example
-   * NumberUtils.isPositive({ value: 5 }) // true
+   * NumberUtils.isPositive({ value: 5 }); // true
    */
   public static isPositive({ value }: { value: number }): boolean {
     return value > 0;
@@ -37,10 +37,10 @@ export class NumberUtils {
 
   /**
    * Rounds a number down to the nearest integer.
-   * @param value The number to round down
-   * @returns Rounded down number
+   * @param value The number to round down.
+   * @returns The rounded-down number.
    * @example
-   * NumberUtils.roundDown({ value: 4.7 }) // 4
+   * NumberUtils.roundDown({ value: 4.7 }); // 4
    */
   public static roundDown({ value }: { value: number }): number {
     const result = Math.floor(value);
@@ -49,10 +49,10 @@ export class NumberUtils {
 
   /**
    * Rounds a number up to the nearest integer.
-   * @param value The number to round up
-   * @returns Rounded up number
+   * @param value The number to round up.
+   * @returns The rounded-up number.
    * @example
-   * NumberUtils.roundUp({ value: 4.2 }) // 5
+   * NumberUtils.roundUp({ value: 4.2 }); // 5
    */
   public static roundUp({ value }: { value: number }): number {
     const result = Math.ceil(value);
@@ -61,21 +61,21 @@ export class NumberUtils {
 
   /**
    * Rounds a number to the nearest integer.
-   * @param value The number to round
-   * @returns Rounded number
+   * @param value The number to round.
+   * @returns The rounded number.
    * @example
-   * NumberUtils.roundToNearest({ value: 4.5 }) // 5
+   * NumberUtils.roundToNearest({ value: 4.5 }); // 5
    */
   public static roundToNearest({ value }: { value: number }): number {
     return Math.round(value);
   }
 
   /**
-   * Converts a number to cents (removes decimal places).
-   * @param value The number to convert
-   * @returns Number in cents
+   * Converts a number to cents by removing decimal places.
+   * @param value The number to convert.
+   * @returns The number in cents.
    * @example
-   * NumberUtils.toCents({ value: 10.56 }) // 1056
+   * NumberUtils.toCents({ value: 10.56 }); // 1056
    */
   public static toCents({ value }: { value: number }): number {
     return Math.round(value * 100);
@@ -83,11 +83,11 @@ export class NumberUtils {
 
   /**
    * Adds decimal places to a number.
-   * @param value The number to format
-   * @param decimalPlaces Number of decimal places to add
-   * @returns Number with added decimal places
+   * @param value The number to format.
+   * @param decimalPlaces The number of decimal places to add.
+   * @returns A string representing the number with the added decimal places.
    * @example
-   * NumberUtils.addDecimalPlaces({ value: 10.5, decimalPlaces: 3 }) // "10.500"
+   * NumberUtils.addDecimalPlaces({ value: 10.5, decimalPlaces: 3 }); // "10.500"
    */
   public static addDecimalPlaces({
     value,
@@ -101,23 +101,22 @@ export class NumberUtils {
 
   /**
    * Removes all decimal places from a number.
-   * @param value The number to format
-   * @returns Number without decimal places
+   * @param value The number to format.
+   * @returns The number without decimal places.
    * @example
-   * NumberUtils.removeDecimalPlaces({ value: 10.56 }) // 10
+   * NumberUtils.removeDecimalPlaces({ value: 10.56 }); // 10
    */
   public static removeDecimalPlaces({ value }: { value: number }): number {
     return Math.trunc(value);
   }
 
-  // TODO: Unify random functions into a single function with optional parameters (randomIntegerInRange and randomFloatInRange)
   /**
    * Generates a random integer within a specified range.
-   * @param min Minimum value (inclusive)
-   * @param max Maximum value (inclusive)
-   * @returns A random integer within the range
+   * @param min The minimum value (inclusive).
+   * @param max The maximum value (inclusive).
+   * @returns A random integer within the specified range.
    * @example
-   * NumberUtils.randomIntegerInRange({ min: 1, max: 10 }) // 7
+   * NumberUtils.randomIntegerInRange({ min: 1, max: 10 }); // 7
    */
   public static randomIntegerInRange({
     min,
@@ -134,31 +133,32 @@ export class NumberUtils {
 
   /**
    * Generates a random float within a specified range.
-   * @param min Minimum value (inclusive)
-   * @param max Maximum value (exclusive)
-   * @returns A random float within the range
+   * @param min The minimum value (inclusive).
+   * @param max The maximum value (exclusive).
+   * @param decimals The number of decimal places (default: 2).
+   * @returns A random float within the specified range.
    * @example
-   * NumberUtils.randomFloatInRange({ min: 1, max: 10 }) // 7.42
+   * NumberUtils.randomFloatInRange({ min: 1, max: 10, decimals: 2 }); // 7.42
    */
   public static randomFloatInRange({
     min,
     max,
-    decimals = 2, // Número padrão de casas decimais
+    decimals = 2,
   }: {
     min: number;
     max: number;
     decimals?: number;
   }): number {
     const randomValue = Math.random() * (max - min) + min;
-    return parseFloat(randomValue.toFixed(decimals)); // Garante precisão decimal
+    return parseFloat(randomValue.toFixed(decimals));
   }
 
   /**
    * Calculates the factorial of a number.
-   * @param value The number to calculate the factorial of
-   * @returns The factorial of the number
+   * @param value The number to calculate the factorial of.
+   * @returns The factorial of the number.
    * @example
-   * NumberUtils.factorial({ value: 5 }) // 120
+   * NumberUtils.factorial({ value: 5 }); // 120
    */
   public static factorial({ value }: { value: number }): number {
     if (value < 0) {
@@ -169,12 +169,12 @@ export class NumberUtils {
 
   /**
    * Clamps a number within a specified range.
-   * @param value The number to clamp
-   * @param min Minimum value of the range
-   * @param max Maximum value of the range
-   * @returns The clamped number
+   * @param value The number to clamp.
+   * @param min The minimum value of the range.
+   * @param max The maximum value of the range.
+   * @returns The clamped number.
    * @example
-   * NumberUtils.clamp({ value: 15, min: 0, max: 10 }) // 10
+   * NumberUtils.clamp({ value: 15, min: 0, max: 10 }); // 10
    */
   public static clamp({
     value,
@@ -193,10 +193,10 @@ export class NumberUtils {
 
   /**
    * Checks if a number is a prime number.
-   * @param value The number to check
-   * @returns True if the number is prime, false otherwise
+   * @param value The number to check.
+   * @returns `true` if the number is prime, otherwise `false`.
    * @example
-   * NumberUtils.isPrime({ value: 7 }) // true
+   * NumberUtils.isPrime({ value: 7 }); // true
    */
   public static isPrime({ value }: { value: number }): boolean {
     if (value <= 1) return false;

@@ -1,8 +1,8 @@
 export class StringUtils {
   /**
    * Capitalizes the first letter of a string.
-   * @param input The string to capitalize
-   * @returns The string with the first letter capitalized
+   * @param input The string to capitalize.
+   * @returns The string with the first letter capitalized.
    * @example
    * StringUtils.capitalizeFirstLetter({ input: 'hello' }); // "Hello"
    */
@@ -12,10 +12,10 @@ export class StringUtils {
 
   /**
    * Reverses a string.
-   * @param input The string to reverse
-   * @returns The reversed string
+   * @param input The string to reverse.
+   * @returns The reversed string.
    * @example
-   * StringUtils.reverseString({ input: 'hello' }); // "olleh"
+   * StringUtils.reverse({ input: 'hello' }); // "olleh"
    */
   public static reverse({ input }: { input: string }): string {
     return input.split('').reverse().join('');
@@ -23,8 +23,8 @@ export class StringUtils {
 
   /**
    * Checks if a string is a palindrome.
-   * @param input The string to check
-   * @returns True if the string is a palindrome, false otherwise
+   * @param input The string to check.
+   * @returns `true` if the string is a palindrome, otherwise `false`.
    * @example
    * StringUtils.isPalindrome({ input: 'racecar' }); // true
    */
@@ -35,11 +35,11 @@ export class StringUtils {
 
   /**
    * Truncates a string to a specified length and adds an ellipsis if necessary.
-   * @param input The string to truncate
-   * @param maxLength The maximum length of the truncated string
-   * @returns The truncated string with ellipsis if needed
+   * @param input The string to truncate.
+   * @param maxLength The maximum length of the truncated string.
+   * @returns The truncated string with ellipsis if needed.
    * @example
-   * StringUtils.truncateString({ input: 'This is a long string', maxLength: 10 }); // "This is a..."
+   * StringUtils.truncate({ input: 'This is a long string', maxLength: 10 }); // "This is a..."
    */
   public static truncate({
     input,
@@ -55,8 +55,8 @@ export class StringUtils {
 
   /**
    * Converts a string to kebab-case.
-   * @param input The string to convert
-   * @returns The kebab-cased string
+   * @param input The string to convert.
+   * @returns The kebab-cased string.
    * @example
    * StringUtils.toKebabCase({ input: 'Hello World' }); // "hello-world"
    */
@@ -69,8 +69,8 @@ export class StringUtils {
 
   /**
    * Converts a string to snake_case.
-   * @param input The string to convert
-   * @returns The snake-cased string
+   * @param input The string to convert.
+   * @returns The snake-cased string.
    * @example
    * StringUtils.toSnakeCase({ input: 'Hello World' }); // "hello_world"
    */
@@ -83,8 +83,8 @@ export class StringUtils {
 
   /**
    * Converts a string to camelCase.
-   * @param input The string to convert
-   * @returns The camelCased string
+   * @param input The string to convert.
+   * @returns The camelCased string.
    * @example
    * StringUtils.toCamelCase({ input: 'Hello World' }); // "helloWorld"
    */
@@ -96,8 +96,8 @@ export class StringUtils {
 
   /**
    * Converts a string to title case.
-   * @param input The string to convert
-   * @returns The title-cased string
+   * @param input The string to convert.
+   * @returns The title-cased string.
    * @example
    * StringUtils.toTitleCase({ input: 'hello world' }); // "Hello World"
    */
@@ -111,9 +111,9 @@ export class StringUtils {
 
   /**
    * Counts the occurrences of a substring in a string.
-   * @param input The string to search within
-   * @param substring The substring to count
-   * @returns The number of occurrences of the substring
+   * @param input The string to search within.
+   * @param substring The substring to count.
+   * @returns The number of occurrences of the substring.
    * @example
    * StringUtils.countOccurrences({ input: 'hello world hello', substring: 'hello' }); // 2
    */
@@ -129,10 +129,10 @@ export class StringUtils {
 
   /**
    * Replaces all occurrences of a substring in a string.
-   * @param input The string to search within
-   * @param substring The substring to replace
-   * @param replacement The string to replace the substring
-   * @returns The string with all occurrences of the substring replaced
+   * @param input The string to search within.
+   * @param substring The substring to replace.
+   * @param replacement The string to replace the substring with.
+   * @returns The string with all occurrences of the substring replaced.
    * @example
    * StringUtils.replaceAll({ input: 'hello world hello', substring: 'hello', replacement: 'hi' }); // "hi world hi"
    */
@@ -149,14 +149,14 @@ export class StringUtils {
   }
 
   /**
-   * replaceXOccurrences replaces the first x occurrences of a substring in a string.
-   * @param input The string to search within
-   * @param substring The substring to replace
-   * @param replacement The string to replace the substring
-   * @param occurrences The number of occurrences to replace
-   * @returns The string with the first x occurrences of the substring replaced
+   * Replaces the first `x` occurrences of a substring in a string.
+   * @param input The string to search within.
+   * @param substring The substring to replace.
+   * @param replacement The string to replace the substring with.
+   * @param occurrences The number of occurrences to replace.
+   * @returns The string with the first `x` occurrences replaced.
    * @example
-   * StringUtils.replaceXOccurrences({ input: 'hello world hello', substring: 'hello', replacement: 'hi', occurrences: 1 }); // "hi world hello"
+   * StringUtils.replaceOccurrences({ input: 'hello world hello', substring: 'hello', replacement: 'hi', occurrences: 1 }); // "hi world hello"
    */
   public static replaceOccurrences({
     input,
