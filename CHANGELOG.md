@@ -1,3 +1,16 @@
+## [5.6.1](https://github.com/brmorillo/util/compare/v5.6.0...v5.6.1) (2024-12-31)
+
+
+### Features
+
+* package.json ([e5e9364](https://github.com/brmorillo/util/commit/e5e93646258391bbb7b7084865a743248588c344))
+
+
+
+# [5.6.0](https://github.com/brmorillo/util/compare/v5.5.0...v5.6.0) (2024-12-31)
+
+
+
 # [5.5.0](https://github.com/brmorillo/util/compare/v5.3.1...v5.5.0) (2024-12-31)
 
 
