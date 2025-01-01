@@ -1,32 +1,13 @@
 export class MathUtils {
   /**
-   * Rounds a number to the specified number of decimal places.
-   * @param value The number to be rounded.
-   * @param decimals The number of decimal places. Defaults to `2`.
-   * @returns The rounded number.
-   * @example
-   * MathUtils.roundToDecimals({ value: 3.14159, decimals: 2 }); // 3.14
-   */
-  public static roundToDecimals({
-    value,
-    decimals = 2,
-  }: {
-    value: number;
-    decimals: number;
-  }): number {
-    const factor = Math.pow(10, decimals);
-    return Math.round(value * factor) / factor;
-  }
-
-  /**
    * Calculates the percentage of a value.
    * @param total The total value.
    * @param part The part value.
    * @returns The percentage of the part relative to the total.
    * @example
-   * MathUtils.calculatePercentage({ total: 200, part: 50 }); // 25
+   * MathUtils.percentage({ total: 200, part: 50 }); // 25
    */
-  public static calculatePercentage({
+  public static percentage({
     total,
     part,
   }: {
@@ -58,23 +39,5 @@ export class MathUtils {
    */
   public static lcm({ a, b }: { a: number; b: number }): number {
     return (a * b) / MathUtils.gcd({ a, b });
-  }
-
-  /**
-   * Generates a random number within a given range.
-   * @param min The minimum value (inclusive).
-   * @param max The maximum value (inclusive).
-   * @returns A random number within the specified range.
-   * @example
-   * MathUtils.randomInRange({ min: 1, max: 10 }); // e.g., 5.432 (varies)
-   */
-  public static randomInRange({
-    min,
-    max,
-  }: {
-    min: number;
-    max: number;
-  }): number {
-    return Math.random() * (max - min) + min;
   }
 }

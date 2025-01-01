@@ -71,6 +71,25 @@ export class NumberUtils {
   }
 
   /**
+   * Rounds a number to the specified number of decimal places.
+   * @param value The number to be rounded.
+   * @param decimals The number of decimal places. Defaults to `2`.
+   * @returns The rounded number.
+   * @example
+   * MathUtils.roundToDecimals({ value: 3.14159, decimals: 2 }); // 3.14
+   */
+  public static roundToDecimals({
+    value,
+    decimals = 2,
+  }: {
+    value: number;
+    decimals: number;
+  }): number {
+    const factor = Math.pow(10, decimals);
+    return Math.round(value * factor) / factor;
+  }
+
+  /**
    * Converts a number to cents by removing decimal places.
    * @param value The number to convert.
    * @returns The number in cents.

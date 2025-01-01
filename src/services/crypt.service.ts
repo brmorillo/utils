@@ -55,7 +55,7 @@ export class CryptUtils {
    * @example
    * CryptUtils.generateRandomString({ length: 12 }); // Randomly generated string
    */
-  public static generateRandomString({
+  public static randomString({
     length = 10,
   }: {
     length?: number;
