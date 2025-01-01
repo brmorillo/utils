@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@brmorillo/utils",
-  "version": "6.0.3",
+  "version": "6.1.0",
   "description": "Public utility library",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
