@@ -1,93 +1,94 @@
 import { Snowflake } from '@sapphire/snowflake';
 
-export const DEFAULT_EPOCH = new Date('1970-01-01T00:00:00.000Z').getTime();
-export const DEFAULT_WORKER_ID = 0n;
-export const DEFAULT_PROCESS_ID = 0n;
+/**
+ * Components of a Snowflake ID.
+ */
+interface SnowflakeComponents {
+  timestamp: bigint;
+  workerId: bigint;
+  processId: bigint;
+  increment: bigint;
+}
+
+// Discord message id: 1322717493961297921
 
 /**
- * Provides utilities for generating and decoding Snowflake IDs.
+ * Utility class for working with Snowflake IDs using the @sapphire/snowflake library.
  */
 export class SnowflakeUtils {
-  private static epoch = DEFAULT_EPOCH;
-  private static snowflake = new Snowflake(SnowflakeUtils.epoch);
+  private static readonly DEFAULT_EPOCH = new Date('2025-01-01T00:00:00.000Z');
 
   /**
-   * Generates a unique identifier using the Snowflake algorithm.
-   * @returns The generated Snowflake ID as a string.
-   * @example
-   * const id = SnowflakeUtils.generateSnowflake();
-   * console.log(id); // "1234567890123456789"
+   * Generates a Snowflake ID using a custom epoch.
+   * @param {Date} [epoch=DEFAULT_EPOCH] - The custom epoch to use for generating the Snowflake.
+   * @param {bigint} [workerId=0n] - The worker ID.
+   * @param {bigint} [processId=0n] - The process ID.
+   * @returns {bigint} - The generated Snowflake ID.
+   * @throws {Error} Throws an error if the epoch is invalid.
    */
-  public static generateSnowflake(): string {
-    return SnowflakeUtils.snowflake
-      .generate({
-        workerId: DEFAULT_WORKER_ID,
-        processId: DEFAULT_PROCESS_ID,
-      })
-      .toString();
+  public static generate({
+    epoch = SnowflakeUtils.DEFAULT_EPOCH,
+    workerId = 0n,
+    processId = 0n,
+  }: {
+    epoch?: Date;
+    workerId?: bigint;
+    processId?: bigint;
+  }): bigint {
+    if (!(epoch instanceof Date) || isNaN(epoch.getTime())) {
+      throw new Error('Invalid epoch: must be a valid Date object.');
+    }
+
+    const snowflake = new Snowflake(epoch.getTime());
+    return snowflake.generate({ workerId, processId });
   }
 
   /**
-   * Validates whether a string is a valid Snowflake ID.
-   * @param id The Snowflake ID to validate.
-   * @returns `true` if the ID is valid, otherwise `false`.
-   * @example
-   * const isValid = SnowflakeUtils.isValidSnowflake({ id: "1234567890123456789" });
-   * console.log(isValid); // true
+   * Deconstructs a Snowflake ID into its components using a custom epoch.
+   * @param {bigint | string} snowflakeId - The Snowflake ID to deconstruct.
+   * @param {Date} [epoch=DEFAULT_EPOCH] - The custom epoch to use for deconstruction.
+   * @returns {SnowflakeComponents} - The components of the Snowflake ID.
+   * @throws {Error} Throws an error if the Snowflake ID or epoch is invalid.
    */
-  public static isValidSnowflake({ id }: { id: string }): boolean {
-    if (!id) {
-      return false;
-    }
-
-    try {
-      const bigIntId = BigInt(id);
-      const { timestamp, workerId, processId, increment } =
-        SnowflakeUtils.snowflake.deconstruct(bigIntId);
-
-      return (
-        timestamp >= new Date(SnowflakeUtils.epoch).getTime() &&
-        workerId >= 0 &&
-        processId >= 0 &&
-        increment >= 0
+  public static decode({
+    snowflakeId,
+    epoch = SnowflakeUtils.DEFAULT_EPOCH,
+  }: {
+    snowflakeId: bigint | string;
+    epoch?: Date;
+  }): SnowflakeComponents {
+    if (!snowflakeId || isNaN(Number(snowflakeId))) {
+      throw new Error(
+        'Invalid Snowflake ID: must be a valid bigint or string.',
       );
-    } catch {
-      return false;
     }
+
+    if (!(epoch instanceof Date) || isNaN(epoch.getTime())) {
+      throw new Error('Invalid epoch: must be a valid Date object.');
+    }
+
+    const snowflake = new Snowflake(epoch.getTime());
+    return snowflake.deconstruct(BigInt(snowflakeId));
   }
 
   /**
-   * Decodes a Snowflake ID to extract its components.
-   * @param id The Snowflake ID to decode.
-   * @returns An object containing the timestamp, workerId, processId, and increment.
-   * @example
-   * const components = SnowflakeUtils.decodeSnowflake({ id: "1234567890123456789" });
-   * console.log(components);
-   * // {
-   * //   timestamp: 1672531200000n,
-   * //   datetime: 2024-01-01T00:00:00.000Z,
-   * //   workerId: 0n,
-   * //   processId: 0n,
-   * //   increment: 1n
-   * // }
+   * Gets the timestamp from a Snowflake ID using a custom epoch.
+   * @param {bigint | string} snowflakeId - The Snowflake ID.
+   * @param {Date} [epoch=DEFAULT_EPOCH] - The custom epoch to use.
+   * @returns {Date} - The extracted timestamp as a Date object.
+   * @throws {Error} Throws an error if the Snowflake ID or epoch is invalid.
    */
-  public static decodeSnowflake({ id }: { id: string }): {
-    timestamp: bigint;
-    datetime: Date;
-    workerId: bigint;
-    processId: bigint;
-    increment: bigint;
-  } {
-    const bigIntId = BigInt(id);
-    const { timestamp, workerId, processId, increment } =
-      SnowflakeUtils.snowflake.deconstruct(bigIntId);
-
-    return {
-      timestamp,
-      datetime: new Date(Number(timestamp)),
-      workerId,
-      processId,
-      increment,
-    };
+  public static getTimestamp({
+    snowflakeId,
+    epoch = SnowflakeUtils.DEFAULT_EPOCH,
+  }: {
+    snowflakeId: bigint | string;
+    epoch?: Date;
+  }): Date {
+    const { timestamp } = SnowflakeUtils.decode({
+      snowflakeId,
+      epoch,
+    });
+    return new Date(Number(timestamp));
   }
 }

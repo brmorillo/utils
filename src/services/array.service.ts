@@ -1,3 +1,6 @@
+import { Normalize } from '../middleware/normalize.middleware';
+
+@Normalize
 export class ArrayUtils {
   /**
    * Removes duplicate values from an array.

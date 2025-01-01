@@ -1,3 +1,6 @@
+import { Normalize } from '../middleware/normalize.middleware';
+
+@Normalize
 export class ConvertUtils {
   /**
    * Conversion constants for space measurements using meters as the base unit.

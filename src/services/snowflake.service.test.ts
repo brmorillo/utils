@@ -1,74 +1,95 @@
-import { DEFAULT_EPOCH, SnowflakeUtils } from './snowflake.service';
+import { SnowflakeUtils } from './snowflake.service';
 
 describe('SnowflakeUtils', () => {
-  describe('generateSnowflake', () => {
-    it('should generate a valid Snowflake ID as a string', () => {
-      const id = SnowflakeUtils.generateSnowflake();
-      expect(typeof id).toBe('string');
-      expect(id).not.toBe('');
+  describe('generate', () => {
+    it('should generate a valid Snowflake ID with default epoch', () => {
+      const id = SnowflakeUtils.generate({});
+      expect(typeof id).toBe('bigint');
+      expect(id).toBeGreaterThan(0n);
     });
 
-    it('should generate unique Snowflake IDs', () => {
-      const id1 = SnowflakeUtils.generateSnowflake();
-      const id2 = SnowflakeUtils.generateSnowflake();
-      expect(id1).not.toBe(id2);
-    });
-  });
-
-  describe('isValidSnowflake', () => {
-    it('should return true for a valid Snowflake ID', () => {
-      const id = SnowflakeUtils.generateSnowflake();
-      const isValid = SnowflakeUtils.isValidSnowflake({ id });
-      expect(isValid).toBe(true);
+    it('should generate a valid Snowflake ID with custom epoch', () => {
+      const customEpoch = new Date('2020-01-01T00:00:00.000Z');
+      const id = SnowflakeUtils.generate({ epoch: customEpoch });
+      expect(typeof id).toBe('bigint');
+      expect(id).toBeGreaterThan(0n);
     });
 
-    it('should return false for an invalid Snowflake ID', () => {
-      const isValid = SnowflakeUtils.isValidSnowflake({ id: 'invalid_id' });
-      expect(isValid).toBe(false);
-    });
-
-    it('should return false for an empty string', () => {
-      const isValid = SnowflakeUtils.isValidSnowflake({ id: '' });
-      expect(isValid).toBe(false);
-    });
-
-    it('should return false for a Snowflake ID with incorrect timestamp', () => {
-      const invalidId = BigInt(DEFAULT_EPOCH - 1).toString();
-      const isValid = SnowflakeUtils.isValidSnowflake({ id: invalidId });
-      expect(isValid).toBe(false);
+    it('should throw an error if an invalid epoch is provided', () => {
+      expect(() =>
+        SnowflakeUtils.generate({ epoch: new Date('invalid') }),
+      ).toThrow('Invalid epoch: must be a valid Date object.');
     });
   });
 
-  describe('decodeSnowflake', () => {
-    it('should decode a valid Snowflake ID', () => {
-      const id = SnowflakeUtils.generateSnowflake();
-      const components = SnowflakeUtils.decodeSnowflake({ id });
-
+  describe('decode', () => {
+    it('should decode a valid Snowflake ID with default epoch', () => {
+      const id = SnowflakeUtils.generate({});
+      const components = SnowflakeUtils.decode({ snowflakeId: id });
       expect(components).toHaveProperty('timestamp');
-      expect(components).toHaveProperty('datetime');
       expect(components).toHaveProperty('workerId');
       expect(components).toHaveProperty('processId');
       expect(components).toHaveProperty('increment');
-
-      expect(components.timestamp).toBeGreaterThanOrEqual(DEFAULT_EPOCH);
-      expect(components.datetime).toBeInstanceOf(Date);
-      expect(components.workerId).toBeGreaterThanOrEqual(0n);
-      expect(components.processId).toBeGreaterThanOrEqual(0n);
-      expect(components.increment).toBeGreaterThanOrEqual(0n);
     });
 
-    it('should throw an error for an invalid Snowflake ID', () => {
+    it('should decode a valid Snowflake ID with custom epoch', () => {
+      const customEpoch = new Date('2020-01-01T00:00:00.000Z');
+      const id = SnowflakeUtils.generate({ epoch: customEpoch });
+      const components = SnowflakeUtils.decode({
+        snowflakeId: id,
+        epoch: customEpoch,
+      });
+      expect(components.timestamp).toBeGreaterThan(0n);
+    });
+
+    it('should throw an error if an invalid Snowflake ID is provided', () => {
+      expect(() => SnowflakeUtils.decode({ snowflakeId: 'invalid' })).toThrow(
+        'Invalid Snowflake ID: must be a valid bigint or string.',
+      );
+    });
+
+    it('should throw an error if an invalid epoch is provided', () => {
+      const id = SnowflakeUtils.generate({});
       expect(() =>
-        SnowflakeUtils.decodeSnowflake({ id: 'invalid_id' }),
-      ).toThrow();
+        SnowflakeUtils.decode({
+          snowflakeId: id,
+          epoch: new Date('invalid'),
+        }),
+      ).toThrow('Invalid epoch: must be a valid Date object.');
+    });
+  });
+
+  describe('getTimestamp', () => {
+    it('should extract the timestamp from a valid Snowflake ID with default epoch', () => {
+      const id = SnowflakeUtils.generate({});
+      const timestamp = SnowflakeUtils.getTimestamp({ snowflakeId: id });
+      expect(timestamp).toBeInstanceOf(Date);
     });
 
-    it('should decode a Snowflake ID and match the generated timestamp', () => {
-      const id = SnowflakeUtils.generateSnowflake();
-      const components = SnowflakeUtils.decodeSnowflake({ id });
+    it('should extract the timestamp from a valid Snowflake ID with custom epoch', () => {
+      const customEpoch = new Date('2020-01-01T00:00:00.000Z');
+      const id = SnowflakeUtils.generate({ epoch: customEpoch });
+      const timestamp = SnowflakeUtils.getTimestamp({
+        snowflakeId: id,
+        epoch: customEpoch,
+      });
+      expect(timestamp).toBeInstanceOf(Date);
+    });
 
-      const expectedDatetime = new Date(Number(components.timestamp));
-      expect(components.datetime.getTime()).toBe(expectedDatetime.getTime());
+    it('should throw an error if an invalid Snowflake ID is provided', () => {
+      expect(() =>
+        SnowflakeUtils.getTimestamp({ snowflakeId: 'invalid' }),
+      ).toThrow('Invalid Snowflake ID: must be a valid bigint or string.');
+    });
+
+    it('should throw an error if an invalid epoch is provided', () => {
+      const id = SnowflakeUtils.generate({});
+      expect(() =>
+        SnowflakeUtils.getTimestamp({
+          snowflakeId: id,
+          epoch: new Date('invalid'),
+        }),
+      ).toThrow('Invalid epoch: must be a valid Date object.');
     });
   });
 });

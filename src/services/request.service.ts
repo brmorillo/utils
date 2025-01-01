@@ -1,5 +1,7 @@
 import { UAParser } from 'ua-parser-js';
+import { Normalize } from '../middleware/normalize.middleware';
 
+@Normalize
 export class RequestUtils {
   /**
    * Extracts all possible relevant data from the HTTP request object.
