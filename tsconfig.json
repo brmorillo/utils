@@ -1,8 +1,10 @@
 {
   "compilerOptions": {
-    "target": "es2022",
-    "module": "esnext",
-    "lib": ["es2022", "dom"],
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ES2022", "DOM"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -10,9 +12,7 @@
     "outDir": "./dist",
     "declaration": true,
     "declarationMap": true,
-    "emitDeclarationOnly": false,
-    "moduleResolution": "node",
-    "resolveJsonModule": true
+    "moduleResolution": "node"
   },
   "include": ["src"]
 }

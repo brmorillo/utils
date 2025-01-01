@@ -2,9 +2,9 @@ import { UAParser } from 'ua-parser-js';
 
 export class RequestUtils {
   /**
-   * Extracts all possible relevant data from the request object.
-   * @param request The incoming HTTP request object
-   * @returns An object containing extracted data such as user agent, IP address, and headers
+   * Extracts all possible relevant data from the HTTP request object.
+   * @param request The incoming HTTP request object.
+   * @returns An object containing extracted data such as user agent, IP address, and headers.
    * @example
    * const requestData = RequestUtils.extractRequestData({ request });
    */
@@ -27,13 +27,13 @@ export class RequestUtils {
     const origin = headers['origin'] || undefined;
     const host = headers['host'] || undefined;
 
-    // Extract IP address
+    // Extract IP address information
     const ipAddress = request.ip || undefined;
     const xForwardedFor =
-      request.headers['x-forwarded-for']?.split(',')[0]?.trim() || undefined;
-    const xRealIp = request.headers['x-real-ip'] || undefined;
+      headers['x-forwarded-for']?.split(',')[0]?.trim() || undefined;
+    const xRealIp = headers['x-real-ip'] || undefined;
 
-    // Parse User-Agent
+    // Parse the User-Agent string
     const parser = new UAParser(userAgent);
     const uaResult = parser.getResult();
     const browser = uaResult.browser.name || undefined;

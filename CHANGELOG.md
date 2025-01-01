@@ -1,3 +1,36 @@
+# [6.0.0](https://github.com/brmorillo/util/compare/v5.6.2...v6.0.0) (2025-01-01)
+
+
+### Bug Fixes
+
+* all tests after update functions ([c4bcd07](https://github.com/brmorillo/util/commit/c4bcd0784cd231f055970679874cd6ca98877276))
+
+
+
+## [5.6.2](https://github.com/brmorillo/util/compare/v5.6.1...v5.6.2) (2025-01-01)
+
+
+### Features
+
+* more tests ([00a6cc7](https://github.com/brmorillo/util/commit/00a6cc75eeecddbae09b083d1ded96ad9e6015d5))
+* roundToDecimals ([e6ae952](https://github.com/brmorillo/util/commit/e6ae9523af902e81b4900000f0a3252c37bf0111))
+* tests ([73d8a5e](https://github.com/brmorillo/util/commit/73d8a5e9be72134c22800dcd923a6c712fe2c979))
+
+
+
+## [5.6.1](https://github.com/brmorillo/util/compare/v5.6.0...v5.6.1) (2024-12-31)
+
+
+### Features
+
+* package.json ([e5e9364](https://github.com/brmorillo/util/commit/e5e93646258391bbb7b7084865a743248588c344))
+
+
+
+# [5.6.0](https://github.com/brmorillo/util/compare/v5.5.0...v5.6.0) (2024-12-31)
+
+
+
 # [5.5.0](https://github.com/brmorillo/util/compare/v5.3.1...v5.5.0) (2024-12-31)
 
 
