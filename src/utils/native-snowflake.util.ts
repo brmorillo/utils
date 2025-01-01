@@ -1,10 +1,10 @@
+import { ConvertUtils } from '../services/convert.service';
+import { DateUtils } from '../services/date.service';
 import {
   DEFAULT_EPOCH,
   DEFAULT_PROCESS_ID,
   DEFAULT_WORKER_ID,
-} from '../config/snowflake.config';
-import { ConvertUtils } from '../services/convert.service';
-import { DateUtils } from '../services/date.service';
+} from '../services/snowflake.service';
 
 /**
  * Snowflake Generator Configuration Interface
@@ -39,12 +39,12 @@ export class SnowflakeGenerator {
   constructor(config: SnowflakeConfig = {}) {
     this.epoch = config.epoch ?? DEFAULT_EPOCH ?? 0;
     this.workerId =
-      ConvertUtils.convertValue({
+      ConvertUtils.value({
         value: config.workerId ?? DEFAULT_WORKER_ID,
         toType: 'number',
       }) ?? 0;
     this.processId =
-      ConvertUtils.convertValue({
+      ConvertUtils.value({
         value: config.processId ?? DEFAULT_PROCESS_ID,
         toType: 'number',
       }) ?? 0;
