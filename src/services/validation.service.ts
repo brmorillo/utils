@@ -8,7 +8,7 @@ export class ValidationUtils {
    * ValidationUtils.isValidEmail({ email: 'invalid-email' }); // false
    */
   public static isValidEmail({ email }: { email: string }): boolean {
-    const emailRegex = /^[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(email);
   }
 
@@ -22,8 +22,8 @@ export class ValidationUtils {
    */
   public static isValidURL({ inputUrl }: { inputUrl: string }): boolean {
     try {
-      new URL(inputUrl);
-      return true;
+      const url = new URL(inputUrl);
+      return url.protocol === 'http:' || url.protocol === 'https:';
     } catch {
       return false;
     }
@@ -42,7 +42,7 @@ export class ValidationUtils {
   }: {
     phoneNumber: string;
   }): boolean {
-    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+    const phoneRegex = /^\+?[1-9]\d{9,14}$/;
     return phoneRegex.test(phoneNumber);
   }
 

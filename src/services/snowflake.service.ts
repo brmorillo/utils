@@ -1,9 +1,7 @@
 import { Snowflake } from '@sapphire/snowflake';
-import {
-  DEFAULT_EPOCH,
-  DEFAULT_PROCESS_ID,
-  DEFAULT_WORKER_ID,
-} from '../config/snowflake.config';
+export const DEFAULT_EPOCH = new Date('1970-01-01T00:00:00.000Z').getTime();
+export const DEFAULT_WORKER_ID = 0n;
+export const DEFAULT_PROCESS_ID = 0n;
 
 /**
  * Snowflake utilities encapsulated in a class for better modularity.
@@ -35,6 +33,10 @@ export class SnowflakeUtils {
    * const isValid = SnowflakeUtils.isValidSnowflake({ id: "123456789" });
    */
   public static isValidSnowflake({ id }: { id: string }): boolean {
+    if (!id) {
+      return false;
+    }
+
     try {
       const bigIntId = BigInt(id);
       const { timestamp, workerId, processId, increment } =
@@ -49,5 +51,32 @@ export class SnowflakeUtils {
     } catch {
       return false;
     }
+  }
+
+  /**
+   * Decodes a Snowflake ID to extract its components.
+   * @param id The Snowflake ID to decode
+   * @returns An object containing the timestamp, workerId, processId, and increment
+   * @example
+   * const components = SnowflakeUtils.decodeSnowflake({ id: "123456789" });
+   */
+  public static decodeSnowflake({ id }: { id: string }): {
+    timestamp: bigint;
+    datetime: Date;
+    workerId: bigint;
+    processId: bigint;
+    increment: bigint;
+  } {
+    const bigIntId = BigInt(id);
+    const { timestamp, workerId, processId, increment } =
+      SnowflakeUtils.snowflake.deconstruct(bigIntId);
+
+    return {
+      timestamp,
+      datetime: new Date(Number(timestamp)),
+      workerId,
+      processId,
+      increment,
+    };
   }
 }

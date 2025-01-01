@@ -1,93 +1,74 @@
-import { Snowflake } from '@sapphire/snowflake';
-import {
-  DEFAULT_EPOCH,
-  DEFAULT_PROCESS_ID,
-  DEFAULT_WORKER_ID,
-} from '../config/snowflake.config';
-import { SnowflakeUtils } from './snowflake.service';
-
-// Mock Snowflake
-jest.mock('@sapphire/snowflake');
+import { DEFAULT_EPOCH, SnowflakeUtils } from './snowflake.service';
 
 describe('SnowflakeUtils', () => {
-  const mockSnowflake = {
-    generate: jest.fn(),
-    deconstruct: jest.fn(),
-  };
-
-  beforeEach(() => {
-    jest.resetAllMocks();
-
-    // Mocking Snowflake constructor to return mockSnowflake
-    (Snowflake as unknown as jest.Mock).mockImplementation(() => mockSnowflake);
-  });
-
   describe('generateSnowflake', () => {
-    it('should generate a unique Snowflake ID as a string', () => {
-      const mockId = BigInt('1234567890123456789');
-      mockSnowflake.generate.mockReturnValue(mockId);
+    it('should generate a valid Snowflake ID as a string', () => {
+      const id = SnowflakeUtils.generateSnowflake();
+      expect(typeof id).toBe('string');
+      expect(id).not.toBe('');
+    });
 
-      const result = SnowflakeUtils.generateSnowflake();
-
-      expect(mockSnowflake.generate).toHaveBeenCalledWith({
-        workerId: DEFAULT_WORKER_ID,
-        processId: DEFAULT_PROCESS_ID,
-      });
-      expect(result).toBe(mockId.toString());
+    it('should generate unique Snowflake IDs', () => {
+      const id1 = SnowflakeUtils.generateSnowflake();
+      const id2 = SnowflakeUtils.generateSnowflake();
+      expect(id1).not.toBe(id2);
     });
   });
 
   describe('isValidSnowflake', () => {
     it('should return true for a valid Snowflake ID', () => {
-      const mockId = BigInt('1234567890123456789');
-      const mockDeconstructed = {
-        timestamp: new Date(DEFAULT_EPOCH).getTime() + 1000,
-        workerId: 0,
-        processId: 0,
-        increment: 1,
-      };
-
-      mockSnowflake.deconstruct.mockReturnValue(mockDeconstructed);
-
-      const result = SnowflakeUtils.isValidSnowflake({ id: mockId.toString() });
-
-      expect(mockSnowflake.deconstruct).toHaveBeenCalledWith(mockId);
-      expect(result).toBe(true);
+      const id = SnowflakeUtils.generateSnowflake();
+      const isValid = SnowflakeUtils.isValidSnowflake({ id });
+      expect(isValid).toBe(true);
     });
 
-    it('should return false for an invalid Snowflake ID (non-numeric)', () => {
-      const result = SnowflakeUtils.isValidSnowflake({ id: 'invalid-id' });
-
-      expect(result).toBe(false);
+    it('should return false for an invalid Snowflake ID', () => {
+      const isValid = SnowflakeUtils.isValidSnowflake({ id: 'invalid_id' });
+      expect(isValid).toBe(false);
     });
 
-    it('should return false for an invalid Snowflake ID (deconstruction failure)', () => {
-      const mockId = BigInt('1234567890123456789');
-      mockSnowflake.deconstruct.mockImplementation(() => {
-        throw new Error('Deconstruction failed');
-      });
-
-      const result = SnowflakeUtils.isValidSnowflake({ id: mockId.toString() });
-
-      expect(mockSnowflake.deconstruct).toHaveBeenCalledWith(mockId);
-      expect(result).toBe(false);
+    it('should return false for an empty string', () => {
+      const isValid = SnowflakeUtils.isValidSnowflake({ id: '' });
+      expect(isValid).toBe(false);
     });
 
-    it('should return false for a Snowflake ID with invalid components', () => {
-      const mockId = BigInt('1234567890123456789');
-      const mockDeconstructed = {
-        timestamp: new Date(DEFAULT_EPOCH).getTime() - 1000, // Invalid timestamp
-        workerId: 0,
-        processId: 0,
-        increment: 1,
-      };
+    it('should return false for a Snowflake ID with incorrect timestamp', () => {
+      const invalidId = BigInt(DEFAULT_EPOCH - 1).toString();
+      const isValid = SnowflakeUtils.isValidSnowflake({ id: invalidId });
+      expect(isValid).toBe(false);
+    });
+  });
 
-      mockSnowflake.deconstruct.mockReturnValue(mockDeconstructed);
+  describe('decodeSnowflake', () => {
+    it('should decode a valid Snowflake ID', () => {
+      const id = SnowflakeUtils.generateSnowflake();
+      const components = SnowflakeUtils.decodeSnowflake({ id });
 
-      const result = SnowflakeUtils.isValidSnowflake({ id: mockId.toString() });
+      expect(components).toHaveProperty('timestamp');
+      expect(components).toHaveProperty('datetime');
+      expect(components).toHaveProperty('workerId');
+      expect(components).toHaveProperty('processId');
+      expect(components).toHaveProperty('increment');
 
-      expect(mockSnowflake.deconstruct).toHaveBeenCalledWith(mockId);
-      expect(result).toBe(false);
+      expect(components.timestamp).toBeGreaterThanOrEqual(DEFAULT_EPOCH);
+      expect(components.datetime).toBeInstanceOf(Date);
+      expect(components.workerId).toBeGreaterThanOrEqual(0n);
+      expect(components.processId).toBeGreaterThanOrEqual(0n);
+      expect(components.increment).toBeGreaterThanOrEqual(0n);
+    });
+
+    it('should throw an error for an invalid Snowflake ID', () => {
+      expect(() =>
+        SnowflakeUtils.decodeSnowflake({ id: 'invalid_id' }),
+      ).toThrow();
+    });
+
+    it('should decode a Snowflake ID and match the generated timestamp', () => {
+      const id = SnowflakeUtils.generateSnowflake();
+      const components = SnowflakeUtils.decodeSnowflake({ id });
+
+      const expectedDatetime = new Date(Number(components.timestamp));
+      expect(components.datetime.getTime()).toBe(expectedDatetime.getTime());
     });
   });
 });

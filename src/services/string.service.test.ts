@@ -164,15 +164,15 @@ describe('StringUtils', () => {
   });
 
   describe('replaceOccurrences', () => {
-    it('should replace the first x occurrences of a substring', () => {
+    it('should replace all occurrences if occurrences is greater than available matches', () => {
       expect(
         StringUtils.replaceOccurrences({
-          input: 'hello world hello',
+          input: 'hello hello hello',
           substring: 'hello',
           replacement: 'hi',
-          occurrences: 1,
+          occurrences: 5,
         }),
-      ).toBe('hi world hello');
+      ).toBe('hi hi hi');
     });
 
     it('should not replace if occurrences is 0', () => {
@@ -186,15 +186,15 @@ describe('StringUtils', () => {
       ).toBe('hello world hello');
     });
 
-    it('should replace all occurrences if occurrences is greater than available matches', () => {
+    it('should replace the first x occurrences of a substring', () => {
       expect(
         StringUtils.replaceOccurrences({
-          input: 'hello hello hello',
+          input: 'hello world hello',
           substring: 'hello',
           replacement: 'hi',
-          occurrences: 5,
+          occurrences: 1,
         }),
-      ).toBe('hi hi hi');
+      ).toBe('hi world hello');
     });
   });
 });

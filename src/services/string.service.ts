@@ -48,7 +48,9 @@ export class StringUtils {
     input: string;
     maxLength: number;
   }): string {
-    return input.length > maxLength ? input.slice(0, maxLength) + '...' : input;
+    return input.length > maxLength
+      ? input.slice(0, maxLength).trimEnd() + '...'
+      : input;
   }
 
   /**
@@ -167,8 +169,13 @@ export class StringUtils {
     replacement: string;
     occurrences: number;
   }): string {
-    return input.replace(new RegExp(substring, 'g'), (_, i) =>
-      i < occurrences ? replacement : substring,
-    );
+    let count = 0;
+    return input.replace(new RegExp(substring, 'g'), (match) => {
+      if (count < occurrences) {
+        count++;
+        return replacement;
+      }
+      return match;
+    });
   }
 }
