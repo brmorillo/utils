@@ -17,6 +17,16 @@ describe('ArrayUtils', () => {
         }),
       ).toEqual([{ id: 1 }, { id: 2 }]);
     });
+
+    it('should handle an empty array', () => {
+      expect(ArrayUtils.removeDuplicates({ array: [] })).toEqual([]);
+    });
+
+    it('should work with an array of strings', () => {
+      expect(
+        ArrayUtils.removeDuplicates({ array: ['a', 'b', 'b', 'c'] }),
+      ).toEqual(['a', 'b', 'c']);
+    });
   });
 
   describe('intersect', () => {
@@ -30,6 +40,16 @@ describe('ArrayUtils', () => {
       expect(ArrayUtils.intersect({ array1: [1, 2], array2: [3, 4] })).toEqual(
         [],
       );
+    });
+
+    it('should handle one empty array', () => {
+      expect(ArrayUtils.intersect({ array1: [1, 2, 3], array2: [] })).toEqual(
+        [],
+      );
+    });
+
+    it('should handle both arrays being empty', () => {
+      expect(ArrayUtils.intersect({ array1: [], array2: [] })).toEqual([]);
     });
   });
 
@@ -78,6 +98,26 @@ describe('ArrayUtils', () => {
         }),
       ).toEqual({});
     });
+
+    it('should handle mixed data types in the array', () => {
+      const array = [
+        { type: 'fruit', name: 'apple' },
+        42,
+        { type: 'fruit', name: 'banana' },
+      ];
+      expect(
+        ArrayUtils.groupBy({
+          array,
+          keyFn: (item) => (typeof item === 'object' ? item.type : 'unknown'),
+        }),
+      ).toEqual({
+        fruit: [
+          { type: 'fruit', name: 'apple' },
+          { type: 'fruit', name: 'banana' },
+        ],
+        unknown: [42],
+      });
+    });
   });
 
   describe('shuffle', () => {
@@ -92,6 +132,16 @@ describe('ArrayUtils', () => {
       expect(() => ArrayUtils.shuffle({ array: null as any })).toThrow(
         'Input must be an array',
       );
+    });
+
+    it('should return the same array if it has only one element', () => {
+      const array = [1];
+      const shuffled = ArrayUtils.shuffle({ array });
+      expect(shuffled).toEqual(array);
+    });
+
+    it('should return an empty array if the input is empty', () => {
+      expect(ArrayUtils.shuffle({ array: [] })).toEqual([]);
     });
   });
 
@@ -156,5 +206,27 @@ describe('ArrayUtils', () => {
         }),
       ).toBe(true);
     });
+  });
+
+  it('should return true for an empty subset', () => {
+    const superset = { id: '1', name: 'John', age: 30 };
+    const subset = {};
+    expect(
+      ArrayUtils.isSubset({
+        superset,
+        subset,
+      }),
+    ).toBe(true);
+  });
+
+  it('should return true if subset is identical to superset', () => {
+    const superset = { id: '1', name: 'John', age: 30 };
+    const subset = { id: '1', name: 'John', age: 30 };
+    expect(
+      ArrayUtils.isSubset({
+        superset,
+        subset,
+      }),
+    ).toBe(true);
   });
 });

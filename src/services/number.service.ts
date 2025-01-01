@@ -115,6 +115,11 @@ export class NumberUtils {
     value: number;
     decimalPlaces: number;
   }): string {
+    if (isNaN(value) || decimalPlaces < 0) {
+      throw new Error(
+        `Invalid number or decimal places: ${value}, ${decimalPlaces}`,
+      );
+    }
     return value.toFixed(decimalPlaces);
   }
 
@@ -144,10 +149,13 @@ export class NumberUtils {
     min: number;
     max: number;
   }): number {
-    const randomValue = Math.random() * (max - min + 1) + min;
-    return NumberUtils.roundDown({
-      value: randomValue <= max ? randomValue : max,
-    });
+    if (min > max) {
+      throw new Error(
+        `Minimum value ${min} is greater than maximum value ${max}`,
+      );
+    }
+    const randomValue = Math.floor(Math.random() * (max - min + 1)) + min;
+    return randomValue;
   }
 
   /**

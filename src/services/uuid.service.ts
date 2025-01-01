@@ -4,7 +4,9 @@ import {
   v5 as uuidv5,
   validate as validateUuid,
 } from 'uuid';
+import { Normalize } from '../middleware/normalize.middleware';
 
+@Normalize
 export class UUIDUtils {
   /**
    * Generates a UUID (version 1).

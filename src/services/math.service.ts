@@ -1,3 +1,6 @@
+import { Normalize } from '../middleware/normalize.middleware';
+
+@Normalize
 export class MathUtils {
   /**
    * Calculates the percentage of a value.
