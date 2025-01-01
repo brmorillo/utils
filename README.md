@@ -111,9 +111,30 @@ console.log(Utils.MathUtils.randomInRange({ min: 5, max: 10 })); // Random value
 11. **`clamp`**: Clamps a number within a range.
 12. **`isPrime`**: Checks if a number is a prime.
 
+### Object Utility Functions
+
+1. **`findValue`**: Finds a value in an object by a specified key or path.
+2. **`deepClone`**: Creates a deep clone of an object.
+3. **`deepMerge`**: Deeply merges two objects.
+4. **`pick`**: Picks specific keys from an object.
+5. **`omit`**: Omits specific keys from an object.
+6. **`flattenObject`**: Flattens a nested object into a single level.
+7. **`invert`**: Inverts the keys and values of an object.
+8. **`deepFreeze`**: Deeply freezes an object, making it immutable.
+9. **`compare`**: Deeply compares two objects for equality.
+10. **`groupBy`**: Groups the keys of an object based on a callback function.
+11. **`diff`**: Finds the difference between two objects.
+12. **`unflattenObject`**: Sets a value in a nested object by a dot-separated path.
+
 ### Request Utility Functions
 
 1. **`extractRequestData`**: Extracts relevant data from an HTTP request object.
+
+### Snowflake Utility Functions
+
+1. **`generate`**: Generates a Snowflake ID using a custom epoch.
+2. **`decode`**: Deconstructs a Snowflake ID into its components.
+3. **`getTimestamp`**: Extracts the timestamp from a Snowflake ID.
 
 ### String Utility Functions
 
