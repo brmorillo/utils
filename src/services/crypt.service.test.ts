@@ -58,20 +58,20 @@ describe('CryptUtils', () => {
 
   describe('generateRandomString', () => {
     it('should generate a random string', () => {
-      const randomString = CryptUtils.generateRandomString({ length: 10 });
+      const randomString = CryptUtils.randomString({ length: 10 });
       expect(randomString).toBeDefined();
       expect(typeof randomString).toBe('string');
     });
 
     it('should return null if length is less than 4', () => {
       jest.spyOn(console, 'error').mockImplementation(() => {});
-      const result = CryptUtils.generateRandomString({ length: 3 });
+      const result = CryptUtils.randomString({ length: 3 });
       expect(result).toBeNull();
     });
 
     it('should generate unique strings', () => {
-      const randomString1 = CryptUtils.generateRandomString({ length: 10 });
-      const randomString2 = CryptUtils.generateRandomString({ length: 10 });
+      const randomString1 = CryptUtils.randomString({ length: 10 });
+      const randomString2 = CryptUtils.randomString({ length: 10 });
       expect(randomString1).not.toBe(randomString2);
     });
   });

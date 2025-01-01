@@ -1,18 +1,19 @@
 import { MathUtils } from './math.service';
+import { NumberUtils } from './number.service';
 
 describe('MathUtils', () => {
   describe('roundToDecimals', () => {
     it('should round a number to the specified number of decimal places', () => {
-      expect(MathUtils.roundToDecimals({ value: 3.14159, decimals: 2 })).toBe(
+      expect(NumberUtils.roundToDecimals({ value: 3.14159, decimals: 2 })).toBe(
         3.14,
       );
-      expect(MathUtils.roundToDecimals({ value: 3.1459, decimals: 3 })).toBe(
+      expect(NumberUtils.roundToDecimals({ value: 3.1459, decimals: 3 })).toBe(
         3.146,
       );
-      expect(MathUtils.roundToDecimals({ value: 10.123456, decimals: 4 })).toBe(
-        10.1235,
-      );
-      expect(MathUtils.roundToDecimals({ value: -1.236, decimals: 2 })).toBe(
+      expect(
+        NumberUtils.roundToDecimals({ value: 10.123456, decimals: 4 }),
+      ).toBe(10.1235);
+      expect(NumberUtils.roundToDecimals({ value: -1.236, decimals: 2 })).toBe(
         -1.24,
       );
     });
@@ -20,16 +21,14 @@ describe('MathUtils', () => {
 
   describe('calculatePercentage', () => {
     it('should calculate the percentage of a value', () => {
-      expect(MathUtils.calculatePercentage({ total: 200, part: 50 })).toBe(25);
-      expect(MathUtils.calculatePercentage({ total: 100, part: 25 })).toBe(25);
-      expect(MathUtils.calculatePercentage({ total: 500, part: 50 })).toBe(10);
-      expect(MathUtils.calculatePercentage({ total: 1, part: 0.5 })).toBe(50);
+      expect(MathUtils.percentage({ total: 200, part: 50 })).toBe(25);
+      expect(MathUtils.percentage({ total: 100, part: 25 })).toBe(25);
+      expect(MathUtils.percentage({ total: 500, part: 50 })).toBe(10);
+      expect(MathUtils.percentage({ total: 1, part: 0.5 })).toBe(50);
     });
 
     it('should return Infinity for a total of 0', () => {
-      expect(MathUtils.calculatePercentage({ total: 0, part: 50 })).toBe(
-        Infinity,
-      );
+      expect(MathUtils.percentage({ total: 0, part: 50 })).toBe(Infinity);
     });
   });
 
@@ -56,14 +55,14 @@ describe('MathUtils', () => {
   describe('randomInRange', () => {
     it('should generate a random number within the specified range', () => {
       for (let i = 0; i < 100; i++) {
-        const result = MathUtils.randomInRange({ min: 1, max: 10 });
+        const result = NumberUtils.randomIntegerInRange({ min: 1, max: 10 });
         expect(result).toBeGreaterThanOrEqual(1);
         expect(result).toBeLessThanOrEqual(10);
       }
     });
 
     it('should handle a range where min and max are the same', () => {
-      expect(MathUtils.randomInRange({ min: 5, max: 5 })).toBe(5);
+      expect(NumberUtils.randomIntegerInRange({ min: 5, max: 5 })).toBe(5);
     });
   });
 });
