@@ -1,3 +1,13 @@
+# [7.1.0](https://github.com/brmorillo/util/compare/v6.1.3...v7.1.0) (2025-01-04)
+
+
+### Bug Fixes
+
+* array services ([27e28fe](https://github.com/brmorillo/util/commit/27e28fe5b301f1f06d3dafecc7ba2c630c1e76af))
+* version ([09c8ae6](https://github.com/brmorillo/util/commit/09c8ae6e9595a8dfca3de55c36cbd07484e54988))
+
+
+
 ## [6.1.3](https://github.com/brmorillo/util/compare/v6.1.2...v6.1.3) (2025-01-02)
 
 
