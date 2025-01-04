@@ -171,4 +171,73 @@ export class ArrayUtils {
       "Invalid 'orderBy' format. Use 'asc', 'desc', or an object specifying keys and orders.",
     );
   }
+
+  /**
+   * Finds the first object in an array where the subset matches the superset.
+   * @template T Type of the objects in the array.
+   * @param array Array of objects to search.
+   * @param subset Object containing key-value pairs to match.
+   * @returns The first object matching the subset, or `null` if not found.
+   * @example
+   * ArrayUtils.findSubset({
+   *   array: [
+   *     { id: 1, name: 'John' },
+   *     { id: 2, name: 'Jane' },
+   *   ],
+   *   subset: { name: 'John' },
+   * }); // { id: 1, name: 'John' }
+   */
+  public static findSubset<T extends Record<string, any>>({
+    array,
+    subset,
+  }: {
+    array: T[];
+    subset: Partial<T>;
+  }): T | null {
+    return (
+      array.find((item) =>
+        Object.entries(subset).every(([key, value]) => {
+          if (value === undefined) return true;
+          if (Array.isArray(value)) {
+            return (
+              Array.isArray(item[key]) &&
+              value.every((val) => (item[key] as any[]).includes(val))
+            );
+          }
+          return item[key] === value;
+        }),
+      ) || null
+    );
+  }
+
+  /**
+   * Checks if a subset is fully contained within a superset.
+   * @template T Type of the objects being compared.
+   * @param superset The object to check against.
+   * @param subset The subset to validate.
+   * @returns `true` if the superset contains the subset, otherwise `false`.
+   * @example
+   * ArrayUtils.isSubset({
+   *   superset: { id: 1, name: 'John' },
+   *   subset: { name: 'John' },
+   * }); // true
+   */
+  public static isSubset<T extends Record<string, any>>({
+    superset,
+    subset,
+  }: {
+    superset: T;
+    subset: Partial<T>;
+  }): boolean {
+    return Object.entries(subset).every(([key, value]) => {
+      if (value === undefined) return true;
+      if (Array.isArray(value)) {
+        return (
+          Array.isArray(superset[key]) &&
+          value.every((val) => (superset[key] as any[]).includes(val))
+        );
+      }
+      return superset[key] === value;
+    });
+  }
 }

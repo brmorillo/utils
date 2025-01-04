@@ -47,6 +47,7 @@
     "array"
   ],
   "dependencies": {
+    "@nestjs/common": "^10.4.15",
     "@paralleldrive/cuid2": "^2.2.2",
     "@sapphire/snowflake": "^3.5.5",
     "bcryptjs": "^2.4.3",
