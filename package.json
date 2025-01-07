@@ -26,8 +26,6 @@
     "uuid": "^11.0.3"
   },
   "devDependencies": {
-    "tsup": "^8.3.5",
-    "typescript": "^5.7.2",
     "@types/bcryptjs": "^2.4.6",
     "@types/jest": "^29.5.14",
     "@types/luxon": "^3.4.2",
@@ -43,7 +41,9 @@
     "luxon": "^3.5.0",
     "prettier": "^3.4.2",
     "ts-jest": "^29.2.5",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
   },
   "keywords": [
     "utility",
