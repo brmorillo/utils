@@ -1,7 +1,5 @@
 import * as bcrypt from 'bcryptjs';
-import { Normalize } from '../middleware/normalize.middleware';
 
-@Normalize
 export class CryptUtils {
   /**
    * Encrypts a string value using bcrypt synchronously.

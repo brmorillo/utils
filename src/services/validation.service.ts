@@ -1,6 +1,3 @@
-import { Normalize } from '../middleware/normalize.middleware';
-
-@Normalize
 export class ValidationUtils {
   /**
    * Validates if a string is a valid email address.
