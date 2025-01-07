@@ -1,3 +1,6 @@
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
 export class ArrayUtils {
   /**
    * Removes duplicate values from an array.

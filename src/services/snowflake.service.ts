@@ -3,7 +3,7 @@ import { Snowflake } from '@sapphire/snowflake';
 /**
  * Components of a Snowflake ID.
  */
-export interface SnowflakeComponents {
+interface SnowflakeComponents {
   timestamp: bigint;
   workerId: bigint;
   processId: bigint;

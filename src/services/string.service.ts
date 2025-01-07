@@ -1,3 +1,6 @@
+import { Normalize } from '../middleware/normalize.middleware';
+
+@Normalize
 export class StringUtils {
   /**
    * Capitalizes the first letter of a string.

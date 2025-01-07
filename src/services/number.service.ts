@@ -1,3 +1,6 @@
+import { Normalize } from '../middleware/normalize.middleware';
+
+@Normalize
 export class NumberUtils {
   /**
    * Checks if a number is even.
@@ -41,7 +44,7 @@ export class NumberUtils {
    */
   public static roundDown({ value }: { value: number }): number {
     const result = Math.floor(value);
-    return Object.is(result, -0) ? 0 : result; // Corrigido para Object.is
+    return result === -0 ? 0 : result;
   }
 
   /**
@@ -53,7 +56,7 @@ export class NumberUtils {
    */
   public static roundUp({ value }: { value: number }): number {
     const result = Math.ceil(value);
-    return Object.is(result, -0) ? 0 : result; // Corrigido para Object.is
+    return result === -0 ? 0 : result;
   }
 
   /**

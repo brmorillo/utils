@@ -1,23 +1,51 @@
 {
+  "type": "module",
   "name": "@brmorillo/utils",
-  "version": "8.0.16",
+  "version": "7.1.1",
   "description": "Public utility library",
-  "author": "Bruno Morillo",
-  "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "private": false,
-  "main": "dist/index.cjs",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "tsup",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "test": "jest --config jest.config.ts",
     "test:watch": "jest --watch",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "build": "tsc",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "lint:fix": "eslint \"src/**/*.{ts,tsx}\" --fix",
+    "format": "prettier --check \"src/**/*.{ts,tsx,js,json,md}\"",
     "format:fix": "prettier --write \"src/**/*.{ts,tsx,js,json,md}\"",
+    "validate": "npm run lint && npm run format",
     "fix": "npm run lint:fix && npm run format:fix",
     "pub": "npm run fix && npm run build && npm publish --access public"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brmorillo/util.git"
+  },
+  "keywords": [
+    "utility",
+    "collection",
+    "function",
+    "math",
+    "object",
+    "string",
+    "util",
+    "utils",
+    "typescript",
+    "library",
+    "uuid",
+    "validation",
+    "array"
+  ],
   "dependencies": {
     "@nestjs/common": "^10.4.15",
     "@paralleldrive/cuid2": "^2.2.2",
@@ -43,29 +71,11 @@
     "prettier": "^3.4.2",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
-    "tsup": "^8.3.5",
-    "typescript": "^5.7.2"
+    "typescript": "^4.9.5"
   },
-  "keywords": [
-    "utility",
-    "collection",
-    "function",
-    "math",
-    "object",
-    "string",
-    "util",
-    "utils",
-    "typescript",
-    "library",
-    "uuid",
-    "validation",
-    "array"
-  ],
-  "files": [
-    "dist"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/brmorillo/util.git"
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
