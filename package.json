@@ -1,6 +1,6 @@
 {
   "name": "@brmorillo/utils-test",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A simple utility package for testing that sums two values.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
