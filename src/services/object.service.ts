@@ -1,6 +1,3 @@
-import { Normalize } from '../middleware/normalize.middleware';
-
-@Normalize
 export class ObjectUtils {
   /**
    * Finds a value in an object by a specified key or path.

@@ -1,7 +1,5 @@
 import { DateTime, Duration, DurationUnit, Interval } from 'luxon';
-import { Normalize } from '../middleware/normalize.middleware';
 
-@Normalize
 export class DateUtils {
   /**
    * Gets the current date and time, either in UTC or the system's timezone.

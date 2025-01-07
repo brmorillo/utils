@@ -1,44 +1,43 @@
-// Export individual utilities para ESM direto
-export * from './services/array.service';
-export * from './services/convert.service';
-export * from './services/crypt.service';
-export * from './services/cuid.service';
-export * from './services/date.service';
-export * from './services/math.service';
-export * from './services/number.service';
-export * from './services/request.service';
-export * from './services/snowflake.service';
-export * from './services/string.service';
-export * from './services/uuid.service';
-export * from './services/validation.service';
+import { ArrayUtils } from './services/array.service';
+import { ConvertUtils } from './services/convert.service';
+import { CryptUtils } from './services/crypt.service';
+import { CuidUtils } from './services/cuid.service';
+import { DateUtils } from './services/date.service';
+import { MathUtils } from './services/math.service';
+import { NumberUtils } from './services/number.service';
+import { ObjectUtils } from './services/object.service';
+import { RequestUtils } from './services/request.service';
+import { SnowflakeUtils } from './services/snowflake.service';
+import { StringUtils } from './services/string.service';
+import { UUIDUtils } from './services/uuid.service';
+import { ValidationUtils } from './services/validation.service';
 
-// Export default como um único objeto
-import * as arrayUtils from './services/array.service';
-import * as convertUtils from './services/convert.service';
-import * as cryptUtils from './services/crypt.service';
-import * as cuidUtils from './services/cuid.service';
-import * as dateUtils from './services/date.service';
-import * as mathUtils from './services/math.service';
-import * as numberUtils from './services/number.service';
-import * as requestUtils from './services/request.service';
-import * as snowflakeUtils from './services/snowflake.service';
-import * as stringUtils from './services/string.service';
-import * as uuidV4Utils from './services/uuid.service';
-import * as validationUtils from './services/validation.service';
-
-const Utils = {
-  ...arrayUtils,
-  ...convertUtils,
-  ...cryptUtils,
-  ...cuidUtils,
-  ...dateUtils,
-  ...mathUtils,
-  ...numberUtils,
-  ...requestUtils,
-  ...snowflakeUtils,
-  ...stringUtils,
-  ...uuidV4Utils,
-  ...validationUtils,
+export const Utils = {
+  Array: ArrayUtils,
+  Convert: ConvertUtils,
+  Crypt: CryptUtils,
+  Cuid: CuidUtils,
+  Date: DateUtils,
+  Math: MathUtils,
+  Number: NumberUtils,
+  Object: ObjectUtils,
+  Request: RequestUtils,
+  Snowflake: SnowflakeUtils,
+  String: StringUtils,
+  Uuid: UUIDUtils,
+  Validation: ValidationUtils,
 };
 
-export default Utils;
+export { ArrayUtils } from './services/array.service';
+export { ConvertUtils } from './services/convert.service';
+export { CryptUtils } from './services/crypt.service';
+export { CuidUtils } from './services/cuid.service';
+export { DateUtils } from './services/date.service';
+export { MathUtils } from './services/math.service';
+export { NumberUtils } from './services/number.service';
+export { ObjectUtils } from './services/object.service';
+export { RequestUtils } from './services/request.service';
+export { SnowflakeUtils } from './services/snowflake.service';
+export { StringUtils } from './services/string.service';
+export { UUIDUtils } from './services/uuid.service';
+export { ValidationUtils } from './services/validation.service';

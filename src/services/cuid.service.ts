@@ -1,7 +1,5 @@
 import { init, isCuid } from '@paralleldrive/cuid2';
-import { Normalize } from '../middleware/normalize.middleware';
 
-@Normalize
 export class CuidUtils {
   /**
    * Generates a unique and secure identifier (CUID2).
