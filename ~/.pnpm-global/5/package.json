@@ -1,0 +1,5 @@
+{
+	"dependencies": {
+		"@brmorillo/utils-test": "link:C:/github/brmorillo/util"
+	}
+}

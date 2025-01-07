@@ -1,18 +1,16 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "lib": ["ES2022", "DOM"],
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "outDir": "./dist",
-    "declaration": true,
-    "declarationMap": true,
-    "moduleResolution": "node"
+    "target": "ESNext", // Transpila para ESNext
+    "module": "ESNext", // Define o módulo como ESNext
+    "moduleResolution": "Bundler", // Resolve módulos usando bundlers
+    "strict": true, // Habilita verificações rigorosas
+    "noEmit": true, // Não emite arquivos JavaScript
+    "declaration": true, // Gera arquivos de tipos (.d.ts)
+    "declarationDir": "./dist/types", // Diretório dos tipos
+    "emitDeclarationOnly": true, // Apenas arquivos de declaração
+    "resolveJsonModule": true, // Permite importar arquivos JSON
+    "allowSyntheticDefaultImports": true, // Permite importações padrão sintéticas
+    "skipLibCheck": true // Ignora verificações de bibliotecas
   },
-  "include": ["src"]
+  "exclude": ["node_modules", "dist"]
 }
