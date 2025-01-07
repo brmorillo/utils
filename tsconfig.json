@@ -1,16 +1,13 @@
 {
   "compilerOptions": {
-    "target": "ESNext", // Transpila para ESNext
-    "module": "ESNext", // Define o módulo como ESNext
-    "moduleResolution": "Bundler", // Resolve módulos usando bundlers
-    "strict": true, // Habilita verificações rigorosas
-    "noEmit": true, // Não emite arquivos JavaScript
-    "declaration": true, // Gera arquivos de tipos (.d.ts)
-    "declarationDir": "./dist/types", // Diretório dos tipos
-    "emitDeclarationOnly": true, // Apenas arquivos de declaração
-    "resolveJsonModule": true, // Permite importar arquivos JSON
-    "allowSyntheticDefaultImports": true, // Permite importações padrão sintéticas
-    "skipLibCheck": true // Ignora verificações de bibliotecas
+    "target": "ES2018",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "declaration": true,
+    "outDir": "dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
-  "exclude": ["node_modules", "dist"]
+  "include": ["src"]
 }
