@@ -1,5 +1,7 @@
-export const helloWorld = (): string => 'Hello, World!';
+import { MathUtils } from './utils/math.utils';
+import { StringUtils } from './utils/string.utils';
 
-export function sum(a: number, b: number): void {
-  console.log(`The sum is: ${a + b}`);
-}
+export const Utils = {
+  Math: MathUtils,
+  String: StringUtils,
+};
