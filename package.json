@@ -15,7 +15,8 @@
     "test:watch": "jest --watch",
     "lint:fix": "eslint \"src/**/*.{ts,tsx}\" --fix",
     "format:fix": "prettier --write \"src/**/*.{ts,tsx,js,json,md}\"",
-    "fix": "npm run lint:fix && npm run format:fix"
+    "fix": "npm run lint:fix && npm run format:fix",
+    "pub": "npm run fix && npm run build && npm publish --access public"
   },
   "dependencies": {
     "@nestjs/common": "^10.4.15",

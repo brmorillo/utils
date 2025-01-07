@@ -41,7 +41,7 @@ export class NumberUtils {
    */
   public static roundDown({ value }: { value: number }): number {
     const result = Math.floor(value);
-    return result === -0 ? 0 : result;
+    return Object.is(result, -0) ? 0 : result; // Corrigido para Object.is
   }
 
   /**
@@ -53,7 +53,7 @@ export class NumberUtils {
    */
   public static roundUp({ value }: { value: number }): number {
     const result = Math.ceil(value);
-    return result === -0 ? 0 : result;
+    return Object.is(result, -0) ? 0 : result; // Corrigido para Object.is
   }
 
   /**
