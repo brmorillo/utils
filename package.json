@@ -2,7 +2,7 @@
   "name": "@brmorillo/utils-test",
   "version": "0.0.9",
   "description": "A simple utility package for testing that sums two values.",
-  "main": "dist/index.js",
+  "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
