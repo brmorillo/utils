@@ -11,6 +11,7 @@
   "scripts": {
     "build": "tsup",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "version": "npm run changelog && git add CHANGELOG.md",
     "test": "jest --config jest.config.ts",
     "test:watch": "jest --watch",
     "lint:fix": "eslint \"src/**/*.{ts,tsx}\" --fix",
