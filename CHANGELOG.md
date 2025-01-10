@@ -1,3 +1,7 @@
+## [8.1.2](https://github.com/brmorillo/util/compare/v8.1.1...v8.1.2) (2025-01-10)
+
+
+
 ## [8.1.1](https://github.com/brmorillo/util/compare/v8.0.19...v8.1.1) (2025-01-10)
 
 
