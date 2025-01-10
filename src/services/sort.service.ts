@@ -184,6 +184,8 @@ export class SortUtils {
     if (!Array.isArray(array)) throw new Error('Input must be an array');
     if (array.some((num) => num < 0))
       throw new Error('Counting Sort only supports non-negative integers');
+    if (!Number.isInteger(maxValue) || maxValue < 0)
+      throw new Error('Maximum value must be a non-negative integer');
 
     const count = new Array(maxValue + 1).fill(0);
     const output = new Array(array.length);
@@ -210,6 +212,11 @@ export class SortUtils {
    * @returns Sorted array
    */
   static radixSort(array: number[]): number[] {
+    if (!Array.isArray(array)) throw new Error('Input must be an array');
+    if (array.length === 0) return [];
+    if (array.some((num) => num < 0))
+      throw new Error('Radix Sort only supports non-negative integers');
+
     const max = Math.max(...array);
     let exp = 1;
 
@@ -273,6 +280,8 @@ export class SortUtils {
    * @returns Sorted array
    */
   static timSort<T>(array: T[]): T[] {
+    if (!Array.isArray(array)) throw new Error('Input must be an array');
+
     const RUN = 32;
 
     const insertionSort = (arr: T[], left: number, right: number) => {
@@ -342,6 +351,7 @@ export class SortUtils {
 
     return array;
   }
+
   /**
    * Bogo Sort
    * @param array Array to sort
@@ -350,6 +360,7 @@ export class SortUtils {
    */
   static bogoSort<T>(array: T[]): T[] {
     if (!Array.isArray(array)) throw new Error('Input must be an array');
+    if (array.length <= 1) return [...array];
 
     const isSorted = (arr: T[]): boolean => {
       for (let i = 1; i < arr.length; i++) {
