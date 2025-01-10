@@ -26,7 +26,7 @@ export class MathUtils {
    * @example
    * MathUtils.calculatePercentage({ total: 200, part: 50 }) // 25
    */
-  public static calculatePercentage({
+  public static percentage({
     total,
     part,
   }: {
