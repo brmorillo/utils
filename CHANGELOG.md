@@ -3,7 +3,6 @@
 
 ### Bug Fixes
 
-* all array tests ([f101bb2](https://github.com/brmorillo/util/commit/f101bb2890a2f92f5ad8ae8dd3bf7707d7650891))
 * array services ([27e28fe](https://github.com/brmorillo/util/commit/27e28fe5b301f1f06d3dafecc7ba2c630c1e76af))
 * fix snowflake generate ([#8](https://github.com/brmorillo/util/issues/8)) ([2fd1767](https://github.com/brmorillo/util/commit/2fd1767da382efd51d3ac4ea1664570fe64f6ca6))
 * version ([09c8ae6](https://github.com/brmorillo/util/commit/09c8ae6e9595a8dfca3de55c36cbd07484e54988))
