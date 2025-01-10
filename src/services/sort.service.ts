@@ -1,6 +1,13 @@
 export class SortUtils {
   /**
    * Bubble Sort
+   * Best Case: O(n) - Already sorted list
+   * Worst Case: O(n²) - List in reverse order
+   * Average Case: O(n²)
+   * Stable: Yes
+   * In-Place: Yes
+   * Algorithm Type: Comparison
+   * Characteristics: Simple but inefficient for large lists.
    * @param array Array to sort
    * @returns Sorted array
    */
@@ -20,6 +27,13 @@ export class SortUtils {
 
   /**
    * Merge Sort
+   * Best Case: O(n log n)
+   * Worst Case: O(n log n)
+   * Average Case: O(n log n)
+   * Stable: Yes
+   * In-Place: No
+   * Algorithm Type: Comparison
+   * Characteristics: Divide and conquer, requires additional space for merging.
    * @param array Array to sort
    * @returns Sorted array
    */
@@ -38,17 +52,21 @@ export class SortUtils {
   private static merge<T>(left: T[], right: T[]): T[] {
     const result: T[] = [];
     while (left.length && right.length) {
-      if (left[0] < right[0]) {
-        result.push(left.shift()!);
-      } else {
-        result.push(right.shift()!);
-      }
+      if (left[0] < right[0]) result.push(left.shift()!);
+      else result.push(right.shift()!);
     }
     return [...result, ...left, ...right];
   }
 
   /**
    * Quick Sort
+   * Best Case: O(n log n) - Balanced partitions
+   * Worst Case: O(n²) - Highly unbalanced partitions (e.g., already sorted list)
+   * Average Case: O(n log n)
+   * Stable: No
+   * In-Place: Yes
+   * Algorithm Type: Comparison
+   * Characteristics: Divide and conquer, efficient in most cases but can be slow for already sorted lists.
    * @param array Array to sort
    * @returns Sorted array
    */
@@ -68,6 +86,13 @@ export class SortUtils {
 
   /**
    * Heap Sort
+   * Best Case: O(n log n) - All elements are nearly sorted
+   * Worst Case: O(n log n)
+   * Average Case: O(n log n)
+   * Stable: No
+   * In-Place: Yes
+   * Algorithm Type: Comparison
+   * Characteristics: Efficient sorting based on binary heaps. Not stable but guarantees O(n log n) time.
    * @param array Array to sort
    * @returns Sorted array
    */
@@ -104,6 +129,13 @@ export class SortUtils {
 
   /**
    * Selection Sort
+   * Best Case: O(n²)
+   * Worst Case: O(n²)
+   * Average Case: O(n²)
+   * Stable: No
+   * In-Place: Yes
+   * Algorithm Type: Comparison
+   * Characteristics: Simple and intuitive, but inefficient for large lists. Always O(n²) regardless of input.
    * @param array Array to sort
    * @returns Sorted array
    */
@@ -127,6 +159,13 @@ export class SortUtils {
 
   /**
    * Insertion Sort
+   * Best Case: O(n) - Already sorted list
+   * Worst Case: O(n²) - Reverse sorted list
+   * Average Case: O(n²)
+   * Stable: Yes
+   * In-Place: Yes
+   * Algorithm Type: Comparison
+   * Characteristics: Simple and efficient for small or nearly sorted lists. Performs well with incremental sorting.
    * @param array Array to sort
    * @returns Sorted array
    */
@@ -148,6 +187,14 @@ export class SortUtils {
 
   /**
    * Shell Sort
+   * Best Case: O(n log² n) - With optimal gap sequence
+   * Worst Case: O(n²) - With worst gap sequence
+   * Average Case: O(n log² n)
+   * Stable: No
+   * In-Place: Yes
+   * Algorithm Type: Comparison
+   * Characteristics: Generalized version of Insertion Sort, uses a gap sequence to reduce comparisons.
+   *                  Efficient for medium-sized datasets, but not stable.
    * @param array Array to sort
    * @returns Sorted array
    */
@@ -176,6 +223,14 @@ export class SortUtils {
 
   /**
    * Counting Sort
+   * Best Case: O(n + k) - n is the size of the array, k is the range of numbers
+   * Worst Case: O(n + k)
+   * Average Case: O(n + k)
+   * Stable: Yes
+   * In-Place: No
+   * Algorithm Type: Non-Comparison
+   * Characteristics: Works well for integers within a limited range.
+   *                  Requires auxiliary space for the count array. Not efficient for large ranges.
    * @param array Array of integers to sort
    * @param maxValue Maximum value in the array
    * @returns Sorted array
@@ -208,6 +263,15 @@ export class SortUtils {
 
   /**
    * Radix Sort
+   * Best Case: O(nk) - n is the number of elements, k is the number of digits
+   * Worst Case: O(nk)
+   * Average Case: O(nk)
+   * Stable: Yes
+   * In-Place: No
+   * Algorithm Type: Non-Comparison
+   * Characteristics: Effective for integers or strings with a fixed length.
+   *                  Processes numbers digit by digit using Counting Sort as a subroutine.
+   *                  Requires additional space for intermediate sorting.
    * @param array Array of non-negative integers to sort
    * @returns Sorted array
    */
@@ -252,6 +316,14 @@ export class SortUtils {
 
   /**
    * Bucket Sort
+   * Best Case: O(n + k) - n is the number of elements, k is the number of buckets
+   * Worst Case: O(n²) - When all elements fall into a single bucket
+   * Average Case: O(n + k)
+   * Stable: Yes (depends on the sorting algorithm used inside buckets)
+   * In-Place: No
+   * Algorithm Type: Non-Comparison
+   * Characteristics: Divides the input into buckets, sorts each bucket individually, and merges them.
+   *                  Works well for uniformly distributed data. Efficiency depends on the number of buckets.
    * @param array Array of floating-point numbers to sort
    * @param bucketSize Size of each bucket
    * @returns Sorted array
@@ -276,6 +348,15 @@ export class SortUtils {
 
   /**
    * Tim Sort (Basic Implementation)
+   * Best Case: O(n) - Already sorted input
+   * Worst Case: O(n log n)
+   * Average Case: O(n log n)
+   * Stable: Yes
+   * In-Place: No
+   * Algorithm Type: Comparison
+   * Characteristics: Combines the advantages of Merge Sort and Insertion Sort.
+   *                  Efficient on real-world datasets and used in Python and Java's built-in sort.
+   *                  Uses small runs and merges them.
    * @param array Array to sort
    * @returns Sorted array
    */
@@ -352,9 +433,17 @@ export class SortUtils {
 
   /**
    * Bogo Sort
+   * Best Case: O(n) - The array is already sorted
+   * Worst Case: O(n!) - Completely unsorted array
+   * Average Case: O(n × n!)
+   * Stable: No
+   * In-Place: Yes
+   * Algorithm Type: Randomized
+   * Characteristics: Inefficient and impractical, only used for educational purposes.
+   *                  Shuffles the array randomly until it becomes sorted.
    * @param array Array to sort
    * @returns Sorted array
-   * @note Highly inefficient, only for educational purposes.
+   * @note Avoid using this algorithm in real-world scenarios.
    */
   static bogoSort<T>(array: T[]): T[] {
     if (!Array.isArray(array)) throw new Error('Input must be an array');
@@ -382,6 +471,14 @@ export class SortUtils {
 
   /**
    * Gnome Sort
+   * Best Case: O(n) - Already sorted array
+   * Worst Case: O(n²) - Reverse sorted array
+   * Average Case: O(n²)
+   * Stable: Yes
+   * In-Place: Yes
+   * Algorithm Type: Comparison
+   * Characteristics: A variation of Insertion Sort that uses a single loop to traverse the array.
+   *                  Simple, but inefficient for large datasets.
    * @param array Array to sort
    * @returns Sorted array
    */
@@ -405,6 +502,14 @@ export class SortUtils {
 
   /**
    * Pancake Sort
+   * Best Case: O(n²) - All cases require flips
+   * Worst Case: O(n²) - Reverse sorted array
+   * Average Case: O(n²)
+   * Stable: No
+   * In-Place: Yes
+   * Algorithm Type: Comparison
+   * Characteristics: Sorts the array by repeatedly flipping subarrays.
+   *                  Simulates flipping pancakes to sort them by size.
    * @param array Array to sort
    * @returns Sorted array
    */
@@ -444,6 +549,14 @@ export class SortUtils {
 
   /**
    * Comb Sort
+   * Best Case: O(n log n) - Small number of inversions
+   * Worst Case: O(n²) - Reverse sorted array
+   * Average Case: O(n²)
+   * Stable: No
+   * In-Place: Yes
+   * Algorithm Type: Comparison
+   * Characteristics: An improvement over Bubble Sort by using larger gaps initially to reduce swaps.
+   *                  The gap decreases gradually until it becomes 1.
    * @param array Array to sort
    * @returns Sorted array
    */
@@ -475,6 +588,14 @@ export class SortUtils {
 
   /**
    * Cocktail Shaker Sort
+   * Best Case: O(n) - Already sorted array
+   * Worst Case: O(n²) - Reverse sorted array
+   * Average Case: O(n²)
+   * Stable: Yes
+   * In-Place: Yes
+   * Algorithm Type: Comparison
+   * Characteristics: A bi-directional variant of Bubble Sort that sorts in both directions.
+   *                  Eliminates turtles (small elements at the end of the array).
    * @param array Array to sort
    * @returns Sorted array
    */
@@ -513,9 +634,16 @@ export class SortUtils {
 
   /**
    * Bitonic Sort
+   * Best Case: O(n log² n)
+   * Worst Case: O(n log² n)
+   * Average Case: O(n log² n)
+   * Stable: No
+   * In-Place: No
+   * Algorithm Type: Parallel, Comparison
+   * Characteristics: Highly efficient for parallel computing systems.
+   *                  Not commonly used in sequential systems due to overhead.
    * @param array Array to sort
    * @returns Sorted array
-   * @note Typically used in parallel computing environments.
    */
   static bitonicSort<T>(array: T[]): T[] {
     if (!Array.isArray(array)) throw new Error('Input must be an array');
@@ -569,9 +697,16 @@ export class SortUtils {
 
   /**
    * Stooge Sort
+   * Best Case: O(n².7095)
+   * Worst Case: O(n².7095)
+   * Average Case: O(n².7095)
+   * Stable: Yes
+   * In-Place: Yes
+   * Algorithm Type: Comparison
+   * Characteristics: Inefficient and used only for academic purposes.
+   *                  Recursively swaps elements to sort the array.
    * @param array Array to sort
    * @returns Sorted array
-   * @note Inefficient and mainly used for educational purposes.
    */
   static stoogeSort<T>(array: T[]): T[] {
     if (!Array.isArray(array)) throw new Error('Input must be an array');
