@@ -1,4 +1,4 @@
-## [8.0.17](https://github.com/brmorillo/util/compare/v6.0.3...v8.0.17) (2025-01-10)
+## [8.0.18](https://github.com/brmorillo/util/compare/v6.0.3...v8.0.18) (2025-01-10)
 
 
 ### Bug Fixes
