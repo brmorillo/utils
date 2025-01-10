@@ -8,6 +8,7 @@ import { NumberUtils } from './services/number.service';
 import { ObjectUtils } from './services/object.service';
 import { RequestUtils } from './services/request.service';
 import { SnowflakeUtils } from './services/snowflake.service';
+import { SortUtils } from './services/sort.service';
 import { StringUtils } from './services/string.service';
 import { UUIDUtils } from './services/uuid.service';
 import { ValidationUtils } from './services/validation.service';
@@ -26,6 +27,7 @@ export const Utils = {
   String: StringUtils,
   Uuid: UUIDUtils,
   Validation: ValidationUtils,
+  Sort: SortUtils,
 };
 
 export { ArrayUtils } from './services/array.service';
@@ -38,6 +40,7 @@ export { NumberUtils } from './services/number.service';
 export { ObjectUtils } from './services/object.service';
 export { RequestUtils } from './services/request.service';
 export { SnowflakeUtils } from './services/snowflake.service';
+export { SortUtils } from './services/sort.service';
 export { StringUtils } from './services/string.service';
 export { UUIDUtils } from './services/uuid.service';
 export { ValidationUtils } from './services/validation.service';
