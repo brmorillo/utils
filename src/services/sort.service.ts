@@ -280,8 +280,6 @@ export class SortUtils {
    * @returns Sorted array
    */
   static timSort<T>(array: T[]): T[] {
-    if (!Array.isArray(array)) throw new Error('Input must be an array');
-
     const RUN = 32;
 
     const insertionSort = (arr: T[], left: number, right: number) => {
@@ -351,7 +349,6 @@ export class SortUtils {
 
     return array;
   }
-
   /**
    * Bogo Sort
    * @param array Array to sort
@@ -360,7 +357,6 @@ export class SortUtils {
    */
   static bogoSort<T>(array: T[]): T[] {
     if (!Array.isArray(array)) throw new Error('Input must be an array');
-    if (array.length <= 1) return [...array];
 
     const isSorted = (arr: T[]): boolean => {
       for (let i = 1; i < arr.length; i++) {
@@ -427,12 +423,15 @@ export class SortUtils {
 
     for (let i = arr.length - 1; i > 0; i--) {
       let maxIndex = 0;
+
+      // Find the index of the maximum element in the unsorted portion
       for (let j = 1; j <= i; j++) {
         if (arr[j] > arr[maxIndex]) {
           maxIndex = j;
         }
       }
 
+      // Flip the maximum element to its correct position
       if (maxIndex !== i) {
         flip(arr, maxIndex);
         flip(arr, i);
@@ -472,6 +471,7 @@ export class SortUtils {
 
     return arr;
   }
+
   /**
    * Cocktail Shaker Sort
    * @param array Array to sort
@@ -526,7 +526,7 @@ export class SortUtils {
       i: number,
       j: number,
       ascending: boolean,
-    ) => {
+    ): void => {
       if (arr[i] > arr[j] === ascending) {
         [arr[i], arr[j]] = [arr[j], arr[i]];
       }
@@ -537,7 +537,7 @@ export class SortUtils {
       low: number,
       count: number,
       ascending: boolean,
-    ) => {
+    ): void => {
       if (count > 1) {
         const mid = Math.floor(count / 2);
         for (let i = low; i < low + mid; i++) {
@@ -553,7 +553,7 @@ export class SortUtils {
       low: number,
       count: number,
       ascending: boolean,
-    ) => {
+    ): void => {
       if (count > 1) {
         const mid = Math.floor(count / 2);
         bitonicSortRecursive(arr, low, mid, true);
@@ -577,7 +577,11 @@ export class SortUtils {
 
     const arr = [...array];
 
-    const stoogeSortRecursive = (arr: T[], start: number, end: number) => {
+    const stoogeSortRecursive = (
+      arr: T[],
+      start: number,
+      end: number,
+    ): void => {
       if (arr[start] > arr[end]) {
         [arr[start], arr[end]] = [arr[end], arr[start]];
       }
