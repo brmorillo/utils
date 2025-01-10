@@ -18,7 +18,7 @@ describe('ArrayUtils', () => {
     });
 
     it('should throw an error if input is not an array', () => {
-      expect(() => ArrayUtils.removeDuplicates(null)).toThrow(
+      expect(() => ArrayUtils.removeDuplicates(null as unknown as unknown[])).toThrow(
         'Input must be an array',
       );
     });
@@ -47,7 +47,7 @@ describe('ArrayUtils', () => {
     });
 
     it('should throw an error if input is not an array', () => {
-      expect(() => ArrayUtils.intersect(null, [1, 2, 3])).toThrow(
+      expect(() => ArrayUtils.intersect(null as unknown as number[], [1, 2, 3])).toThrow(
         'Both inputs must be arrays',
       );
     });
@@ -67,7 +67,7 @@ describe('ArrayUtils', () => {
     });
 
     it('should throw an error if input is not an array', () => {
-      expect(() => ArrayUtils.flatten(null)).toThrow('Input must be an array');
+      expect(() => ArrayUtils.flatten(null as unknown as unknown[])).toThrow('Input must be an array');
     });
   });
 
@@ -97,13 +97,13 @@ describe('ArrayUtils', () => {
     });
 
     it('should throw an error if input is not an array', () => {
-      expect(() => ArrayUtils.groupBy(null, (item: any) => item?.type)).toThrow(
+      expect(() => ArrayUtils.groupBy(null as any, (item: any) => item?.type)).toThrow(
         'Input must be an array',
       );
     });
 
     it('should throw an error if key function is not provided', () => {
-      expect(() => ArrayUtils.groupBy([1, 2, 3], null)).toThrow();
+      expect(() => ArrayUtils.groupBy([1, 2, 3], undefined as any)).toThrow();
     });
   });
 
@@ -202,7 +202,7 @@ describe('ArrayUtils', () => {
 
     it('should throw an error if input is not an array', () => {
       expect(() =>
-        ArrayUtils.findSubset({ array: null, subset: { name: 'John' } }),
+        ArrayUtils.findSubset({ array: undefined as any, subset: { name: 'John' } }),
       ).toThrow();
     });
   });
@@ -233,7 +233,7 @@ describe('ArrayUtils', () => {
 
     it('should throw an error if inputs are not objects', () => {
       expect(() =>
-        ArrayUtils.isSubset({ superset: null, subset: { name: 'John' } }),
+        ArrayUtils.isSubset({ superset: undefined as any, subset: { name: 'John' } }),
       ).toThrow();
     });
   });
