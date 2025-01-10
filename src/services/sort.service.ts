@@ -349,6 +349,7 @@ export class SortUtils {
 
     return array;
   }
+
   /**
    * Bogo Sort
    * @param array Array to sort
