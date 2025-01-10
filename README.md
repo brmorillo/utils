@@ -136,6 +136,27 @@ console.log(Utils.MathUtils.randomInRange({ min: 5, max: 10 })); // Random value
 2. **`decode`**: Deconstructs a Snowflake ID into its components.
 3. **`getTimestamp`**: Extracts the timestamp from a Snowflake ID.
 
+### Sorting Algorithms Utility Functions
+
+1. **`bubbleSort`**: Implements Bubble Sort with a time complexity of O(n²) in the worst case.
+2. **`mergeSort`**: Implements Merge Sort with a time complexity of O(n log n).
+3. **`quickSort`**: Implements Quick Sort with a time complexity of O(n log n) on average.
+4. **`heapSort`**: Implements Heap Sort with a time complexity of O(n log n).
+5. **`selectionSort`**: Implements Selection Sort with a time complexity of O(n²).
+6. **`insertionSort`**: Implements Insertion Sort, efficient for small or nearly sorted datasets.
+7. **`shellSort`**: Implements Shell Sort with an average time complexity of O(n log² n).
+8. **`countingSort`**: Implements Counting Sort, effective for integers with limited range.
+9. **`radixSort`**: Implements Radix Sort for non-negative integers, processing digits or characters.
+10. **`bucketSort`**: Implements Bucket Sort, dividing the array into buckets and sorting each.
+11. **`timSort`**: Combines Merge Sort and Insertion Sort, used in Python and Java.
+12. **`bogoSort`**: Implements Bogo Sort, an inefficient and impractical sorting algorithm.
+13. **`gnomeSort`**: Implements Gnome Sort, a variation of Insertion Sort with O(n²) complexity.
+14. **`pancakeSort`**: Implements Pancake Sort, flipping subarrays to sort.
+15. **`combSort`**: An improved version of Bubble Sort using larger initial gaps.
+16. **`cocktailShakerSort`**: A bi-directional Bubble Sort that eliminates turtles.
+17. **`bitonicSort`**: Optimized for parallel systems, with O(n log² n) complexity.
+18. **`stoogeSort`**: An academic curiosity with O(n².7095) complexity.
+
 ### String Utility Functions
 
 1. **`capitalizeFirstLetter`**: Capitalizes the first letter of a string.

@@ -19,16 +19,36 @@ describe('MathUtils', () => {
     });
   });
 
-  describe('calculatePercentage', () => {
+  describe('percentage', () => {
     it('should calculate the percentage of a value', () => {
       expect(MathUtils.percentage({ total: 200, part: 50 })).toBe(25);
       expect(MathUtils.percentage({ total: 100, part: 25 })).toBe(25);
       expect(MathUtils.percentage({ total: 500, part: 50 })).toBe(10);
       expect(MathUtils.percentage({ total: 1, part: 0.5 })).toBe(50);
+      expect(MathUtils.percentage({ total: 100, part: 0 })).toBe(0); // Caso onde o part é zero
     });
 
-    it('should return Infinity for a total of 0', () => {
-      expect(MathUtils.percentage({ total: 0, part: 50 })).toBe(Infinity);
+    it('should throw an error for a total of 0', () => {
+      expect(() => MathUtils.percentage({ total: 0, part: 50 })).toThrow(
+        'Total cannot be zero',
+      );
+    });
+
+    it('should handle negative values correctly', () => {
+      expect(MathUtils.percentage({ total: -200, part: -50 })).toBe(25); // Negativos proporcionais
+      expect(MathUtils.percentage({ total: 200, part: -50 })).toBe(-25); // Part negativo
+      expect(MathUtils.percentage({ total: -200, part: 50 })).toBe(-25); // Total negativo
+    });
+
+    it('should handle floating-point precision', () => {
+      expect(MathUtils.percentage({ total: 1, part: 0.333 })).toBeCloseTo(
+        33.3,
+        1,
+      ); // Aproximação
+    });
+
+    it('should return 100 for part equal to total', () => {
+      expect(MathUtils.percentage({ total: 50, part: 50 })).toBe(100);
     });
   });
 

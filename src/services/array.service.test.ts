@@ -18,9 +18,9 @@ describe('ArrayUtils', () => {
     });
 
     it('should throw an error if input is not an array', () => {
-      expect(() => ArrayUtils.removeDuplicates(null as unknown as unknown[])).toThrow(
-        'Input must be an array',
-      );
+      expect(() =>
+        ArrayUtils.removeDuplicates(null as unknown as unknown[]),
+      ).toThrow('Input must be an array');
     });
 
     it('should work with an empty array', () => {
@@ -47,9 +47,9 @@ describe('ArrayUtils', () => {
     });
 
     it('should throw an error if input is not an array', () => {
-      expect(() => ArrayUtils.intersect(null as unknown as number[], [1, 2, 3])).toThrow(
-        'Both inputs must be arrays',
-      );
+      expect(() =>
+        ArrayUtils.intersect(null as unknown as number[], [1, 2, 3]),
+      ).toThrow('Both inputs must be arrays');
     });
   });
 
@@ -67,7 +67,9 @@ describe('ArrayUtils', () => {
     });
 
     it('should throw an error if input is not an array', () => {
-      expect(() => ArrayUtils.flatten(null as unknown as unknown[])).toThrow('Input must be an array');
+      expect(() => ArrayUtils.flatten(null as unknown as unknown[])).toThrow(
+        'Input must be an array',
+      );
     });
   });
 
@@ -97,9 +99,9 @@ describe('ArrayUtils', () => {
     });
 
     it('should throw an error if input is not an array', () => {
-      expect(() => ArrayUtils.groupBy(null as any, (item: any) => item?.type)).toThrow(
-        'Input must be an array',
-      );
+      expect(() =>
+        ArrayUtils.groupBy(null as any, (item: any) => item?.type),
+      ).toThrow('Input must be an array');
     });
 
     it('should throw an error if key function is not provided', () => {
@@ -124,7 +126,9 @@ describe('ArrayUtils', () => {
     });
 
     it('should throw an error if input is not an array', () => {
-      expect(() => ArrayUtils.removeDuplicates(null as any)).toThrow('Input must be an array');
+      expect(() => ArrayUtils.removeDuplicates(null as any)).toThrow(
+        'Input must be an array',
+      );
     });
   });
 
@@ -165,7 +169,9 @@ describe('ArrayUtils', () => {
     });
 
     it('should throw an error if orderBy is invalid', () => {
-      expect(() => ArrayUtils.sort([1, 2, 3], 'invalid' as unknown as 'asc')).toThrow();
+      expect(() =>
+        ArrayUtils.sort([1, 2, 3], 'invalid' as unknown as 'asc'),
+      ).toThrow();
     });
   });
 
@@ -202,7 +208,10 @@ describe('ArrayUtils', () => {
 
     it('should throw an error if input is not an array', () => {
       expect(() =>
-        ArrayUtils.findSubset({ array: undefined as any, subset: { name: 'John' } }),
+        ArrayUtils.findSubset({
+          array: undefined as any,
+          subset: { name: 'John' },
+        }),
       ).toThrow();
     });
   });
@@ -233,7 +242,10 @@ describe('ArrayUtils', () => {
 
     it('should throw an error if inputs are not objects', () => {
       expect(() =>
-        ArrayUtils.isSubset({ superset: undefined as any, subset: { name: 'John' } }),
+        ArrayUtils.isSubset({
+          superset: undefined as any,
+          subset: { name: 'John' },
+        }),
       ).toThrow();
     });
   });

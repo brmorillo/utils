@@ -26,13 +26,16 @@ export class MathUtils {
    * @example
    * MathUtils.calculatePercentage({ total: 200, part: 50 }) // 25
    */
-  public static calculatePercentage({
+  public static percentage({
     total,
     part,
   }: {
     total: number;
     part: number;
   }): number {
+    if (total === 0) {
+      throw new Error('Total cannot be zero');
+    }
     return (part / total) * 100;
   }
 
@@ -51,25 +54,10 @@ export class MathUtils {
     min: number;
     max: number;
   }): number {
+    if (min > max) {
+      throw new Error('Min cannot be greater than Max');
+    }
     return Math.random() * (max - min) + min;
-  }
-
-  /**
-   * Calculates the percentage of a value.
-   * @param total The total value.
-   * @param part The part value.
-   * @returns The percentage of the part relative to the total.
-   * @example
-   * MathUtils.percentage({ total: 200, part: 50 }); // 25
-   */
-  public static percentage({
-    total,
-    part,
-  }: {
-    total: number;
-    part: number;
-  }): number {
-    return (part / total) * 100;
   }
 
   /**
@@ -94,5 +82,41 @@ export class MathUtils {
    */
   public static lcm({ a, b }: { a: number; b: number }): number {
     return (a * b) / MathUtils.gcd({ a, b });
+  }
+
+  /**
+   * Clamps a number within a specified range.
+   * @param value The number to clamp.
+   * @param min The minimum value.
+   * @param max The maximum value.
+   * @returns The clamped number.
+   * @example
+   * MathUtils.clamp({ value: 10, min: 0, max: 5 }) // 5
+   */
+  public static clamp({
+    value,
+    min,
+    max,
+  }: {
+    value: number;
+    min: number;
+    max: number;
+  }): number {
+    return Math.min(Math.max(value, min), max);
+  }
+
+  /**
+   * Checks if a number is prime.
+   * @param value The number to check.
+   * @returns `true` if the number is prime, otherwise `false`.
+   * @example
+   * MathUtils.isPrime({ value: 7 }) // true
+   */
+  public static isPrime({ value }: { value: number }): boolean {
+    if (value <= 1) return false;
+    for (let i = 2; i <= Math.sqrt(value); i++) {
+      if (value % i === 0) return false;
+    }
+    return true;
   }
 }

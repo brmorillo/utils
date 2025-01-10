@@ -1,3 +1,24 @@
+# [8.1.0](https://github.com/brmorillo/util/compare/v8.0.20...v8.1.0) (2025-01-10)
+
+
+
+## [8.0.20](https://github.com/brmorillo/util/compare/v8.0.19...v8.0.20) (2025-01-10)
+
+
+### Bug Fixes
+
+* math tests ([500d243](https://github.com/brmorillo/util/commit/500d243bf2e7aefb6665f05ae82efb73df5c301d))
+* sort service ([119bdc4](https://github.com/brmorillo/util/commit/119bdc483869c3ceabe24e93b83bbedc1da7b209))
+* sort service ([84cae4f](https://github.com/brmorillo/util/commit/84cae4f9448577e24cc8d00721f987bf860933fe))
+
+
+### Features
+
+* index exports ([fab7417](https://github.com/brmorillo/util/commit/fab741751da237b68c29e2f76d4b519e3914699f))
+* sortUtils ([404fac9](https://github.com/brmorillo/util/commit/404fac9516e094b52a3ce73ac0b28cff4b2f8646))
+
+
+
 ## [8.0.19](https://github.com/brmorillo/util/compare/v6.0.3...v8.0.19) (2025-01-10)
 
 
