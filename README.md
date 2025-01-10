@@ -47,7 +47,7 @@ console.log(StringUtils.capitalizeFirstLetter({ input: 'hello' })); // "Hello"
 import Utils from '@brmorillo/utils';
 
 console.log(Utils.ArrayUtils.removeDuplicates({ array: [1, 2, 3, 3] })); // [1, 2, 3]
-console.log(Utils.MathUtils.randomInRange({ min: 5, max: 10 })); // Random value
+console.log(Utils.MathUtils.randomInRange({ min: 5, max: 10 })); // Random value between 5 and 10
 ```
 
 ---
