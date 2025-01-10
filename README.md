@@ -225,6 +225,27 @@ Feel free to fork, contribute, and submit pull requests! Any contributions are w
 
 ---
 
+## 🫶 Support the Project
+
+If you find **@brmorillo/utils** helpful and want to support its development, consider contributing! Your support is essential for the project to grow.
+
+### 📌 How to Contribute
+
+- **Pix**:
+  Use the Pix key: **bruno@rmorillo.com**
+
+- **Cryptocurrencies**:
+
+  - **Dogecoin (DOGE):** `DLwW5LFfXV7wN7a7dVV6TX7kiomVnYABXM`
+  - **Tether (USDT):** `0x2b1f5169e3719E0A25850a178db54d8D1C0c12E0`
+  - **Bitcoin (BTC):** `bc1qk5cakfryrx8dw3w6uqudwkpm9apvd6h5mgl8kg`
+  - **Ethereum (ETH):** `0x2b1f5169e3719E0A25850a178db54d8D1C0c12E0`
+
+- **Other ways:**
+  Feedback, code contributions, or simply sharing the project with others are extremely appreciated!
+
+---
+
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
