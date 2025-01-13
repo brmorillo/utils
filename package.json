@@ -5,9 +5,15 @@
   "author": "Bruno Morillo",
   "license": "MIT",
   "private": false,
-  "main": "dist/index.cjs",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs"
+    }
+  },
   "scripts": {
     "build": "tsup",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
