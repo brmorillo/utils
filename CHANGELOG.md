@@ -1,3 +1,12 @@
+## [8.3.2](https://github.com/brmorillo/util/compare/v8.1.3...v8.3.2) (2025-01-13)
+
+
+### Bug Fixes
+
+* version ([27235ff](https://github.com/brmorillo/util/commit/27235ff82779e3be02093dc97a8b2236b63550b6))
+
+
+
 ## [8.1.3](https://github.com/brmorillo/util/compare/v8.1.2...v8.1.3) (2025-01-13)
 
 
