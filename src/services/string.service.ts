@@ -158,6 +158,37 @@ export class StringUtils {
    * @example
    * StringUtils.replaceOccurrences({ input: 'hello world hello', substring: 'hello', replacement: 'hi', occurrences: 1 }); // "hi world hello"
    */
+  public static replaceAmountOccurrencies({
+    input,
+    substring,
+    replacement,
+    occurrences,
+  }: {
+    input: string;
+    substring: string;
+    replacement: string;
+    occurrences: number;
+  }): string {
+    return this.replaceOccurrences({
+      input,
+      substring,
+      replacement,
+      occurrences,
+    });
+  }
+
+  /**
+   * **Deprecated:** Use `replaceAmountOccurrencies` instead.
+   *
+   * Replaces the first `x` occurrences of a substring in a string.
+   * @param input The string to search within.
+   * @param substring The substring to replace.
+   * @param replacement The string to replace the substring with.
+   * @param occurrences The number of occurrences to replace.
+   * @returns The string with the first `x` occurrences replaced.
+   * @example
+   * StringUtils.replaceOccurrences({ input: 'hello world hello', substring: 'hello', replacement: 'hi', occurrences: 1 }); // "hi world hello"
+   */
   public static replaceOccurrences({
     input,
     substring,
@@ -169,6 +200,10 @@ export class StringUtils {
     replacement: string;
     occurrences: number;
   }): string {
+    console.warn(
+      'replaceOccurrences is deprecated. Use replaceAmountOccurrencies instead.',
+    );
+
     let count = 0;
     return input.replace(new RegExp(substring, 'g'), (match) => {
       if (count < occurrences) {
@@ -176,6 +211,31 @@ export class StringUtils {
         return replacement;
       }
       return match;
+    });
+  }
+
+  /**
+   * Replaces placeholders in a string with corresponding values from a replacement map.
+   *
+   * Placeholders in the string should be enclosed in curly braces `{}`.
+   * For example: "Hello, {name}!" can be replaced with a value for "name".
+   *
+   * @param string - The input string containing placeholders to be replaced.
+   * @param replacements - An object mapping placeholder keys (without braces) to their replacement values.
+   * @returns A new string with placeholders replaced by their corresponding values from the replacements object.
+   *
+   * @example
+   * const input = "Hello, {name}! You have {count} new messages.";
+   * const replacements = { name: "John", count: "5" };
+   * const result = replaceOcurrencyArray(input, replacements);
+   * console.log(result); // "Hello, John! You have 5 new messages."
+   */
+  public static replaceOcurrencies(
+    string: string,
+    replacements: Record<string, string>,
+  ): string {
+    return string.replace(/\{([^}]+)\}/g, (match, key) => {
+      return replacements[key] ?? match; // Substitui se a chave existir, senão mantém o valor original
     });
   }
 }
