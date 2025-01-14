@@ -1,3 +1,12 @@
+## [8.3.3](https://github.com/brmorillo/util/compare/v8.3.2...v8.3.3) (2025-01-14)
+
+
+### Features
+
+* replaceOcurrencies ([2928c44](https://github.com/brmorillo/util/commit/2928c44e90d27f1b909fc63d6078e4141ca1abaf))
+
+
+
 ## [8.3.2](https://github.com/brmorillo/util/compare/v8.1.3...v8.3.2) (2025-01-13)
 
 
