@@ -1,3 +1,17 @@
+# [9.0.0](https://github.com/brmorillo/util/compare/v8.3.3...v9.0.0) (2025-01-14)
+
+
+### Bug Fixes
+
+* hashUtils ([b86e40c](https://github.com/brmorillo/util/commit/b86e40c5aeccb166fe0c42906fda00f86400199a))
+
+
+### Features
+
+* create cryptUtils ([fa829fa](https://github.com/brmorillo/util/commit/fa829fa1d6d2b002d04f5c102ae67aee00eceec7))
+
+
+
 ## [8.3.3](https://github.com/brmorillo/util/compare/v8.3.2...v8.3.3) (2025-01-14)
 
 
