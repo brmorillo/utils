@@ -73,9 +73,26 @@ console.log(Utils.MathUtils.randomInRange({ min: 5, max: 10 })); // Random value
 
 ### Cryptography Utility Functions
 
-1. **`encrypt`**: Encrypts a string value using bcrypt.
-2. **`compare`**: Compares a string value with an encrypted hash.
-3. **`generateRandomString`**: Generates a random string using bcrypt.
+1. **`aesEncrypt`**: Encrypts data using AES-256-CBC.
+2. **`aesDecrypt`**: Decrypts data encrypted with AES-256-CBC.
+3. **`chacha20Encrypt`**: Encrypts data using ChaCha20.
+4. **`chacha20Decrypt`**: Decrypts data encrypted with ChaCha20.
+5. **`rsaGenerateKeyPair`**: Generates an RSA key pair.
+6. **`rsaEncrypt`**: Encrypts data using an RSA public key.
+7. **`rsaDecrypt`**: Decrypts data encrypted with an RSA public key using the private key.
+8. **`rsaSign`**: Signs data using an RSA private key.
+9. **`rsaVerify`**: Verifies a signature using an RSA public key.
+10. **`eddsaGenerateKeyPair`**: Generates an EdDSA key pair (using Ed25519).
+11. **`eddsaSign`**: Signs data using an EdDSA private key.
+12. **`eddsaVerify`**: Verifies an EdDSA signature using a public key.
+13. **`blowfishEncrypt`**: Encrypts data using Blowfish.
+14. **`blowfishDecrypt`**: Decrypts data encrypted with Blowfish.
+15. **`tripleDESEncrypt`**: Encrypts data using Triple DES.
+16. **`tripleDESDecrypt`**: Decrypts data encrypted with Triple DES.
+17. **`twofishEncrypt`**: Encrypts data using Twofish.
+18. **`twofishDecrypt`**: Decrypts data encrypted with Twofish.
+19. **`serpentEncrypt`**: Encrypts data using Serpent.
+20. **`serpentDecrypt`**: Decrypts data encrypted with Serpent.
 
 ### Date Utility Functions
 
@@ -86,6 +103,18 @@ console.log(Utils.MathUtils.randomInRange({ min: 5, max: 10 })); // Random value
 5. **`diffBetween`**: Calculates the difference between two dates.
 6. **`toUTC`**: Converts a date to UTC.
 7. **`toTimeZone`**: Converts a date to a specified timezone.
+
+### Hash Utility Functions
+
+1. **`bcryptHash`**: Encrypts a string value using bcrypt.
+2. **`bcryptCompare`**: Compares a string value with an encrypted value.
+3. **`bcryptRandomString`**: Generates a random string using bcrypt.
+4. **`sha256Hash`**: Hashes a string value using SHA-256.
+5. **`sha256HashJson`**: Hashes a JSON object using SHA-256.
+6. **`sha256GenerateToken`**: Generates a random token using SHA-256.
+7. **`sha512Hash`**: Hashes a string value using SHA-512.
+8. **`sha512HashJson`**: Hashes a JSON object using SHA-512.
+9. **`sha512GenerateToken`**: Generates a random token using SHA-512.
 
 ### Math Utility Functions
 
@@ -125,6 +154,10 @@ console.log(Utils.MathUtils.randomInRange({ min: 5, max: 10 })); // Random value
 10. **`groupBy`**: Groups the keys of an object based on a callback function.
 11. **`diff`**: Finds the difference between two objects.
 12. **`unflattenObject`**: Sets a value in a nested object by a dot-separated path.
+13. **`compressObject`**: Compresses a JSON object by converting it to a minified string.
+14. **`decompressObject`**: Decompresses a JSON string back into an object.
+15. **`compressObjectToBase64`**: Compresses and encodes a JSON object to a Base64 string.
+16. **`decompressBase64ToObject`**: Decompresses a Base64-encoded JSON string back to a JSON object.
 
 ### Request Utility Functions
 
@@ -183,56 +216,32 @@ console.log(Utils.MathUtils.randomInRange({ min: 5, max: 10 })); // Random value
 
 ### How to Contribute
 
-1. **No direct commits to the `main` branch:**
-   All development must be done in separate branches.
+1. **Branch naming**: Use descriptive names like `feat/feature-name` or `fix/bug-name`.
+2. **Pull Requests**: Ensure proper tests are included and reviewed before merging.
+3. **Commit Messages**: Follow the convention:
+   - `feat: Added a new feature`
+   - `fix: Resolved an issue`
+   - `docs: Updated documentation`
+   - `chore: Performed maintenance tasks`
 
-2. **Branch naming:**
-   Use descriptive names for your branches. Examples:
+### Publish Process
 
-   - `feat/new-feature`
-   - `fix/login-error`
-
-3. **Pull Requests:**
-
-   - Every pull request (PR) must be reviewed and approved before merging into `main`.
-   - Ensure you follow the commit message standards.
-
-4. **Commit Messages:**
-   Follow the project's commit message conventions (based on Angular):
-   - `feat: description of the new feature`
-   - `fix: description of the bug fix`
-   - `docs: documentation updates`
-
-### How to Publish
-
-If you want to contribute and publish updates to this library:
-
-1. **Bump the version:**
-   Use the following command to update the version according to [SemVer](https://semver.org/):
-
+1. **Update version**:
    ```bash
-   npm version patch   # For small fixes
-   npm version minor   # For new features
-   npm version major   # For breaking changes
+   npm version [patch|minor|major]
    ```
-
-2. **Publish the package:**
+2. **Publish package**:
    ```bash
-   npm publish
+   npm run pub
    ```
-
-Feel free to fork, contribute, and submit pull requests! Any contributions are welcome.
 
 ---
 
-## 🫶 Support the Project
+## Support
 
-If you find **@brmorillo/utils** helpful and want to support its development, consider contributing! Your support is essential for the project to grow.
+If you find this library helpful, consider supporting its development:
 
-### 📌 How to Contribute
-
-- **Pix**:
-  Use the Pix key: **bruno@rmorillo.com**
+- **Pix**: `bruno@rmorillo.com`
 
 - **Cryptocurrencies**:
 
@@ -241,8 +250,7 @@ If you find **@brmorillo/utils** helpful and want to support its development, co
   - **Bitcoin (BTC):** `bc1qk5cakfryrx8dw3w6uqudwkpm9apvd6h5mgl8kg`
   - **Ethereum (ETH):** `0x2b1f5169e3719E0A25850a178db54d8D1C0c12E0`
 
-- **Other ways:**
-  Feedback, code contributions, or simply sharing the project with others are extremely appreciated!
+Feel free to contribute or share feedback!
 
 ---
 
