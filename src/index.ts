@@ -3,6 +3,7 @@ import { ConvertUtils } from './services/convert.service';
 import { CryptUtils } from './services/crypt.service';
 import { CuidUtils } from './services/cuid.service';
 import { DateUtils } from './services/date.service';
+import { HashUtils } from './services/hash.service';
 import { MathUtils } from './services/math.service';
 import { NumberUtils } from './services/number.service';
 import { ObjectUtils } from './services/object.service';
@@ -19,6 +20,7 @@ export const Utils = {
   Crypt: CryptUtils,
   Cuid: CuidUtils,
   Date: DateUtils,
+  Hash: HashUtils,
   Math: MathUtils,
   Number: NumberUtils,
   Object: ObjectUtils,
@@ -35,6 +37,7 @@ export { ConvertUtils } from './services/convert.service';
 export { CryptUtils } from './services/crypt.service';
 export { CuidUtils } from './services/cuid.service';
 export { DateUtils } from './services/date.service';
+export { HashUtils } from './services/hash.service';
 export { MathUtils } from './services/math.service';
 export { NumberUtils } from './services/number.service';
 export { ObjectUtils } from './services/object.service';

@@ -395,4 +395,99 @@ export class ObjectUtils {
     }, obj);
     return obj;
   }
+
+  /**
+   * Compresses a JSON object by converting it to a minified string.
+   * Removes unnecessary whitespace and formatting.
+   *
+   * @param json The JSON object to compress.
+   * @returns A minified JSON string.
+   * @example
+   * const input = { key: "value", nested: { count: 42 } };
+   * const compressed = JsonUtils.compressObject(input);
+   * console.log(compressed); // '{"key":"value","nested":{"count":42}}'
+   */
+  public static compressObject({ json }: { json: object }): string {
+    try {
+      return JSON.stringify(json);
+    } catch (error) {
+      throw new Error('Failed to compress JSON object.');
+    }
+  }
+
+  /**
+   * Decompresses a JSON string back into an object.
+   * Converts a minified JSON string into a manipulable JSON object.
+   *
+   * @param jsonString The minified JSON string to decompress.
+   * @returns The original JSON object.
+   * @example
+   * const compressed = '{"key":"value","nested":{"count":42}}';
+   * const json = JsonUtils.decompressJson(compressed);
+   * console.log(json); // { key: "value", nested: { count: 42 } }
+   */
+  public static decompressObject({
+    jsonString,
+  }: {
+    jsonString: string;
+  }): object {
+    try {
+      return JSON.parse(jsonString);
+    } catch (error) {
+      throw new Error('Failed to decompress JSON string.');
+    }
+  }
+
+  /**
+   * Compresses and encodes a JSON object to a Base64 string.
+   * Useful for compactly storing or transmitting JSON data.
+   *
+   * @param json The JSON object to compress and encode.
+   * @param urlSafe If true, generates a URL-safe Base64 string (default: false).
+   * @returns A Base64-encoded minified JSON string.
+   * @example
+   * const input = { key: "value", nested: { count: 42 } };
+   * const compressed = JsonUtils.compressObjectToBase64(input);
+   * console.log(compressed); // 'eyJrZXkiOiJ2YWx1ZSIsIm5lc3RlZCI6eyJjb3VudCI6NDJ9fQ=='
+   */
+  public static compressObjectToBase64({
+    json,
+    urlSafe = false,
+  }: {
+    json: object;
+    urlSafe: boolean;
+  }): string {
+    try {
+      const minified = ObjectUtils.compressObject({ json });
+      const base64 = Buffer.from(minified).toString('base64');
+      return urlSafe
+        ? base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+        : base64;
+    } catch (error) {
+      throw new Error('Failed to compress and encode JSON object to Base64.');
+    }
+  }
+
+  /**
+   * Decompresses a Base64-encoded JSON string back to a JSON object.
+   *
+   * @param base64String The Base64-encoded JSON string to decompress.
+   * @returns The original JSON object.
+   * @example
+   * const base64 = 'eyJrZXkiOiJ2YWx1ZSIsIm5lc3RlZCI6eyJjb3VudCI6NDJ9fQ==';
+   * const json = JsonUtils.decompressBase64ToObject(base64);
+   * console.log(json); // { key: "value", nested: { count: 42 } }
+   */
+  public static decompressBase64ToObject({
+    base64String,
+  }: {
+    base64String: string;
+  }): object {
+    try {
+      const jsonString = Buffer.from(base64String, 'base64').toString('utf-8');
+      return JSON.parse(jsonString);
+    } catch (error) {
+      throw new Error('Failed to decompress Base64 string to JSON object.');
+    }
+  }
 }
