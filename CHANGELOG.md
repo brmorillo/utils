@@ -1,3 +1,12 @@
+## [9.1.1](https://github.com/brmorillo/util/compare/v9.1.0...v9.1.1) (2025-01-18)
+
+
+### Bug Fixes
+
+* timezone on remove date ([66402c8](https://github.com/brmorillo/util/commit/66402c86be9c77dbde24cc9a350ba7191ef69899))
+
+
+
 # [9.1.0](https://github.com/brmorillo/util/compare/v9.0.0...v9.1.0) (2025-01-18)
 
 
