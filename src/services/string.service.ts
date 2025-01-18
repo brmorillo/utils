@@ -111,11 +111,16 @@ export class StringUtils {
 
   /**
    * Counts the occurrences of a substring in a string.
+   *
+   * This function returns the number of times a specified substring appears in the given string.
+   *
    * @param input The string to search within.
    * @param substring The substring to count.
    * @returns The number of occurrences of the substring.
+   *
    * @example
-   * StringUtils.countOccurrences({ input: 'hello world hello', substring: 'hello' }); // 2
+   * countOccurrences({ input: 'hello world hello', substring: 'hello' }); // 2
+   * countOccurrences({ input: 'abc abc abc', substring: 'abc' }); // 3
    */
   public static countOccurrences({
     input,
@@ -129,12 +134,17 @@ export class StringUtils {
 
   /**
    * Replaces all occurrences of a substring in a string.
+   *
+   * This function replaces every instance of a specified substring in the input string with the given replacement string.
+   *
    * @param input The string to search within.
    * @param substring The substring to replace.
    * @param replacement The string to replace the substring with.
    * @returns The string with all occurrences of the substring replaced.
+   *
    * @example
-   * StringUtils.replaceAll({ input: 'hello world hello', substring: 'hello', replacement: 'hi' }); // "hi world hi"
+   * replaceAll({ input: 'hello world hello', substring: 'hello', replacement: 'hi' }); // "hi world hi"
+   * replaceAll({ input: 'abc abc abc', substring: 'abc', replacement: '123' }); // "123 123 123"
    */
   public static replaceAll({
     input,
@@ -150,44 +160,18 @@ export class StringUtils {
 
   /**
    * Replaces the first `x` occurrences of a substring in a string.
-   * @param input The string to search within.
-   * @param substring The substring to replace.
-   * @param replacement The string to replace the substring with.
-   * @param occurrences The number of occurrences to replace.
-   * @returns The string with the first `x` occurrences replaced.
-   * @example
-   * StringUtils.replaceOccurrences({ input: 'hello world hello', substring: 'hello', replacement: 'hi', occurrences: 1 }); // "hi world hello"
-   */
-  public static replaceAmountOccurrencies({
-    input,
-    substring,
-    replacement,
-    occurrences,
-  }: {
-    input: string;
-    substring: string;
-    replacement: string;
-    occurrences: number;
-  }): string {
-    return this.replaceOccurrences({
-      input,
-      substring,
-      replacement,
-      occurrences,
-    });
-  }
-
-  /**
-   * **Deprecated:** Use `replaceAmountOccurrencies` instead.
    *
-   * Replaces the first `x` occurrences of a substring in a string.
+   * This function allows you to replace only a specified number of occurrences of a substring within the input string.
+   *
    * @param input The string to search within.
    * @param substring The substring to replace.
    * @param replacement The string to replace the substring with.
    * @param occurrences The number of occurrences to replace.
    * @returns The string with the first `x` occurrences replaced.
+   *
    * @example
-   * StringUtils.replaceOccurrences({ input: 'hello world hello', substring: 'hello', replacement: 'hi', occurrences: 1 }); // "hi world hello"
+   * replaceOccurrences({ input: 'hello world hello', substring: 'hello', replacement: 'hi', occurrences: 1 }); // "hi world hello"
+   * replaceOccurrences({ input: 'abc abc abc', substring: 'abc', replacement: '123', occurrences: 2 }); // "123 123 abc"
    */
   public static replaceOccurrences({
     input,
@@ -200,10 +184,6 @@ export class StringUtils {
     replacement: string;
     occurrences: number;
   }): string {
-    console.warn(
-      'replaceOccurrences is deprecated. Use replaceAmountOccurrencies instead.',
-    );
-
     let count = 0;
     return input.replace(new RegExp(substring, 'g'), (match) => {
       if (count < occurrences) {
@@ -217,25 +197,31 @@ export class StringUtils {
   /**
    * Replaces placeholders in a string with corresponding values from a replacement map.
    *
-   * Placeholders in the string should be enclosed in curly braces `{}`.
-   * For example: "Hello, {name}!" can be replaced with a value for "name".
+   * This function scans the input string for placeholders enclosed in curly braces (`{}`) and replaces them
+   * with corresponding values from a provided replacements object.
    *
-   * @param string - The input string containing placeholders to be replaced.
-   * @param replacements - An object mapping placeholder keys (without braces) to their replacement values.
+   * @param string The input string containing placeholders to be replaced.
+   * @param replacements An object mapping placeholder keys (without braces) to their replacement values.
    * @returns A new string with placeholders replaced by their corresponding values from the replacements object.
    *
    * @example
    * const input = "Hello, {name}! You have {count} new messages.";
    * const replacements = { name: "John", count: "5" };
-   * const result = replaceOcurrencyArray(input, replacements);
+   * const result = replaceOcurrencies(input, replacements);
    * console.log(result); // "Hello, John! You have 5 new messages."
+   *
+   * @example
+   * const input = "Welcome, {user}! Your balance is {balance}.";
+   * const replacements = { user: "Alice", balance: "$100" };
+   * const result = replaceOcurrencies(input, replacements);
+   * console.log(result); // "Welcome, Alice! Your balance is $100."
    */
   public static replaceOcurrencies(
     string: string,
     replacements: Record<string, string>,
   ): string {
     return string.replace(/\{([^}]+)\}/g, (match, key) => {
-      return replacements[key] ?? match; // Substitui se a chave existir, senão mantém o valor original
+      return replacements[key] ?? match;
     });
   }
 }
