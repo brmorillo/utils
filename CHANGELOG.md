@@ -1,41 +1,26 @@
-# [9.0.0](https://github.com/brmorillo/util/compare/v8.3.3...v9.0.0) (2025-01-14)
+# [9.1.0](https://github.com/brmorillo/util/compare/v9.0.0...v9.1.0) (2025-01-18)
+
+
+### Bug Fixes
+
+* replace ocurrencies ([061a820](https://github.com/brmorillo/util/commit/061a820a3557f09b3ddd6277637467b6e1ba1091))
+
+
+
+# [9.0.0](https://github.com/brmorillo/util/compare/v8.1.2...v9.0.0) (2025-01-14)
 
 
 ### Bug Fixes
 
 * hashUtils ([b86e40c](https://github.com/brmorillo/util/commit/b86e40c5aeccb166fe0c42906fda00f86400199a))
+* package ([13e4215](https://github.com/brmorillo/util/commit/13e42153bedf6ebd880a8239f6bca380089cf05d))
+* version ([27235ff](https://github.com/brmorillo/util/commit/27235ff82779e3be02093dc97a8b2236b63550b6))
 
 
 ### Features
 
 * create cryptUtils ([fa829fa](https://github.com/brmorillo/util/commit/fa829fa1d6d2b002d04f5c102ae67aee00eceec7))
-
-
-
-## [8.3.3](https://github.com/brmorillo/util/compare/v8.3.2...v8.3.3) (2025-01-14)
-
-
-### Features
-
 * replaceOcurrencies ([2928c44](https://github.com/brmorillo/util/commit/2928c44e90d27f1b909fc63d6078e4141ca1abaf))
-
-
-
-## [8.3.2](https://github.com/brmorillo/util/compare/v8.1.3...v8.3.2) (2025-01-13)
-
-
-### Bug Fixes
-
-* version ([27235ff](https://github.com/brmorillo/util/commit/27235ff82779e3be02093dc97a8b2236b63550b6))
-
-
-
-## [8.1.3](https://github.com/brmorillo/util/compare/v8.1.2...v8.1.3) (2025-01-13)
-
-
-### Bug Fixes
-
-* package ([13e4215](https://github.com/brmorillo/util/commit/13e42153bedf6ebd880a8239f6bca380089cf05d))
 
 
 
@@ -43,18 +28,11 @@
 
 
 
-## [8.1.1](https://github.com/brmorillo/util/compare/v8.0.19...v8.1.1) (2025-01-10)
+## [8.1.1](https://github.com/brmorillo/util/compare/v8.0.17...v8.1.1) (2025-01-10)
 
 
 
-## [8.0.19](https://github.com/brmorillo/util/compare/v6.0.3...v8.0.19) (2025-01-10)
-
-
-### Bug Fixes
-
-* array services ([27e28fe](https://github.com/brmorillo/util/commit/27e28fe5b301f1f06d3dafecc7ba2c630c1e76af))
-* fix snowflake generate ([#8](https://github.com/brmorillo/util/issues/8)) ([2fd1767](https://github.com/brmorillo/util/commit/2fd1767da382efd51d3ac4ea1664570fe64f6ca6))
-* version ([09c8ae6](https://github.com/brmorillo/util/commit/09c8ae6e9595a8dfca3de55c36cbd07484e54988))
+## [8.0.17](https://github.com/brmorillo/util/compare/v7.1.1...v8.0.17) (2025-01-07)
 
 
 ### Reverts
@@ -63,73 +41,56 @@
 
 
 
-## [6.0.3](https://github.com/brmorillo/util/compare/v6.0.2...v6.0.3) (2025-01-01)
-
-
-
-## [6.0.2](https://github.com/brmorillo/util/compare/v5.6.1...v6.0.2) (2025-01-01)
+## [7.1.1](https://github.com/brmorillo/util/compare/v6.1.3...v7.1.1) (2025-01-04)
 
 
 ### Bug Fixes
 
-* snowflake generates ([60b9a3b](https://github.com/brmorillo/util/commit/60b9a3b5f5d56e6c1ff946a1808ac892dbd56b19))
+* array services ([27e28fe](https://github.com/brmorillo/util/commit/27e28fe5b301f1f06d3dafecc7ba2c630c1e76af))
+* version ([09c8ae6](https://github.com/brmorillo/util/commit/09c8ae6e9595a8dfca3de55c36cbd07484e54988))
 
 
 
-## [5.6.1](https://github.com/brmorillo/util/compare/v5.6.0...v5.6.1) (2024-12-31)
-
-
-### Features
-
-* package.json ([e5e9364](https://github.com/brmorillo/util/commit/e5e93646258391bbb7b7084865a743248588c344))
+## [6.1.3](https://github.com/brmorillo/util/compare/v6.1.2...v6.1.3) (2025-01-02)
 
 
 
-# [5.6.0](https://github.com/brmorillo/util/compare/v5.5.0...v5.6.0) (2024-12-31)
+## [6.1.2](https://github.com/brmorillo/util/compare/v6.1.1...v6.1.2) (2025-01-01)
 
 
 
-# [5.5.0](https://github.com/brmorillo/util/compare/v5.3.1...v5.5.0) (2024-12-31)
+## [6.1.1](https://github.com/brmorillo/util/compare/v6.0.3...v6.1.1) (2025-01-01)
 
 
-### Features
+### Bug Fixes
 
-* randomFloatInRange ([5f7700d](https://github.com/brmorillo/util/commit/5f7700d9a7e0a0c6424b279dc8724a0a17f20313))
-
-
-
-## [5.3.1](https://github.com/brmorillo/util/compare/v5.3.0...v5.3.1) (2024-12-31)
+* fix snowflake generate ([#8](https://github.com/brmorillo/util/issues/8)) ([2fd1767](https://github.com/brmorillo/util/commit/2fd1767da382efd51d3ac4ea1664570fe64f6ca6))
 
 
 
-# [5.3.0](https://github.com/brmorillo/util/compare/v5.2.0...v5.3.0) (2024-12-31)
-
-
-### Features
-
-* findSubset and isSubset ([fa711fa](https://github.com/brmorillo/util/commit/fa711fac8bf5c8fd168f8d141b684e73912daf62))
-
-
-
-# [5.2.0](https://github.com/brmorillo/util/compare/v5.1.0...v5.2.0) (2024-12-31)
+## [6.0.3](https://github.com/brmorillo/util/compare/v5.0.9...v6.0.3) (2025-01-01)
 
 
 ### Bug Fixes
 
 * all eol ([5106070](https://github.com/brmorillo/util/commit/5106070d8584d6e33130149df7ef94cf05e9b286))
+* snowflake generates ([60b9a3b](https://github.com/brmorillo/util/commit/60b9a3b5f5d56e6c1ff946a1808ac892dbd56b19))
 
 
 ### Features
 
 * convert to roman algarism ([aabc547](https://github.com/brmorillo/util/commit/aabc547f7989f0875e5afdceaba02e7971bec39c))
+* findSubset and isSubset ([fa711fa](https://github.com/brmorillo/util/commit/fa711fac8bf5c8fd168f8d141b684e73912daf62))
+* package.json ([e5e9364](https://github.com/brmorillo/util/commit/e5e93646258391bbb7b7084865a743248588c344))
+* randomFloatInRange ([5f7700d](https://github.com/brmorillo/util/commit/5f7700d9a7e0a0c6424b279dc8724a0a17f20313))
 
 
 
-# [5.1.0](https://github.com/brmorillo/util/compare/v5.0.10...v5.1.0) (2024-12-31)
+## [5.0.9](https://github.com/brmorillo/util/compare/v5.0.8...v5.0.9) (2024-12-31)
 
 
 
-## [5.0.10](https://github.com/brmorillo/util/compare/v5.0.7...v5.0.10) (2024-12-31)
+## [5.0.8](https://github.com/brmorillo/util/compare/v5.0.7...v5.0.8) (2024-12-31)
 
 
 ### Features
