@@ -68,7 +68,12 @@ export class DateUtils {
     date: DateTime | string;
     timeToRemove: Duration | Record<string, number>;
   }): DateTime {
-    const parsedDate = typeof date === 'string' ? DateTime.fromISO(date) : date;
+    const parsedDate =
+      typeof date === 'string'
+        ? DateTime.fromISO(date, { setZone: true })
+        : date;
+
+    // Subtraia o tempo mantendo o timezone original
     return parsedDate.minus(Duration.fromObject(timeToRemove));
   }
 
