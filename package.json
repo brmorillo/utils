@@ -1,79 +1,75 @@
 {
-  "name": "@brmorillo/utils",
-  "version": "9.1.1",
-  "description": "Public utility library",
-  "author": "Bruno Morillo",
-  "license": "MIT",
-  "private": false,
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "require": "./dist/index.cjs",
-      "import": "./dist/index.mjs"
-    }
-  },
+  "name": "@brmorillo/util",
+  "version": "1.0.0",
+  "description": "Utility library with standardized methods",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsup",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
-    "version": "npm run changelog && git add CHANGELOG.md",
-    "test": "jest --config jest.config.ts",
-    "test:watch": "jest --watch",
-    "lint:fix": "eslint \"src/**/*.{ts,tsx}\" --fix",
-    "format:fix": "prettier --write \"src/**/*.{ts,tsx,js,json,md}\"",
-    "fix": "npm run lint:fix && npm run format:fix",
-    "pub": "npm run fix && npm run build && npm publish --access public"
-  },
-  "dependencies": {
-    "@nestjs/common": "^10.4.15",
-    "@paralleldrive/cuid2": "^2.2.2",
-    "@sapphire/snowflake": "^3.5.5",
-    "bcryptjs": "^2.4.3",
-    "ua-parser-js": "^2.0.0",
-    "uuid": "^11.0.3"
-  },
-  "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
-    "@types/jest": "^29.5.14",
-    "@types/luxon": "^3.4.2",
-    "@types/node": "^22.10.6",
-    "@typescript-eslint/eslint-plugin": "^8.18.2",
-    "@typescript-eslint/parser": "^8.18.2",
-    "commitizen": "^4.3.1",
-    "conventional-changelog-cli": "^5.0.0",
-    "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^9.17.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "jest": "^29.7.0",
-    "luxon": "^3.5.0",
-    "prettier": "^3.4.2",
-    "ts-jest": "^29.2.5",
-    "ts-node": "^10.9.2",
-    "tsup": "^8.3.5",
-    "typescript": "^5.7.2"
+    "build": "tsc",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "test": "jest",
+    "prepare": "husky install",
+    "release": "standard-version",
+    "commit": "cz"
   },
   "keywords": [
-    "utility",
-    "collection",
-    "function",
-    "math",
-    "object",
-    "string",
-    "util",
     "utils",
     "typescript",
-    "library",
-    "uuid",
-    "validation",
-    "array"
+    "utility"
   ],
-  "files": [
-    "dist"
-  ],
+  "author": "Bruno Morillo <bruno@rmorillo.com> (https://github.com/brmorillo)",
+  "license": "GPL-3.0-or-later",
+  "private": false,
+  "dependencies": {
+    "@paralleldrive/cuid2": "^2.2.2",
+    "@sapphire/snowflake": "^3.5.1",
+    "bcryptjs": "^2.4.3",
+    "luxon": "^3.4.3",
+    "ua-parser-js": "^1.0.37",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.7.1",
+    "@commitlint/config-conventional": "^17.7.0",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jest": "^29.5.7",
+    "@types/luxon": "^3.3.3",
+    "@types/node": "^20.8.10",
+    "@types/ua-parser-js": "^0.7.38",
+    "@types/uuid": "^9.0.6",
+    "@typescript-eslint/eslint-plugin": "^6.9.1",
+    "@typescript-eslint/parser": "^6.9.1",
+    "commitizen": "^4.3.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^8.52.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "husky": "^8.0.3",
+    "jest": "^29.7.0",
+    "lint-staged": "^15.0.2",
+    "prettier": "^3.0.3",
+    "standard-version": "^9.5.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.2.2"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/brmorillo/util.git"
+  },
+  "bugs": {
+    "url": "https://github.com/brmorillo/util/issues"
+  },
+  "homepage": "https://github.com/brmorillo/util#readme",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }

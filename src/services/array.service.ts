@@ -1,20 +1,27 @@
 export class ArrayUtils {
   /**
    * Removes duplicate values from an array.
-   * @param array Array of values.
-   * @param keyFn Optional function to determine uniqueness based on a key.
-   * @returns Array with unique values.
+   * @param {object} params - The parameters for the method.
+   * @param {T[]} params.array - Array of values.
+   * @param {Function} [params.keyFn] - Optional function to determine uniqueness based on a key.
+   * @returns {T[]} Array with unique values.
    * @example
-   * ArrayUtils.removeDuplicates([1, 2, 2, 3]); // [1, 2, 3]
-   * ArrayUtils.removeDuplicates(
-   *   [{ id: 1 }, { id: 2 }, { id: 1 }],
-   *   (item) => item.id
-   * ); // [{ id: 1 }, { id: 2 }]
+   * ArrayUtils.removeDuplicates({ 
+   *   array: [1, 2, 2, 3] 
+   * }); // [1, 2, 3]
+   * 
+   * ArrayUtils.removeDuplicates({
+   *   array: [{ id: 1 }, { id: 2 }, { id: 1 }],
+   *   keyFn: (item) => item.id
+   * }); // [{ id: 1 }, { id: 2 }]
    */
-  public static removeDuplicates<T>(
-    array: T[],
-    keyFn?: (item: T) => string | number,
-  ): T[] {
+  public static removeDuplicates<T>({
+    array,
+    keyFn,
+  }: {
+    array: T[];
+    keyFn?: (item: T) => string | number;
+  }): T[] {
     if (!Array.isArray(array)) {
       throw new Error('Input must be an array');
     }
@@ -32,29 +39,46 @@ export class ArrayUtils {
 
   /**
    * Finds the intersection of two arrays.
-   * @param array1 First array.
-   * @param array2 Second array.
-   * @returns Array containing values present in both arrays.
+   * @param {object} params - The parameters for the method.
+   * @param {T[]} params.array1 - First array.
+   * @param {T[]} params.array2 - Second array.
+   * @returns {T[]} Array containing values present in both arrays.
    * @example
-   * ArrayUtils.intersect([1, 2, 3], [2, 3, 4]); // [2, 3]
+   * ArrayUtils.intersect({ 
+   *   array1: [1, 2, 3], 
+   *   array2: [2, 3, 4] 
+   * }); // [2, 3]
    */
-  public static intersect<T>(array1: T[], array2: T[]): T[] {
+  public static intersect<T>({
+    array1,
+    array2,
+  }: {
+    array1: T[];
+    array2: T[];
+  }): T[] {
     if (!Array.isArray(array1) || !Array.isArray(array2)) {
       throw new Error('Both inputs must be arrays');
     }
 
     const set2 = new Set(array2);
-    return array1.filter((value) => set2.delete(value));
+    return array1.filter((value) => set2.has(value));
   }
 
   /**
    * Flattens a multi-dimensional array into a single-dimensional array.
-   * @param array Multi-dimensional array.
-   * @returns Flattened array.
+   * @param {object} params - The parameters for the method.
+   * @param {(T | T[])[]} params.array - Multi-dimensional array.
+   * @returns {T[]} Flattened array.
    * @example
-   * ArrayUtils.flatten([1, [2, [3, 4]], 5]); // [1, 2, 3, 4, 5]
+   * ArrayUtils.flatten({ 
+   *   array: [1, [2, [3, 4]], 5] 
+   * }); // [1, 2, 3, 4, 5]
    */
-  public static flatten<T>(array: (T | T[])[]): T[] {
+  public static flatten<T>({
+    array,
+  }: {
+    array: (T | T[])[];
+  }): T[] {
     if (!Array.isArray(array)) {
       throw new Error('Input must be an array');
     }
@@ -76,19 +100,26 @@ export class ArrayUtils {
 
   /**
    * Groups elements of an array based on a grouping function.
-   * @param array Array of values.
-   * @param keyFn Function to determine the group key.
-   * @returns An object with keys as group identifiers and values as arrays of grouped elements.
+   * @param {object} params - The parameters for the method.
+   * @param {T[]} params.array - Array of values.
+   * @param {Function} params.keyFn - Function to determine the group key.
+   * @returns {Record<string | number, T[]>} An object with keys as group identifiers and values as arrays of grouped elements.
    * @example
-   * ArrayUtils.groupBy(
-   *   [{ type: 'fruit', name: 'apple' }, { type: 'vegetable', name: 'carrot' }],
-   *   (item) => item.type
-   * ); // { fruit: [...], vegetable: [...] }
+   * ArrayUtils.groupBy({
+   *   array: [
+   *     { type: 'fruit', name: 'apple' }, 
+   *     { type: 'vegetable', name: 'carrot' }
+   *   ],
+   *   keyFn: (item) => item.type
+   * }); // { fruit: [...], vegetable: [...] }
    */
-  public static groupBy<T>(
-    array: T[],
-    keyFn: (item: T) => string | number,
-  ): Record<string | number, T[]> {
+  public static groupBy<T>({
+    array,
+    keyFn,
+  }: {
+    array: T[];
+    keyFn: (item: T) => string | number;
+  }): Record<string | number, T[]> {
     if (!Array.isArray(array)) {
       throw new Error('Input must be an array');
     }
@@ -106,12 +137,19 @@ export class ArrayUtils {
 
   /**
    * Shuffles the elements of an array randomly.
-   * @param array Array to be shuffled.
-   * @returns New array with shuffled elements.
+   * @param {object} params - The parameters for the method.
+   * @param {T[]} params.array - Array to be shuffled.
+   * @returns {T[]} New array with shuffled elements.
    * @example
-   * ArrayUtils.shuffle([1, 2, 3, 4]); // [3, 1, 4, 2]
+   * ArrayUtils.shuffle({ 
+   *   array: [1, 2, 3, 4] 
+   * }); // [3, 1, 4, 2]
    */
-  public static shuffle<T>(array: T[]): T[] {
+  public static shuffle<T>({
+    array,
+  }: {
+    array: T[];
+  }): T[] {
     if (!Array.isArray(array)) {
       throw new Error('Input must be an array');
     }
@@ -126,16 +164,28 @@ export class ArrayUtils {
 
   /**
    * Sorts an array based on the specified order and key(s).
-   * @param array The array to be sorted.
-   * @param orderBy Sorting criteria.
-   * @returns A new array sorted based on the specified criteria.
+   * @param {object} params - The parameters for the method.
+   * @param {T[]} params.array - The array to be sorted.
+   * @param {'asc' | 'desc' | Record<string, 'asc' | 'desc'>} params.orderBy - Sorting criteria.
+   * @returns {T[]} A new array sorted based on the specified criteria.
    * @example
-   * ArrayUtils.sort(['c', 'a', 'b'], 'asc'); // ['a', 'b', 'c']
+   * ArrayUtils.sort({ 
+   *   array: ['c', 'a', 'b'], 
+   *   orderBy: 'asc' 
+   * }); // ['a', 'b', 'c']
+   * 
+   * ArrayUtils.sort({
+   *   array: [{ name: 'John', age: 30 }, { name: 'Jane', age: 25 }],
+   *   orderBy: { age: 'asc' }
+   * }); // [{ name: 'Jane', age: 25 }, { name: 'John', age: 30 }]
    */
-  public static sort<T>(
-    array: T[],
-    orderBy: 'asc' | 'desc' | Record<string, 'asc' | 'desc'>,
-  ): T[] {
+  public static sort<T>({
+    array,
+    orderBy,
+  }: {
+    array: T[];
+    orderBy: 'asc' | 'desc' | Record<string, 'asc' | 'desc'>;
+  }): T[] {
     if (!Array.isArray(array) || array.length === 0) {
       throw new Error('Input must be a non-empty array');
     }
@@ -171,10 +221,10 @@ export class ArrayUtils {
 
   /**
    * Finds the first object in an array where the subset matches the superset.
-   * @template T Type of the objects in the array.
-   * @param array Array of objects to search.
-   * @param subset Object containing key-value pairs to match.
-   * @returns The first object matching the subset, or `null` if not found.
+   * @param {object} params - The parameters for the method.
+   * @param {T[]} params.array - Array of objects to search.
+   * @param {Partial<T>} params.subset - Object containing key-value pairs to match.
+   * @returns {T | null} The first object matching the subset, or `null` if not found.
    * @example
    * ArrayUtils.findSubset({
    *   array: [
@@ -209,10 +259,10 @@ export class ArrayUtils {
 
   /**
    * Checks if a subset is fully contained within a superset.
-   * @template T Type of the objects being compared.
-   * @param superset The object to check against.
-   * @param subset The subset to validate.
-   * @returns `true` if the superset contains the subset, otherwise `false`.
+   * @param {object} params - The parameters for the method.
+   * @param {T} params.superset - The object to check against.
+   * @param {Partial<T>} params.subset - The subset to validate.
+   * @returns {boolean} `true` if the superset contains the subset, otherwise `false`.
    * @example
    * ArrayUtils.isSubset({
    *   superset: { id: 1, name: 'John' },

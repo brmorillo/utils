@@ -1,0 +1,34 @@
+# Source
+src/
+tests/
+__tests__/
+
+# Config files
+.eslintrc.js
+.prettierrc
+.versionrc.json
+jest.config.js
+tsconfig.json
+
+# Git files
+.git/
+.gitignore
+.husky/
+
+# CI/CD
+.github/
+
+# Docs
+CONTRIBUTING.md
+STRUCTURE.md
+
+# Development files
+*.log
+*.tgz
+coverage/
+node_modules/
+
+# Editor files
+.vscode/
+.idea/
+*.sublime-*
