@@ -1,6 +1,6 @@
 {
   "name": "@brmorillo/utils",
-  "version": "10.2.2",
+  "version": "10.2.3",
   "description": "Utility library with standardized methods",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
