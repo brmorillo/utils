@@ -40,6 +40,19 @@ export class NumberUtils {
   }
 
   /**
+   * Normalizes a number by converting negative zero (-0) to positive zero (0).
+   * @param {object} params - The parameters for the method.
+   * @param {number} params.value - The number to normalize.
+   * @returns {number} The normalized number.
+   * @example
+   * NumberUtils.normalize({ value: -0 }); // 0
+   * NumberUtils.normalize({ value: 5 }); // 5
+   */
+  public static normalize({ value }: { value: number }): number {
+    return Object.is(value, -0) ? 0 : value;
+  }
+
+  /**
    * Rounds a number down to the nearest integer.
    * @param {object} params - The parameters for the method.
    * @param {number} params.value - The number to round down.
@@ -50,7 +63,7 @@ export class NumberUtils {
    */
   public static roundDown({ value }: { value: number }): number {
     const result = Math.floor(value);
-    return Object.is(result, -0) ? 0 : result;
+    return NumberUtils.normalize({ value: result });
   }
 
   /**
@@ -64,7 +77,7 @@ export class NumberUtils {
    */
   public static roundUp({ value }: { value: number }): number {
     const result = Math.ceil(value);
-    return Object.is(result, -0) ? 0 : result;
+    return NumberUtils.normalize({ value: result });
   }
 
   /**
@@ -77,7 +90,8 @@ export class NumberUtils {
    * NumberUtils.roundToNearest({ value: 4.4 }); // 4
    */
   public static roundToNearest({ value }: { value: number }): number {
-    return Math.round(value);
+    const result = Math.round(value);
+    return NumberUtils.normalize({ value: result });
   }
 
   /**
@@ -98,7 +112,8 @@ export class NumberUtils {
     decimals?: number;
   }): number {
     const factor = Math.pow(10, decimals);
-    return Math.round(value * factor) / factor;
+    const result = Math.round(value * factor) / factor;
+    return NumberUtils.normalize({ value: result });
   }
 
   /**
@@ -137,7 +152,7 @@ export class NumberUtils {
         `Invalid number or decimal places: ${value}, ${decimalPlaces}`,
       );
     }
-    return value.toFixed(decimalPlaces);
+    return NumberUtils.normalize({ value }).toFixed(decimalPlaces);
   }
 
   /**
@@ -150,7 +165,8 @@ export class NumberUtils {
    * NumberUtils.removeDecimalPlaces({ value: -10.56 }); // -10
    */
   public static removeDecimalPlaces({ value }: { value: number }): number {
-    return Math.trunc(value);
+    const result = Math.trunc(value);
+    return NumberUtils.normalize({ value: result });
   }
 
   /**
@@ -244,7 +260,8 @@ export class NumberUtils {
     if (min > max) {
       [min, max] = [max, min];
     }
-    return Math.max(min, Math.min(max, value));
+    const result = Math.max(min, Math.min(max, value));
+    return NumberUtils.normalize({ value: result });
   }
 
   /**

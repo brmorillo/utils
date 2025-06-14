@@ -18,16 +18,16 @@ npm install @brmorillo/util
 import { Utils } from '@brmorillo/util';
 
 // Using ArrayUtils
-const uniqueArray = Utils.Array.removeDuplicates({ 
-  array: [1, 2, 2, 3] 
+const uniqueArray = Utils.Array.removeDuplicates({
+  array: [1, 2, 2, 3],
 }); // [1, 2, 3]
 
 // Using DateUtils
 const now = Utils.Date.now({ utc: true });
 
 // Using StringUtils
-const kebabCase = Utils.String.toKebabCase({ 
-  input: 'Hello World' 
+const kebabCase = Utils.String.toKebabCase({
+  input: 'Hello World',
 }); // "hello-world"
 ```
 
@@ -123,6 +123,7 @@ Este projeto utiliza o padrão de Conventional Commits para controle de versão 
 - `chore`: Alterações em ferramentas de build (não incrementa versão)
 
 Para indicar uma mudança que quebra compatibilidade (BREAKING CHANGE), adicione `BREAKING CHANGE:` no corpo ou rodapé do commit.
+
 ## Versionamento
 
 Este projeto utiliza o padrão de Conventional Commits para controle de versão.
@@ -154,3 +155,54 @@ Quando estiver pronto para lançar uma nova versão:
 - `chore`: Alterações em ferramentas de build (não incrementa versão)
 
 Para indicar uma mudança que quebra compatibilidade (BREAKING CHANGE), adicione `BREAKING CHANGE:` no corpo ou rodapé do commit.
+
+## Como usar a biblioteca
+
+Esta biblioteca pode ser importada e usada de várias maneiras:
+
+### Importação de classes específicas
+
+```typescript
+import { StringUtils, DateUtils } from '@brmorillo/util';
+
+// Usando métodos estáticos
+const kebabCase = StringUtils.toKebabCase({ input: 'Hello World' });
+```
+
+### Importação do objeto Utils
+
+```typescript
+import { Utils } from '@brmorillo/util';
+
+// Usando através do objeto Utils
+const kebabCase = Utils.String.toKebabCase({ input: 'Hello World' });
+```
+
+### Importação padrão (default)
+
+```typescript
+import util from '@brmorillo/util';
+
+// Usando através da importação padrão
+const kebabCase = util.StringUtils.toKebabCase({ input: 'Hello World' });
+// OU
+const snakeCase = util.Utils.String.toSnakeCase({ input: 'Hello World' });
+```
+
+## Módulos disponíveis
+
+- `ArrayUtils`: Utilitários para manipulação de arrays
+- `ConvertUtils`: Utilitários para conversão de tipos
+- `CryptUtils`: Utilitários para criptografia
+- `CuidUtils`: Utilitários para geração de IDs CUID
+- `DateUtils`: Utilitários para manipulação de datas
+- `HashUtils`: Utilitários para hashing
+- `MathUtils`: Utilitários matemáticos
+- `NumberUtils`: Utilitários para manipulação de números
+- `ObjectUtils`: Utilitários para manipulação de objetos
+- `RequestUtils`: Utilitários para requisições HTTP
+- `SnowflakeUtils`: Utilitários para IDs Snowflake
+- `SortUtils`: Utilitários para ordenação
+- `StringUtils`: Utilitários para manipulação de strings
+- `UUIDUtils`: Utilitários para geração de UUIDs
+- `ValidationUtils`: Utilitários para validação

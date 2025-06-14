@@ -3,9 +3,17 @@
   "version": "10.0.3",
   "description": "Utility library with standardized methods",
   "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
   "scripts": {
-    "build": "tsc",
+    "build": "tsup",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "format": "prettier --write \"src/**/*.ts\"",
     "test": "jest",
@@ -26,6 +34,7 @@
     "@paralleldrive/cuid2": "^2.2.2",
     "@sapphire/snowflake": "^3.5.5",
     "bcryptjs": "^2.4.3",
+    "clear": "link:..\\..\\..\\Users\\bruno\\AppData\\Local\\pnpm\\global\\5\\node_modules\\clear",
     "luxon": "^3.6.1",
     "ua-parser-js": "^1.0.40",
     "uuid": "^9.0.1"
@@ -52,6 +61,7 @@
     "prettier": "^3.5.3",
     "standard-version": "^9.5.0",
     "ts-jest": "^29.4.0",
+    "tsup": "^8.5.0",
     "typescript": "^5.8.3"
   },
   "lint-staged": {

@@ -13,7 +13,36 @@ import { SortUtils } from './services/sort.service';
 import { StringUtils } from './services/string.service';
 import { UUIDUtils } from './services/uuid.service';
 import { ValidationUtils } from './services/validation.service';
+import {
+  normalizeValue,
+  normalizeNumber,
+  createNormalizedProxy,
+} from './utils/normalize.util';
 
+// Exporta todas as classes de utilidades
+export {
+  ArrayUtils,
+  ConvertUtils,
+  CryptUtils,
+  CuidUtils,
+  DateUtils,
+  HashUtils,
+  MathUtils,
+  NumberUtils,
+  ObjectUtils,
+  RequestUtils,
+  SnowflakeUtils,
+  SortUtils,
+  StringUtils,
+  UUIDUtils,
+  ValidationUtils,
+  // Funções de normalização
+  normalizeValue,
+  normalizeNumber,
+  createNormalizedProxy,
+};
+
+// Exporta um objeto Utils que contém todas as utilidades para acesso mais conveniente
 export const Utils = {
   Array: ArrayUtils,
   Convert: ConvertUtils,
@@ -26,24 +55,37 @@ export const Utils = {
   Object: ObjectUtils,
   Request: RequestUtils,
   Snowflake: SnowflakeUtils,
+  Sort: SortUtils,
   String: StringUtils,
   Uuid: UUIDUtils,
   Validation: ValidationUtils,
-  Sort: SortUtils,
+  // Funções de normalização
+  normalize: {
+    value: normalizeValue,
+    number: normalizeNumber,
+    proxy: createNormalizedProxy,
+  },
 };
 
-export { ArrayUtils } from './services/array.service';
-export { ConvertUtils } from './services/convert.service';
-export { CryptUtils } from './services/crypt.service';
-export { CuidUtils } from './services/cuid.service';
-export { DateUtils } from './services/date.service';
-export { HashUtils } from './services/hash.service';
-export { MathUtils } from './services/math.service';
-export { NumberUtils } from './services/number.service';
-export { ObjectUtils } from './services/object.service';
-export { RequestUtils } from './services/request.service';
-export { SnowflakeUtils } from './services/snowflake.service';
-export { SortUtils } from './services/sort.service';
-export { StringUtils } from './services/string.service';
-export { UUIDUtils } from './services/uuid.service';
-export { ValidationUtils } from './services/validation.service';
+// Exportação padrão para compatibilidade com diferentes sistemas de módulos
+export default {
+  Utils,
+  ArrayUtils,
+  ConvertUtils,
+  CryptUtils,
+  CuidUtils,
+  DateUtils,
+  HashUtils,
+  MathUtils,
+  NumberUtils,
+  ObjectUtils,
+  RequestUtils,
+  SnowflakeUtils,
+  SortUtils,
+  StringUtils,
+  UUIDUtils,
+  ValidationUtils,
+  normalizeValue,
+  normalizeNumber,
+  createNormalizedProxy,
+};
