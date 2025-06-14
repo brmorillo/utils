@@ -123,3 +123,34 @@ Este projeto utiliza o padrão de Conventional Commits para controle de versão 
 - `chore`: Alterações em ferramentas de build (não incrementa versão)
 
 Para indicar uma mudança que quebra compatibilidade (BREAKING CHANGE), adicione `BREAKING CHANGE:` no corpo ou rodapé do commit.
+## Versionamento
+
+Este projeto utiliza o padrão de Conventional Commits para controle de versão.
+
+### Como fazer commits
+
+1. Use o comando `pnpm commit` para garantir que seu commit siga o padrão correto
+   - Isso iniciará um assistente interativo para criar um commit padronizado
+
+### Como gerar uma nova versão
+
+Quando estiver pronto para lançar uma nova versão:
+
+1. Execute `pnpm version:bump`
+   - Isso incrementará a versão com base nos commits (feat: minor, fix: patch, BREAKING CHANGE: major)
+   - Gerará uma nova tag com a versão atualizada
+   - Atualizará o CHANGELOG.md com as alterações
+   - Fará push das alterações e tags para o repositório remoto
+
+### Tipos de commit e seu impacto na versão
+
+- `feat`: Nova funcionalidade (incrementa versão minor)
+- `fix`: Correção de bug (incrementa versão patch)
+- `docs`: Alterações na documentação (não incrementa versão)
+- `style`: Alterações de formatação (não incrementa versão)
+- `refactor`: Refatoração de código (não incrementa versão)
+- `perf`: Melhorias de performance (não incrementa versão)
+- `test`: Adição ou correção de testes (não incrementa versão)
+- `chore`: Alterações em ferramentas de build (não incrementa versão)
+
+Para indicar uma mudança que quebra compatibilidade (BREAKING CHANGE), adicione `BREAKING CHANGE:` no corpo ou rodapé do commit.

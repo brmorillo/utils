@@ -19,7 +19,7 @@ module.exports = {
       ]
     ],
     'scope-empty': [2, 'never'],
-    'subject-case': [2, 'always', 'sentence-case'],
+    'subject-case': [0, 'always', 'sentence-case'],
     'body-max-line-length': [2, 'always', 100]
   }
 };

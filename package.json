@@ -12,7 +12,7 @@
     "prepare": "husky install",
     "release": "standard-version",
     "commit": "cz",
-    "postcommit": "npm run release && git push --follow-tags origin main"
+    "version:bump": "standard-version && git push --follow-tags origin main"
   },
   "keywords": [
     "utils",
