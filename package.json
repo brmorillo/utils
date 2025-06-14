@@ -1,5 +1,5 @@
 {
-  "name": "@brmorillo/util",
+  "name": "@brmorillo/utils",
   "version": "10.2.0",
   "description": "Utility library with standardized methods",
   "main": "dist/index.js",
@@ -72,12 +72,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/brmorillo/util.git"
+    "url": "https://github.com/brmorillo/utils.git"
   },
   "bugs": {
-    "url": "https://github.com/brmorillo/util/issues"
+    "url": "https://github.com/brmorillo/utils/issues"
   },
-  "homepage": "https://github.com/brmorillo/util#readme",
+  "homepage": "https://github.com/brmorillo/utils#readme",
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
