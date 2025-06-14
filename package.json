@@ -20,7 +20,8 @@
     "prepare": "husky install",
     "release": "standard-version",
     "commit": "cz",
-    "version:bump": "standard-version && git push --follow-tags origin main"
+    "version:bump": "standard-version && git push --follow-tags origin main",
+    "pub": "npm run build && npm publish --access public"
   },
   "keywords": [
     "utils",
