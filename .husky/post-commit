@@ -1,4 +1,11 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# Evita loop infinito verificando se o commit atual é de versionamento
+commit_msg=$(git log -1 --pretty=%B)
+if echo "$commit_msg" | grep -q "chore(release)"; then
+  echo "Commit de release detectado, pulando bump de versão"
+  exit 0
+fi
+
 npm run version:bump
