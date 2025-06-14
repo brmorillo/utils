@@ -2,9 +2,13 @@ import { defineConfig } from 'tsup';
 
 export default defineConfig({
   entry: ['src/index.ts'],
-  format: ['cjs', 'esm'], // Gera CommonJS (.cjs) e ESM (.mjs)
-  outExtension: ({ format }) =>
-    format === 'cjs' ? { js: '.cjs' } : { js: '.mjs' }, // Extensões personalizadas
-  dts: true, // Gera tipos TypeScript
-  clean: true, // Limpa a pasta dist antes de compilar
+  format: ['cjs', 'esm'],
+  dts: true,
+  clean: true,
+  sourcemap: true,
+  minify: false,
+  target: 'es2020',
+  outExtension: ({ format }) => ({
+    js: format === 'cjs' ? '.js' : '.mjs',
+  }),
 });

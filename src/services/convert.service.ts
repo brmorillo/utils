@@ -15,12 +15,17 @@ export class ConvertUtils {
 
   /**
    * Converts a value from one space measurement to another using meters as the base unit.
-   * @param value The value to be converted.
-   * @param fromType The source unit type (e.g., 'meters').
-   * @param toType The target unit type (e.g., 'kilometers').
-   * @returns The converted value.
+   * @param {object} params - The parameters for the method.
+   * @param {number} params.value - The value to be converted.
+   * @param {keyof typeof ConvertUtils.spaceType} params.fromType - The source unit type (e.g., 'meters').
+   * @param {keyof typeof ConvertUtils.spaceType} params.toType - The target unit type (e.g., 'kilometers').
+   * @returns {number} The converted value.
    * @example
-   * ConvertUtils.convertSpace({ value: 1000, fromType: 'meters', toType: 'kilometers' }); // 1
+   * ConvertUtils.space({
+   *   value: 1000,
+   *   fromType: 'meters',
+   *   toType: 'kilometers'
+   * }); // 1
    */
   public static space({
     value,
@@ -47,12 +52,17 @@ export class ConvertUtils {
 
   /**
    * Converts a value from one weight measurement to another using kilograms as the base unit.
-   * @param value The value to be converted.
-   * @param fromType The source unit type (e.g., 'kilograms').
-   * @param toType The target unit type (e.g., 'pounds').
-   * @returns The converted value.
+   * @param {object} params - The parameters for the method.
+   * @param {number} params.value - The value to be converted.
+   * @param {keyof typeof ConvertUtils.weightType} params.fromType - The source unit type (e.g., 'kilograms').
+   * @param {keyof typeof ConvertUtils.weightType} params.toType - The target unit type (e.g., 'pounds').
+   * @returns {number} The converted value.
    * @example
-   * ConvertUtils.convertWeight({ value: 1, fromType: 'kilograms', toType: 'pounds' }); // 2.20462
+   * ConvertUtils.weight({
+   *   value: 1,
+   *   fromType: 'kilograms',
+   *   toType: 'pounds'
+   * }); // 2.20462
    */
   public static weight({
     value,
@@ -79,12 +89,17 @@ export class ConvertUtils {
 
   /**
    * Converts a value from one volume measurement to another using liters as the base unit.
-   * @param value The value to be converted.
-   * @param fromType The source unit type (e.g., 'liters').
-   * @param toType The target unit type (e.g., 'gallons').
-   * @returns The converted value.
+   * @param {object} params - The parameters for the method.
+   * @param {number} params.value - The value to be converted.
+   * @param {keyof typeof ConvertUtils.volumeType} params.fromType - The source unit type (e.g., 'liters').
+   * @param {keyof typeof ConvertUtils.volumeType} params.toType - The target unit type (e.g., 'gallons').
+   * @returns {number} The converted value.
    * @example
-   * ConvertUtils.convertVolume({ value: 1, fromType: 'liters', toType: 'gallons' }); // 0.264172
+   * ConvertUtils.volume({
+   *   value: 1,
+   *   fromType: 'liters',
+   *   toType: 'gallons'
+   * }); // 0.264172
    */
   public static volume({
     value,
@@ -101,14 +116,30 @@ export class ConvertUtils {
 
   /**
    * Converts a value between types by inferring the type of the input.
-   * @param value The value to be converted.
-   * @param toType The target type ('string', 'integer', 'number', 'bigint', or 'roman').
-   * @returns The converted value or `null` if conversion is not possible.
+   * @param {object} params - The parameters for the method.
+   * @param {any} params.value - The value to be converted.
+   * @param {'string' | 'integer' | 'number' | 'bigint' | 'roman'} params.toType - The target type.
+   * @returns {any} The converted value or `null` if conversion is not possible.
    * @example
-   * ConvertUtils.convertValue({ value: "42", toType: "number" }); // 42
-   * ConvertUtils.convertValue({ value: 42, toType: "string" }); // "42"
-   * ConvertUtils.convertValue({ value: "42", toType: "bigint" }); // 42n
-   * ConvertUtils.convertValue({ value: 42, toType: "roman" }); // "XLII"
+   * ConvertUtils.value({
+   *   value: "42",
+   *   toType: "number"
+   * }); // 42
+   *
+   * ConvertUtils.value({
+   *   value: 42,
+   *   toType: "string"
+   * }); // "42"
+   *
+   * ConvertUtils.value({
+   *   value: "42",
+   *   toType: "bigint"
+   * }); // 42n
+   *
+   * ConvertUtils.value({
+   *   value: 42,
+   *   toType: "roman"
+   * }); // "XLII"
    */
   public static value({
     value,
@@ -174,10 +205,11 @@ export class ConvertUtils {
         I: 1,
       };
 
+      let tempValue = value;
       for (const [roman, numericValue] of Object.entries(romanNumerals)) {
-        while (value >= numericValue) {
+        while (tempValue >= numericValue) {
           result += roman;
-          value -= numericValue;
+          tempValue -= numericValue;
         }
       }
 

@@ -1,259 +1,208 @@
-# @brmorillo/utils
+# @brmorillo/util
 
-## Project Description
+A comprehensive utility library with standardized methods for common operations.
 
-**@brmorillo/utils** is a TypeScript utility library designed to simplify common tasks by providing efficient and reusable implementations. It works seamlessly in both Node.js and browser environments.
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
+[![Non-Commercial](https://img.shields.io/badge/License-Non%20Commercial-red.svg)](./docs/LICENSE_INFO.md)
 
----
-
-## Installation and Usage
-
-### Install
-
-To add the library to your project, use:
+## Installation
 
 ```bash
-npm install @brmorillo/utils
+npm install @brmorillo/util
 ```
 
-or if you use Yarn:
-
-```bash
-yarn add @brmorillo/utils
-```
-
-or with pnpm:
-
-```bash
-pnpm add @brmorillo/utils
-```
-
-### Usage
-
-#### Import the specific utilities you need:
+## Usage
 
 ```typescript
-import { ArrayUtils, MathUtils, StringUtils } from '@brmorillo/utils';
+import { Utils } from '@brmorillo/util';
 
-// Example usage
-console.log(ArrayUtils.removeDuplicates({ array: [1, 2, 2, 3] })); // [1, 2, 3]
-console.log(MathUtils.roundToDecimals({ value: 3.14159, decimals: 2 })); // 3.14
-console.log(StringUtils.capitalizeFirstLetter({ input: 'hello' })); // "Hello"
+// Using ArrayUtils
+const uniqueArray = Utils.Array.removeDuplicates({
+  array: [1, 2, 2, 3],
+}); // [1, 2, 3]
+
+// Using DateUtils
+const now = Utils.Date.now({ utc: true });
+
+// Using StringUtils
+const kebabCase = Utils.String.toKebabCase({
+  input: 'Hello World',
+}); // "hello-world"
 ```
 
-#### Or import the entire library:
+## Available Utilities
 
-```typescript
-import Utils from '@brmorillo/utils';
+- **ArrayUtils**: Array manipulation methods
+- **ConvertUtils**: Unit and type conversions
+- **CryptUtils**: Encryption and decryption operations
+- **CuidUtils**: CUID generation and validation
+- **DateUtils**: Date manipulation using Luxon
+- **HashUtils**: Hashing and comparing values
+- **MathUtils**: Mathematical operations
+- **NumberUtils**: Number manipulation
+- **ObjectUtils**: Object operations
+- **RequestUtils**: HTTP request data extraction
+- **SnowflakeUtils**: Snowflake ID generation and decoding
+- **SortUtils**: Various sorting algorithms
+- **StringUtils**: String manipulation
+- **UUIDUtils**: UUID generation and validation
+- **ValidationUtils**: Data validation
 
-console.log(Utils.ArrayUtils.removeDuplicates({ array: [1, 2, 3, 3] })); // [1, 2, 3]
-console.log(Utils.MathUtils.randomInRange({ min: 5, max: 10 })); // Random value between 5 and 10
+## Features
+
+- All methods accept objects as parameters for consistency
+- Complete JSDoc documentation with detailed examples
+- Full TypeScript typing
+- Comprehensive unit tests
+- Semantic versioning
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Run linting
+npm run lint
+
+# Format code
+npm run format
+
+# Build the library
+npm run build
+
+# Run tests
+npm run test
+
+# Create a commit (using Commitizen)
+npm run commit
+
+# Create a new release
+npm run release
 ```
 
----
+## Documentation
 
-## Project Features
-
-### Array Utility Functions
-
-1. **`removeDuplicates`**: Removes duplicate values from an array.
-2. **`intersect`**: Finds the intersection of two arrays.
-3. **`flatten`**: Flattens a multi-dimensional array into a single-dimensional array.
-4. **`groupBy`**: Groups elements of an array based on a grouping function.
-5. **`shuffle`**: Shuffles the elements of an array randomly.
-6. **`findSubset`**: Finds the first object in an array where the subset matches the superset.
-7. **`isSubset`**: Checks if a subset object is fully contained within a superset object.
-
-### Conversion Utility Functions
-
-1. **`convertSpace`**: Converts values between different units of space.
-2. **`convertWeight`**: Converts values between different units of weight.
-3. **`convertVolume`**: Converts values between different units of volume.
-4. **`convertValue`**: Converts values between `string`, `number`, and `bigint`.
-
-### Cryptography Utility Functions
-
-1. **`aesEncrypt`**: Encrypts data using AES-256-CBC.
-2. **`aesDecrypt`**: Decrypts data encrypted with AES-256-CBC.
-3. **`chacha20Encrypt`**: Encrypts data using ChaCha20.
-4. **`chacha20Decrypt`**: Decrypts data encrypted with ChaCha20.
-5. **`rsaGenerateKeyPair`**: Generates an RSA key pair.
-6. **`rsaEncrypt`**: Encrypts data using an RSA public key.
-7. **`rsaDecrypt`**: Decrypts data encrypted with an RSA public key using the private key.
-8. **`rsaSign`**: Signs data using an RSA private key.
-9. **`rsaVerify`**: Verifies a signature using an RSA public key.
-10. **`eddsaGenerateKeyPair`**: Generates an EdDSA key pair (using Ed25519).
-11. **`eddsaSign`**: Signs data using an EdDSA private key.
-12. **`eddsaVerify`**: Verifies an EdDSA signature using a public key.
-13. **`blowfishEncrypt`**: Encrypts data using Blowfish.
-14. **`blowfishDecrypt`**: Decrypts data encrypted with Blowfish.
-15. **`tripleDESEncrypt`**: Encrypts data using Triple DES.
-16. **`tripleDESDecrypt`**: Decrypts data encrypted with Triple DES.
-17. **`twofishEncrypt`**: Encrypts data using Twofish.
-18. **`twofishDecrypt`**: Decrypts data encrypted with Twofish.
-19. **`serpentEncrypt`**: Encrypts data using Serpent.
-20. **`serpentDecrypt`**: Decrypts data encrypted with Serpent.
-
-### Date Utility Functions
-
-1. **`now`**: Returns the current date and time.
-2. **`createInterval`**: Creates an interval between two dates.
-3. **`addTime`**: Adds a specific duration to a date.
-4. **`removeTime`**: Subtracts a specific duration from a date.
-5. **`diffBetween`**: Calculates the difference between two dates.
-6. **`toUTC`**: Converts a date to UTC.
-7. **`toTimeZone`**: Converts a date to a specified timezone.
-
-### Hash Utility Functions
-
-1. **`bcryptHash`**: Encrypts a string value using bcrypt.
-2. **`bcryptCompare`**: Compares a string value with an encrypted value.
-3. **`bcryptRandomString`**: Generates a random string using bcrypt.
-4. **`sha256Hash`**: Hashes a string value using SHA-256.
-5. **`sha256HashJson`**: Hashes a JSON object using SHA-256.
-6. **`sha256GenerateToken`**: Generates a random token using SHA-256.
-7. **`sha512Hash`**: Hashes a string value using SHA-512.
-8. **`sha512HashJson`**: Hashes a JSON object using SHA-512.
-9. **`sha512GenerateToken`**: Generates a random token using SHA-512.
-
-### Math Utility Functions
-
-1. **`roundToDecimals`**: Rounds a number to the specified number of decimal places.
-2. **`calculatePercentage`**: Calculates the percentage of a value.
-3. **`gcd`**: Finds the greatest common divisor of two numbers.
-4. **`lcm`**: Finds the least common multiple of two numbers.
-5. **`randomInRange`**: Generates a random number within a range.
-6. **`clamp`**: Clamps a number within a range.
-
-### Number Utility Functions
-
-1. **`isEven`**: Checks if a number is even.
-2. **`isOdd`**: Checks if a number is odd.
-3. **`roundDown`**: Rounds a number down to the nearest integer.
-4. **`roundUp`**: Rounds a number up to the nearest integer.
-5. **`roundToNearest`**: Rounds a number to the nearest integer.
-6. **`toCents`**: Converts a number to cents.
-7. **`addDecimalPlaces`**: Adds decimal places to a number.
-8. **`removeDecimalPlaces`**: Removes decimal places from a number.
-9. **`randomIntegerInRange`**: Generates a random integer within a range.
-10. **`factorial`**: Calculates the factorial of a number.
-11. **`clamp`**: Clamps a number within a range.
-12. **`isPrime`**: Checks if a number is a prime.
-
-### Object Utility Functions
-
-1. **`findValue`**: Finds a value in an object by a specified key or path.
-2. **`deepClone`**: Creates a deep clone of an object.
-3. **`deepMerge`**: Deeply merges two objects.
-4. **`pick`**: Picks specific keys from an object.
-5. **`omit`**: Omits specific keys from an object.
-6. **`flattenObject`**: Flattens a nested object into a single level.
-7. **`invert`**: Inverts the keys and values of an object.
-8. **`deepFreeze`**: Deeply freezes an object, making it immutable.
-9. **`compare`**: Deeply compares two objects for equality.
-10. **`groupBy`**: Groups the keys of an object based on a callback function.
-11. **`diff`**: Finds the difference between two objects.
-12. **`unflattenObject`**: Sets a value in a nested object by a dot-separated path.
-13. **`compressObject`**: Compresses a JSON object by converting it to a minified string.
-14. **`decompressObject`**: Decompresses a JSON string back into an object.
-15. **`compressObjectToBase64`**: Compresses and encodes a JSON object to a Base64 string.
-16. **`decompressBase64ToObject`**: Decompresses a Base64-encoded JSON string back to a JSON object.
-
-### Request Utility Functions
-
-1. **`extractRequestData`**: Extracts relevant data from an HTTP request object.
-
-### Snowflake Utility Functions
-
-1. **`generate`**: Generates a Snowflake ID using a custom epoch.
-2. **`decode`**: Deconstructs a Snowflake ID into its components.
-3. **`getTimestamp`**: Extracts the timestamp from a Snowflake ID.
-
-### Sorting Algorithms Utility Functions
-
-1. **`bubbleSort`**: Implements Bubble Sort with a time complexity of O(n²) in the worst case.
-2. **`mergeSort`**: Implements Merge Sort with a time complexity of O(n log n).
-3. **`quickSort`**: Implements Quick Sort with a time complexity of O(n log n) on average.
-4. **`heapSort`**: Implements Heap Sort with a time complexity of O(n log n).
-5. **`selectionSort`**: Implements Selection Sort with a time complexity of O(n²).
-6. **`insertionSort`**: Implements Insertion Sort, efficient for small or nearly sorted datasets.
-7. **`shellSort`**: Implements Shell Sort with an average time complexity of O(n log² n).
-8. **`countingSort`**: Implements Counting Sort, effective for integers with limited range.
-9. **`radixSort`**: Implements Radix Sort for non-negative integers, processing digits or characters.
-10. **`bucketSort`**: Implements Bucket Sort, dividing the array into buckets and sorting each.
-11. **`timSort`**: Combines Merge Sort and Insertion Sort, used in Python and Java.
-12. **`bogoSort`**: Implements Bogo Sort, an inefficient and impractical sorting algorithm.
-13. **`gnomeSort`**: Implements Gnome Sort, a variation of Insertion Sort with O(n²) complexity.
-14. **`pancakeSort`**: Implements Pancake Sort, flipping subarrays to sort.
-15. **`combSort`**: An improved version of Bubble Sort using larger initial gaps.
-16. **`cocktailShakerSort`**: A bi-directional Bubble Sort that eliminates turtles.
-17. **`bitonicSort`**: Optimized for parallel systems, with O(n log² n) complexity.
-18. **`stoogeSort`**: An academic curiosity with O(n².7095) complexity.
-
-### String Utility Functions
-
-1. **`capitalizeFirstLetter`**: Capitalizes the first letter of a string.
-2. **`reverseString`**: Reverses a string.
-3. **`isPalindrome`**: Checks if a string is a palindrome.
-4. **`truncateString`**: Truncates a string to a specified length.
-5. **`toKebabCase`**: Converts a string to kebab-case.
-6. **`toSnakeCase`**: Converts a string to snake_case.
-7. **`countOccurrences`**: Counts the occurrences of a substring.
-
-### Validation Utility Functions
-
-1. **`isValidEmail`**: Validates if a string is a valid email address.
-2. **`isValidURL`**: Validates if a string is a valid URL.
-3. **`isValidPhoneNumber`**: Validates if a string is a valid phone number.
-4. **`isNumber`**: Checks if a value is a number.
-5. **`isValidHexColor`**: Validates if a string is a hexadecimal color.
-6. **`hasMinLength`**: Checks if a string has a minimum length.
-7. **`isValidJSON`**: Validates if a string is a JSON.
-
----
-
-## Contribution Guidelines
-
-### How to Contribute
-
-1. **Branch naming**: Use descriptive names like `feat/feature-name` or `fix/bug-name`.
-2. **Pull Requests**: Ensure proper tests are included and reviewed before merging.
-3. **Commit Messages**: Follow the convention:
-   - `feat: Added a new feature`
-   - `fix: Resolved an issue`
-   - `docs: Updated documentation`
-   - `chore: Performed maintenance tasks`
-
-### Publish Process
-
-1. **Update version**:
-   ```bash
-   npm version [patch|minor|major]
-   ```
-2. **Publish package**:
-   ```bash
-   npm run pub
-   ```
-
----
-
-## Support
-
-If you find this library helpful, consider supporting its development:
-
-- **Pix**: `bruno@rmorillo.com`
-
-- **Cryptocurrencies**:
-
-  - **Dogecoin (DOGE):** `DLwW5LFfXV7wN7a7dVV6TX7kiomVnYABXM`
-  - **Tether (USDT):** `0x2b1f5169e3719E0A25850a178db54d8D1C0c12E0`
-  - **Bitcoin (BTC):** `bc1qk5cakfryrx8dw3w6uqudwkpm9apvd6h5mgl8kg`
-  - **Ethereum (ETH):** `0x2b1f5169e3719E0A25850a178db54d8D1C0c12E0`
-
-Feel free to contribute or share feedback!
-
----
+- [Contributing Guide](./docs/CONTRIBUTING.md)
+- [Code of Conduct](./docs/CODE_OF_CONDUCT.md)
+- [Commit Convention](./docs/COMMIT_CONVENTION.md)
+- [Security Policy](./docs/SECURITY.md)
+- [Project Structure](./docs/STRUCTURE.md)
+- [License Information](./docs/LICENSE_INFO.md)
+- [Changelog](./CHANGELOG.md)
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the GNU General Public License v3.0 with additional non-commercial terms. This software is free and may not be used for commercial purposes.
+
+## Author
+
+Bruno Morillo ([@brmorillo](https://github.com/brmorillo)) - bruno@rmorillo.com
+
+## Versionamento
+
+Este projeto utiliza o padrão de Conventional Commits para controle de versão automático. Ao fazer um commit:
+
+1. Use o comando `npm run commit` para garantir que seu commit siga o padrão correto
+2. O sistema automaticamente:
+   - Incrementa a versão com base no tipo de commit (feat: minor, fix: patch, BREAKING CHANGE: major)
+   - Gera uma nova tag com a versão atualizada
+   - Atualiza o CHANGELOG.md com as alterações
+   - Faz push das alterações e tags para o repositório remoto
+
+### Tipos de commit e seu impacto na versão
+
+- `feat`: Nova funcionalidade (incrementa versão minor)
+- `fix`: Correção de bug (incrementa versão patch)
+- `docs`: Alterações na documentação (não incrementa versão)
+- `style`: Alterações de formatação (não incrementa versão)
+- `refactor`: Refatoração de código (não incrementa versão)
+- `perf`: Melhorias de performance (não incrementa versão)
+- `test`: Adição ou correção de testes (não incrementa versão)
+- `chore`: Alterações em ferramentas de build (não incrementa versão)
+
+Para indicar uma mudança que quebra compatibilidade (BREAKING CHANGE), adicione `BREAKING CHANGE:` no corpo ou rodapé do commit.
+
+## Versionamento
+
+Este projeto utiliza o padrão de Conventional Commits para controle de versão.
+
+### Como fazer commits
+
+1. Use o comando `pnpm commit` para garantir que seu commit siga o padrão correto
+   - Isso iniciará um assistente interativo para criar um commit padronizado
+
+### Como gerar uma nova versão
+
+Quando estiver pronto para lançar uma nova versão:
+
+1. Execute `pnpm version:bump`
+   - Isso incrementará a versão com base nos commits (feat: minor, fix: patch, BREAKING CHANGE: major)
+   - Gerará uma nova tag com a versão atualizada
+   - Atualizará o CHANGELOG.md com as alterações
+   - Fará push das alterações e tags para o repositório remoto
+
+### Tipos de commit e seu impacto na versão
+
+- `feat`: Nova funcionalidade (incrementa versão minor)
+- `fix`: Correção de bug (incrementa versão patch)
+- `docs`: Alterações na documentação (não incrementa versão)
+- `style`: Alterações de formatação (não incrementa versão)
+- `refactor`: Refatoração de código (não incrementa versão)
+- `perf`: Melhorias de performance (não incrementa versão)
+- `test`: Adição ou correção de testes (não incrementa versão)
+- `chore`: Alterações em ferramentas de build (não incrementa versão)
+
+Para indicar uma mudança que quebra compatibilidade (BREAKING CHANGE), adicione `BREAKING CHANGE:` no corpo ou rodapé do commit.
+
+## Como usar a biblioteca
+
+Esta biblioteca pode ser importada e usada de várias maneiras:
+
+### Importação de classes específicas
+
+```typescript
+import { StringUtils, DateUtils } from '@brmorillo/util';
+
+// Usando métodos estáticos
+const kebabCase = StringUtils.toKebabCase({ input: 'Hello World' });
+```
+
+### Importação do objeto Utils
+
+```typescript
+import { Utils } from '@brmorillo/util';
+
+// Usando através do objeto Utils
+const kebabCase = Utils.String.toKebabCase({ input: 'Hello World' });
+```
+
+### Importação padrão (default)
+
+```typescript
+import util from '@brmorillo/util';
+
+// Usando através da importação padrão
+const kebabCase = util.StringUtils.toKebabCase({ input: 'Hello World' });
+// OU
+const snakeCase = util.Utils.String.toSnakeCase({ input: 'Hello World' });
+```
+
+## Módulos disponíveis
+
+- `ArrayUtils`: Utilitários para manipulação de arrays
+- `ConvertUtils`: Utilitários para conversão de tipos
+- `CryptUtils`: Utilitários para criptografia
+- `CuidUtils`: Utilitários para geração de IDs CUID
+- `DateUtils`: Utilitários para manipulação de datas
+- `HashUtils`: Utilitários para hashing
+- `MathUtils`: Utilitários matemáticos
+- `NumberUtils`: Utilitários para manipulação de números
+- `ObjectUtils`: Utilitários para manipulação de objetos
+- `RequestUtils`: Utilitários para requisições HTTP
+- `SnowflakeUtils`: Utilitários para IDs Snowflake
+- `SortUtils`: Utilitários para ordenação
+- `StringUtils`: Utilitários para manipulação de strings
+- `UUIDUtils`: Utilitários para geração de UUIDs
+- `ValidationUtils`: Utilitários para validação

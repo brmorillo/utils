@@ -2,7 +2,7 @@ import { normalizeValue } from '../utils/normalize.util';
 
 export function Normalize(target: any) {
   const methodNames = Object.getOwnPropertyNames(target.prototype).filter(
-    (key) => typeof target.prototype[key] === 'function',
+    key => typeof target.prototype[key] === 'function',
   );
 
   for (const methodName of methodNames) {

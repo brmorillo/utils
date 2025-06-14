@@ -1,18 +1,22 @@
 export class MathUtils {
   /**
    * Rounds a number to the specified number of decimal places.
-   * @param value The number to be rounded
-   * @param decimals The number of decimal places
-   * @returns Rounded number
+   * @param {object} params - The parameters for the method.
+   * @param {number} params.value - The number to be rounded.
+   * @param {number} [params.decimals=2] - The number of decimal places.
+   * @returns {number} Rounded number.
    * @example
-   * MathUtils.roundToDecimals({ value: 3.14159, decimals: 2 }) // 3.14
+   * MathUtils.roundToDecimals({
+   *   value: 3.14159,
+   *   decimals: 2
+   * }); // 3.14
    */
   public static roundToDecimals({
     value,
     decimals = 2,
   }: {
     value: number;
-    decimals: number;
+    decimals?: number;
   }): number {
     const factor = Math.pow(10, decimals);
     return Math.round(value * factor) / factor;
@@ -20,11 +24,16 @@ export class MathUtils {
 
   /**
    * Calculates the percentage of a value.
-   * @param total The total value
-   * @param part The part value
-   * @returns Percentage of the part relative to the total
+   * @param {object} params - The parameters for the method.
+   * @param {number} params.total - The total value.
+   * @param {number} params.part - The part value.
+   * @returns {number} Percentage of the part relative to the total.
+   * @throws {Error} If total is zero.
    * @example
-   * MathUtils.calculatePercentage({ total: 200, part: 50 }) // 25
+   * MathUtils.percentage({
+   *   total: 200,
+   *   part: 50
+   * }); // 25
    */
   public static percentage({
     total,
@@ -41,11 +50,16 @@ export class MathUtils {
 
   /**
    * Generates a random number within a given range.
-   * @param min Minimum value (inclusive)
-   * @param max Maximum value (inclusive)
-   * @returns Random number within the range
+   * @param {object} params - The parameters for the method.
+   * @param {number} params.min - Minimum value (inclusive).
+   * @param {number} params.max - Maximum value (inclusive).
+   * @returns {number} Random number within the range.
+   * @throws {Error} If min is greater than max.
    * @example
-   * MathUtils.randomInRange({ min: 1, max: 10 }) // e.g., 5.432 (varies)
+   * MathUtils.randomInRange({
+   *   min: 1,
+   *   max: 10
+   * }); // e.g., 5.432 (varies)
    */
   public static randomInRange({
     min,
@@ -55,18 +69,22 @@ export class MathUtils {
     max: number;
   }): number {
     if (min > max) {
-      throw new Error('Min cannot be greater than Max');
+      throw new Error('Min cannot be greater than max');
     }
     return Math.random() * (max - min) + min;
   }
 
   /**
    * Finds the greatest common divisor (GCD) of two numbers.
-   * @param a The first number.
-   * @param b The second number.
-   * @returns The greatest common divisor of the two numbers.
+   * @param {object} params - The parameters for the method.
+   * @param {number} params.a - The first number.
+   * @param {number} params.b - The second number.
+   * @returns {number} The greatest common divisor of the two numbers.
    * @example
-   * MathUtils.gcd({ a: 24, b: 36 }); // 12
+   * MathUtils.gcd({
+   *   a: 24,
+   *   b: 36
+   * }); // 12
    */
   public static gcd({ a, b }: { a: number; b: number }): number {
     return b === 0 ? a : MathUtils.gcd({ a: b, b: a % b });
@@ -74,11 +92,15 @@ export class MathUtils {
 
   /**
    * Finds the least common multiple (LCM) of two numbers.
-   * @param a The first number.
-   * @param b The second number.
-   * @returns The least common multiple of the two numbers.
+   * @param {object} params - The parameters for the method.
+   * @param {number} params.a - The first number.
+   * @param {number} params.b - The second number.
+   * @returns {number} The least common multiple of the two numbers.
    * @example
-   * MathUtils.lcm({ a: 4, b: 6 }); // 12
+   * MathUtils.lcm({
+   *   a: 4,
+   *   b: 6
+   * }); // 12
    */
   public static lcm({ a, b }: { a: number; b: number }): number {
     return (a * b) / MathUtils.gcd({ a, b });
@@ -86,12 +108,17 @@ export class MathUtils {
 
   /**
    * Clamps a number within a specified range.
-   * @param value The number to clamp.
-   * @param min The minimum value.
-   * @param max The maximum value.
-   * @returns The clamped number.
+   * @param {object} params - The parameters for the method.
+   * @param {number} params.value - The number to clamp.
+   * @param {number} params.min - The minimum value.
+   * @param {number} params.max - The maximum value.
+   * @returns {number} The clamped number.
    * @example
-   * MathUtils.clamp({ value: 10, min: 0, max: 5 }) // 5
+   * MathUtils.clamp({
+   *   value: 10,
+   *   min: 0,
+   *   max: 5
+   * }); // 5
    */
   public static clamp({
     value,
@@ -107,10 +134,17 @@ export class MathUtils {
 
   /**
    * Checks if a number is prime.
-   * @param value The number to check.
-   * @returns `true` if the number is prime, otherwise `false`.
+   * @param {object} params - The parameters for the method.
+   * @param {number} params.value - The number to check.
+   * @returns {boolean} `true` if the number is prime, otherwise `false`.
    * @example
-   * MathUtils.isPrime({ value: 7 }) // true
+   * MathUtils.isPrime({
+   *   value: 7
+   * }); // true
+   *
+   * MathUtils.isPrime({
+   *   value: 4
+   * }); // false
    */
   public static isPrime({ value }: { value: number }): boolean {
     if (value <= 1) return false;
