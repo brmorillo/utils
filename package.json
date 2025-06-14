@@ -1,6 +1,6 @@
 {
   "name": "@brmorillo/utils",
-  "version": "10.2.1",
+  "version": "10.2.2",
   "description": "Utility library with standardized methods",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -20,7 +20,8 @@
     "prepare": "husky install",
     "release": "standard-version",
     "commit": "cz",
-    "version:bump": "standard-version && git push --follow-tags origin main"
+    "version:bump": "standard-version && git push --follow-tags origin main",
+    "pub": "npm run build && npm publish --access public"
   },
   "keywords": [
     "utils",
