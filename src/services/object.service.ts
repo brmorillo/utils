@@ -162,7 +162,7 @@ export class ObjectUtils {
   }): Omit<T, K> {
     const result = {} as Record<string, any>;
 
-    Object.keys(obj).forEach((key) => {
+    Object.keys(obj).forEach(key => {
       if (!keys.includes(key as K)) {
         result[key] = obj[key as K];
       }
@@ -243,7 +243,7 @@ export class ObjectUtils {
    * obj.a.b = 2; // Throws an error in strict mode
    */
   public static deepFreeze<T extends object>({ obj }: { obj: T }): T {
-    Object.keys(obj).forEach((key) => {
+    Object.keys(obj).forEach(key => {
       const value = obj[key as keyof T];
       if (typeof value === 'object' && value !== null) {
         ObjectUtils.deepFreeze({ obj: value });
@@ -288,7 +288,7 @@ export class ObjectUtils {
 
     if (keys1.length !== keys2.length) return false;
 
-    return keys1.every((key) => {
+    return keys1.every(key => {
       const value1 = obj1[key];
       const value2 = obj2[key];
 

@@ -99,3 +99,27 @@ This project is licensed under the GNU General Public License v3.0 with addition
 ## Author
 
 Bruno Morillo ([@brmorillo](https://github.com/brmorillo)) - bruno@rmorillo.com
+
+## Versionamento
+
+Este projeto utiliza o padrão de Conventional Commits para controle de versão automático. Ao fazer um commit:
+
+1. Use o comando `npm run commit` para garantir que seu commit siga o padrão correto
+2. O sistema automaticamente:
+   - Incrementa a versão com base no tipo de commit (feat: minor, fix: patch, BREAKING CHANGE: major)
+   - Gera uma nova tag com a versão atualizada
+   - Atualiza o CHANGELOG.md com as alterações
+   - Faz push das alterações e tags para o repositório remoto
+
+### Tipos de commit e seu impacto na versão
+
+- `feat`: Nova funcionalidade (incrementa versão minor)
+- `fix`: Correção de bug (incrementa versão patch)
+- `docs`: Alterações na documentação (não incrementa versão)
+- `style`: Alterações de formatação (não incrementa versão)
+- `refactor`: Refatoração de código (não incrementa versão)
+- `perf`: Melhorias de performance (não incrementa versão)
+- `test`: Adição ou correção de testes (não incrementa versão)
+- `chore`: Alterações em ferramentas de build (não incrementa versão)
+
+Para indicar uma mudança que quebra compatibilidade (BREAKING CHANGE), adicione `BREAKING CHANGE:` no corpo ou rodapé do commit.

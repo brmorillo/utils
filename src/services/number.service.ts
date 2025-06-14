@@ -186,10 +186,10 @@ export class NumberUtils {
    * @param {number} [params.decimals=2] - The number of decimal places.
    * @returns {number} A random float within the specified range.
    * @example
-   * NumberUtils.randomFloatInRange({ 
-   *   min: 1, 
-   *   max: 10, 
-   *   decimals: 2 
+   * NumberUtils.randomFloatInRange({
+   *   min: 1,
+   *   max: 10,
+   *   decimals: 2
    * }); // e.g., 7.42 (varies)
    */
   public static randomFloatInRange({

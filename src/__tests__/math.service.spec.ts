@@ -3,9 +3,13 @@ import { MathUtils } from '../services/math.service';
 describe('MathUtils', () => {
   describe('roundToDecimals', () => {
     it('should round a number to the specified decimal places', () => {
-      expect(MathUtils.roundToDecimals({ value: 3.14159, decimals: 2 })).toBe(3.14);
+      expect(MathUtils.roundToDecimals({ value: 3.14159, decimals: 2 })).toBe(
+        3.14,
+      );
       expect(MathUtils.roundToDecimals({ value: 3.14159 })).toBe(3.14);
-      expect(MathUtils.roundToDecimals({ value: 3.14559, decimals: 3 })).toBe(3.146);
+      expect(MathUtils.roundToDecimals({ value: 3.14559, decimals: 3 })).toBe(
+        3.146,
+      );
     });
   });
 
@@ -16,7 +20,9 @@ describe('MathUtils', () => {
     });
 
     it('should throw an error if total is zero', () => {
-      expect(() => MathUtils.percentage({ total: 0, part: 50 })).toThrow('Total cannot be zero');
+      expect(() => MathUtils.percentage({ total: 0, part: 50 })).toThrow(
+        'Total cannot be zero',
+      );
     });
   });
 
@@ -28,7 +34,9 @@ describe('MathUtils', () => {
     });
 
     it('should throw an error if min is greater than max', () => {
-      expect(() => MathUtils.randomInRange({ min: 10, max: 1 })).toThrow('Min cannot be greater than max');
+      expect(() => MathUtils.randomInRange({ min: 10, max: 1 })).toThrow(
+        'Min cannot be greater than max',
+      );
     });
   });
 

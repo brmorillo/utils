@@ -6,10 +6,10 @@ export class ArrayUtils {
    * @param {Function} [params.keyFn] - Optional function to determine uniqueness based on a key.
    * @returns {T[]} Array with unique values.
    * @example
-   * ArrayUtils.removeDuplicates({ 
-   *   array: [1, 2, 2, 3] 
+   * ArrayUtils.removeDuplicates({
+   *   array: [1, 2, 2, 3]
    * }); // [1, 2, 3]
-   * 
+   *
    * ArrayUtils.removeDuplicates({
    *   array: [{ id: 1 }, { id: 2 }, { id: 1 }],
    *   keyFn: (item) => item.id
@@ -28,7 +28,7 @@ export class ArrayUtils {
 
     const seen = new Set();
     return keyFn
-      ? array.filter((item) => {
+      ? array.filter(item => {
           const key = keyFn(item);
           if (seen.has(key)) return false;
           seen.add(key);
@@ -44,9 +44,9 @@ export class ArrayUtils {
    * @param {T[]} params.array2 - Second array.
    * @returns {T[]} Array containing values present in both arrays.
    * @example
-   * ArrayUtils.intersect({ 
-   *   array1: [1, 2, 3], 
-   *   array2: [2, 3, 4] 
+   * ArrayUtils.intersect({
+   *   array1: [1, 2, 3],
+   *   array2: [2, 3, 4]
    * }); // [2, 3]
    */
   public static intersect<T>({
@@ -61,7 +61,7 @@ export class ArrayUtils {
     }
 
     const set2 = new Set(array2);
-    return array1.filter((value) => set2.has(value));
+    return array1.filter(value => set2.has(value));
   }
 
   /**
@@ -70,15 +70,11 @@ export class ArrayUtils {
    * @param {(T | T[])[]} params.array - Multi-dimensional array.
    * @returns {T[]} Flattened array.
    * @example
-   * ArrayUtils.flatten({ 
-   *   array: [1, [2, [3, 4]], 5] 
+   * ArrayUtils.flatten({
+   *   array: [1, [2, [3, 4]], 5]
    * }); // [1, 2, 3, 4, 5]
    */
-  public static flatten<T>({
-    array,
-  }: {
-    array: (T | T[])[];
-  }): T[] {
+  public static flatten<T>({ array }: { array: (T | T[])[] }): T[] {
     if (!Array.isArray(array)) {
       throw new Error('Input must be an array');
     }
@@ -107,7 +103,7 @@ export class ArrayUtils {
    * @example
    * ArrayUtils.groupBy({
    *   array: [
-   *     { type: 'fruit', name: 'apple' }, 
+   *     { type: 'fruit', name: 'apple' },
    *     { type: 'vegetable', name: 'carrot' }
    *   ],
    *   keyFn: (item) => item.type
@@ -141,15 +137,11 @@ export class ArrayUtils {
    * @param {T[]} params.array - Array to be shuffled.
    * @returns {T[]} New array with shuffled elements.
    * @example
-   * ArrayUtils.shuffle({ 
-   *   array: [1, 2, 3, 4] 
+   * ArrayUtils.shuffle({
+   *   array: [1, 2, 3, 4]
    * }); // [3, 1, 4, 2]
    */
-  public static shuffle<T>({
-    array,
-  }: {
-    array: T[];
-  }): T[] {
+  public static shuffle<T>({ array }: { array: T[] }): T[] {
     if (!Array.isArray(array)) {
       throw new Error('Input must be an array');
     }
@@ -169,11 +161,11 @@ export class ArrayUtils {
    * @param {'asc' | 'desc' | Record<string, 'asc' | 'desc'>} params.orderBy - Sorting criteria.
    * @returns {T[]} A new array sorted based on the specified criteria.
    * @example
-   * ArrayUtils.sort({ 
-   *   array: ['c', 'a', 'b'], 
-   *   orderBy: 'asc' 
+   * ArrayUtils.sort({
+   *   array: ['c', 'a', 'b'],
+   *   orderBy: 'asc'
    * }); // ['a', 'b', 'c']
-   * 
+   *
    * ArrayUtils.sort({
    *   array: [{ name: 'John', age: 30 }, { name: 'Jane', age: 25 }],
    *   orderBy: { age: 'asc' }
@@ -242,13 +234,13 @@ export class ArrayUtils {
     subset: Partial<T>;
   }): T | null {
     return (
-      array.find((item) =>
+      array.find(item =>
         Object.entries(subset).every(([key, value]) => {
           if (value === undefined) return true;
           if (Array.isArray(value)) {
             return (
               Array.isArray(item[key]) &&
-              value.every((val) => (item[key] as any[]).includes(val))
+              value.every(val => (item[key] as any[]).includes(val))
             );
           }
           return item[key] === value;
@@ -281,7 +273,7 @@ export class ArrayUtils {
       if (Array.isArray(value)) {
         return (
           Array.isArray(superset[key]) &&
-          value.every((val) => (superset[key] as any[]).includes(val))
+          value.every(val => (superset[key] as any[]).includes(val))
         );
       }
       return superset[key] === value;

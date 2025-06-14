@@ -5,12 +5,12 @@ export class ValidationUtils {
    * @param {string} params.email - The string to validate.
    * @returns {boolean} `true` if the string is a valid email, otherwise `false`.
    * @example
-   * ValidationUtils.isValidEmail({ 
-   *   email: 'test@example.com' 
+   * ValidationUtils.isValidEmail({
+   *   email: 'test@example.com'
    * }); // true
-   * 
-   * ValidationUtils.isValidEmail({ 
-   *   email: 'invalid-email' 
+   *
+   * ValidationUtils.isValidEmail({
+   *   email: 'invalid-email'
    * }); // false
    */
   public static isValidEmail({ email }: { email: string }): boolean {
@@ -24,12 +24,12 @@ export class ValidationUtils {
    * @param {string} params.inputUrl - The string to validate.
    * @returns {boolean} `true` if the string is a valid URL, otherwise `false`.
    * @example
-   * ValidationUtils.isValidURL({ 
-   *   inputUrl: 'https://example.com' 
+   * ValidationUtils.isValidURL({
+   *   inputUrl: 'https://example.com'
    * }); // true
-   * 
-   * ValidationUtils.isValidURL({ 
-   *   inputUrl: 'invalid-url' 
+   *
+   * ValidationUtils.isValidURL({
+   *   inputUrl: 'invalid-url'
    * }); // false
    */
   public static isValidURL({ inputUrl }: { inputUrl: string }): boolean {
@@ -47,12 +47,12 @@ export class ValidationUtils {
    * @param {string} params.phoneNumber - The string to validate.
    * @returns {boolean} `true` if the string is a valid phone number, otherwise `false`.
    * @example
-   * ValidationUtils.isValidPhoneNumber({ 
-   *   phoneNumber: '+1234567890' 
+   * ValidationUtils.isValidPhoneNumber({
+   *   phoneNumber: '+1234567890'
    * }); // true
-   * 
-   * ValidationUtils.isValidPhoneNumber({ 
-   *   phoneNumber: '12345' 
+   *
+   * ValidationUtils.isValidPhoneNumber({
+   *   phoneNumber: '12345'
    * }); // false
    */
   public static isValidPhoneNumber({
@@ -70,16 +70,16 @@ export class ValidationUtils {
    * @param {any} params.value - The value to validate.
    * @returns {boolean} `true` if the value is a number, otherwise `false`.
    * @example
-   * ValidationUtils.isNumber({ 
-   *   value: 123 
+   * ValidationUtils.isNumber({
+   *   value: 123
    * }); // true
-   * 
-   * ValidationUtils.isNumber({ 
-   *   value: '123' 
+   *
+   * ValidationUtils.isNumber({
+   *   value: '123'
    * }); // true (can be parsed as a number)
-   * 
-   * ValidationUtils.isNumber({ 
-   *   value: 'abc' 
+   *
+   * ValidationUtils.isNumber({
+   *   value: 'abc'
    * }); // false
    */
   public static isNumber({ value }: { value: any }): boolean {
@@ -92,16 +92,16 @@ export class ValidationUtils {
    * @param {string} params.hexColor - The string to validate.
    * @returns {boolean} `true` if the string is a valid hex color, otherwise `false`.
    * @example
-   * ValidationUtils.isValidHexColor({ 
-   *   hexColor: '#FFFFFF' 
+   * ValidationUtils.isValidHexColor({
+   *   hexColor: '#FFFFFF'
    * }); // true
-   * 
-   * ValidationUtils.isValidHexColor({ 
-   *   hexColor: '#F00' 
+   *
+   * ValidationUtils.isValidHexColor({
+   *   hexColor: '#F00'
    * }); // true (shorthand format)
-   * 
-   * ValidationUtils.isValidHexColor({ 
-   *   hexColor: '123456' 
+   *
+   * ValidationUtils.isValidHexColor({
+   *   hexColor: '123456'
    * }); // false (missing #)
    */
   public static isValidHexColor({ hexColor }: { hexColor: string }): boolean {
@@ -116,14 +116,14 @@ export class ValidationUtils {
    * @param {number} params.minLength - The minimum length required.
    * @returns {boolean} `true` if the string meets the minimum length, otherwise `false`.
    * @example
-   * ValidationUtils.hasMinLength({ 
-   *   input: 'hello', 
-   *   minLength: 3 
+   * ValidationUtils.hasMinLength({
+   *   input: 'hello',
+   *   minLength: 3
    * }); // true
-   * 
-   * ValidationUtils.hasMinLength({ 
-   *   input: 'hi', 
-   *   minLength: 3 
+   *
+   * ValidationUtils.hasMinLength({
+   *   input: 'hi',
+   *   minLength: 3
    * }); // false
    */
   public static hasMinLength({
@@ -143,14 +143,14 @@ export class ValidationUtils {
    * @param {number} params.maxLength - The maximum length allowed.
    * @returns {boolean} `true` if the string meets the maximum length, otherwise `false`.
    * @example
-   * ValidationUtils.hasMaxLength({ 
-   *   input: 'hello', 
-   *   maxLength: 10 
+   * ValidationUtils.hasMaxLength({
+   *   input: 'hello',
+   *   maxLength: 10
    * }); // true
-   * 
-   * ValidationUtils.hasMaxLength({ 
-   *   input: 'this is too long', 
-   *   maxLength: 5 
+   *
+   * ValidationUtils.hasMaxLength({
+   *   input: 'this is too long',
+   *   maxLength: 5
    * }); // false
    */
   public static hasMaxLength({
@@ -169,12 +169,12 @@ export class ValidationUtils {
    * @param {string} params.jsonString - The string to validate.
    * @returns {boolean} `true` if the string is a valid JSON, otherwise `false`.
    * @example
-   * ValidationUtils.isValidJSON({ 
-   *   jsonString: '{"key": "value"}' 
+   * ValidationUtils.isValidJSON({
+   *   jsonString: '{"key": "value"}'
    * }); // true
-   * 
-   * ValidationUtils.isValidJSON({ 
-   *   jsonString: '{invalid: json}' 
+   *
+   * ValidationUtils.isValidJSON({
+   *   jsonString: '{invalid: json}'
    * }); // false
    */
   public static isValidJSON({ jsonString }: { jsonString: string }): boolean {

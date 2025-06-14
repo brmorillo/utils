@@ -38,7 +38,7 @@ export class UUIDUtils {
    *   namespace: '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
    *   name: 'example'
    * }); // Deterministic UUID based on namespace and name
-   * 
+   *
    * UUIDUtils.uuidV5Generate({
    *   name: 'example'
    * }); // Deterministic UUID using auto-generated namespace
@@ -60,12 +60,12 @@ export class UUIDUtils {
    * @param {string} params.id - The ID to validate.
    * @returns {boolean} `true` if the string is a valid UUID, otherwise `false`.
    * @example
-   * UUIDUtils.uuidIsValid({ 
-   *   id: '3d6f0eb0-5e26-4b2c-a073-84d55dff3d51' 
+   * UUIDUtils.uuidIsValid({
+   *   id: '3d6f0eb0-5e26-4b2c-a073-84d55dff3d51'
    * }); // true
-   * 
-   * UUIDUtils.uuidIsValid({ 
-   *   id: 'invalid-uuid' 
+   *
+   * UUIDUtils.uuidIsValid({
+   *   id: 'invalid-uuid'
    * }); // false
    */
   public static uuidIsValid({ id }: { id: string }): boolean {

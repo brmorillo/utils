@@ -79,7 +79,7 @@ export class SortUtils {
     const left = array.filter(
       (val, idx) => val <= pivot && idx !== array.length - 1,
     );
-    const right = array.filter((val) => val > pivot);
+    const right = array.filter(val => val > pivot);
 
     return [...SortUtils.quickSort(left), pivot, ...SortUtils.quickSort(right)];
   }
@@ -237,7 +237,7 @@ export class SortUtils {
    */
   static countingSort(array: number[], maxValue: number): number[] {
     if (!Array.isArray(array)) throw new Error('Input must be an array');
-    if (array.some((num) => num < 0))
+    if (array.some(num => num < 0))
       throw new Error('Counting Sort only supports non-negative integers');
     if (!Number.isInteger(maxValue) || maxValue < 0)
       throw new Error('Maximum value must be a non-negative integer');
@@ -278,7 +278,7 @@ export class SortUtils {
   static radixSort(array: number[]): number[] {
     if (!Array.isArray(array)) throw new Error('Input must be an array');
     if (array.length === 0) return [];
-    if (array.some((num) => num < 0))
+    if (array.some(num => num < 0))
       throw new Error('Radix Sort only supports non-negative integers');
 
     const max = Math.max(...array);

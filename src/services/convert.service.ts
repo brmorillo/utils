@@ -21,10 +21,10 @@ export class ConvertUtils {
    * @param {keyof typeof ConvertUtils.spaceType} params.toType - The target unit type (e.g., 'kilometers').
    * @returns {number} The converted value.
    * @example
-   * ConvertUtils.space({ 
-   *   value: 1000, 
-   *   fromType: 'meters', 
-   *   toType: 'kilometers' 
+   * ConvertUtils.space({
+   *   value: 1000,
+   *   fromType: 'meters',
+   *   toType: 'kilometers'
    * }); // 1
    */
   public static space({
@@ -58,10 +58,10 @@ export class ConvertUtils {
    * @param {keyof typeof ConvertUtils.weightType} params.toType - The target unit type (e.g., 'pounds').
    * @returns {number} The converted value.
    * @example
-   * ConvertUtils.weight({ 
-   *   value: 1, 
-   *   fromType: 'kilograms', 
-   *   toType: 'pounds' 
+   * ConvertUtils.weight({
+   *   value: 1,
+   *   fromType: 'kilograms',
+   *   toType: 'pounds'
    * }); // 2.20462
    */
   public static weight({
@@ -95,10 +95,10 @@ export class ConvertUtils {
    * @param {keyof typeof ConvertUtils.volumeType} params.toType - The target unit type (e.g., 'gallons').
    * @returns {number} The converted value.
    * @example
-   * ConvertUtils.volume({ 
-   *   value: 1, 
-   *   fromType: 'liters', 
-   *   toType: 'gallons' 
+   * ConvertUtils.volume({
+   *   value: 1,
+   *   fromType: 'liters',
+   *   toType: 'gallons'
    * }); // 0.264172
    */
   public static volume({
@@ -121,24 +121,24 @@ export class ConvertUtils {
    * @param {'string' | 'integer' | 'number' | 'bigint' | 'roman'} params.toType - The target type.
    * @returns {any} The converted value or `null` if conversion is not possible.
    * @example
-   * ConvertUtils.value({ 
-   *   value: "42", 
-   *   toType: "number" 
+   * ConvertUtils.value({
+   *   value: "42",
+   *   toType: "number"
    * }); // 42
-   * 
-   * ConvertUtils.value({ 
-   *   value: 42, 
-   *   toType: "string" 
+   *
+   * ConvertUtils.value({
+   *   value: 42,
+   *   toType: "string"
    * }); // "42"
-   * 
-   * ConvertUtils.value({ 
-   *   value: "42", 
-   *   toType: "bigint" 
+   *
+   * ConvertUtils.value({
+   *   value: "42",
+   *   toType: "bigint"
    * }); // 42n
-   * 
-   * ConvertUtils.value({ 
-   *   value: 42, 
-   *   toType: "roman" 
+   *
+   * ConvertUtils.value({
+   *   value: 42,
+   *   toType: "roman"
    * }); // "XLII"
    */
   public static value({

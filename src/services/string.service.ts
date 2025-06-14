@@ -5,8 +5,8 @@ export class StringUtils {
    * @param {string} params.input - The string to capitalize.
    * @returns {string} The string with the first letter capitalized.
    * @example
-   * StringUtils.capitalizeFirstLetter({ 
-   *   input: 'hello' 
+   * StringUtils.capitalizeFirstLetter({
+   *   input: 'hello'
    * }); // "Hello"
    */
   public static capitalizeFirstLetter({ input }: { input: string }): string {
@@ -19,8 +19,8 @@ export class StringUtils {
    * @param {string} params.input - The string to reverse.
    * @returns {string} The reversed string.
    * @example
-   * StringUtils.reverse({ 
-   *   input: 'hello' 
+   * StringUtils.reverse({
+   *   input: 'hello'
    * }); // "olleh"
    */
   public static reverse({ input }: { input: string }): string {
@@ -33,12 +33,12 @@ export class StringUtils {
    * @param {string} params.input - The string to check.
    * @returns {boolean} `true` if the string is a palindrome, otherwise `false`.
    * @example
-   * StringUtils.isPalindrome({ 
-   *   input: 'racecar' 
+   * StringUtils.isPalindrome({
+   *   input: 'racecar'
    * }); // true
-   * 
-   * StringUtils.isPalindrome({ 
-   *   input: 'hello' 
+   *
+   * StringUtils.isPalindrome({
+   *   input: 'hello'
    * }); // false
    */
   public static isPalindrome({ input }: { input: string }): boolean {
@@ -53,9 +53,9 @@ export class StringUtils {
    * @param {number} params.maxLength - The maximum length of the truncated string.
    * @returns {string} The truncated string with ellipsis if needed.
    * @example
-   * StringUtils.truncate({ 
-   *   input: 'This is a long string', 
-   *   maxLength: 10 
+   * StringUtils.truncate({
+   *   input: 'This is a long string',
+   *   maxLength: 10
    * }); // "This is a..."
    */
   public static truncate({
@@ -76,12 +76,12 @@ export class StringUtils {
    * @param {string} params.input - The string to convert.
    * @returns {string} The kebab-cased string.
    * @example
-   * StringUtils.toKebabCase({ 
-   *   input: 'Hello World' 
+   * StringUtils.toKebabCase({
+   *   input: 'Hello World'
    * }); // "hello-world"
-   * 
-   * StringUtils.toKebabCase({ 
-   *   input: 'camelCaseString' 
+   *
+   * StringUtils.toKebabCase({
+   *   input: 'camelCaseString'
    * }); // "camel-case-string"
    */
   public static toKebabCase({ input }: { input: string }): string {
@@ -97,12 +97,12 @@ export class StringUtils {
    * @param {string} params.input - The string to convert.
    * @returns {string} The snake-cased string.
    * @example
-   * StringUtils.toSnakeCase({ 
-   *   input: 'Hello World' 
+   * StringUtils.toSnakeCase({
+   *   input: 'Hello World'
    * }); // "hello_world"
-   * 
-   * StringUtils.toSnakeCase({ 
-   *   input: 'camelCaseString' 
+   *
+   * StringUtils.toSnakeCase({
+   *   input: 'camelCaseString'
    * }); // "camel_case_string"
    */
   public static toSnakeCase({ input }: { input: string }): string {
@@ -118,12 +118,12 @@ export class StringUtils {
    * @param {string} params.input - The string to convert.
    * @returns {string} The camelCased string.
    * @example
-   * StringUtils.toCamelCase({ 
-   *   input: 'Hello World' 
+   * StringUtils.toCamelCase({
+   *   input: 'Hello World'
    * }); // "helloWorld"
-   * 
-   * StringUtils.toCamelCase({ 
-   *   input: 'snake_case_string' 
+   *
+   * StringUtils.toCamelCase({
+   *   input: 'snake_case_string'
    * }); // "snakeCaseString"
    */
   public static toCamelCase({ input }: { input: string }): string {
@@ -138,15 +138,15 @@ export class StringUtils {
    * @param {string} params.input - The string to convert.
    * @returns {string} The title-cased string.
    * @example
-   * StringUtils.toTitleCase({ 
-   *   input: 'hello world' 
+   * StringUtils.toTitleCase({
+   *   input: 'hello world'
    * }); // "Hello World"
    */
   public static toTitleCase({ input }: { input: string }): string {
     return input
       .toLowerCase()
       .split(' ')
-      .map((word) => StringUtils.capitalizeFirstLetter({ input: word }))
+      .map(word => StringUtils.capitalizeFirstLetter({ input: word }))
       .join(' ');
   }
 
@@ -157,14 +157,14 @@ export class StringUtils {
    * @param {string} params.substring - The substring to count.
    * @returns {number} The number of occurrences of the substring.
    * @example
-   * StringUtils.countOccurrences({ 
-   *   input: 'hello world hello', 
-   *   substring: 'hello' 
+   * StringUtils.countOccurrences({
+   *   input: 'hello world hello',
+   *   substring: 'hello'
    * }); // 2
-   * 
-   * StringUtils.countOccurrences({ 
-   *   input: 'abc abc abc', 
-   *   substring: 'abc' 
+   *
+   * StringUtils.countOccurrences({
+   *   input: 'abc abc abc',
+   *   substring: 'abc'
    * }); // 3
    */
   public static countOccurrences({
@@ -185,10 +185,10 @@ export class StringUtils {
    * @param {string} params.replacement - The string to replace the substring with.
    * @returns {string} The string with all occurrences of the substring replaced.
    * @example
-   * StringUtils.replaceAll({ 
-   *   input: 'hello world hello', 
-   *   substring: 'hello', 
-   *   replacement: 'hi' 
+   * StringUtils.replaceAll({
+   *   input: 'hello world hello',
+   *   substring: 'hello',
+   *   replacement: 'hi'
    * }); // "hi world hi"
    */
   public static replaceAll({
@@ -212,11 +212,11 @@ export class StringUtils {
    * @param {number} params.occurrences - The number of occurrences to replace.
    * @returns {string} The string with the first `x` occurrences replaced.
    * @example
-   * StringUtils.replaceOccurrences({ 
-   *   input: 'hello world hello', 
-   *   substring: 'hello', 
-   *   replacement: 'hi', 
-   *   occurrences: 1 
+   * StringUtils.replaceOccurrences({
+   *   input: 'hello world hello',
+   *   substring: 'hello',
+   *   replacement: 'hi',
+   *   occurrences: 1
    * }); // "hi world hello"
    */
   public static replaceOccurrences({
@@ -231,7 +231,7 @@ export class StringUtils {
     occurrences: number;
   }): string {
     let count = 0;
-    return input.replace(new RegExp(substring, 'g'), (match) => {
+    return input.replace(new RegExp(substring, 'g'), match => {
       if (count < occurrences) {
         count++;
         return replacement;

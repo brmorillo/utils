@@ -11,5 +11,15 @@
   ],
   "commitUrlFormat": "https://github.com/brmorillo/util/commit/{{hash}}",
   "compareUrlFormat": "https://github.com/brmorillo/util/compare/{{previousTag}}...{{currentTag}}",
-  "releaseCommitMessageFormat": "chore(release): {{currentTag}}"
+  "releaseCommitMessageFormat": "chore(release): {{currentTag}}",
+  "bumpFiles": [
+    {
+      "filename": "package.json",
+      "type": "json"
+    }
+  ],
+  "sign": false,
+  "skip": {
+    "tag": false
+  }
 }

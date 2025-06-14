@@ -27,7 +27,7 @@ export class SnowflakeUtils {
    * @example
    * // Generate a Snowflake ID with default parameters
    * const id = SnowflakeUtils.generate();
-   * 
+   *
    * // Generate a Snowflake ID with custom parameters
    * const customId = SnowflakeUtils.generate({
    *   epoch: new Date('2023-01-01T00:00:00.000Z'),
