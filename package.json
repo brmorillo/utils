@@ -16,7 +16,7 @@
     "build": "tsup",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "format": "prettier --write \"src/**/*.ts\"",
-    "test": "jest",
+    "test": "jest --config=jest.config.ts",
     "prepare": "husky install",
     "release": "standard-version",
     "commit": "cz",

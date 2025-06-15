@@ -1,5 +1,7 @@
 import { Snowflake } from '@sapphire/snowflake';
 
+// Example Discord message id: 1322717493961297921
+
 /**
  * Components of a Snowflake ID.
  */
@@ -113,5 +115,104 @@ export class SnowflakeUtils {
       epoch,
     });
     return new Date(Number(timestamp));
+  }
+
+  /**
+   * Validates if a string is a valid Snowflake ID.
+   * @param {object} params - The parameters for the method.
+   * @param {string} params.snowflakeId - The string to validate as a Snowflake ID.
+   * @returns {boolean} True if the string is a valid Snowflake ID, false otherwise.
+   * @example
+   * // Check if a string is a valid Snowflake ID
+   * const isValid = SnowflakeUtils.isValidSnowflake({
+   *   snowflakeId: "1322717493961297921"
+   * });
+   * console.log(isValid); // true
+   */
+  public static isValidSnowflake({
+    snowflakeId,
+  }: {
+    snowflakeId: string;
+  }): boolean {
+    if (!snowflakeId || typeof snowflakeId !== 'string') {
+      return false;
+    }
+
+    // Snowflake IDs are numeric strings
+    const numericRegex = /^\d+$/;
+    if (!numericRegex.test(snowflakeId)) {
+      return false;
+    }
+
+    try {
+      // Check if it can be converted to BigInt without errors
+      BigInt(snowflakeId);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Compares two Snowflake IDs to determine which one is newer.
+   * @param {object} params - The parameters for the method.
+   * @param {bigint | string} params.first - The first Snowflake ID.
+   * @param {bigint | string} params.second - The second Snowflake ID.
+   * @returns {number} 1 if first is newer, -1 if second is newer, 0 if they are the same.
+   * @throws {Error} Throws an error if either Snowflake ID is invalid.
+   * @example
+   * // Compare two Snowflake IDs
+   * const result = SnowflakeUtils.compare({
+   *   first: "1322717493961297921",
+   *   second: "1322717493961297920"
+   * });
+   * console.log(result); // 1 (first is newer)
+   */
+  public static compare({
+    first,
+    second,
+  }: {
+    first: bigint | string;
+    second: bigint | string;
+  }): number {
+    const firstBigInt = typeof first === 'string' ? BigInt(first) : first;
+    const secondBigInt = typeof second === 'string' ? BigInt(second) : second;
+
+    if (firstBigInt > secondBigInt) return 1;
+    if (firstBigInt < secondBigInt) return -1;
+    return 0;
+  }
+
+  /**
+   * Creates a Snowflake ID from a timestamp.
+   * @param {object} params - The parameters for the method.
+   * @param {Date} params.timestamp - The timestamp to create the Snowflake from.
+   * @param {Date} [params.epoch=DEFAULT_EPOCH] - The custom epoch to use.
+   * @returns {bigint} A Snowflake ID with the specified timestamp.
+   * @throws {Error} Throws an error if the timestamp or epoch is invalid.
+   * @example
+   * // Create a Snowflake ID from a timestamp
+   * const id = SnowflakeUtils.fromTimestamp({
+   *   timestamp: new Date('2023-06-15T12:30:45.000Z')
+   * });
+   * console.log(id.toString());
+   */
+  public static fromTimestamp({
+    timestamp,
+    epoch = SnowflakeUtils.DEFAULT_EPOCH,
+  }: {
+    timestamp: Date;
+    epoch?: Date;
+  }): bigint {
+    if (!(timestamp instanceof Date) || isNaN(timestamp.getTime())) {
+      throw new Error('Invalid timestamp: must be a valid Date object.');
+    }
+
+    if (!(epoch instanceof Date) || isNaN(epoch.getTime())) {
+      throw new Error('Invalid epoch: must be a valid Date object.');
+    }
+
+    const snowflake = new Snowflake(epoch.getTime());
+    return snowflake.generate({ timestamp: timestamp.getTime() });
   }
 }
