@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.3.1](https://github.com/brmorillo/util/compare/v10.2.4...v10.3.1) (2025-06-16)
+
+
+### Tests
+
+* **tests:** writed tests for lib ([39a410b](https://github.com/brmorillo/util/commit/39a410b3bf47494ef1dea85c22fd9d8526d6e141))
+
 ### [10.2.4](https://github.com/brmorillo/util/compare/v10.2.3...v10.2.4) (2025-06-15)
 
 
