@@ -144,7 +144,7 @@ export class HashUtils {
    * const token = HashUtils.sha256GenerateToken(16);
    * console.log(token);
    */
-  public static sha256GenerateToken(length: number = 32): string {
+  public static sha256GenerateToken(length = 32): string {
     if (typeof length !== 'number' || length <= 0) {
       throw new Error('Invalid length: must be a positive number.');
     }
@@ -209,7 +209,7 @@ export class HashUtils {
    * const token = HashUtils.sha512GenerateToken(16);
    * console.log(token);
    */
-  public static sha512GenerateToken(length: number = 32): string {
+  public static sha512GenerateToken(length = 32): string {
     if (typeof length !== 'number' || length <= 0) {
       throw new Error('Invalid length: must be a positive number.');
     }

@@ -195,7 +195,7 @@ export class CryptUtils {
    * const { publicKey, privateKey } = HashUtils.generateRSAKeyPair(2048);
    * console.log(publicKey, privateKey);
    */
-  public static rsaGenerateKeyPair(modulusLength: number = 2048): {
+  public static rsaGenerateKeyPair(modulusLength = 2048): {
     publicKey: string;
     privateKey: string;
   } {
@@ -344,7 +344,7 @@ export class CryptUtils {
    * const { publicKey, privateKey } = CryptUtils.eccGenerateKeyPair();
    * console.log(publicKey, privateKey);
    */
-  public static eccGenerateKeyPair(curve: string = 'secp256k1'): {
+  public static eccGenerateKeyPair(curve = 'secp256k1'): {
     publicKey: string;
     privateKey: string;
   } {
