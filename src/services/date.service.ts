@@ -57,10 +57,41 @@ export class DateUtils {
     timeToAdd,
   }: {
     date: DateTime | string;
-    timeToAdd: Duration | Record<string, number>;
+    timeToAdd: Duration | Partial<Record<DurationUnit, number>>;
   }): DateTime {
     const parsedDate = typeof date === 'string' ? DateTime.fromISO(date) : date;
-    return parsedDate.plus(Duration.fromObject(timeToAdd));
+
+    // Validate the timeToAdd object to ensure it only contains valid duration units
+    if (!(timeToAdd instanceof Duration)) {
+      const validUnits: DurationUnit[] = [
+        'years',
+        'quarters',
+        'months',
+        'weeks',
+        'days',
+        'hours',
+        'minutes',
+        'seconds',
+        'milliseconds',
+      ];
+      const invalidUnits = Object.keys(timeToAdd).filter(
+        key => !validUnits.includes(key as DurationUnit),
+      );
+
+      if (invalidUnits.length > 0) {
+        throw new Error(
+          `Invalid duration units: ${invalidUnits.join(
+            ', ',
+          )}. Valid units are: ${validUnits.join(', ')}`,
+        );
+      }
+    }
+
+    const duration =
+      timeToAdd instanceof Duration
+        ? timeToAdd
+        : Duration.fromObject(timeToAdd as Record<DurationUnit, number>);
+    return parsedDate.plus(duration);
   }
 
   /**
@@ -80,14 +111,41 @@ export class DateUtils {
     timeToRemove,
   }: {
     date: DateTime | string;
-    timeToRemove: Duration | Record<string, number>;
+    timeToRemove: Duration | Partial<Record<DurationUnit, number>>;
   }): DateTime {
-    const parsedDate =
-      typeof date === 'string'
-        ? DateTime.fromISO(date, { setZone: true })
-        : date;
+    const parsedDate = typeof date === 'string' ? DateTime.fromISO(date) : date;
 
-    return parsedDate.minus(Duration.fromObject(timeToRemove));
+    // Validate the timeToRemove object to ensure it only contains valid duration units
+    if (!(timeToRemove instanceof Duration)) {
+      const validUnits: DurationUnit[] = [
+        'years',
+        'quarters',
+        'months',
+        'weeks',
+        'days',
+        'hours',
+        'minutes',
+        'seconds',
+        'milliseconds',
+      ];
+      const invalidUnits = Object.keys(timeToRemove).filter(
+        key => !validUnits.includes(key as DurationUnit),
+      );
+
+      if (invalidUnits.length > 0) {
+        throw new Error(
+          `Invalid duration units: ${invalidUnits.join(
+            ', ',
+          )}. Valid units are: ${validUnits.join(', ')}`,
+        );
+      }
+    }
+
+    const duration =
+      timeToRemove instanceof Duration
+        ? timeToRemove
+        : Duration.fromObject(timeToRemove as Record<DurationUnit, number>);
+    return parsedDate.minus(duration);
   }
 
   /**

@@ -13,6 +13,11 @@ export interface SnowflakeComponents {
 }
 
 /**
+ * Supported formats for Snowflake ID conversion.
+ */
+export type SnowflakeFormat = 'bigint' | 'string' | 'number';
+
+/**
  * Utility class for working with Snowflake IDs using the @sapphire/snowflake library.
  */
 export class SnowflakeUtils {
@@ -214,5 +219,83 @@ export class SnowflakeUtils {
 
     const snowflake = new Snowflake(epoch.getTime());
     return snowflake.generate({ timestamp: timestamp.getTime() });
+  }
+
+  /**
+   * Converts a Snowflake ID to a different format.
+   * @param {object} params - The parameters for the method.
+   * @param {bigint | string | number} params.snowflakeId - The Snowflake ID to convert.
+   * @param {SnowflakeFormat} params.toFormat - The format to convert to ('bigint', 'string', or 'number').
+   * @returns {bigint | string | number} The converted Snowflake ID.
+   * @throws {Error} Throws an error if the Snowflake ID is invalid or if the format is unsupported.
+   * @example
+   * // Convert a Snowflake ID to string format
+   * const stringId = SnowflakeUtils.convert({
+   *   snowflakeId: 1322717493961297921n,
+   *   toFormat: 'string'
+   * });
+   * console.log(stringId); // "1322717493961297921"
+   *
+   * // Convert a Snowflake ID to bigint format
+   * const bigintId = SnowflakeUtils.convert({
+   *   snowflakeId: "1322717493961297921",
+   *   toFormat: 'bigint'
+   * });
+   * console.log(bigintId); // 1322717493961297921n
+   */
+  public static convert({
+    snowflakeId,
+    toFormat,
+  }: {
+    snowflakeId: bigint | string | number;
+    toFormat: SnowflakeFormat;
+  }): bigint | string | number {
+    if (snowflakeId === undefined || snowflakeId === null) {
+      throw new Error('Invalid Snowflake ID: must not be null or undefined.');
+    }
+
+    try {
+      // Primeiro, verifica se o ID é válido
+      if (typeof snowflakeId === 'string' && !/^\d+$/.test(snowflakeId)) {
+        throw new Error('Invalid Snowflake ID: must contain only digits.');
+      }
+
+      // Converte para BigInt para validar
+      let bigintValue: bigint;
+      try {
+        bigintValue =
+          typeof snowflakeId === 'bigint' ? snowflakeId : BigInt(snowflakeId);
+      } catch (e) {
+        throw new Error('Invalid Snowflake ID: cannot be converted to BigInt.');
+      }
+
+      // Converte para o formato desejado
+      switch (toFormat) {
+        case 'bigint':
+          return bigintValue;
+        case 'string':
+          return bigintValue.toString();
+        case 'number':
+          // Verifica se o valor é seguro para ser representado como number
+          if (
+            bigintValue > BigInt(Number.MAX_SAFE_INTEGER) ||
+            bigintValue < BigInt(Number.MIN_SAFE_INTEGER)
+          ) {
+            throw new Error(
+              'Snowflake ID is too large to be safely converted to number.',
+            );
+          }
+          return Number(bigintValue);
+        default:
+          throw new Error(
+            `Unsupported format: ${toFormat}. Supported formats are 'bigint', 'string', and 'number'.`,
+          );
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('Invalid Snowflake ID');
+    }
   }
 }

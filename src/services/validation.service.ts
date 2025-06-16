@@ -14,7 +14,34 @@ export class ValidationUtils {
    * }); // false
    */
   public static isValidEmail({ email }: { email: string }): boolean {
+    if (!email || typeof email !== 'string') return false;
+
+    // Regex mais rigorosa para validação de email
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    // Verificações adicionais para casos específicos
+    if (email.includes('..') || email.startsWith('.') || email.endsWith('.')) {
+      return false;
+    }
+
+    if (email.indexOf('@') !== email.lastIndexOf('@')) {
+      return false;
+    }
+
+    if (email.includes(' ')) {
+      return false;
+    }
+
+    const parts = email.split('@');
+    if (parts.length !== 2 || !parts[0] || !parts[1]) {
+      return false;
+    }
+
+    const domainParts = parts[1].split('.');
+    if (domainParts.length < 2 || domainParts.some(part => !part)) {
+      return false;
+    }
+
     return emailRegex.test(email);
   }
 
@@ -33,6 +60,28 @@ export class ValidationUtils {
    * }); // false
    */
   public static isValidURL({ inputUrl }: { inputUrl: string }): boolean {
+    if (!inputUrl || typeof inputUrl !== 'string') return false;
+
+    // Verificações adicionais antes de tentar criar o objeto URL
+    if (inputUrl.includes(' ') || inputUrl.includes('..')) {
+      return false;
+    }
+
+    // Verificar protocolos permitidos antes de tentar criar o objeto URL
+    const allowedProtocols = ['http:', 'https:'];
+    const protocolMatch = inputUrl.match(/^([a-z]+):/i);
+    if (
+      protocolMatch &&
+      !allowedProtocols.includes(protocolMatch[0].toLowerCase())
+    ) {
+      return false;
+    }
+
+    // Verificar formato específico para http:/example.com (faltando uma barra)
+    if (inputUrl.match(/^https?:\/[^\/]/)) {
+      return false;
+    }
+
     try {
       const url = new URL(inputUrl);
       return url.protocol === 'http:' || url.protocol === 'https:';
@@ -60,6 +109,7 @@ export class ValidationUtils {
   }: {
     phoneNumber: string;
   }): boolean {
+    if (!phoneNumber || typeof phoneNumber !== 'string') return false;
     const phoneRegex = /^\+?[1-9]\d{9,14}$/;
     return phoneRegex.test(phoneNumber);
   }
@@ -83,6 +133,9 @@ export class ValidationUtils {
    * }); // false
    */
   public static isNumber({ value }: { value: any }): boolean {
+    if (value === null || value === undefined) return false;
+    if (typeof value === 'boolean') return false;
+    if (value === Infinity || value === -Infinity) return false;
     return !isNaN(parseFloat(value)) && isFinite(value);
   }
 
@@ -105,6 +158,7 @@ export class ValidationUtils {
    * }); // false (missing #)
    */
   public static isValidHexColor({ hexColor }: { hexColor: string }): boolean {
+    if (!hexColor || typeof hexColor !== 'string') return false;
     const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
     return hexColorRegex.test(hexColor);
   }
@@ -133,6 +187,7 @@ export class ValidationUtils {
     input: string;
     minLength: number;
   }): boolean {
+    if (typeof input !== 'string') return false;
     return input.length >= minLength;
   }
 
@@ -160,6 +215,7 @@ export class ValidationUtils {
     input: string;
     maxLength: number;
   }): boolean {
+    if (typeof input !== 'string') return false;
     return input.length <= maxLength;
   }
 
@@ -178,6 +234,7 @@ export class ValidationUtils {
    * }); // false
    */
   public static isValidJSON({ jsonString }: { jsonString: string }): boolean {
+    if (!jsonString || typeof jsonString !== 'string') return false;
     try {
       JSON.parse(jsonString);
       return true;

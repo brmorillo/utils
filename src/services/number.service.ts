@@ -217,7 +217,13 @@ export class NumberUtils {
     max: number;
     decimals?: number;
   }): number {
-    const randomValue = Math.random() * (max - min) + min;
+    if (min > max) {
+      throw new Error(
+        `Minimum value ${min} is greater than maximum value ${max}`,
+      );
+    }
+    // Ensure the result is strictly less than max
+    const randomValue = Math.random() * (max - min - Number.EPSILON) + min;
     return parseFloat(randomValue.toFixed(decimals));
   }
 
