@@ -50,7 +50,11 @@ describe('CryptUtils - Testes de Benchmark', () => {
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          const { encryptedData } = CryptUtils.aesEncrypt(testData, secretKey, iv);
+          const { encryptedData } = CryptUtils.aesEncrypt(
+            testData,
+            secretKey,
+            iv,
+          );
           encryptedResults.push(encryptedData);
         }
       });
@@ -66,7 +70,7 @@ describe('CryptUtils - Testes de Benchmark', () => {
 
     it('deve descriptografar 10.000 strings em tempo razoável', () => {
       const count = 10000;
-      
+
       // Criptografa uma string para usar nos testes
       const { encryptedData } = CryptUtils.aesEncrypt(testData, secretKey, iv);
 
@@ -113,7 +117,7 @@ describe('CryptUtils - Testes de Benchmark', () => {
 
     it('deve descriptografar 10.000 strings em tempo razoável', () => {
       const count = 10000;
-      
+
       // Criptografa uma string para usar nos testes
       const encrypted = CryptUtils.chacha20Encrypt(testData, key, nonce);
 
@@ -159,7 +163,7 @@ describe('CryptUtils - Testes de Benchmark', () => {
 
     it('deve descriptografar 10.000 strings em tempo razoável', () => {
       const count = 10000;
-      
+
       // Criptografa uma string para usar nos testes
       const encrypted = CryptUtils.rc4Encrypt(testData, key);
 
@@ -233,7 +237,7 @@ describe('CryptUtils - Testes de Benchmark', () => {
 
     it('deve verificar 1.000 assinaturas em tempo razoável', () => {
       const count = 1000;
-      
+
       // Cria uma assinatura para verificar repetidamente
       const signature = CryptUtils.rsaSign(testData, privateKey);
 
@@ -307,7 +311,7 @@ describe('CryptUtils - Testes de Benchmark', () => {
 
     it('deve verificar 1.000 assinaturas em tempo razoável', () => {
       const count = 1000;
-      
+
       // Cria uma assinatura para verificar repetidamente
       const signature = CryptUtils.eccSign(testData, privateKey);
 
@@ -335,25 +339,31 @@ describe('CryptUtils - Testes de Benchmark', () => {
 
     it('deve comparar o desempenho de criptografia entre AES e RC4', () => {
       const count = 5000;
-      
+
       // Mede o tempo para AES
       const aesTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           CryptUtils.aesEncrypt(testData, aesKey, aesIv);
         }
       });
-      
+
       // Mede o tempo para RC4
       const rc4Time = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           CryptUtils.rc4Encrypt(testData, rc4Key);
         }
       });
-      
-      console.log(`Tempo para ${count} criptografias AES: ${aesTime.toFixed(2)}ms`);
-      console.log(`Tempo para ${count} criptografias RC4: ${rc4Time.toFixed(2)}ms`);
-      console.log(`RC4 é aproximadamente ${(aesTime / rc4Time).toFixed(2)}x mais rápido que AES`);
-      
+
+      console.log(
+        `Tempo para ${count} criptografias AES: ${aesTime.toFixed(2)}ms`,
+      );
+      console.log(
+        `Tempo para ${count} criptografias RC4: ${rc4Time.toFixed(2)}ms`,
+      );
+      console.log(
+        `RC4 é aproximadamente ${(aesTime / rc4Time).toFixed(2)}x mais rápido que AES`,
+      );
+
       // RC4 deve ser mais rápido que AES
       expect(rc4Time).toBeLessThan(aesTime);
     });

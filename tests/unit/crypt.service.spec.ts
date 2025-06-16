@@ -34,7 +34,10 @@ describe('CryptUtils', () => {
     });
 
     it('deve criptografar e descriptografar um objeto JSON corretamente', () => {
-      const { encryptedData, iv } = CryptUtils.aesEncrypt(testObject, secretKey);
+      const { encryptedData, iv } = CryptUtils.aesEncrypt(
+        testObject,
+        secretKey,
+      );
       expect(encryptedData).toBeTruthy();
       expect(iv).toHaveLength(32);
 
@@ -44,7 +47,11 @@ describe('CryptUtils', () => {
 
     it('deve usar o IV fornecido quando especificado', () => {
       const customIV = '1234567890abcdef1234567890abcdef';
-      const { encryptedData, iv } = CryptUtils.aesEncrypt(testData, secretKey, customIV);
+      const { encryptedData, iv } = CryptUtils.aesEncrypt(
+        testData,
+        secretKey,
+        customIV,
+      );
       expect(iv).toBe(customIV);
 
       const decrypted = CryptUtils.aesDecrypt(encryptedData, secretKey, iv);
@@ -88,10 +95,12 @@ describe('CryptUtils', () => {
     it('deve criptografar e descriptografar uma string corretamente', () => {
       // Verificar se o algoritmo é suportado antes de executar o teste
       if (!CryptUtils['isAlgorithmSupported']('chacha20')) {
-        console.log('ChaCha20 não é suportado nesta versão do Node.js. Pulando teste.');
+        console.log(
+          'ChaCha20 não é suportado nesta versão do Node.js. Pulando teste.',
+        );
         return;
       }
-      
+
       const encrypted = CryptUtils.chacha20Encrypt(testData, key, nonce);
       expect(encrypted).toBeTruthy();
 
@@ -102,10 +111,12 @@ describe('CryptUtils', () => {
     it('deve lançar erro para chave inválida na criptografia', () => {
       // Verificar se o algoritmo é suportado antes de executar o teste
       if (!CryptUtils['isAlgorithmSupported']('chacha20')) {
-        console.log('ChaCha20 não é suportado nesta versão do Node.js. Pulando teste.');
+        console.log(
+          'ChaCha20 não é suportado nesta versão do Node.js. Pulando teste.',
+        );
         return;
       }
-      
+
       const invalidKey = Buffer.from('chave-curta');
       expect(() => {
         CryptUtils.chacha20Encrypt(testData, invalidKey, nonce);
@@ -115,10 +126,12 @@ describe('CryptUtils', () => {
     it('deve lançar erro para nonce inválido na criptografia', () => {
       // Verificar se o algoritmo é suportado antes de executar o teste
       if (!CryptUtils['isAlgorithmSupported']('chacha20')) {
-        console.log('ChaCha20 não é suportado nesta versão do Node.js. Pulando teste.');
+        console.log(
+          'ChaCha20 não é suportado nesta versão do Node.js. Pulando teste.',
+        );
         return;
       }
-      
+
       const invalidNonce = Buffer.from('nonce-curto');
       expect(() => {
         CryptUtils.chacha20Encrypt(testData, key, invalidNonce);
@@ -238,10 +251,12 @@ describe('CryptUtils', () => {
     it('deve criptografar e descriptografar uma string corretamente com RC4', () => {
       // Verificar se o algoritmo é suportado antes de executar o teste
       if (!CryptUtils['isAlgorithmSupported']('rc4')) {
-        console.log('RC4 não é suportado nesta versão do Node.js. Pulando teste.');
+        console.log(
+          'RC4 não é suportado nesta versão do Node.js. Pulando teste.',
+        );
         return;
       }
-      
+
       const encrypted = CryptUtils.rc4Encrypt(testData, key);
       expect(encrypted).toBeTruthy();
 
@@ -252,10 +267,12 @@ describe('CryptUtils', () => {
     it('deve lançar erro para dados inválidos na criptografia RC4', () => {
       // Verificar se o algoritmo é suportado antes de executar o teste
       if (!CryptUtils['isAlgorithmSupported']('rc4')) {
-        console.log('RC4 não é suportado nesta versão do Node.js. Pulando teste.');
+        console.log(
+          'RC4 não é suportado nesta versão do Node.js. Pulando teste.',
+        );
         return;
       }
-      
+
       expect(() => {
         // @ts-ignore - Testando propositalmente com valor inválido
         CryptUtils.rc4Encrypt(null, key);
@@ -265,10 +282,12 @@ describe('CryptUtils', () => {
     it('deve lançar erro para chave inválida na criptografia RC4', () => {
       // Verificar se o algoritmo é suportado antes de executar o teste
       if (!CryptUtils['isAlgorithmSupported']('rc4')) {
-        console.log('RC4 não é suportado nesta versão do Node.js. Pulando teste.');
+        console.log(
+          'RC4 não é suportado nesta versão do Node.js. Pulando teste.',
+        );
         return;
       }
-      
+
       expect(() => {
         // @ts-ignore - Testando propositalmente com valor inválido
         CryptUtils.rc4Encrypt(testData, null);

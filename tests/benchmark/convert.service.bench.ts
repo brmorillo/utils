@@ -16,7 +16,7 @@ describe('ConvertUtils - Testes de Benchmark', () => {
   describe('Conversão de espaço em massa', () => {
     it('deve converter 100.000 valores de metros para quilômetros em tempo razoável', () => {
       const count = 100000;
-      
+
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           ConvertUtils.space({
@@ -40,7 +40,7 @@ describe('ConvertUtils - Testes de Benchmark', () => {
   describe('Conversão de peso em massa', () => {
     it('deve converter 100.000 valores de quilogramas para libras em tempo razoável', () => {
       const count = 100000;
-      
+
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           ConvertUtils.weight({
@@ -64,7 +64,7 @@ describe('ConvertUtils - Testes de Benchmark', () => {
   describe('Conversão de volume em massa', () => {
     it('deve converter 100.000 valores de litros para galões em tempo razoável', () => {
       const count = 100000;
-      
+
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           ConvertUtils.volume({
@@ -88,7 +88,7 @@ describe('ConvertUtils - Testes de Benchmark', () => {
   describe('Conversão de valor em massa', () => {
     it('deve converter 100.000 valores de string para number em tempo razoável', () => {
       const count = 100000;
-      
+
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           ConvertUtils.value({
@@ -109,7 +109,7 @@ describe('ConvertUtils - Testes de Benchmark', () => {
 
     it('deve converter 10.000 valores de number para roman em tempo razoável', () => {
       const count = 10000;
-      
+
       const executionTime = measureExecutionTime(() => {
         for (let i = 1; i <= count; i++) {
           ConvertUtils.value({
@@ -132,7 +132,7 @@ describe('ConvertUtils - Testes de Benchmark', () => {
   describe('Fluxo completo em massa', () => {
     it('deve executar um fluxo completo de conversões para 10.000 valores em tempo razoável', () => {
       const count = 10000;
-      
+
       const executionTime = measureExecutionTime(() => {
         for (let i = 1; i <= count; i++) {
           // Converter metros para quilômetros
@@ -141,22 +141,22 @@ describe('ConvertUtils - Testes de Benchmark', () => {
             fromType: 'meters',
             toType: 'kilometers',
           });
-          
+
           // Converter quilômetros para string
           const strValue = ConvertUtils.value({
             value: kmValue,
             toType: 'string',
           });
-          
+
           // Converter string de volta para number
           const numValue = ConvertUtils.value({
             value: strValue,
             toType: 'number',
           });
-          
+
           // Converter number para litros (simulando uma conversão entre sistemas)
           const literValue = numValue;
-          
+
           // Converter litros para galões
           ConvertUtils.volume({
             value: literValue,

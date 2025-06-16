@@ -190,21 +190,21 @@ describe('DateUtils - Testes de Benchmark', () => {
     it('deve comparar o desempenho de diferentes operações de data', () => {
       const count = 5000;
       const results: Record<string, number> = {};
-      
+
       // Teste now()
       results.now = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           DateUtils.now();
         }
       });
-      
+
       // Teste now({ utc: true })
       results.nowUtc = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           DateUtils.now({ utc: true });
         }
       });
-      
+
       // Teste createInterval
       const startDate = '2023-01-01';
       const endDate = '2023-12-31';
@@ -213,7 +213,7 @@ describe('DateUtils - Testes de Benchmark', () => {
           DateUtils.createInterval({ startDate, endDate });
         }
       });
-      
+
       // Teste addTime
       const date = DateTime.fromISO('2023-01-01');
       const timeToAdd = { days: 5 };
@@ -222,7 +222,7 @@ describe('DateUtils - Testes de Benchmark', () => {
           DateUtils.addTime({ date, timeToAdd });
         }
       });
-      
+
       // Teste diffBetween
       const start = DateTime.fromISO('2023-01-01');
       const end = DateTime.fromISO('2023-12-31');
@@ -232,13 +232,15 @@ describe('DateUtils - Testes de Benchmark', () => {
           DateUtils.diffBetween({ startDate: start, endDate: end, units });
         }
       });
-      
+
       // Exibe os resultados
       console.log('Comparação de desempenho para diferentes operações:');
       Object.entries(results).forEach(([operation, time]) => {
-        console.log(`${operation}: ${time.toFixed(2)}ms (${(time / count).toFixed(3)}ms por operação)`);
+        console.log(
+          `${operation}: ${time.toFixed(2)}ms (${(time / count).toFixed(3)}ms por operação)`,
+        );
       });
-      
+
       // Não fazemos asserções específicas aqui, pois o objetivo é apenas coletar dados para análise
     });
   });
@@ -248,25 +250,31 @@ describe('DateUtils - Testes de Benchmark', () => {
       const count = 5000;
       const dateTimeObj = DateTime.fromISO('2023-01-01T12:00:00Z');
       const dateString = '2023-01-01T12:00:00Z';
-      
+
       // Teste toUTC com DateTime
       const timeWithDateTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           DateUtils.toUTC({ date: dateTimeObj });
         }
       });
-      
+
       // Teste toUTC com string
       const timeWithString = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           DateUtils.toUTC({ date: dateString });
         }
       });
-      
-      console.log(`Tempo para converter ${count} datas para UTC (DateTime): ${timeWithDateTime.toFixed(2)}ms`);
-      console.log(`Tempo para converter ${count} datas para UTC (string): ${timeWithString.toFixed(2)}ms`);
-      console.log(`Proporção: ${(timeWithString / timeWithDateTime).toFixed(2)}x`);
-      
+
+      console.log(
+        `Tempo para converter ${count} datas para UTC (DateTime): ${timeWithDateTime.toFixed(2)}ms`,
+      );
+      console.log(
+        `Tempo para converter ${count} datas para UTC (string): ${timeWithString.toFixed(2)}ms`,
+      );
+      console.log(
+        `Proporção: ${(timeWithString / timeWithDateTime).toFixed(2)}x`,
+      );
+
       // Espera-se que usar string seja mais lento devido à necessidade de parsing
       expect(timeWithString).toBeGreaterThan(timeWithDateTime);
     });

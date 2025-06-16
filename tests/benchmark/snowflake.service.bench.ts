@@ -42,12 +42,12 @@ describe('SnowflakeUtils - Testes de Benchmark', () => {
     it('deve gerar 1023 IDs únicos dentro do mesmo milissegundo', () => {
       const count = 1023;
       const ids: bigint[] = [];
-      
+
       // Força todos os IDs a terem o mesmo timestamp
       const timestamp = new Date();
       const mockDate = new Date(timestamp);
       const realDate = global.Date;
-      
+
       // Mock da classe Date para retornar sempre o mesmo timestamp
       global.Date = class extends Date {
         constructor() {
@@ -58,17 +58,17 @@ describe('SnowflakeUtils - Testes de Benchmark', () => {
           return mockDate.getTime();
         }
       } as any;
-      
+
       try {
         // Gera 1023 IDs (máximo teórico em 1ms com workerId e processId = 0)
         for (let i = 0; i < count; i++) {
           ids.push(SnowflakeUtils.generate({ epoch: testEpoch }));
         }
-        
+
         // Verifica se todos os IDs são únicos
         const uniqueIds = new Set(ids.map(id => id.toString()));
         expect(uniqueIds.size).toBe(count);
-        
+
         // Verifica se todos os IDs têm o mesmo timestamp
         const timestamps = new Set();
         ids.forEach(id => {
@@ -78,7 +78,7 @@ describe('SnowflakeUtils - Testes de Benchmark', () => {
           }).getTime();
           timestamps.add(decodedTimestamp);
         });
-        
+
         expect(timestamps.size).toBe(1);
       } finally {
         // Restaura a classe Date original
@@ -302,7 +302,10 @@ describe('SnowflakeUtils - Testes de Benchmark', () => {
           SnowflakeUtils.isValidSnowflake({ snowflakeId: id.toString() });
 
           // Converte o ID para string e de volta para bigint
-          const stringId = SnowflakeUtils.convert({ snowflakeId: id, toFormat: 'string' });
+          const stringId = SnowflakeUtils.convert({
+            snowflakeId: id,
+            toFormat: 'string',
+          });
           SnowflakeUtils.convert({ snowflakeId: stringId, toFormat: 'bigint' });
         }
       });

@@ -11,14 +11,24 @@ describe('ArrayUtils - Testes de Integração', () => {
       // Arrange - Dados iniciais
       const initialData = [
         { id: 1, category: 'fruit', name: 'apple', tags: ['red', 'sweet'] },
-        { id: 2, category: 'vegetable', name: 'carrot', tags: ['orange', 'crunchy'] },
+        {
+          id: 2,
+          category: 'vegetable',
+          name: 'carrot',
+          tags: ['orange', 'crunchy'],
+        },
         { id: 3, category: 'fruit', name: 'banana', tags: ['yellow', 'sweet'] },
         { id: 4, category: 'fruit', name: 'apple', tags: ['green', 'sour'] },
-        { id: 5, category: 'vegetable', name: 'broccoli', tags: ['green', 'healthy'] },
+        {
+          id: 5,
+          category: 'vegetable',
+          name: 'broccoli',
+          tags: ['green', 'healthy'],
+        },
       ];
 
       // Act - Fluxo de processamento completo
-      
+
       // 1. Remover duplicatas baseadas no nome
       const uniqueByName = ArrayUtils.removeDuplicates({
         array: initialData,
@@ -46,16 +56,16 @@ describe('ArrayUtils - Testes de Integração', () => {
       // Assert
       // Verificar se removeu duplicatas corretamente
       expect(uniqueByName).toHaveLength(4); // apple aparece apenas uma vez
-      
+
       // Verificar se agrupou corretamente
       expect(Object.keys(groupedByCategory)).toEqual(['fruit', 'vegetable']);
       expect(groupedByCategory.fruit).toHaveLength(2);
       expect(groupedByCategory.vegetable).toHaveLength(2);
-      
+
       // Verificar se ordenou corretamente
       expect(sortedFruits[0].name).toBe('apple');
       expect(sortedFruits[1].name).toBe('banana');
-      
+
       // Verificar se encontrou o item com a tag correta
       expect(itemWithSweetTag).not.toBeNull();
       expect(itemWithSweetTag?.tags).toContain('sweet');
@@ -86,13 +96,13 @@ describe('ArrayUtils - Testes de Integração', () => {
       // 1. Extrair todos os funcionários em um array plano
       const allEmployees = nestedData.map(dept => dept.employees);
       const flattenedEmployees = ArrayUtils.flatten({ array: allEmployees });
-      
+
       // 2. Ordenar por ID
       const sortedEmployees = ArrayUtils.sort({
         array: flattenedEmployees,
         orderBy: { id: 'asc' },
       });
-      
+
       // 3. Encontrar funcionário específico
       const foundEmployee = ArrayUtils.findSubset({
         array: sortedEmployees,
@@ -164,7 +174,7 @@ describe('ArrayUtils - Testes de Integração', () => {
       // Act
       // 1. Filtrar apenas usuários ativos
       const activeUsers = users.filter(user => user.active);
-      
+
       // 2. Agrupar por papel
       const usersByRole: Record<string, typeof users> = {};
       activeUsers.forEach(user => {
@@ -173,7 +183,7 @@ describe('ArrayUtils - Testes de Integração', () => {
           usersByRole[role].push(user);
         });
       });
-      
+
       // 3. Remover duplicatas em cada grupo
       Object.keys(usersByRole).forEach(role => {
         usersByRole[role] = ArrayUtils.removeDuplicates({
@@ -181,11 +191,11 @@ describe('ArrayUtils - Testes de Integração', () => {
           keyFn: user => user.id,
         });
       });
-      
+
       // 4. Encontrar usuários com papel específico
       const admins = usersByRole['admin'] || [];
       const editors = usersByRole['editor'] || [];
-      
+
       // 5. Verificar interseção entre admins e editors
       const adminEditors = ArrayUtils.intersect({
         array1: admins,

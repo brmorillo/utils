@@ -1,20 +1,20 @@
-/** @type {import('jest').Config} */
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  transform: {
-    '^.+\\.ts$': 'ts-jest'
-  },
-  collectCoverageFrom: [
-    'src/**/*.ts',
-    '!src/**/*.d.ts',
-    '!src/**/*.interface.ts',
-    '!src/**/*.type.ts'
+  projects: [
+    {
+      displayName: 'unit',
+      testMatch: ['<rootDir>/tests/unit/**/*.spec.ts'],
+    },
+    {
+      displayName: 'integration',
+      testMatch: ['<rootDir>/tests/integration/**/*.int-spec.ts'],
+    },
+    {
+      displayName: 'benchmark',
+      testMatch: ['<rootDir>/tests/benchmark/**/*.bench.ts'],
+    },
   ],
-  coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'lcov'],
-  testPathIgnorePatterns: ['/node_modules/', '/dist/'],
-  testTimeout: 30000,
-  testMatch: ['<rootDir>/tests/unit/**/*.spec.ts'],
-  rootDir: '.'
+  collectCoverageFrom: ['src/**/*.ts'],
+  coveragePathIgnorePatterns: ['/node_modules/', '/dist/'],
 };

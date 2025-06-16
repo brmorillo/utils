@@ -14,20 +14,20 @@ describe('ConvertUtils - Testes de Integração', () => {
         fromType: 'meters',
         toType: 'kilometers',
       });
-      
+
       const kmToMiles = ConvertUtils.space({
         value: metersToKm,
         fromType: 'kilometers',
         toType: 'miles',
       });
-      
+
       // Verificar se o resultado é aproximadamente igual à conversão direta
       const directConversion = ConvertUtils.space({
         value: 1000,
         fromType: 'meters',
         toType: 'miles',
       });
-      
+
       expect(kmToMiles).toBeCloseTo(directConversion, 10);
     });
 
@@ -38,20 +38,20 @@ describe('ConvertUtils - Testes de Integração', () => {
         fromType: 'kilograms',
         toType: 'grams',
       });
-      
+
       const gramsToOunces = ConvertUtils.weight({
         value: kgToGrams,
         fromType: 'grams',
         toType: 'ounces',
       });
-      
+
       // Verificar se o resultado é aproximadamente igual à conversão direta
       const directConversion = ConvertUtils.weight({
         value: 1,
         fromType: 'kilograms',
         toType: 'ounces',
       });
-      
+
       expect(gramsToOunces).toBeCloseTo(directConversion, 10);
     });
   });
@@ -67,18 +67,18 @@ describe('ConvertUtils - Testes de Integração', () => {
         fromType: 'liters',
         toType: 'milliliters',
       });
-      
+
       // Depois, converter mililitros para gramas (1ml de água = 1g)
       // Aqui estamos simulando uma conversão entre sistemas diferentes
       const gramsEquivalent = litersToMilliliters; // 1000 ml = 1000 g
-      
+
       // Por fim, converter gramas para quilogramas
       const gramsToKilograms = ConvertUtils.weight({
         value: gramsEquivalent,
         fromType: 'grams',
         toType: 'kilograms',
       });
-      
+
       // 1 litro de água deve pesar 1 kg
       expect(gramsToKilograms).toBe(1);
     });
@@ -91,19 +91,19 @@ describe('ConvertUtils - Testes de Integração', () => {
         value: 42,
         toType: 'string',
       });
-      
+
       // Converter string de volta para número
       const stringToNumber = ConvertUtils.value({
         value: numberToString,
         toType: 'number',
       });
-      
+
       // Converter número para romano
       const numberToRoman = ConvertUtils.value({
         value: stringToNumber,
         toType: 'roman',
       });
-      
+
       // Verificar resultados
       expect(numberToString).toBe('42');
       expect(stringToNumber).toBe(42);
@@ -116,22 +116,22 @@ describe('ConvertUtils - Testes de Integração', () => {
         value: 1984,
         toType: 'roman',
       });
-      
+
       // Verificar resultado romano
       expect(numberToRoman).toBe('MCMLXXXIV');
-      
+
       // Converter número para string
       const numberToString = ConvertUtils.value({
         value: 1984,
         toType: 'string',
       });
-      
+
       // Converter string para bigint
       const stringToBigint = ConvertUtils.value({
         value: numberToString,
         toType: 'bigint',
       });
-      
+
       // Verificar resultados
       expect(numberToString).toBe('1984');
       expect(stringToBigint).toBe(1984n);

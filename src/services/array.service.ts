@@ -120,12 +120,15 @@ export class ArrayUtils {
       throw new Error('Input must be an array');
     }
 
-    return array.reduce((acc, item) => {
-      const key = keyFn(item);
-      acc[key] = acc[key] || [];
-      acc[key].push(item);
-      return acc;
-    }, {} as Record<string | number, T[]>);
+    return array.reduce(
+      (acc, item) => {
+        const key = keyFn(item);
+        acc[key] = acc[key] || [];
+        acc[key].push(item);
+        return acc;
+      },
+      {} as Record<string | number, T[]>,
+    );
   }
 
   /**

@@ -99,7 +99,7 @@ describe('CuidUtils - Testes de Benchmark', () => {
   describe('Validação de CUIDs em massa', () => {
     it('deve validar 10.000 CUIDs válidos em tempo razoável', () => {
       const count = 10000;
-      
+
       // Gera um CUID para validar repetidamente
       const validId = CuidUtils.generate();
 
@@ -120,7 +120,7 @@ describe('CuidUtils - Testes de Benchmark', () => {
 
     it('deve validar 10.000 strings inválidas em tempo razoável', () => {
       const count = 10000;
-      
+
       // String inválida para validar repetidamente
       const invalidId = 'invalid-cuid-string';
 
@@ -172,13 +172,13 @@ describe('CuidUtils - Testes de Benchmark', () => {
     it('deve medir o desempenho de validação com diferentes comprimentos', () => {
       const count = 1000;
       const lengths = [8, 16, 24, 32];
-      
+
       for (const length of lengths) {
         // Gera um conjunto de IDs com o comprimento especificado
-        const ids = Array.from({ length: 10 }, () => 
-          CuidUtils.generate({ length })
+        const ids = Array.from({ length: 10 }, () =>
+          CuidUtils.generate({ length }),
         );
-        
+
         const executionTime = measureExecutionTime(() => {
           for (let i = 0; i < count; i++) {
             // Usa um ID aleatório do conjunto para cada validação
@@ -186,11 +186,11 @@ describe('CuidUtils - Testes de Benchmark', () => {
             CuidUtils.isValid({ id });
           }
         });
-        
+
         console.log(
           `Tempo para validar ${count} CUIDs de comprimento ${length}: ${executionTime.toFixed(2)}ms`,
         );
-        
+
         // O tempo médio por validação deve ser menor que 0.01ms
         const avgTimePerValidation = executionTime / count;
         expect(avgTimePerValidation).toBeLessThan(0.01);

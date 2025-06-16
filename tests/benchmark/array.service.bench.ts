@@ -25,7 +25,9 @@ describe('ArrayUtils - Testes de Benchmark', () => {
       });
 
       // Log do tempo de execução
-      console.log(`Tempo para remover duplicatas de ${size} itens: ${executionTime.toFixed(2)}ms`);
+      console.log(
+        `Tempo para remover duplicatas de ${size} itens: ${executionTime.toFixed(2)}ms`,
+      );
 
       // Assert - Verificar se o tempo médio por item é razoável
       const avgTimePerItem = executionTime / size;
@@ -72,7 +74,9 @@ describe('ArrayUtils - Testes de Benchmark', () => {
       });
 
       // Log do tempo de execução
-      console.log(`Tempo para calcular interseção de dois arrays de ${size} itens: ${executionTime.toFixed(2)}ms`);
+      console.log(
+        `Tempo para calcular interseção de dois arrays de ${size} itens: ${executionTime.toFixed(2)}ms`,
+      );
 
       // Assert - Verificar se o tempo é razoável
       expect(executionTime).toBeLessThan(500); // Menos de 500ms
@@ -84,7 +88,9 @@ describe('ArrayUtils - Testes de Benchmark', () => {
       // Arrange - Criar um array profundamente aninhado
       const createNestedArray = (depth: number, size: number): any[] => {
         if (depth <= 0) return Array.from({ length: size }, (_, i) => i);
-        return Array.from({ length: size / depth }, (_, i) => createNestedArray(depth - 1, size / depth));
+        return Array.from({ length: size / depth }, (_, i) =>
+          createNestedArray(depth - 1, size / depth),
+        );
       };
 
       const nestedArray = createNestedArray(5, 10000); // 5 níveis de aninhamento
@@ -95,7 +101,9 @@ describe('ArrayUtils - Testes de Benchmark', () => {
       });
 
       // Log do tempo de execução
-      console.log(`Tempo para achatar um array profundamente aninhado: ${executionTime.toFixed(2)}ms`);
+      console.log(
+        `Tempo para achatar um array profundamente aninhado: ${executionTime.toFixed(2)}ms`,
+      );
 
       // Assert - Verificar se o tempo é razoável
       expect(executionTime).toBeLessThan(500); // Menos de 500ms
@@ -120,7 +128,9 @@ describe('ArrayUtils - Testes de Benchmark', () => {
       });
 
       // Log do tempo de execução
-      console.log(`Tempo para agrupar ${size} itens: ${executionTime.toFixed(2)}ms`);
+      console.log(
+        `Tempo para agrupar ${size} itens: ${executionTime.toFixed(2)}ms`,
+      );
 
       // Assert - Verificar se o tempo médio por item é razoável
       const avgTimePerItem = executionTime / size;
@@ -140,7 +150,9 @@ describe('ArrayUtils - Testes de Benchmark', () => {
       });
 
       // Log do tempo de execução
-      console.log(`Tempo para embaralhar ${size} itens: ${executionTime.toFixed(2)}ms`);
+      console.log(
+        `Tempo para embaralhar ${size} itens: ${executionTime.toFixed(2)}ms`,
+      );
 
       // Assert - Verificar se o tempo médio por item é razoável
       const avgTimePerItem = executionTime / size;
@@ -160,7 +172,9 @@ describe('ArrayUtils - Testes de Benchmark', () => {
       });
 
       // Log do tempo de execução
-      console.log(`Tempo para ordenar ${size} números: ${executionTime.toFixed(2)}ms`);
+      console.log(
+        `Tempo para ordenar ${size} números: ${executionTime.toFixed(2)}ms`,
+      );
 
       // Assert - Verificar se o tempo é razoável
       // A ordenação é O(n log n), então permitimos um tempo maior
@@ -213,7 +227,9 @@ describe('ArrayUtils - Testes de Benchmark', () => {
       });
 
       // Log do tempo de execução
-      console.log(`Tempo para encontrar um subconjunto em ${size} itens: ${executionTime.toFixed(2)}ms`);
+      console.log(
+        `Tempo para encontrar um subconjunto em ${size} itens: ${executionTime.toFixed(2)}ms`,
+      );
 
       // Assert - Verificar se o tempo é razoável
       expect(executionTime).toBeLessThan(500); // Menos de 500ms
@@ -249,7 +265,9 @@ describe('ArrayUtils - Testes de Benchmark', () => {
       });
 
       // Log do tempo de execução
-      console.log(`Tempo para verificar subconjunto 10.000 vezes: ${executionTime.toFixed(2)}ms`);
+      console.log(
+        `Tempo para verificar subconjunto 10.000 vezes: ${executionTime.toFixed(2)}ms`,
+      );
 
       // Assert - Verificar se o tempo médio por verificação é razoável
       const avgTimePerCheck = executionTime / 10000;
@@ -301,7 +319,9 @@ describe('ArrayUtils - Testes de Benchmark', () => {
       });
 
       // Log do tempo de execução
-      console.log(`Tempo para executar fluxo completo com ${size} itens: ${executionTime.toFixed(2)}ms`);
+      console.log(
+        `Tempo para executar fluxo completo com ${size} itens: ${executionTime.toFixed(2)}ms`,
+      );
 
       // Assert - Verificar se o tempo é razoável
       expect(executionTime).toBeLessThan(1000); // Menos de 1 segundo

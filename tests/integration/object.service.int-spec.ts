@@ -14,17 +14,17 @@ describe('ObjectUtils - Testes de Integração', () => {
           address: {
             street: '123 Main St',
             city: 'New York',
-            country: 'USA'
+            country: 'USA',
           },
           preferences: {
             theme: 'dark',
-            notifications: true
-          }
+            notifications: true,
+          },
         },
         settings: {
           language: 'en',
-          timezone: 'UTC-5'
-        }
+          timezone: 'UTC-5',
+        },
       };
 
       // 1. Clone o objeto
@@ -43,12 +43,15 @@ describe('ObjectUtils - Testes de Integração', () => {
         value: {
           street: '456 Oak Ave',
           city: 'Boston',
-          country: 'USA'
-        }
+          country: 'USA',
+        },
       });
 
       // 5. Mescle com o objeto original
-      const merged = ObjectUtils.deepMerge({ target: cloned, source: modifiedObj });
+      const merged = ObjectUtils.deepMerge({
+        target: cloned,
+        source: modifiedObj,
+      });
 
       // Verificações
       expect(merged.user.address.street).toBe('456 Oak Ave');
@@ -69,41 +72,41 @@ describe('ObjectUtils - Testes de Integração', () => {
         layout: {
           sidebar: true,
           toolbar: 'top',
-          panels: ['explorer', 'search', 'debug']
+          panels: ['explorer', 'search', 'debug'],
         },
         extensions: {
           enabled: ['typescript', 'eslint', 'prettier'],
-          disabled: ['php']
-        }
+          disabled: ['php'],
+        },
       };
 
       // 1. Comprimir para armazenamento
       const compressed = ObjectUtils.compressObjectToBase64({
         json: userConfig,
-        urlSafe: true
+        urlSafe: true,
       });
 
       // 2. Simular recuperação do armazenamento
       const decompressed = ObjectUtils.decompressBase64ToObject({
-        base64String: compressed
+        base64String: compressed,
       });
 
       // 3. Extrair apenas as configurações de layout
       const layoutConfig = ObjectUtils.pick({
         obj: decompressed as any,
-        keys: ['layout']
+        keys: ['layout'],
       });
 
       // 4. Modificar as configurações de layout
       const newLayout = ObjectUtils.deepMerge({
         target: layoutConfig,
-        source: { layout: { toolbar: 'bottom' } }
+        source: { layout: { toolbar: 'bottom' } },
       });
 
       // 5. Mesclar de volta com a configuração completa
       const updatedConfig = ObjectUtils.deepMerge({
         target: decompressed as any,
-        source: newLayout
+        source: newLayout,
       });
 
       // Verificações
@@ -113,12 +116,12 @@ describe('ObjectUtils - Testes de Integração', () => {
         layout: {
           sidebar: true,
           toolbar: 'bottom',
-          panels: ['explorer', 'search', 'debug']
+          panels: ['explorer', 'search', 'debug'],
         },
         extensions: {
           enabled: ['typescript', 'eslint', 'prettier'],
-          disabled: ['php']
-        }
+          disabled: ['php'],
+        },
       });
     });
 
@@ -131,29 +134,31 @@ describe('ObjectUtils - Testes de Integração', () => {
         address: {
           street: '123 Main St',
           city: 'New York',
-          zipCode: '10001'
+          zipCode: '10001',
         },
         preferences: {
           newsletter: 'yes',
-          marketing: 'no'
-        }
+          marketing: 'no',
+        },
       };
 
       // 1. Extrair apenas os dados pessoais
       const personalData = ObjectUtils.pick({
         obj: formData,
-        keys: ['name', 'email', 'age']
+        keys: ['name', 'email', 'age'],
       });
 
       // 2. Achatar as preferências para processamento
       const flatPreferences = ObjectUtils.flattenObject({
-        obj: { preferences: formData.preferences }
+        obj: { preferences: formData.preferences },
       });
 
       // 3. Normalizar as preferências para valores booleanos
       const normalizedPreferences = {
-        'preferences.newsletter': flatPreferences['preferences.newsletter'] === 'yes',
-        'preferences.marketing': flatPreferences['preferences.marketing'] === 'yes'
+        'preferences.newsletter':
+          flatPreferences['preferences.newsletter'] === 'yes',
+        'preferences.marketing':
+          flatPreferences['preferences.marketing'] === 'yes',
       };
 
       // 4. Desachatar as preferências normalizadas
@@ -162,7 +167,8 @@ describe('ObjectUtils - Testes de Integração', () => {
         ObjectUtils.unflattenObject({
           obj: processedPreferences,
           path: key,
-          value: normalizedPreferences[key as keyof typeof normalizedPreferences]
+          value:
+            normalizedPreferences[key as keyof typeof normalizedPreferences],
         });
       });
 
@@ -171,9 +177,9 @@ describe('ObjectUtils - Testes de Integração', () => {
         target: {
           ...personalData,
           age: parseInt(personalData.age, 10),
-          address: formData.address
+          address: formData.address,
         },
-        source: processedPreferences
+        source: processedPreferences,
       });
 
       // Verificações
@@ -184,12 +190,12 @@ describe('ObjectUtils - Testes de Integração', () => {
         address: {
           street: '123 Main St',
           city: 'New York',
-          zipCode: '10001'
+          zipCode: '10001',
         },
         preferences: {
           newsletter: true,
-          marketing: false
-        }
+          marketing: false,
+        },
       });
     });
   });
@@ -201,54 +207,65 @@ describe('ObjectUtils - Testes de Integração', () => {
         products: [
           { id: 1, name: 'Product A', price: 10.99, category: 'electronics' },
           { id: 2, name: 'Product B', price: 24.99, category: 'books' },
-          { id: 3, name: 'Product C', price: 5.99, category: 'electronics' }
+          { id: 3, name: 'Product C', price: 5.99, category: 'electronics' },
         ],
         filters: {
           minPrice: 0,
           maxPrice: 50,
-          categories: ['electronics', 'books']
-        }
+          categories: ['electronics', 'books'],
+        },
       };
 
       // 1. Clone o objeto para não modificar o original
       const cloned = ObjectUtils.deepClone({ obj: data });
 
       // 2. Extraia apenas os produtos
-      const productsOnly = ObjectUtils.pick({ obj: cloned, keys: ['products'] });
+      const productsOnly = ObjectUtils.pick({
+        obj: cloned,
+        keys: ['products'],
+      });
 
       // 3. Agrupe os produtos por categoria
       const productsByCategory = ObjectUtils.groupBy({
-        obj: productsOnly.products.reduce((acc, product) => {
-          acc[product.id.toString()] = product;
-          return acc;
-        }, {} as Record<string, any>),
-        callback: (product) => product.category
+        obj: productsOnly.products.reduce(
+          (acc, product) => {
+            acc[product.id.toString()] = product;
+            return acc;
+          },
+          {} as Record<string, any>,
+        ),
+        callback: product => product.category,
       });
 
       // 4. Crie um objeto com estatísticas por categoria
       const categoryStats = {} as Record<string, any>;
       Object.keys(productsByCategory).forEach(category => {
         const productIds = productsByCategory[category];
-        const products = productIds.map(id => productsOnly.products.find(p => p.id.toString() === id));
-        
-        const totalPrice = products.reduce((sum, product) => sum + product.price, 0);
+        const products = productIds.map(id =>
+          productsOnly.products.find(p => p.id.toString() === id),
+        );
+
+        const totalPrice = products.reduce(
+          (sum, product) => sum + product.price,
+          0,
+        );
         const avgPrice = totalPrice / products.length;
-        
+
         ObjectUtils.unflattenObject({
           obj: categoryStats,
           path: `stats.${category}`,
           value: {
             count: products.length,
             totalPrice,
-            avgPrice
-          }
+            avgPrice,
+          },
         });
       });
 
       // 5. Mescle as estatísticas com os filtros originais
       const result = ObjectUtils.deepMerge({
         target: { filters: data.filters },
-        source: categoryStats
+        source: categoryStats,
       });
 
       // Verificações
@@ -266,37 +283,39 @@ describe('ObjectUtils - Testes de Integração', () => {
           electronics: {
             smartphones: [
               { id: 'p1', name: 'Phone X', price: 999.99, stock: 10 },
-              { id: 'p2', name: 'Phone Y', price: 599.99, stock: 5 }
+              { id: 'p2', name: 'Phone Y', price: 599.99, stock: 5 },
             ],
             laptops: [
               { id: 'l1', name: 'Laptop A', price: 1299.99, stock: 8 },
-              { id: 'l2', name: 'Laptop B', price: 899.99, stock: 12 }
-            ]
+              { id: 'l2', name: 'Laptop B', price: 899.99, stock: 12 },
+            ],
           },
           books: {
             fiction: [
               { id: 'b1', name: 'Novel 1', price: 19.99, stock: 50 },
-              { id: 'b2', name: 'Novel 2', price: 15.99, stock: 30 }
+              { id: 'b2', name: 'Novel 2', price: 15.99, stock: 30 },
             ],
             nonfiction: [
-              { id: 'b3', name: 'Guide 1', price: 29.99, stock: 20 }
-            ]
-          }
+              { id: 'b3', name: 'Guide 1', price: 29.99, stock: 20 },
+            ],
+          },
         },
         sales: {
           '2023-01': {
             electronics: 15000,
-            books: 5000
+            books: 5000,
           },
           '2023-02': {
             electronics: 18000,
-            books: 6000
-          }
-        }
+            books: 6000,
+          },
+        },
       };
 
       // 1. Achatar o inventário para facilitar o processamento
-      const flatInventory = ObjectUtils.flattenObject({ obj: storeData.inventory });
+      const flatInventory = ObjectUtils.flattenObject({
+        obj: storeData.inventory,
+      });
 
       // 2. Criar um mapa de todos os produtos
       const allProducts = [] as any[];
@@ -308,21 +327,24 @@ describe('ObjectUtils - Testes de Integração', () => {
 
       // 3. Calcular o valor total do inventário
       const totalInventoryValue = allProducts.reduce(
-        (sum, product) => sum + (product.price * product.stock),
-        0
+        (sum, product) => sum + product.price * product.stock,
+        0,
       );
 
       // 4. Agrupar produtos por faixa de preço
-      const productsByPriceRange = allProducts.reduce((acc, product) => {
-        let range;
-        if (product.price < 50) range = 'low';
-        else if (product.price < 500) range = 'medium';
-        else range = 'high';
-        
-        if (!acc[range]) acc[range] = [];
-        acc[range].push(product);
-        return acc;
-      }, {} as Record<string, any[]>);
+      const productsByPriceRange = allProducts.reduce(
+        (acc, product) => {
+          let range;
+          if (product.price < 50) range = 'low';
+          else if (product.price < 500) range = 'medium';
+          else range = 'high';
+
+          if (!acc[range]) acc[range] = [];
+          acc[range].push(product);
+          return acc;
+        },
+        {} as Record<string, any[]>,
+      );
 
       // 5. Criar um relatório
       const report = {
@@ -331,16 +353,18 @@ describe('ObjectUtils - Testes de Integração', () => {
         productsByPriceRange: {
           low: productsByPriceRange.low?.length || 0,
           medium: productsByPriceRange.medium?.length || 0,
-          high: productsByPriceRange.high?.length || 0
+          high: productsByPriceRange.high?.length || 0,
         },
-        lowStockProducts: allProducts.filter(p => p.stock < 10).map(p => p.id)
+        lowStockProducts: allProducts.filter(p => p.stock < 10).map(p => p.id),
       };
 
       // 6. Comprimir o relatório para armazenamento
       const compressedReport = ObjectUtils.compressObject({ json: report });
-      
+
       // 7. Descomprimir para verificação
-      const decompressedReport = ObjectUtils.decompressObject({ jsonString: compressedReport });
+      const decompressedReport = ObjectUtils.decompressObject({
+        jsonString: compressedReport,
+      });
 
       // Verificações
       expect(decompressedReport).toEqual(report);

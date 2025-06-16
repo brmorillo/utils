@@ -95,11 +95,11 @@ export class ObjectUtils {
         Array.isArray(source[key]) && Array.isArray(result[key])
           ? [...result[key], ...source[key]]
           : typeof source[key] === 'object' && !Array.isArray(source[key])
-          ? ObjectUtils.deepMerge({
-              target: result[key] || {},
-              source: source[key],
-            })
-          : source[key];
+            ? ObjectUtils.deepMerge({
+                target: result[key] || {},
+                source: source[key],
+              })
+            : source[key];
     }
 
     return result as T & U;
@@ -131,10 +131,13 @@ export class ObjectUtils {
     obj: T;
     keys: K[];
   }): Pick<T, K> {
-    return keys.reduce((acc, key) => {
-      if (key in obj) acc[key] = obj[key];
-      return acc;
-    }, {} as Pick<T, K>);
+    return keys.reduce(
+      (acc, key) => {
+        if (key in obj) acc[key] = obj[key];
+        return acc;
+      },
+      {} as Pick<T, K>,
+    );
   }
 
   /**
@@ -219,10 +222,13 @@ export class ObjectUtils {
   }: {
     obj: Record<string, any>;
   }): Record<string, string | number> {
-    return Object.keys(obj).reduce((acc, key) => {
-      acc[obj[key]] = key;
-      return acc;
-    }, {} as Record<string, string | number>);
+    return Object.keys(obj).reduce(
+      (acc, key) => {
+        acc[obj[key]] = key;
+        return acc;
+      },
+      {} as Record<string, string | number>,
+    );
   }
 
   /**
@@ -317,12 +323,15 @@ export class ObjectUtils {
     obj: Record<string, T>;
     callback: (value: T, key: string) => string | number;
   }): Record<string | number, string[]> {
-    return Object.keys(obj).reduce((acc, key) => {
-      const groupKey = callback(obj[key], key);
-      if (!acc[groupKey]) acc[groupKey] = [];
-      acc[groupKey].push(key);
-      return acc;
-    }, {} as Record<string | number, string[]>);
+    return Object.keys(obj).reduce(
+      (acc, key) => {
+        const groupKey = callback(obj[key], key);
+        if (!acc[groupKey]) acc[groupKey] = [];
+        acc[groupKey].push(key);
+        return acc;
+      },
+      {} as Record<string | number, string[]>,
+    );
   }
 
   /**

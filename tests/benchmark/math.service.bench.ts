@@ -211,62 +211,64 @@ describe('MathUtils - Testes de Benchmark', () => {
     it('deve comparar o desempenho de diferentes métodos', () => {
       const count = 10000;
       const results: Record<string, number> = {};
-      
+
       // Teste roundToDecimals
       results.roundToDecimals = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           MathUtils.roundToDecimals({ value: Math.PI, decimals: 2 });
         }
       });
-      
+
       // Teste percentage
       results.percentage = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           MathUtils.percentage({ total: 200, part: 50 });
         }
       });
-      
+
       // Teste randomInRange
       results.randomInRange = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           MathUtils.randomInRange({ min: 1, max: 100 });
         }
       });
-      
+
       // Teste gcd
       results.gcd = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           MathUtils.gcd({ a: 24, b: 36 });
         }
       });
-      
+
       // Teste lcm
       results.lcm = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           MathUtils.lcm({ a: 4, b: 6 });
         }
       });
-      
+
       // Teste clamp
       results.clamp = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           MathUtils.clamp({ value: 15, min: 0, max: 10 });
         }
       });
-      
+
       // Teste isPrime
       results.isPrime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           MathUtils.isPrime({ value: 997 });
         }
       });
-      
+
       // Exibe os resultados
       console.log('Comparação de desempenho para diferentes métodos:');
       Object.entries(results).forEach(([method, time]) => {
-        console.log(`${method}: ${time.toFixed(2)}ms (${(time / count).toFixed(3)}ms por operação)`);
+        console.log(
+          `${method}: ${time.toFixed(2)}ms (${(time / count).toFixed(3)}ms por operação)`,
+        );
       });
-      
+
       // Não fazemos asserções específicas aqui, pois o objetivo é apenas coletar dados para análise
     });
   });
@@ -276,17 +278,19 @@ describe('MathUtils - Testes de Benchmark', () => {
       const count = 1000;
       const numbers = [2, 101, 997, 9973, 99991];
       const results: Record<number, number> = {};
-      
+
       for (const num of numbers) {
         results[num] = measureExecutionTime(() => {
           for (let i = 0; i < count; i++) {
             MathUtils.isPrime({ value: num });
           }
         });
-        
-        console.log(`Tempo para verificar ${count} vezes se ${num} é primo: ${results[num].toFixed(2)}ms`);
+
+        console.log(
+          `Tempo para verificar ${count} vezes se ${num} é primo: ${results[num].toFixed(2)}ms`,
+        );
       }
-      
+
       // Espera-se que números maiores levem mais tempo
       // Mas não fazemos asserções específicas, pois o desempenho pode variar
     });

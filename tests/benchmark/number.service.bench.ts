@@ -83,7 +83,12 @@ describe('NumberUtils - Testes de Benchmark', () => {
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          results.push(NumberUtils.roundToDecimals({ value: Math.PI + i * 0.0001, decimals: 2 }));
+          results.push(
+            NumberUtils.roundToDecimals({
+              value: Math.PI + i * 0.0001,
+              decimals: 2,
+            }),
+          );
         }
       });
 
@@ -125,7 +130,9 @@ describe('NumberUtils - Testes de Benchmark', () => {
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          results.push(NumberUtils.addDecimalPlaces({ value: i, decimalPlaces: 2 }));
+          results.push(
+            NumberUtils.addDecimalPlaces({ value: i, decimalPlaces: 2 }),
+          );
         }
       });
 
@@ -188,7 +195,9 @@ describe('NumberUtils - Testes de Benchmark', () => {
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          results.push(NumberUtils.randomFloatInRange({ min: 1, max: 100, decimals: 2 }));
+          results.push(
+            NumberUtils.randomFloatInRange({ min: 1, max: 100, decimals: 2 }),
+          );
         }
       });
 
@@ -269,41 +278,43 @@ describe('NumberUtils - Testes de Benchmark', () => {
     it('deve comparar o desempenho de diferentes métodos', () => {
       const count = 100000;
       const results: Record<string, number> = {};
-      
+
       // Teste isEven
       results.isEven = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           NumberUtils.isEven({ value: i });
         }
       });
-      
+
       // Teste isOdd
       results.isOdd = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           NumberUtils.isOdd({ value: i });
         }
       });
-      
+
       // Teste roundToDecimals
       results.roundToDecimals = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           NumberUtils.roundToDecimals({ value: Math.PI, decimals: 2 });
         }
       });
-      
+
       // Teste isPrime
       results.isPrime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           NumberUtils.isPrime({ value: i % 100 });
         }
       });
-      
+
       // Exibe os resultados
       console.log('Comparação de desempenho para diferentes métodos:');
       Object.entries(results).forEach(([method, time]) => {
-        console.log(`${method}: ${time.toFixed(2)}ms (${(time / count).toFixed(6)}ms por operação)`);
+        console.log(
+          `${method}: ${time.toFixed(2)}ms (${(time / count).toFixed(6)}ms por operação)`,
+        );
       });
-      
+
       // Não fazemos asserções específicas aqui, pois o objetivo é apenas coletar dados para análise
     });
   });
@@ -313,17 +324,19 @@ describe('NumberUtils - Testes de Benchmark', () => {
       const count = 1000;
       const numbers = [2, 101, 997, 9973, 99991];
       const results: Record<number, number> = {};
-      
+
       for (const num of numbers) {
         results[num] = measureExecutionTime(() => {
           for (let i = 0; i < count; i++) {
             NumberUtils.isPrime({ value: num });
           }
         });
-        
-        console.log(`Tempo para verificar ${count} vezes se ${num} é primo: ${results[num].toFixed(2)}ms`);
+
+        console.log(
+          `Tempo para verificar ${count} vezes se ${num} é primo: ${results[num].toFixed(2)}ms`,
+        );
       }
-      
+
       // Espera-se que números maiores levem mais tempo
       // Mas não fazemos asserções específicas, pois o desempenho pode variar
     });

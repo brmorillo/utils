@@ -12,41 +12,44 @@ describe('RequestUtils - Testes de Integração', () => {
         // Desktop Windows/Chrome
         {
           headers: {
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-            'referer': 'https://example.com/page1',
-            'origin': 'https://example.com',
-            'host': 'api.example.com',
-            'x-forwarded-for': '192.168.1.1'
+            'user-agent':
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            referer: 'https://example.com/page1',
+            origin: 'https://example.com',
+            host: 'api.example.com',
+            'x-forwarded-for': '192.168.1.1',
           },
-          ip: '127.0.0.1'
+          ip: '127.0.0.1',
         },
         // Mobile iOS/Safari
         {
           headers: {
-            'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1',
-            'referer': 'https://m.example.com/page1',
-            'origin': 'https://m.example.com',
-            'host': 'api.example.com',
-            'x-forwarded-for': '192.168.2.1'
+            'user-agent':
+              'Mozilla/5.0 (iPhone; CPU iPhone OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1',
+            referer: 'https://m.example.com/page1',
+            origin: 'https://m.example.com',
+            host: 'api.example.com',
+            'x-forwarded-for': '192.168.2.1',
           },
-          ip: '127.0.0.2'
+          ip: '127.0.0.2',
         },
         // Tablet Android/Chrome
         {
           headers: {
-            'user-agent': 'Mozilla/5.0 (Linux; Android 11; SM-T510) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Safari/537.36',
-            'referer': 'https://example.com/page2',
-            'origin': 'https://example.com',
-            'host': 'api.example.com',
-            'x-forwarded-for': '192.168.3.1'
+            'user-agent':
+              'Mozilla/5.0 (Linux; Android 11; SM-T510) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Safari/537.36',
+            referer: 'https://example.com/page2',
+            origin: 'https://example.com',
+            host: 'api.example.com',
+            'x-forwarded-for': '192.168.3.1',
           },
-          ip: '127.0.0.3'
-        }
+          ip: '127.0.0.3',
+        },
       ];
 
       // Processa cada requisição
-      const results = requests.map(request => 
-        RequestUtils.extractRequestData({ request })
+      const results = requests.map(request =>
+        RequestUtils.extractRequestData({ request }),
       );
 
       // Verificações para o cliente Desktop
@@ -74,44 +77,48 @@ describe('RequestUtils - Testes de Integração', () => {
         // Sem proxy
         {
           headers: {
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124',
-            'host': 'api.example.com'
+            'user-agent':
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124',
+            host: 'api.example.com',
           },
-          ip: '192.168.1.1'
+          ip: '192.168.1.1',
         },
         // Com X-Forwarded-For
         {
           headers: {
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124',
-            'host': 'api.example.com',
-            'x-forwarded-for': '203.0.113.1, 192.168.1.2'
+            'user-agent':
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124',
+            host: 'api.example.com',
+            'x-forwarded-for': '203.0.113.1, 192.168.1.2',
           },
-          ip: '192.168.1.2'
+          ip: '192.168.1.2',
         },
         // Com X-Real-IP
         {
           headers: {
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124',
-            'host': 'api.example.com',
-            'x-real-ip': '203.0.113.2'
+            'user-agent':
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124',
+            host: 'api.example.com',
+            'x-real-ip': '203.0.113.2',
           },
-          ip: '192.168.1.3'
+          ip: '192.168.1.3',
         },
         // Com ambos X-Forwarded-For e X-Real-IP
         {
           headers: {
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124',
-            'host': 'api.example.com',
+            'user-agent':
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124',
+            host: 'api.example.com',
             'x-forwarded-for': '203.0.113.3, 192.168.1.4',
-            'x-real-ip': '203.0.113.3'
+            'x-real-ip': '203.0.113.3',
           },
-          ip: '192.168.1.4'
-        }
+          ip: '192.168.1.4',
+        },
       ];
 
       // Processa cada requisição
-      const results = requests.map(request => 
-        RequestUtils.extractRequestData({ request })
+      const results = requests.map(request =>
+        RequestUtils.extractRequestData({ request }),
       );
 
       // Verificações para requisição sem proxy
@@ -141,33 +148,36 @@ describe('RequestUtils - Testes de Integração', () => {
         // Requisição direta
         {
           headers: {
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124',
-            'host': 'api.example.com'
-          }
+            'user-agent':
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124',
+            host: 'api.example.com',
+          },
         },
         // Requisição de um site
         {
           headers: {
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124',
-            'host': 'api.example.com',
-            'origin': 'https://example.com',
-            'referer': 'https://example.com/page1'
-          }
+            'user-agent':
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124',
+            host: 'api.example.com',
+            origin: 'https://example.com',
+            referer: 'https://example.com/page1',
+          },
         },
         // Requisição de outro site
         {
           headers: {
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124',
-            'host': 'api.example.com',
-            'origin': 'https://otherdomain.com',
-            'referer': 'https://otherdomain.com/page2'
-          }
-        }
+            'user-agent':
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124',
+            host: 'api.example.com',
+            origin: 'https://otherdomain.com',
+            referer: 'https://otherdomain.com/page2',
+          },
+        },
       ];
 
       // Processa cada requisição
-      const results = requests.map(request => 
-        RequestUtils.extractRequestData({ request })
+      const results = requests.map(request =>
+        RequestUtils.extractRequestData({ request }),
       );
 
       // Verificações para requisição direta
