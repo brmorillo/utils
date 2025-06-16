@@ -1,6 +1,6 @@
 {
   "name": "@brmorillo/utils",
-  "version": "10.3.1",
+  "version": "10.3.2",
   "description": "Biblioteca de utilitários",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
