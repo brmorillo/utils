@@ -1,21 +1,15 @@
 /** @type {import('jest').Config} */
-const config = {
+module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   transform: {
-    '^.+\\.ts$': ['ts-jest', { 
-      useESM: true 
-    }],
-  },
-  extensionsToTreatAsEsm: ['.ts'],
-  moduleNameMapper: {
-    '^(\\.{1,2}/.*)\\.js$': '$1',
+    '^.+\\.ts$': 'ts-jest'
   },
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.d.ts',
     '!src/**/*.interface.ts',
-    '!src/**/*.type.ts',
+    '!src/**/*.type.ts'
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov'],
@@ -24,5 +18,3 @@ const config = {
   testMatch: ['<rootDir>/tests/unit/**/*.spec.ts'],
   rootDir: '.'
 };
-
-module.exports = config;
