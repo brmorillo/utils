@@ -24,11 +24,10 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "prepare": "husky install",
-    "release": "standard-version",
     "commit": "cz",
     "version:bump": "standard-version && git push --follow-tags origin main",
     "prepub": "npm run build",
-    "pub": "npm run build && npm run version:bump && npm publish --access public"
+    "pub": "npm run version:bump && npm publish --access public"
   },
   "keywords": [
     "utils",
