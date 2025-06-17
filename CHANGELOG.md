@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.3.11](https://github.com/brmorillo/util/compare/v10.3.10...v10.3.11) (2025-06-17)
+
+
+### Code Refactoring
+
+* **function-name:** refactor methods names ([d10d178](https://github.com/brmorillo/util/commit/d10d17836b685f12a03f0beeb180542b1ac8e5de))
+
 ### [10.3.10](https://github.com/brmorillo/util/compare/v10.3.9...v10.3.10) (2025-06-17)
 
 ### [10.3.9](https://github.com/brmorillo/util/compare/v10.3.8...v10.3.9) (2025-06-17)
