@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.1.0](https://github.com/brmorillo/util/compare/v10.3.11...v11.1.0) (2025-06-17)
+
+
+### Features
+
+* **jwt:** create jwt ([b2c3b85](https://github.com/brmorillo/util/commit/b2c3b8518831e2f5290dffb57f19a86700b1cbea))
+
 ### [10.3.12](https://github.com/brmorillo/util/compare/v10.3.11...v10.3.12) (2025-06-18)
 
 
