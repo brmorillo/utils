@@ -60,15 +60,15 @@ export class UUIDUtils {
    * @param {string} params.id - The ID to validate.
    * @returns {boolean} `true` if the string is a valid UUID, otherwise `false`.
    * @example
-   * UUIDUtils.uuidIsValid({
+   * UUIDUtils.isValidUuid({
    *   id: '3d6f0eb0-5e26-4b2c-a073-84d55dff3d51'
    * }); // true
    *
-   * UUIDUtils.uuidIsValid({
+   * UUIDUtils.isValidUuid({
    *   id: 'invalid-uuid'
    * }); // false
    */
-  public static uuidIsValid({ id }: { id: string }): boolean {
+  public static isValidUuid({ id }: { id: string }): boolean {
     return validateUuid(id);
   }
 }

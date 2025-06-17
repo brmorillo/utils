@@ -242,4 +242,171 @@ export class ValidationUtils {
       return false;
     }
   }
+
+  /**
+   * Validates if a string is a valid CPF (Brazilian individual taxpayer registry number).
+   * @param {object} params - The parameters for the method.
+   * @param {string} params.cpf - The string to validate.
+   * @returns {boolean} `true` if the string is a valid CPF, otherwise `false`.
+   * @example
+   * ValidationUtils.isValidCPF({
+   *   cpf: '123.456.789-09'
+   * }); // true or false depending on the CPF validity
+   *
+   * ValidationUtils.isValidCPF({
+   *   cpf: '12345678909'
+   * }); // true or false depending on the CPF validity
+   */
+  public static isValidCPF({ cpf }: { cpf: string }): boolean {
+    if (!cpf || typeof cpf !== 'string') return false;
+
+    // Remove non-numeric characters
+    cpf = cpf.replace(/[^\d]/g, '');
+
+    // Check if length is 11
+    if (cpf.length !== 11) return false;
+
+    // Check for known invalid patterns
+    if (/^(\d)\1{10}$/.test(cpf)) return false;
+
+    // Validate first check digit
+    let sum = 0;
+    for (let i = 0; i < 9; i++) {
+      sum += parseInt(cpf.charAt(i)) * (10 - i);
+    }
+    let remainder = sum % 11;
+    const checkDigit1 = remainder < 2 ? 0 : 11 - remainder;
+    if (parseInt(cpf.charAt(9)) !== checkDigit1) return false;
+
+    // Validate second check digit
+    sum = 0;
+    for (let i = 0; i < 10; i++) {
+      sum += parseInt(cpf.charAt(i)) * (11 - i);
+    }
+    remainder = sum % 11;
+    const checkDigit2 = remainder < 2 ? 0 : 11 - remainder;
+    if (parseInt(cpf.charAt(10)) !== checkDigit2) return false;
+
+    return true;
+  }
+
+  /**
+   * Validates if a string is a valid CNPJ (Brazilian company registry number).
+   * @param {object} params - The parameters for the method.
+   * @param {string} params.cnpj - The string to validate.
+   * @returns {boolean} `true` if the string is a valid CNPJ, otherwise `false`.
+   * @example
+   * ValidationUtils.isValidCNPJ({
+   *   cnpj: '12.345.678/0001-90'
+   * }); // true or false depending on the CNPJ validity
+   *
+   * ValidationUtils.isValidCNPJ({
+   *   cnpj: '12345678000190'
+   * }); // true or false depending on the CNPJ validity
+   */
+  public static isValidCNPJ({ cnpj }: { cnpj: string }): boolean {
+    if (!cnpj || typeof cnpj !== 'string') return false;
+
+    // Remove non-numeric characters
+    cnpj = cnpj.replace(/[^\d]/g, '');
+
+    // Check if length is 14
+    if (cnpj.length !== 14) return false;
+
+    // Check for known invalid patterns
+    if (/^(\d)\1{13}$/.test(cnpj)) return false;
+
+    // Validate first check digit
+    let size = cnpj.length - 2;
+    let numbers = cnpj.substring(0, size);
+    const digits = cnpj.substring(size);
+    let sum = 0;
+    let pos = size - 7;
+
+    for (let i = size; i >= 1; i--) {
+      sum += parseInt(numbers.charAt(size - i)) * pos--;
+      if (pos < 2) pos = 9;
+    }
+
+    let result = sum % 11 < 2 ? 0 : 11 - (sum % 11);
+    if (result !== parseInt(digits.charAt(0))) return false;
+
+    // Validate second check digit
+    size = size + 1;
+    numbers = cnpj.substring(0, size);
+    sum = 0;
+    pos = size - 7;
+
+    for (let i = size; i >= 1; i--) {
+      sum += parseInt(numbers.charAt(size - i)) * pos--;
+      if (pos < 2) pos = 9;
+    }
+
+    result = sum % 11 < 2 ? 0 : 11 - (sum % 11);
+    if (result !== parseInt(digits.charAt(1))) return false;
+
+    return true;
+  }
+
+  /**
+   * Validates if a string is a valid RG (Brazilian ID document).
+   * @param {object} params - The parameters for the method.
+   * @param {string} params.rg - The string to validate.
+   * @param {string} [params.state] - Optional. The Brazilian state that issued the RG.
+   * @returns {boolean} `true` if the string is a valid RG format, otherwise `false`.
+   * @example
+   * ValidationUtils.isValidRG({
+   *   rg: '12.345.678-9'
+   * }); // true for valid format
+   *
+   * ValidationUtils.isValidRG({
+   *   rg: '123456789',
+   *   state: 'SP'
+   * }); // true for valid format for São Paulo
+   */
+  public static isValidRG({
+    rg,
+    state,
+  }: {
+    rg: string;
+    state?: string;
+  }): boolean {
+    if (!rg || typeof rg !== 'string') return false;
+
+    // Remove non-alphanumeric characters
+    const cleanRG = rg.replace(/[^\dXx]/g, '');
+
+    // Basic format validation - most RGs have 8-10 characters
+    if (cleanRG.length < 5 || cleanRG.length > 12) return false;
+
+    // If state is provided, perform state-specific validation
+    if (state) {
+      switch (state.toUpperCase()) {
+        case 'SP':
+          // São Paulo RG has 9 digits
+          if (cleanRG.length !== 9) return false;
+
+          // For SP, we could implement the actual check digit algorithm
+          // This is a simplified validation for demonstration
+          const body = cleanRG.substring(0, 8);
+          const digit = cleanRG.charAt(8);
+
+          // Check if body is numeric
+          if (!/^\d+$/.test(body)) return false;
+
+          // Check if digit is numeric or 'X'
+          if (!/^[\dXx]$/.test(digit)) return false;
+
+          return true;
+
+        // Add other states as needed
+        default:
+          // For other states, just check if it's numeric or has X as last digit
+          return /^\d+[\dXx]?$/.test(cleanRG);
+      }
+    }
+
+    // Generic validation - check if it's mostly numeric with possibly X at the end
+    return /^\d+[\dXx]?$/.test(cleanRG);
+  }
 }

@@ -5,10 +5,10 @@ export class NumberUtils {
    * @param {number} params.value - The number to check.
    * @returns {boolean} `true` if the number is even, otherwise `false`.
    * @example
-   * NumberUtils.isEven({ value: 4 }); // true
-   * NumberUtils.isEven({ value: 5 }); // false
+   * NumberUtils.isValidEven({ value: 4 }); // true
+   * NumberUtils.isValidEven({ value: 5 }); // false
    */
-  public static isEven({ value }: { value: number }): boolean {
+  public static isValidEven({ value }: { value: number }): boolean {
     return value % 2 === 0;
   }
 
@@ -18,10 +18,10 @@ export class NumberUtils {
    * @param {number} params.value - The number to check.
    * @returns {boolean} `true` if the number is odd, otherwise `false`.
    * @example
-   * NumberUtils.isOdd({ value: 3 }); // true
-   * NumberUtils.isOdd({ value: 4 }); // false
+   * NumberUtils.isValidOdd({ value: 3 }); // true
+   * NumberUtils.isValidOdd({ value: 4 }); // false
    */
-  public static isOdd({ value }: { value: number }): boolean {
+  public static isValidOdd({ value }: { value: number }): boolean {
     return value % 2 !== 0;
   }
 
@@ -31,11 +31,11 @@ export class NumberUtils {
    * @param {number} params.value - The number to check.
    * @returns {boolean} `true` if the number is positive, otherwise `false`.
    * @example
-   * NumberUtils.isPositive({ value: 5 }); // true
-   * NumberUtils.isPositive({ value: -5 }); // false
-   * NumberUtils.isPositive({ value: 0 }); // false
+   * NumberUtils.isValidPositive({ value: 5 }); // true
+   * NumberUtils.isValidPositive({ value: -5 }); // false
+   * NumberUtils.isValidPositive({ value: 0 }); // false
    */
-  public static isPositive({ value }: { value: number }): boolean {
+  public static isValidPositive({ value }: { value: number }): boolean {
     return value > 0;
   }
 
@@ -276,10 +276,10 @@ export class NumberUtils {
    * @param {number} params.value - The number to check.
    * @returns {boolean} `true` if the number is prime, otherwise `false`.
    * @example
-   * NumberUtils.isPrime({ value: 7 }); // true
-   * NumberUtils.isPrime({ value: 4 }); // false
+   * NumberUtils.isValidPrime({ value: 7 }); // true
+   * NumberUtils.isValidPrime({ value: 4 }); // false
    */
-  public static isPrime({ value }: { value: number }): boolean {
+  public static isValidPrime({ value }: { value: number }): boolean {
     if (value <= 1) return false;
     if (value <= 3) return true;
     if (value % 2 === 0 || value % 3 === 0) return false;

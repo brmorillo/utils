@@ -33,15 +33,15 @@ export class StringUtils {
    * @param {string} params.input - The string to check.
    * @returns {boolean} `true` if the string is a palindrome, otherwise `false`.
    * @example
-   * StringUtils.isPalindrome({
+   * StringUtils.isValidPalindrome({
    *   input: 'racecar'
    * }); // true
    *
-   * StringUtils.isPalindrome({
+   * StringUtils.isValidPalindrome({
    *   input: 'hello'
    * }); // false
    */
-  public static isPalindrome({ input }: { input: string }): boolean {
+  public static isValidPalindrome({ input }: { input: string }): boolean {
     const cleaned = input.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
     return cleaned === StringUtils.reverse({ input: cleaned });
   }

@@ -138,15 +138,15 @@ export class MathUtils {
    * @param {number} params.value - The number to check.
    * @returns {boolean} `true` if the number is prime, otherwise `false`.
    * @example
-   * MathUtils.isPrime({
+   * MathUtils.isValidPrime({
    *   value: 7
    * }); // true
    *
-   * MathUtils.isPrime({
+   * MathUtils.isValidPrime({
    *   value: 4
    * }); // false
    */
-  public static isPrime({ value }: { value: number }): boolean {
+  public static isValidPrime({ value }: { value: number }): boolean {
     if (value <= 1) return false;
     for (let i = 2; i <= Math.sqrt(value); i++) {
       if (value % i === 0) return false;

@@ -21,10 +21,10 @@ export class CuidUtils {
    * @param {string} params.id - The string to be validated.
    * @returns {boolean} `true` if the string is a valid CUID2; otherwise, `false`.
    * @example
-   * CuidUtils.isValid({ id: "ckvlwbkni0001rd3ediyjf3ih" }); // true
-   * CuidUtils.isValid({ id: "invalid-id" }); // false
+   * CuidUtils.isValidCuid({ id: "ckvlwbkni0001rd3ediyjf3ih" }); // true
+   * CuidUtils.isValidCuid({ id: "invalid-id" }); // false
    */
-  public static isValid({ id }: { id: string }): boolean {
+  public static isValidCuid({ id }: { id: string }): boolean {
     return isCuid(id);
   }
 }
