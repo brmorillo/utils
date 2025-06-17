@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.3.8](https://github.com/brmorillo/util/compare/v10.3.7...v10.3.8) (2025-06-17)
+
 ### [10.3.7](https://github.com/brmorillo/util/compare/v10.3.6...v10.3.7) (2025-06-17)
 
 
