@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.3.7](https://github.com/brmorillo/util/compare/v10.3.6...v10.3.7) (2025-06-17)
+
+
+### Documentation
+
+* **readme:** return old readme docs ([1fc3bfb](https://github.com/brmorillo/util/commit/1fc3bfb165bef7dee9df00407408725e9e933944))
+
 ### [10.3.6](https://github.com/brmorillo/util/compare/v10.3.5...v10.3.6) (2025-06-16)
 
 ### [10.3.5](https://github.com/brmorillo/util/compare/v10.3.4...v10.3.5) (2025-06-16)
