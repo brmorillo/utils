@@ -1,247 +1,232 @@
 # @brmorillo/utils
 
-Biblioteca de utilitários para projetos JavaScript/TypeScript.
+Utility library for JavaScript/TypeScript projects.
 
-## Instalação
+## Installation
 
 ```bash
 npm install @brmorillo/utils
 ```
 
-ou
+or
 
 ```bash
 yarn add @brmorillo/utils
 ```
 
-ou
+or
 
 ```bash
 pnpm add @brmorillo/utils
 ```
 
-## Uso
+## Usage
 
-### Importação ESM
+### ESM Import
 
 ```javascript
-// Importar utilitários específicos
+// Import specific utilities
 import { StringUtils, ArrayUtils } from '@brmorillo/utils';
 
-// Importar todos os utilitários
+// Import all utilities
 import { Utils } from '@brmorillo/utils';
 ```
 
-### Importação CommonJS
+### CommonJS Import
 
 ```javascript
-// Importar utilitários específicos
+// Import specific utilities
 const { StringUtils, ArrayUtils } = require('@brmorillo/utils');
 
-// Importar todos os utilitários
+// Import all utilities
 const { Utils } = require('@brmorillo/utils');
 ```
 
-## Utilitários Disponíveis
+## Available Utilities
 
-A biblioteca contém as seguintes classes de utilitários:
+The library contains the following utility classes:
 
 ### ArrayUtils
-
-- **removeDuplicates** - Remove valores duplicados de um array
-- **intersect** - Encontra a interseção entre dois arrays
-- **flatten** - Achata um array multidimensional
-- **groupBy** - Agrupa elementos de um array por uma chave
-- **shuffle** - Embaralha os elementos de um array
-- **sort** - Ordena um array com critérios específicos
-- **findSubset** - Encontra objetos que correspondem a um subconjunto
-- **isSubset** - Verifica se um objeto contém um subconjunto
+- **removeDuplicates** - Removes duplicate values from an array
+- **intersect** - Finds the intersection between two arrays
+- **flatten** - Flattens a multi-dimensional array
+- **groupBy** - Groups array elements by a key
+- **shuffle** - Randomly shuffles array elements
+- **sort** - Sorts an array with specific criteria
+- **findSubset** - Finds objects that match a subset
+- **isSubset** - Checks if an object contains a subset
 
 ### ConvertUtils
-
-- **toBoolean** - Converte um valor para booleano
-- **toNumber** - Converte um valor para número
-- **toString** - Converte um valor para string
-- **toDate** - Converte um valor para data
-- **toArray** - Converte um valor para array
-- **toObject** - Converte um valor para objeto
-- **toJSON** - Converte um valor para JSON
-- **fromJSON** - Converte JSON para um objeto
+- **toBoolean** - Converts a value to boolean
+- **toNumber** - Converts a value to number
+- **toString** - Converts a value to string
+- **toDate** - Converts a value to date
+- **toArray** - Converts a value to array
+- **toObject** - Converts a value to object
+- **toJSON** - Converts a value to JSON
+- **fromJSON** - Converts JSON to an object
 
 ### CryptUtils
-
-- **generateIV** - Gera um vetor de inicialização para AES
-- **aesEncrypt** - Criptografa dados usando AES-256-CBC
-- **aesDecrypt** - Descriptografa dados usando AES-256-CBC
-- **rsaGenerateKeyPair** - Gera um par de chaves RSA
-- **rsaEncrypt** - Criptografa dados usando RSA
-- **rsaDecrypt** - Descriptografa dados usando RSA
-- **rsaSign** - Assina dados usando RSA
-- **rsaVerify** - Verifica assinaturas RSA
-- **eccGenerateKeyPair** - Gera um par de chaves ECC
-- **eccSign** - Assina dados usando ECC
-- **eccVerify** - Verifica assinaturas ECC
-- **chacha20Encrypt** - Criptografa dados usando ChaCha20
-- **chacha20Decrypt** - Descriptografa dados usando ChaCha20
-- **rc4Encrypt** - Criptografa dados usando RC4
-- **rc4Decrypt** - Descriptografa dados usando RC4
+- **generateIV** - Generates an initialization vector for AES
+- **aesEncrypt** - Encrypts data using AES-256-CBC
+- **aesDecrypt** - Decrypts data using AES-256-CBC
+- **rsaGenerateKeyPair** - Generates an RSA key pair
+- **rsaEncrypt** - Encrypts data using RSA
+- **rsaDecrypt** - Decrypts data using RSA
+- **rsaSign** - Signs data using RSA
+- **rsaVerify** - Verifies RSA signatures
+- **eccGenerateKeyPair** - Generates an ECC key pair
+- **eccSign** - Signs data using ECC
+- **eccVerify** - Verifies ECC signatures
+- **chacha20Encrypt** - Encrypts data using ChaCha20
+- **chacha20Decrypt** - Decrypts data using ChaCha20
+- **rc4Encrypt** - Encrypts data using RC4
+- **rc4Decrypt** - Decrypts data using RC4
 
 ### CuidUtils
-
-- **generate** - Gera um identificador único CUID2
-- **isValid** - Verifica se uma string é um CUID2 válido
+- **generate** - Generates a unique CUID2 identifier
+- **isValid** - Checks if a string is a valid CUID2
 
 ### DateUtils
-
-- **now** - Obtém a data e hora atual
-- **createInterval** - Cria um intervalo entre duas datas
-- **addTime** - Adiciona uma duração a uma data
-- **removeTime** - Remove uma duração de uma data
-- **diffBetween** - Calcula a diferença entre duas datas
-- **toUTC** - Converte uma data para UTC
-- **toTimeZone** - Converte uma data para um fuso horário específico
+- **now** - Gets the current date and time
+- **createInterval** - Creates an interval between two dates
+- **addTime** - Adds a duration to a date
+- **removeTime** - Removes a duration from a date
+- **diffBetween** - Calculates the difference between two dates
+- **toUTC** - Converts a date to UTC
+- **toTimeZone** - Converts a date to a specific timezone
 
 ### HashUtils
-
-- **bcryptHash** - Criptografa uma string usando bcrypt
-- **bcryptCompare** - Compara uma string com um hash bcrypt
-- **bcryptRandomString** - Gera uma string aleatória usando bcrypt
-- **sha256Hash** - Gera um hash SHA-256 de uma string
-- **sha256HashJson** - Gera um hash SHA-256 de um objeto JSON
-- **sha256GenerateToken** - Gera um token aleatório usando SHA-256
-- **sha512Hash** - Gera um hash SHA-512 de uma string
-- **sha512HashJson** - Gera um hash SHA-512 de um objeto JSON
-- **sha512GenerateToken** - Gera um token aleatório usando SHA-512
+- **bcryptHash** - Encrypts a string using bcrypt
+- **bcryptCompare** - Compares a string with a bcrypt hash
+- **bcryptRandomString** - Generates a random string using bcrypt
+- **sha256Hash** - Generates a SHA-256 hash of a string
+- **sha256HashJson** - Generates a SHA-256 hash of a JSON object
+- **sha256GenerateToken** - Generates a random token using SHA-256
+- **sha512Hash** - Generates a SHA-512 hash of a string
+- **sha512HashJson** - Generates a SHA-512 hash of a JSON object
+- **sha512GenerateToken** - Generates a random token using SHA-512
 
 ### MathUtils
-
-- **round** - Arredonda um número para um número específico de casas decimais
-- **floor** - Arredonda um número para baixo
-- **ceil** - Arredonda um número para cima
-- **random** - Gera um número aleatório dentro de um intervalo
-- **sum** - Soma os valores de um array
-- **average** - Calcula a média dos valores de um array
-- **median** - Calcula a mediana dos valores de um array
-- **mode** - Calcula a moda dos valores de um array
-- **standardDeviation** - Calcula o desvio padrão dos valores de um array
+- **round** - Rounds a number to a specific number of decimal places
+- **floor** - Rounds a number down
+- **ceil** - Rounds a number up
+- **random** - Generates a random number within a range
+- **sum** - Sums the values of an array
+- **average** - Calculates the average of array values
+- **median** - Calculates the median of array values
+- **mode** - Calculates the mode of array values
+- **standardDeviation** - Calculates the standard deviation of array values
 
 ### NumberUtils
-
-- **formatCurrency** - Formata um número como moeda
-- **formatPercentage** - Formata um número como porcentagem
-- **formatDecimal** - Formata um número com casas decimais específicas
-- **parseNumber** - Converte uma string em número
-- **isInteger** - Verifica se um número é inteiro
-- **isFloat** - Verifica se um número é float
-- **isPositive** - Verifica se um número é positivo
-- **isNegative** - Verifica se um número é negativo
-- **isZero** - Verifica se um número é zero
-- **clamp** - Limita um número a um intervalo específico
+- **formatCurrency** - Formats a number as currency
+- **formatPercentage** - Formats a number as percentage
+- **formatDecimal** - Formats a number with specific decimal places
+- **parseNumber** - Converts a string to number
+- **isInteger** - Checks if a number is an integer
+- **isFloat** - Checks if a number is a float
+- **isPositive** - Checks if a number is positive
+- **isNegative** - Checks if a number is negative
+- **isZero** - Checks if a number is zero
+- **clamp** - Limits a number to a specific range
 
 ### ObjectUtils
-
-- **deepMerge** - Mescla objetos profundamente
-- **deepClone** - Clona um objeto profundamente
-- **flatten** - Achata um objeto aninhado
-- **unflatten** - Desachata um objeto
-- **pick** - Seleciona propriedades específicas de um objeto
-- **omit** - Omite propriedades específicas de um objeto
-- **isEmpty** - Verifica se um objeto está vazio
-- **isEqual** - Verifica se dois objetos são iguais
-- **hasCircularReference** - Verifica se um objeto tem referências circulares
-- **removeUndefined** - Remove propriedades undefined de um objeto
-- **removeNull** - Remove propriedades null de um objeto
-- **removeEmptyStrings** - Remove propriedades com strings vazias
-- **removeEmptyArrays** - Remove propriedades com arrays vazios
-- **removeEmptyObjects** - Remove propriedades com objetos vazios
+- **deepMerge** - Deeply merges objects
+- **deepClone** - Deeply clones an object
+- **flatten** - Flattens a nested object
+- **unflatten** - Unflattens an object
+- **pick** - Selects specific properties from an object
+- **omit** - Omits specific properties from an object
+- **isEmpty** - Checks if an object is empty
+- **isEqual** - Checks if two objects are equal
+- **hasCircularReference** - Checks if an object has circular references
+- **removeUndefined** - Removes undefined properties from an object
+- **removeNull** - Removes null properties from an object
+- **removeEmptyStrings** - Removes properties with empty strings
+- **removeEmptyArrays** - Removes properties with empty arrays
+- **removeEmptyObjects** - Removes properties with empty objects
 
 ### RequestUtils
-
-- **parseQueryString** - Converte uma query string em objeto
-- **buildQueryString** - Converte um objeto em query string
-- **parseUrl** - Analisa uma URL em suas partes componentes
-- **buildUrl** - Constrói uma URL a partir de suas partes
-- **isValidUrl** - Verifica se uma URL é válida
+- **parseQueryString** - Converts a query string to an object
+- **buildQueryString** - Converts an object to a query string
+- **parseUrl** - Parses a URL into its component parts
+- **buildUrl** - Builds a URL from its parts
+- **isValidUrl** - Checks if a URL is valid
 
 ### SnowflakeUtils
-
-- **generate** - Gera um ID Snowflake
-- **decode** - Decodifica um ID Snowflake em seus componentes
-- **getTimestamp** - Extrai o timestamp de um ID Snowflake
-- **isValidSnowflake** - Verifica se uma string é um ID Snowflake válido
-- **compare** - Compara dois IDs Snowflake
-- **fromTimestamp** - Cria um ID Snowflake a partir de um timestamp
-- **convert** - Converte um ID Snowflake para um formato diferente
+- **generate** - Generates a Snowflake ID
+- **decode** - Decodes a Snowflake ID into its components
+- **getTimestamp** - Extracts the timestamp from a Snowflake ID
+- **isValidSnowflake** - Checks if a string is a valid Snowflake ID
+- **compare** - Compares two Snowflake IDs
+- **fromTimestamp** - Creates a Snowflake ID from a timestamp
+- **convert** - Converts a Snowflake ID to a different format
 
 ### SortUtils
-
-- **quickSort** - Implementação do algoritmo QuickSort
-- **mergeSort** - Implementação do algoritmo MergeSort
-- **bubbleSort** - Implementação do algoritmo BubbleSort
-- **insertionSort** - Implementação do algoritmo InsertionSort
-- **selectionSort** - Implementação do algoritmo SelectionSort
-- **heapSort** - Implementação do algoritmo HeapSort
-- **countingSort** - Implementação do algoritmo CountingSort
-- **radixSort** - Implementação do algoritmo RadixSort
-- **bucketSort** - Implementação do algoritmo BucketSort
-- **shellSort** - Implementação do algoritmo ShellSort
-- **timSort** - Implementação do algoritmo TimSort
-- **sortByProperty** - Ordena um array de objetos por uma propriedade
+- **quickSort** - Implementation of the QuickSort algorithm
+- **mergeSort** - Implementation of the MergeSort algorithm
+- **bubbleSort** - Implementation of the BubbleSort algorithm
+- **insertionSort** - Implementation of the InsertionSort algorithm
+- **selectionSort** - Implementation of the SelectionSort algorithm
+- **heapSort** - Implementation of the HeapSort algorithm
+- **countingSort** - Implementation of the CountingSort algorithm
+- **radixSort** - Implementation of the RadixSort algorithm
+- **bucketSort** - Implementation of the BucketSort algorithm
+- **shellSort** - Implementation of the ShellSort algorithm
+- **timSort** - Implementation of the TimSort algorithm
+- **sortByProperty** - Sorts an array of objects by a property
 
 ### StringUtils
-
-- **capitalizeFirstLetter** - Capitaliza a primeira letra de uma string
-- **reverse** - Inverte uma string
-- **isPalindrome** - Verifica se uma string é um palíndromo
-- **truncate** - Trunca uma string e adiciona reticências
-- **toKebabCase** - Converte uma string para kebab-case
-- **toSnakeCase** - Converte uma string para snake_case
-- **toCamelCase** - Converte uma string para camelCase
-- **toTitleCase** - Converte uma string para Title Case
-- **countOccurrences** - Conta ocorrências de uma substring
-- **replaceAll** - Substitui todas as ocorrências de uma substring
-- **replaceOccurrences** - Substitui um número específico de ocorrências
-- **replacePlaceholders** - Substitui placeholders em uma string
+- **capitalizeFirstLetter** - Capitalizes the first letter of a string
+- **reverse** - Reverses a string
+- **isPalindrome** - Checks if a string is a palindrome
+- **truncate** - Truncates a string and adds ellipsis
+- **toKebabCase** - Converts a string to kebab-case
+- **toSnakeCase** - Converts a string to snake_case
+- **toCamelCase** - Converts a string to camelCase
+- **toTitleCase** - Converts a string to Title Case
+- **countOccurrences** - Counts occurrences of a substring
+- **replaceAll** - Replaces all occurrences of a substring
+- **replaceOccurrences** - Replaces a specific number of occurrences
+- **replacePlaceholders** - Replaces placeholders in a string
 
 ### UUIDUtils
-
-- **generate** - Gera um UUID v4
-- **isValid** - Verifica se uma string é um UUID válido
-- **parse** - Converte um UUID para um formato específico
-- **getNil** - Retorna o UUID nulo (00000000-0000-0000-0000-000000000000)
+- **generate** - Generates a v4 UUID
+- **isValid** - Checks if a string is a valid UUID
+- **parse** - Converts a UUID to a specific format
+- **getNil** - Returns the nil UUID (00000000-0000-0000-0000-000000000000)
 
 ### ValidationUtils
+- **isEmail** - Checks if a string is a valid email
+- **isURL** - Checks if a string is a valid URL
+- **isPhoneNumber** - Checks if a string is a valid phone number
+- **isCPF** - Checks if a string is a valid CPF (Brazilian ID)
+- **isCNPJ** - Checks if a string is a valid CNPJ (Brazilian company ID)
+- **isCreditCard** - Checks if a string is a valid credit card number
+- **isStrongPassword** - Checks if a password is strong
+- **isDate** - Checks if a string is a valid date
+- **isNumeric** - Checks if a string contains only numbers
+- **isAlpha** - Checks if a string contains only letters
+- **isAlphanumeric** - Checks if a string contains only letters and numbers
 
-- **isEmail** - Verifica se uma string é um email válido
-- **isURL** - Verifica se uma string é uma URL válida
-- **isPhoneNumber** - Verifica se uma string é um número de telefone válido
-- **isCPF** - Verifica se uma string é um CPF válido
-- **isCNPJ** - Verifica se uma string é um CNPJ válido
-- **isCreditCard** - Verifica se uma string é um número de cartão de crédito válido
-- **isStrongPassword** - Verifica se uma senha é forte
-- **isDate** - Verifica se uma string é uma data válida
-- **isNumeric** - Verifica se uma string contém apenas números
-- **isAlpha** - Verifica se uma string contém apenas letras
-- **isAlphanumeric** - Verifica se uma string contém apenas letras e números
-
-## Documentação Detalhada
+## Detailed Documentation
 
 ### ArrayUtils
 
-Utilitários para manipulação de arrays.
+Utilities for array manipulation.
 
 #### removeDuplicates
 
-Remove valores duplicados de um array.
+Removes duplicate values from an array.
 
 ```javascript
-// Remover duplicatas de valores primitivos
+// Remove duplicates from primitive values
 const uniqueArray = ArrayUtils.removeDuplicates({
   array: [1, 2, 2, 3, 4, 4],
 });
-// Resultado: [1, 2, 3, 4]
+// Result: [1, 2, 3, 4]
 
-// Remover duplicatas de objetos baseado em uma propriedade
+// Remove duplicates from objects based on a property
 const uniqueObjects = ArrayUtils.removeDuplicates({
   array: [
     { id: 1, name: 'John' },
@@ -250,35 +235,35 @@ const uniqueObjects = ArrayUtils.removeDuplicates({
   ],
   keyFn: item => item.id,
 });
-// Resultado: [{ id: 1, name: 'John' }, { id: 2, name: 'Jane' }]
+// Result: [{ id: 1, name: 'John' }, { id: 2, name: 'Jane' }]
 ```
 
 #### intersect
 
-Encontra a interseção entre dois arrays.
+Finds the intersection between two arrays.
 
 ```javascript
 const intersection = ArrayUtils.intersect({
   array1: [1, 2, 3, 4],
   array2: [3, 4, 5, 6],
 });
-// Resultado: [3, 4]
+// Result: [3, 4]
 ```
 
 #### flatten
 
-Achata um array multidimensional em um array unidimensional.
+Flattens a multi-dimensional array into a single-dimensional array.
 
 ```javascript
 const flattened = ArrayUtils.flatten({
   array: [1, [2, [3, 4]], 5],
 });
-// Resultado: [1, 2, 3, 4, 5]
+// Result: [1, 2, 3, 4, 5]
 ```
 
 #### groupBy
 
-Agrupa elementos de um array com base em uma função de agrupamento.
+Groups elements of an array based on a grouping function.
 
 ```javascript
 const grouped = ArrayUtils.groupBy({
@@ -289,7 +274,7 @@ const grouped = ArrayUtils.groupBy({
   ],
   keyFn: item => item.type,
 });
-// Resultado: {
+// Result: {
 //   fruit: [
 //     { type: 'fruit', name: 'apple' },
 //     { type: 'fruit', name: 'banana' }
@@ -302,28 +287,28 @@ const grouped = ArrayUtils.groupBy({
 
 #### shuffle
 
-Embaralha os elementos de um array aleatoriamente.
+Randomly shuffles the elements of an array.
 
 ```javascript
 const shuffled = ArrayUtils.shuffle({
   array: [1, 2, 3, 4, 5],
 });
-// Resultado: [3, 1, 5, 2, 4] (ordem aleatória)
+// Result: [3, 1, 5, 2, 4] (random order)
 ```
 
 #### sort
 
-Ordena um array com base em critérios específicos.
+Sorts an array based on specific criteria.
 
 ```javascript
-// Ordenar valores primitivos
+// Sort primitive values
 const sortedAsc = ArrayUtils.sort({
   array: [3, 1, 4, 2],
   orderBy: 'asc',
 });
-// Resultado: [1, 2, 3, 4]
+// Result: [1, 2, 3, 4]
 
-// Ordenar objetos por propriedade
+// Sort objects by property
 const sortedObjects = ArrayUtils.sort({
   array: [
     { name: 'John', age: 30 },
@@ -331,12 +316,12 @@ const sortedObjects = ArrayUtils.sort({
   ],
   orderBy: { age: 'asc' },
 });
-// Resultado: [{ name: 'Jane', age: 25 }, { name: 'John', age: 30 }]
+// Result: [{ name: 'Jane', age: 25 }, { name: 'John', age: 30 }]
 ```
 
 #### findSubset
 
-Encontra o primeiro objeto em um array onde o subconjunto corresponde ao superconjunto.
+Finds the first object in an array where the subset matches the superset.
 
 ```javascript
 const found = ArrayUtils.findSubset({
@@ -346,134 +331,134 @@ const found = ArrayUtils.findSubset({
   ],
   subset: { name: 'John' },
 });
-// Resultado: { id: 1, name: 'John', age: 30 }
+// Result: { id: 1, name: 'John', age: 30 }
 ```
 
 #### isSubset
 
-Verifica se um subconjunto está totalmente contido em um superconjunto.
+Checks if a subset is fully contained within a superset.
 
 ```javascript
 const isContained = ArrayUtils.isSubset({
   superset: { id: 1, name: 'John', age: 30 },
   subset: { name: 'John', age: 30 },
 });
-// Resultado: true
+// Result: true
 ```
 
 ### StringUtils
 
-Utilitários para manipulação de strings.
+Utilities for string manipulation.
 
 #### capitalizeFirstLetter
 
-Capitaliza a primeira letra de uma string.
+Capitalizes the first letter of a string.
 
 ```javascript
 const capitalized = StringUtils.capitalizeFirstLetter({
   input: 'hello',
 });
-// Resultado: "Hello"
+// Result: "Hello"
 ```
 
 #### reverse
 
-Inverte uma string.
+Reverses a string.
 
 ```javascript
 const reversed = StringUtils.reverse({
   input: 'hello',
 });
-// Resultado: "olleh"
+// Result: "olleh"
 ```
 
 #### isPalindrome
 
-Verifica se uma string é um palíndromo.
+Checks if a string is a palindrome.
 
 ```javascript
 const isPalindrome1 = StringUtils.isPalindrome({
   input: 'racecar',
 });
-// Resultado: true
+// Result: true
 
 const isPalindrome2 = StringUtils.isPalindrome({
   input: 'hello',
 });
-// Resultado: false
+// Result: false
 ```
 
 #### truncate
 
-Trunca uma string para um comprimento específico e adiciona reticências se necessário.
+Truncates a string to a specified length and adds an ellipsis if necessary.
 
 ```javascript
 const truncated = StringUtils.truncate({
   input: 'This is a long string',
   maxLength: 10,
 });
-// Resultado: "This is a..."
+// Result: "This is a..."
 ```
 
 #### toKebabCase
 
-Converte uma string para kebab-case.
+Converts a string to kebab-case.
 
 ```javascript
 const kebabCase = StringUtils.toKebabCase({
   input: 'Hello World',
 });
-// Resultado: "hello-world"
+// Result: "hello-world"
 ```
 
 #### toSnakeCase
 
-Converte uma string para snake_case.
+Converts a string to snake_case.
 
 ```javascript
 const snakeCase = StringUtils.toSnakeCase({
   input: 'Hello World',
 });
-// Resultado: "hello_world"
+// Result: "hello_world"
 ```
 
 #### toCamelCase
 
-Converte uma string para camelCase.
+Converts a string to camelCase.
 
 ```javascript
 const camelCase = StringUtils.toCamelCase({
   input: 'Hello World',
 });
-// Resultado: "helloWorld"
+// Result: "helloWorld"
 ```
 
 #### toTitleCase
 
-Converte uma string para Title Case.
+Converts a string to Title Case.
 
 ```javascript
 const titleCase = StringUtils.toTitleCase({
   input: 'hello world',
 });
-// Resultado: "Hello World"
+// Result: "Hello World"
 ```
 
 #### countOccurrences
 
-Conta as ocorrências de uma substring em uma string.
+Counts the occurrences of a substring in a string.
 
 ```javascript
 const count = StringUtils.countOccurrences({
   input: 'hello world hello',
   substring: 'hello',
 });
-// Resultado: 2
+// Result: 2
 ```
 
 #### replaceAll
 
-Substitui todas as ocorrências de uma substring em uma string.
+Replaces all occurrences of a substring in a string.
 
 ```javascript
 const replaced = StringUtils.replaceAll({
@@ -481,12 +466,12 @@ const replaced = StringUtils.replaceAll({
   substring: 'hello',
   replacement: 'hi',
 });
-// Resultado: "hi world hi"
+// Result: "hi world hi"
 ```
 
 #### replaceOccurrences
 
-Substitui as primeiras `x` ocorrências de uma substring em uma string.
+Replaces the first `x` occurrences of a substring in a string.
 
 ```javascript
 const replacedFirst = StringUtils.replaceOccurrences({
@@ -495,77 +480,77 @@ const replacedFirst = StringUtils.replaceOccurrences({
   replacement: 'hi',
   occurrences: 1,
 });
-// Resultado: "hi world hello"
+// Result: "hi world hello"
 ```
 
 #### replacePlaceholders
 
-Substitui placeholders em uma string com valores correspondentes de um mapa de substituição.
+Replaces placeholders in a string with corresponding values from a replacement map.
 
 ```javascript
 const withPlaceholders = StringUtils.replacePlaceholders({
   template: 'Hello, {name}! You have {count} new messages.',
   replacements: { name: 'John', count: '5' },
 });
-// Resultado: "Hello, John! You have 5 new messages."
+// Result: "Hello, John! You have 5 new messages."
 ```
 
 ### CryptUtils
 
-Utilitários para criptografia e segurança.
+Utilities for cryptography and security.
 
 #### aesEncrypt
 
-Criptografa uma string ou objeto JSON usando AES-256-CBC.
+Encrypts a string or JSON object using AES-256-CBC.
 
 ```javascript
 const { encryptedData, iv } = CryptUtils.aesEncrypt(
-  'Texto secreto',
-  'chave-secreta-de-32-caracteres-123',
+  'Secret text',
+  'secret-key-of-32-characters-12345678',
 );
-// Resultado: { encryptedData: "base64-encoded-string", iv: "hex-string" }
+// Result: { encryptedData: "base64-encoded-string", iv: "hex-string" }
 ```
 
 #### aesDecrypt
 
-Descriptografa dados criptografados com AES-256-CBC.
+Decrypts data encrypted with AES-256-CBC.
 
 ```javascript
 const decrypted = CryptUtils.aesDecrypt(
   encryptedData,
-  'chave-secreta-de-32-caracteres-123',
+  'secret-key-of-32-characters-12345678',
   iv,
 );
-// Resultado: "Texto secreto"
+// Result: "Secret text"
 ```
 
 #### rsaGenerateKeyPair
 
-Gera um par de chaves RSA.
+Generates an RSA key pair.
 
 ```javascript
 const { publicKey, privateKey } = CryptUtils.rsaGenerateKeyPair(2048);
-// Resultado: { publicKey: "-----BEGIN RSA PUBLIC KEY-----...", privateKey: "-----BEGIN RSA PRIVATE KEY-----..." }
+// Result: { publicKey: "-----BEGIN RSA PUBLIC KEY-----...", privateKey: "-----BEGIN RSA PRIVATE KEY-----..." }
 ```
 
 #### rsaEncrypt / rsaDecrypt
 
-Criptografa e descriptografa dados usando RSA.
+Encrypts and decrypts data using RSA.
 
 ```javascript
-const encrypted = CryptUtils.rsaEncrypt('Dados sensíveis', publicKey);
+const encrypted = CryptUtils.rsaEncrypt('Sensitive data', publicKey);
 const decrypted = CryptUtils.rsaDecrypt(encrypted, privateKey);
-// decrypted: "Dados sensíveis"
+// decrypted: "Sensitive data"
 ```
 
 #### rsaSign / rsaVerify
 
-Assina e verifica dados usando RSA.
+Signs and verifies data using RSA.
 
 ```javascript
-const signature = CryptUtils.rsaSign('Mensagem autêntica', privateKey);
+const signature = CryptUtils.rsaSign('Authentic message', privateKey);
 const isValid = CryptUtils.rsaVerify(
-  'Mensagem autêntica',
+  'Authentic message',
   signature,
   publicKey,
 );
@@ -574,95 +559,95 @@ const isValid = CryptUtils.rsaVerify(
 
 #### eccGenerateKeyPair
 
-Gera um par de chaves ECC (Elliptic Curve Cryptography).
+Generates an ECC (Elliptic Curve Cryptography) key pair.
 
 ```javascript
 const { publicKey, privateKey } = CryptUtils.eccGenerateKeyPair();
-// Resultado: { publicKey: "-----BEGIN PUBLIC KEY-----...", privateKey: "-----BEGIN PRIVATE KEY-----..." }
+// Result: { publicKey: "-----BEGIN PUBLIC KEY-----...", privateKey: "-----BEGIN PRIVATE KEY-----..." }
 ```
 
 ### CuidUtils
 
-Utilitários para geração de identificadores únicos usando CUID2.
+Utilities for generating unique identifiers using CUID2.
 
 #### generate
 
-Gera um identificador único e seguro (CUID2).
+Generates a unique and secure identifier (CUID2).
 
 ```javascript
-// Gerar CUID2 com comprimento padrão
+// Generate CUID2 with default length
 const id = CuidUtils.generate();
-// Resultado: "clh0xkfqi0000jz0ght8hjqt8"
+// Result: "clh0xkfqi0000jz0ght8hjqt8"
 
-// Gerar CUID2 com comprimento personalizado
+// Generate CUID2 with custom length
 const shortId = CuidUtils.generate({ length: 10 });
-// Resultado: "ckvlwbkni0"
+// Result: "ckvlwbkni0"
 ```
 
 #### isValid
 
-Verifica se uma string é um CUID2 válido.
+Checks if a string is a valid CUID2.
 
 ```javascript
 const isValid = CuidUtils.isValid({ id: 'clh0xkfqi0000jz0ght8hjqt8' });
-// Resultado: true
+// Result: true
 ```
 
 ### DateUtils
 
-Utilitários para manipulação de datas usando Luxon.
+Utilities for date manipulation using Luxon.
 
 #### now
 
-Obtém a data e hora atual, em UTC ou no fuso horário do sistema.
+Gets the current date and time, either in UTC or the system's timezone.
 
 ```javascript
-// Data e hora atual no fuso horário local
+// Current date and time in local timezone
 const localNow = DateUtils.now();
 
-// Data e hora atual em UTC
+// Current date and time in UTC
 const utcNow = DateUtils.now({ utc: true });
 ```
 
 #### createInterval
 
-Cria um intervalo entre duas datas.
+Creates an interval between two dates.
 
 ```javascript
 const interval = DateUtils.createInterval({
   startDate: '2024-01-01',
   endDate: '2024-12-31',
 });
-// Resultado: Interval entre 1 de janeiro e 31 de dezembro de 2024
+// Result: Interval between January 1 and December 31, 2024
 ```
 
 #### addTime
 
-Adiciona uma duração específica a uma data.
+Adds a specific duration to a date.
 
 ```javascript
 const nextWeek = DateUtils.addTime({
   date: '2024-01-01',
   timeToAdd: { days: 7 },
 });
-// Resultado: 8 de janeiro de 2024
+// Result: January 8, 2024
 ```
 
 #### removeTime
 
-Remove uma duração específica de uma data.
+Removes a specific duration from a date.
 
 ```javascript
 const lastWeek = DateUtils.removeTime({
   date: '2024-01-15',
   timeToRemove: { days: 7 },
 });
-// Resultado: 8 de janeiro de 2024
+// Result: January 8, 2024
 ```
 
 #### diffBetween
 
-Calcula a diferença entre duas datas em unidades específicas.
+Calculates the difference between two dates in specific units.
 
 ```javascript
 const diff = DateUtils.diffBetween({
@@ -670,44 +655,44 @@ const diff = DateUtils.diffBetween({
   endDate: '2024-12-31',
   units: ['days'],
 });
-// Resultado: Duration representando 366 dias (2024 é ano bissexto)
+// Result: Duration representing 366 days (2024 is a leap year)
 ```
 
 #### toUTC / toTimeZone
 
-Converte uma data para UTC ou para um fuso horário específico.
+Converts a date to UTC or to a specific timezone.
 
 ```javascript
 const utcDate = DateUtils.toUTC({
   date: '2024-01-01T12:00:00+03:00',
 });
-// Resultado: 2024-01-01T09:00:00.000Z
+// Result: 2024-01-01T09:00:00.000Z
 
 const nyDate = DateUtils.toTimeZone({
   date: '2024-01-01T12:00:00Z',
   timeZone: 'America/New_York',
 });
-// Resultado: 2024-01-01T07:00:00.000-05:00
+// Result: 2024-01-01T07:00:00.000-05:00
 ```
 
 ### HashUtils
 
-Utilitários para funções de hash e criptografia.
+Utilities for hash functions and cryptography.
 
 #### bcryptHash / bcryptCompare
 
-Criptografa e compara senhas usando bcrypt.
+Encrypts and compares passwords using bcrypt.
 
 ```javascript
-// Criptografar senha
+// Encrypt password
 const hash = HashUtils.bcryptHash({
-  value: 'senha123',
+  value: 'password123',
   saltRounds: 10,
 });
 
-// Verificar senha
+// Verify password
 const isValid = HashUtils.bcryptCompare({
-  value: 'senha123',
+  value: 'password123',
   encryptedValue: hash,
 });
 // isValid: true
@@ -715,19 +700,19 @@ const isValid = HashUtils.bcryptCompare({
 
 #### sha256Hash / sha512Hash
 
-Gera hashes SHA-256 e SHA-512.
+Generates SHA-256 and SHA-512 hashes.
 
 ```javascript
-// Hash SHA-256
-const hash256 = HashUtils.sha256Hash('dados importantes');
+// SHA-256 hash
+const hash256 = HashUtils.sha256Hash('important data');
 
-// Hash SHA-512
-const hash512 = HashUtils.sha512Hash('dados importantes');
+// SHA-512 hash
+const hash512 = HashUtils.sha512Hash('important data');
 ```
 
 #### sha256HashJson / sha512HashJson
 
-Gera hashes de objetos JSON.
+Generates hashes of JSON objects.
 
 ```javascript
 const jsonHash = HashUtils.sha256HashJson({ id: 1, name: 'John' });
@@ -735,29 +720,29 @@ const jsonHash = HashUtils.sha256HashJson({ id: 1, name: 'John' });
 
 #### sha256GenerateToken / sha512GenerateToken
 
-Gera tokens aleatórios usando SHA-256 ou SHA-512.
+Generates random tokens using SHA-256 or SHA-512.
 
 ```javascript
-// Token de 32 caracteres (padrão)
+// 32-character token (default)
 const token = HashUtils.sha256GenerateToken();
 
-// Token de comprimento personalizado
+// Custom length token
 const shortToken = HashUtils.sha256GenerateToken(16);
 ```
 
 ### SnowflakeUtils
 
-Utilitários para geração e manipulação de IDs do tipo Snowflake.
+Utilities for generating and manipulating Snowflake IDs.
 
 #### generate
 
-Gera um ID Snowflake usando uma época personalizada.
+Generates a Snowflake ID using a custom epoch.
 
 ```javascript
-// Gerar ID com parâmetros padrão
+// Generate ID with default parameters
 const id = SnowflakeUtils.generate();
 
-// Gerar ID com parâmetros personalizados
+// Generate ID with custom parameters
 const customId = SnowflakeUtils.generate({
   epoch: new Date('2023-01-01T00:00:00.000Z'),
   workerId: 1n,
@@ -767,52 +752,52 @@ const customId = SnowflakeUtils.generate({
 
 #### decode
 
-Decodifica um ID Snowflake em seus componentes.
+Decodes a Snowflake ID into its components.
 
 ```javascript
 const components = SnowflakeUtils.decode({
   snowflakeId: '1322717493961297921',
 });
-// Resultado: { timestamp: 1234567890n, workerId: 1n, processId: 0n, increment: 42n }
+// Result: { timestamp: 1234567890n, workerId: 1n, processId: 0n, increment: 42n }
 ```
 
 #### getTimestamp
 
-Extrai o timestamp de um ID Snowflake.
+Extracts the timestamp from a Snowflake ID.
 
 ```javascript
 const timestamp = SnowflakeUtils.getTimestamp({
   snowflakeId: '1322717493961297921',
 });
-// Resultado: Date object representando quando o Snowflake foi criado
+// Result: Date object representing when the Snowflake was created
 ```
 
 #### isValidSnowflake
 
-Verifica se uma string é um ID Snowflake válido.
+Checks if a string is a valid Snowflake ID.
 
 ```javascript
 const isValid = SnowflakeUtils.isValidSnowflake({
   snowflakeId: '1322717493961297921',
 });
-// Resultado: true
+// Result: true
 ```
 
 #### compare
 
-Compara dois IDs Snowflake para determinar qual é mais recente.
+Compares two Snowflake IDs to determine which one is newer.
 
 ```javascript
 const result = SnowflakeUtils.compare({
   first: '1322717493961297921',
   second: '1322717493961297920',
 });
-// Resultado: 1 (first é mais recente)
+// Result: 1 (first is newer)
 ```
 
 #### fromTimestamp
 
-Cria um ID Snowflake a partir de um timestamp.
+Creates a Snowflake ID from a timestamp.
 
 ```javascript
 const id = SnowflakeUtils.fromTimestamp({
@@ -822,139 +807,139 @@ const id = SnowflakeUtils.fromTimestamp({
 
 #### convert
 
-Converte um ID Snowflake para um formato diferente.
+Converts a Snowflake ID to a different format.
 
 ```javascript
-// Converter para string
+// Convert to string
 const stringId = SnowflakeUtils.convert({
   snowflakeId: 1322717493961297921n,
   toFormat: 'string',
 });
-// Resultado: "1322717493961297921"
+// Result: "1322717493961297921"
 
-// Converter para bigint
+// Convert to bigint
 const bigintId = SnowflakeUtils.convert({
   snowflakeId: '1322717493961297921',
   toFormat: 'bigint',
 });
-// Resultado: 1322717493961297921n
+// Result: 1322717493961297921n
 ```
 
 ### NumberUtils
 
-Utilitários para manipulação de números.
+Utilities for number manipulation.
 
 ```javascript
-// Formatar número como moeda
+// Format number as currency
 const currency = NumberUtils.formatCurrency({
   value: 1234.56,
-  locale: 'pt-BR',
-  currency: 'BRL',
+  locale: 'en-US',
+  currency: 'USD',
 });
-// Resultado: "R$ 1.234,56"
+// Result: "$1,234.56"
 
-// Arredondar para um número específico de casas decimais
+// Round to a specific number of decimal places
 const rounded = NumberUtils.round({
   value: 3.14159,
   decimals: 2,
 });
-// Resultado: 3.14
+// Result: 3.14
 ```
 
 ### ObjectUtils
 
-Utilitários para manipulação de objetos.
+Utilities for object manipulation.
 
 ```javascript
-// Mesclar objetos profundamente
+// Deeply merge objects
 const merged = ObjectUtils.deepMerge({
   target: { a: 1, b: { c: 2 } },
   source: { b: { d: 3 }, e: 4 },
 });
-// Resultado: { a: 1, b: { c: 2, d: 3 }, e: 4 }
+// Result: { a: 1, b: { c: 2, d: 3 }, e: 4 }
 
-// Achatar um objeto aninhado
+// Flatten a nested object
 const flattened = ObjectUtils.flatten({
   obj: { a: 1, b: { c: 2, d: { e: 3 } } },
 });
-// Resultado: { 'a': 1, 'b.c': 2, 'b.d.e': 3 }
+// Result: { 'a': 1, 'b.c': 2, 'b.d.e': 3 }
 ```
 
 ### UUIDUtils
 
-Utilitários para geração e validação de UUIDs.
+Utilities for generating and validating UUIDs.
 
 ```javascript
-// Gerar UUID v4
+// Generate v4 UUID
 const uuid = UUIDUtils.generate();
-// Resultado: "123e4567-e89b-12d3-a456-426614174000"
+// Result: "123e4567-e89b-12d3-a456-426614174000"
 
-// Verificar se uma string é um UUID válido
+// Check if a string is a valid UUID
 const isValid = UUIDUtils.isValid({
   uuid: '123e4567-e89b-12d3-a456-426614174000',
 });
-// Resultado: true
+// Result: true
 ```
 
 ### ValidationUtils
 
-Utilitários para validação de dados.
+Utilities for data validation.
 
 ```javascript
-// Verificar se um valor é um e-mail válido
+// Check if a value is a valid email
 const isValidEmail = ValidationUtils.isEmail({ value: 'user@example.com' });
-// Resultado: true
+// Result: true
 
-// Verificar se um valor é um número de telefone válido
-const isValidPhone = ValidationUtils.isPhoneNumber({ value: '+5511999999999' });
-// Resultado: true
+// Check if a value is a valid phone number
+const isValidPhone = ValidationUtils.isPhoneNumber({ value: '+15551234567' });
+// Result: true
 ```
 
-## Estrutura de Testes
+## Test Structure
 
-Os testes estão organizados em uma estrutura híbrida que combina organização por tipo de teste com organização por funcionalidade:
+The tests are organized in a hybrid structure that combines organization by test type with organization by functionality:
 
 ```
 tests/
-├── unit/                  # Testes unitários
+├── unit/                  # Unit tests
 │   ├── array.service.spec.ts
 │   ├── string.service.spec.ts
 │   └── ...
-├── integration/           # Testes de integração
+├── integration/           # Integration tests
 │   ├── array.service.int-spec.ts
 │   ├── string.service.int-spec.ts
 │   └── ...
-└── benchmark/             # Testes de benchmark/performance
+└── benchmark/             # Benchmark/performance tests
     ├── array.service.bench.ts
     ├── string.service.bench.ts
     └── ...
 ```
 
-### Tipos de Testes
+### Test Types
 
-- **Testes Unitários**: Testam unidades individuais de código isoladamente
-- **Testes de Integração**: Testam a interação entre diferentes partes do código
-- **Testes de Benchmark**: Medem e garantem o desempenho do código
+- **Unit Tests**: Test individual units of code in isolation
+- **Integration Tests**: Test the interaction between different parts of the code
+- **Benchmark Tests**: Measure and ensure code performance
 
-### Executando os Testes
+### Running Tests
 
 ```bash
-# Executar todos os testes
+# Run all tests
 npm test
 
-# Executar apenas testes unitários
+# Run only unit tests
 npm run test:unit
 
-# Executar apenas testes de integração
+# Run only integration tests
 npm run test:integration
 
-# Executar apenas testes de benchmark
+# Run only benchmark tests
 npm run test:benchmark
 ```
 
-## Desenvolvimento
+## Development
 
-### Instalação
+### Installation
 
 ```bash
 npm install
@@ -978,6 +963,6 @@ npm run lint
 npm run format
 ```
 
-## Licença
+## License
 
 MIT
