@@ -107,6 +107,14 @@ The library contains the following utility classes:
 - **sha512HashJson** - Generates a SHA-512 hash of a JSON object
 - **sha512GenerateToken** - Generates a random token using SHA-512
 
+### JWTUtils
+- **generate** - Generates a JWT token
+- **verify** - Verifies a JWT token
+- **decode** - Decodes a JWT token without verification
+- **refresh** - Refreshes a JWT token
+- **isExpired** - Checks if a JWT token is expired
+- **getExpirationTime** - Gets the remaining time until a JWT token expires
+
 ### MathUtils
 - **round** - Rounds a number to a specific number of decimal places
 - **floor** - Rounds a number down
@@ -728,6 +736,93 @@ const token = HashUtils.sha256GenerateToken();
 
 // Custom length token
 const shortToken = HashUtils.sha256GenerateToken(16);
+```
+
+### JWTUtils
+
+Utilities for JSON Web Token (JWT) operations.
+
+#### generate
+
+Generates a JWT token.
+
+```javascript
+const token = JWTUtils.generate({
+  payload: { userId: '123', role: 'admin' },
+  secretKey: 'your-secret-key',
+  options: { expiresIn: '1h' }
+});
+// Result: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+#### verify
+
+Verifies a JWT token and returns the decoded payload.
+
+```javascript
+const decoded = JWTUtils.verify({
+  token: 'your-jwt-token',
+  secretKey: 'your-secret-key'
+});
+// Result: { userId: '123', role: 'admin', iat: 1625097600, exp: 1625101200 }
+```
+
+#### decode
+
+Decodes a JWT token without verifying its signature.
+
+```javascript
+// Decode token to get payload only
+const decoded = JWTUtils.decode({
+  token: 'your-jwt-token'
+});
+// Result: { userId: '123', role: 'admin', iat: 1625097600, exp: 1625101200 }
+
+// Decode token to get complete information (header, payload, signature)
+const decodedComplete = JWTUtils.decode({
+  token: 'your-jwt-token',
+  complete: true
+});
+// Result: { 
+//   header: { alg: 'HS256', typ: 'JWT' },
+//   payload: { userId: '123', role: 'admin', iat: 1625097600, exp: 1625101200 },
+//   signature: '...'
+// }
+```
+
+#### refresh
+
+Refreshes a JWT token by generating a new one with the same payload and updated expiration.
+
+```javascript
+const newToken = JWTUtils.refresh({
+  token: 'your-expired-token',
+  secretKey: 'your-secret-key',
+  options: { expiresIn: '1h' }
+});
+// Result: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." (new token with updated expiration)
+```
+
+#### isExpired
+
+Checks if a JWT token is expired.
+
+```javascript
+const isExpired = JWTUtils.isExpired({
+  token: 'your-jwt-token'
+});
+// Result: true or false
+```
+
+#### getExpirationTime
+
+Gets the remaining time until a JWT token expires.
+
+```javascript
+const remainingSeconds = JWTUtils.getExpirationTime({
+  token: 'your-jwt-token'
+});
+// Result: 3600 (seconds until expiration, or 0 if already expired)
 ```
 
 ### SnowflakeUtils

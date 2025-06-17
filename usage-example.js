@@ -206,6 +206,48 @@ try {
   console.log('Error testing HashUtils:', error.message);
 }
 
+// Test JWTUtils
+console.log('\n=== TESTING JWTUtils ===');
+try {
+  const payload = { userId: '123', role: 'admin' };
+  const secretKey = 'your-secret-key-for-testing-jwt-utils';
+  
+  // Generate token
+  const token = util.JWTUtils.generate({
+    payload,
+    secretKey,
+    options: { expiresIn: '1h' }
+  });
+  console.log('generate({ payload, secretKey, options }):', token);
+  
+  // Verify token
+  const verified = util.JWTUtils.verify({
+    token,
+    secretKey
+  });
+  console.log('verify({ token, secretKey }):', verified);
+  
+  // Decode token
+  const decoded = util.JWTUtils.decode({
+    token
+  });
+  console.log('decode({ token }):', decoded);
+  
+  // Check if expired
+  const isExpired = util.JWTUtils.isExpired({
+    token
+  });
+  console.log('isExpired({ token }):', isExpired);
+  
+  // Get expiration time
+  const expirationTime = util.JWTUtils.getExpirationTime({
+    token
+  });
+  console.log('getExpirationTime({ token }):', expirationTime, 'seconds');
+} catch (error) {
+  console.log('Error testing JWTUtils:', error.message);
+}
+
 // Test MathUtils
 console.log('\n=== TESTING MathUtils ===');
 try {
