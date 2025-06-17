@@ -4,13 +4,13 @@ export class DateUtils {
   /**
    * Gets the current date and time, either in UTC or the system's timezone.
    * @param {object} [params] - The parameters for the method.
-   * @param {boolean} [params.utc=false] - If `true`, returns the current date in UTC.
+   * @param {boolean} [params.utc=true] - If `true`, returns the current date in UTC. Defaults to `true`.
    * @returns {DateTime} The current `DateTime`.
    * @example
-   * DateUtils.now({ utc: true }); // Current UTC DateTime
-   * DateUtils.now(); // Current DateTime in local timezone
+   * DateUtils.now(); // Current UTC DateTime (default)
+   * DateUtils.now({ utc: false }); // Current DateTime in local timezone
    */
-  public static now({ utc = false }: { utc?: boolean } = {}): DateTime {
+  public static now({ utc = true }: { utc?: boolean } = {}): DateTime {
     return utc ? DateTime.utc() : DateTime.now();
   }
 

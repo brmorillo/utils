@@ -4,6 +4,7 @@ import { CryptUtils } from './services/crypt.service';
 import { CuidUtils } from './services/cuid.service';
 import { DateUtils } from './services/date.service';
 import { HashUtils } from './services/hash.service';
+import { JWTUtils } from './services/jwt.service';
 import { MathUtils } from './services/math.service';
 import { NumberUtils } from './services/number.service';
 import { ObjectUtils } from './services/object.service';
@@ -27,6 +28,7 @@ export {
   CuidUtils,
   DateUtils,
   HashUtils,
+  JWTUtils,
   MathUtils,
   NumberUtils,
   ObjectUtils,
@@ -50,6 +52,7 @@ export const Utils = {
   Cuid: CuidUtils,
   Date: DateUtils,
   Hash: HashUtils,
+  JWT: JWTUtils,
   Math: MathUtils,
   Number: NumberUtils,
   Object: ObjectUtils,
@@ -76,6 +79,7 @@ export default {
   CuidUtils,
   DateUtils,
   HashUtils,
+  JWTUtils,
   MathUtils,
   NumberUtils,
   ObjectUtils,

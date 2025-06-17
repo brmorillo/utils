@@ -142,8 +142,8 @@ try {
 // Test DateUtils
 console.log('\n=== TESTING DateUtils ===');
 try {
-  console.log('now():', util.DateUtils.now());
-  console.log('now({utc: true}):', util.DateUtils.now({ utc: true }));
+  console.log('now():', util.DateUtils.now()); // UTC por padrão
+  console.log('now({utc: false}):', util.DateUtils.now({ utc: false })); // Fuso horário local
   console.log(
     'toUTC({date: "2023-01-01T12:00:00+03:00"}):',
     util.DateUtils.toUTC({ date: '2023-01-01T12:00:00+03:00' }),

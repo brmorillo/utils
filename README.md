@@ -602,11 +602,11 @@ Utilities for date manipulation using Luxon.
 Gets the current date and time, either in UTC or the system's timezone.
 
 ```javascript
-// Current date and time in local timezone
-const localNow = DateUtils.now();
+// Current date and time in UTC (default)
+const utcNow = DateUtils.now();
 
-// Current date and time in UTC
-const utcNow = DateUtils.now({ utc: true });
+// Current date and time in local timezone
+const localNow = DateUtils.now({ utc: false });
 ```
 
 #### createInterval

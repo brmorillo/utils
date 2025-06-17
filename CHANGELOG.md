@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.3.12](https://github.com/brmorillo/util/compare/v10.3.11...v10.3.12) (2025-06-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* **date:** Changed default value of `utc` parameter in DateUtils.now() from false to true
+
+### Code Refactoring
+
+* **date:** Changed default value of `utc` parameter in DateUtils.now() from false to true ([d10d179](https://github.com/brmorillo/util/commit/d10d17936b685f12a03f0beeb180542b1ac8e5df))
+
 ### [10.3.11](https://github.com/brmorillo/util/compare/v10.3.10...v10.3.11) (2025-06-17)
 
 

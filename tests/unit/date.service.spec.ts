@@ -6,19 +6,8 @@ import { DateTime, Duration } from 'luxon';
  */
 describe('DateUtils', () => {
   describe('now', () => {
-    it('deve retornar a data atual no fuso horário local', () => {
-      const localNow = DateUtils.now();
-      const systemNow = DateTime.now();
-
-      // Verifica se a diferença é menor que 100ms
-      expect(Math.abs(localNow.toMillis() - systemNow.toMillis())).toBeLessThan(
-        100,
-      );
-      expect(localNow.zoneName).toBe(systemNow.zoneName);
-    });
-
-    it('deve retornar a data atual em UTC quando utc=true', () => {
-      const utcNow = DateUtils.now({ utc: true });
+    it('deve retornar a data atual em UTC por padrão', () => {
+      const utcNow = DateUtils.now();
       const systemUtcNow = DateTime.utc();
 
       // Verifica se a diferença é menor que 100ms
@@ -26,6 +15,17 @@ describe('DateUtils', () => {
         Math.abs(utcNow.toMillis() - systemUtcNow.toMillis()),
       ).toBeLessThan(100);
       expect(utcNow.zoneName).toBe('UTC');
+    });
+
+    it('deve retornar a data atual no fuso horário local quando utc=false', () => {
+      const localNow = DateUtils.now({ utc: false });
+      const systemNow = DateTime.now();
+
+      // Verifica se a diferença é menor que 100ms
+      expect(Math.abs(localNow.toMillis() - systemNow.toMillis())).toBeLessThan(
+        100,
+      );
+      expect(localNow.zoneName).toBe(systemNow.zoneName);
     });
   });
 

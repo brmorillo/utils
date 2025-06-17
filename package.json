@@ -1,6 +1,6 @@
 {
   "name": "@brmorillo/utils",
-  "version": "10.3.11",
+  "version": "11.0.0",
   "description": "Biblioteca de utilitários",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -43,6 +43,7 @@
     "@commitlint/cli": "^17.8.1",
     "@commitlint/config-conventional": "^17.8.1",
     "@types/jest": "^29.5.14",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/luxon": "^3.6.2",
     "@types/node": "^18.19.112",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
@@ -76,6 +77,7 @@
     "@paralleldrive/cuid2": "^2.2.2",
     "@sapphire/snowflake": "^3.5.5",
     "bcryptjs": "^3.0.2",
+    "jsonwebtoken": "^9.0.2",
     "luxon": "^3.6.1",
     "ua-parser-js": "^2.0.3",
     "uuid": "^11.1.0"
