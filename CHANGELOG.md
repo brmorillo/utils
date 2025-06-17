@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.1.2](https://github.com/brmorillo/util/compare/v11.1.1...v11.1.2) (2025-06-17)
+
+
+### Documentation
+
+* **readme:** update jwt in readme ([36a17ba](https://github.com/brmorillo/util/commit/36a17ba804e4d4d797c50e1949e713cf8903ff3d))
+
 ### [11.1.1](https://github.com/brmorillo/util/compare/v11.1.0...v11.1.1) (2025-06-17)
 
 ## [11.1.0](https://github.com/brmorillo/util/compare/v10.3.11...v11.1.0) (2025-06-17)
