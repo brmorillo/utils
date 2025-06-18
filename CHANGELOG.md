@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.3.0](https://github.com/brmorillo/util/compare/v11.2.3...v11.3.0) (2025-06-18)
+
+
+### Features
+
+* **methods:** log, file, event and retry ([ab8e4ae](https://github.com/brmorillo/util/commit/ab8e4ae6c9e7649f5941d21c701ba5865173f8b8))
+
 ### [11.2.3](https://github.com/brmorillo/util/compare/v11.2.2...v11.2.3) (2025-06-18)
 
 ### [11.2.2](https://github.com/brmorillo/util/compare/v11.2.1...v11.2.2) (2025-06-18)

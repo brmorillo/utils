@@ -1,6 +1,6 @@
 {
   "name": "@brmorillo/utils",
-  "version": "11.2.3",
+  "version": "11.3.0",
   "description": "Biblioteca de utilitários",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
