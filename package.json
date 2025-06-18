@@ -7,9 +7,7 @@
   "scripts": {
     "build": "tsc",
     "test": "jest",
-    "test:coverage": "jest --coverage",
-    "lint": "eslint src/**/*.ts",
-    "format": "prettier --write \"src/**/*.ts\""
+    "test:coverage": "jest --coverage"
   },
   "keywords": [
     "utils",
@@ -22,6 +20,7 @@
   "dependencies": {
     "@paralleldrive/cuid2": "^2.2.2",
     "@sapphire/snowflake": "^3.5.5",
+    "axios": "^1.6.7",
     "bcryptjs": "^3.0.2",
     "jsonwebtoken": "^9.0.2",
     "luxon": "^3.6.1",

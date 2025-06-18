@@ -1,4 +1,5 @@
 import { UAParser } from 'ua-parser-js';
+
 export class RequestUtils {
   /**
    * Extracts all possible relevant data from the HTTP request object.
