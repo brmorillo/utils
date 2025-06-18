@@ -1,7 +1,11 @@
 import * as http from 'http';
 import * as https from 'https';
 import { URL } from 'url';
-import { IHttpClient, RequestOptions, RequestResponse } from '../interfaces/request.interface';
+import {
+  IHttpClient,
+  RequestOptions,
+  RequestResponse,
+} from '../interfaces/request.interface';
 
 /**
  * Native HTTP/HTTPS client implementation
@@ -15,7 +19,7 @@ export class HttpClient implements IHttpClient {
       const url = new URL(options.url);
       const isHttps = url.protocol === 'https:';
       const client = isHttps ? https : http;
-      
+
       const requestOptions: http.RequestOptions = {
         method: options.method,
         headers: options.headers || {},
@@ -29,29 +33,32 @@ export class HttpClient implements IHttpClient {
         });
       }
 
-      const req = client.request(url, requestOptions, (res) => {
+      const req = client.request(url, requestOptions, res => {
         let data = '';
-        
+
         // Handle different response types
-        if (options.responseType === 'arraybuffer' || options.responseType === 'blob') {
+        if (
+          options.responseType === 'arraybuffer' ||
+          options.responseType === 'blob'
+        ) {
           const chunks: Buffer[] = [];
-          res.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
+          res.on('data', chunk => chunks.push(Buffer.from(chunk)));
           res.on('end', () => {
             const buffer = Buffer.concat(chunks);
             resolve({
-              data: buffer,
+              data: buffer as unknown as T,
               status: res.statusCode || 0,
               headers: res.headers as Record<string, string>,
             });
           });
         } else {
-          res.on('data', (chunk) => {
+          res.on('data', chunk => {
             data += chunk;
           });
-          
+
           res.on('end', () => {
             let parsedData: any;
-            
+
             try {
               // Try to parse as JSON if responseType is json or not specified
               if (options.responseType !== 'text') {
@@ -63,7 +70,7 @@ export class HttpClient implements IHttpClient {
               // If parsing fails, return the raw data
               parsedData = data;
             }
-            
+
             resolve({
               data: parsedData,
               status: res.statusCode || 0,
@@ -73,15 +80,16 @@ export class HttpClient implements IHttpClient {
         }
       });
 
-      req.on('error', (error) => {
+      req.on('error', error => {
         reject(error);
       });
 
       // Write data to request body
       if (options.data) {
-        const data = typeof options.data === 'object' 
-          ? JSON.stringify(options.data) 
-          : options.data;
+        const data =
+          typeof options.data === 'object'
+            ? JSON.stringify(options.data)
+            : options.data;
         req.write(data);
       }
 
@@ -92,7 +100,10 @@ export class HttpClient implements IHttpClient {
   /**
    * Makes a GET request
    */
-  async get<T = any>(url: string, options?: Omit<RequestOptions, 'url' | 'method'>): Promise<RequestResponse<T>> {
+  async get<T = any>(
+    url: string,
+    options?: Omit<RequestOptions, 'url' | 'method'>,
+  ): Promise<RequestResponse<T>> {
     return this.request<T>({
       url,
       method: 'GET',
@@ -103,7 +114,11 @@ export class HttpClient implements IHttpClient {
   /**
    * Makes a POST request
    */
-  async post<T = any>(url: string, data?: any, options?: Omit<RequestOptions, 'url' | 'method' | 'data'>): Promise<RequestResponse<T>> {
+  async post<T = any>(
+    url: string,
+    data?: any,
+    options?: Omit<RequestOptions, 'url' | 'method' | 'data'>,
+  ): Promise<RequestResponse<T>> {
     return this.request<T>({
       url,
       method: 'POST',
@@ -115,7 +130,11 @@ export class HttpClient implements IHttpClient {
   /**
    * Makes a PUT request
    */
-  async put<T = any>(url: string, data?: any, options?: Omit<RequestOptions, 'url' | 'method' | 'data'>): Promise<RequestResponse<T>> {
+  async put<T = any>(
+    url: string,
+    data?: any,
+    options?: Omit<RequestOptions, 'url' | 'method' | 'data'>,
+  ): Promise<RequestResponse<T>> {
     return this.request<T>({
       url,
       method: 'PUT',
@@ -127,7 +146,10 @@ export class HttpClient implements IHttpClient {
   /**
    * Makes a DELETE request
    */
-  async delete<T = any>(url: string, options?: Omit<RequestOptions, 'url' | 'method'>): Promise<RequestResponse<T>> {
+  async delete<T = any>(
+    url: string,
+    options?: Omit<RequestOptions, 'url' | 'method'>,
+  ): Promise<RequestResponse<T>> {
     return this.request<T>({
       url,
       method: 'DELETE',
@@ -138,7 +160,11 @@ export class HttpClient implements IHttpClient {
   /**
    * Makes a PATCH request
    */
-  async patch<T = any>(url: string, data?: any, options?: Omit<RequestOptions, 'url' | 'method' | 'data'>): Promise<RequestResponse<T>> {
+  async patch<T = any>(
+    url: string,
+    data?: any,
+    options?: Omit<RequestOptions, 'url' | 'method' | 'data'>,
+  ): Promise<RequestResponse<T>> {
     return this.request<T>({
       url,
       method: 'PATCH',
