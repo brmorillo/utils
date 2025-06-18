@@ -18,6 +18,8 @@
   "author": "Bruno Morillo",
   "license": "MIT",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.540.0",
+    "@aws-sdk/lib-storage": "^3.540.0",
     "@paralleldrive/cuid2": "^2.2.2",
     "@sapphire/snowflake": "^3.5.5",
     "axios": "^1.6.7",

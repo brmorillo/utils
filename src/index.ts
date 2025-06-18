@@ -1,6 +1,8 @@
 import { LogService } from './services/log.service';
 import { HttpService, HttpClientType } from './services/http.service';
+import { StorageService, StorageServiceOptions } from './services/storage.service';
 import { LoggerOptions } from './interfaces/logger.interface';
+import { StorageProviderType } from './interfaces/storage.interface';
 
 /**
  * Configuration for the utility library
@@ -13,6 +15,7 @@ export interface UtilsConfig {
     defaultHeaders?: Record<string, string>;
     timeout?: number;
   };
+  storage?: StorageServiceOptions;
 }
 
 /**
@@ -22,10 +25,12 @@ export class Utils {
   private static instance: Utils;
   private logService: LogService;
   private httpService: HttpService;
+  private storageService: StorageService;
 
   private constructor(config: UtilsConfig = {}) {
     this.logService = LogService.getInstance(config.logger);
     this.httpService = HttpService.getInstance(config.http);
+    this.storageService = StorageService.getInstance(config.storage);
   }
 
   /**
@@ -51,6 +56,9 @@ export class Utils {
     if (config.http) {
       this.httpService.configure(config.http);
     }
+    if (config.storage) {
+      this.storageService.configure(config.storage);
+    }
   }
 
   /**
@@ -68,14 +76,24 @@ export class Utils {
   public getHttpService(): HttpService {
     return this.httpService;
   }
+
+  /**
+   * Gets the storage service instance
+   * @returns The StorageService instance
+   */
+  public getStorageService(): StorageService {
+    return this.storageService;
+  }
 }
 
 // Export all utility classes and interfaces
 export * from './interfaces/logger.interface';
 export * from './interfaces/request.interface';
+export * from './interfaces/storage.interface';
 export * from './services/log.service';
 export * from './services/http.service';
 export * from './services/request.service';
+export * from './services/storage.service';
 export * from './services/array.service';
 export * from './services/benchmark.service';
 export * from './services/convert.service';

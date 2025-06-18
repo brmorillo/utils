@@ -1,6 +1,8 @@
 # @brmorillo/utils
 
-Utility library for JavaScript/TypeScript projects.
+> If you have a problem, it's probably already solved here.
+
+A comprehensive utility library for JavaScript/TypeScript projects that provides a centralized collection of common utilities and helpers to solve everyday programming challenges.
 
 ## Installation
 
@@ -20,9 +22,7 @@ or
 pnpm add @brmorillo/utils
 ```
 
-## Configuration
-
-The library can be configured with different options:
+## Quick Start
 
 ```javascript
 import { Utils } from '@brmorillo/utils';
@@ -30,266 +30,216 @@ import { Utils } from '@brmorillo/utils';
 // Initialize with default configuration
 const utils = Utils.getInstance();
 
-// Or initialize with custom configuration
-const utils = Utils.getInstance({
-  logger: {
-    type: 'pino', // 'pino', 'winston', or 'console'
-    level: 'info', // 'error', 'warn', 'info', or 'debug'
-    prettyPrint: true, // Format logs for better readability
-  },
-});
-
-// Get the logger instance
+// Get logger
 const logger = utils.getLogger();
 logger.info('Application started');
+
+// Get HTTP service
+const http = utils.getHttpService();
+const response = await http.get('https://api.example.com/data');
+
+// Get storage service
+const storage = utils.getStorageService();
+await storage.uploadFile('path/to/file.txt', 'Hello, world!');
+```
+
+## Configuration
+
+The library can be configured with different options:
+
+```javascript
+const utils = Utils.getInstance({
+  // Logger configuration
+  logger: {
+    type: 'pino', // 'pino', 'winston', or 'console'
+    level: 'debug', // 'error', 'warn', 'info', or 'debug'
+    prettyPrint: true, // Format logs for better readability
+  },
+
+  // HTTP client configuration
+  http: {
+    clientType: 'axios', // 'axios' or 'http' (native)
+    baseUrl: 'https://api.example.com',
+    defaultHeaders: {
+      Authorization: 'Bearer token',
+      'Content-Type': 'application/json',
+    },
+    timeout: 5000, // Request timeout in milliseconds
+  },
+
+  // Storage configuration
+  storage: {
+    providerType: 'local', // 'local' or 's3'
+
+    // Local storage options (when providerType is 'local')
+    local: {
+      basePath: './storage',
+      baseUrl: 'http://localhost:3000/files',
+    },
+
+    // S3 storage options (when providerType is 's3')
+    s3: {
+      bucket: 'my-bucket',
+      region: 'us-east-1',
+      accessKeyId: 'YOUR_ACCESS_KEY_ID',
+      secretAccessKey: 'YOUR_SECRET_ACCESS_KEY',
+      endpoint: 'https://custom-endpoint.com', // Optional
+      forcePathStyle: true, // Optional
+      baseUrl: 'https://cdn.example.com', // Optional
+    },
+  },
+});
 
 // Reconfigure later if needed
 utils.configure({
   logger: {
     type: 'winston',
-    level: 'debug',
+    level: 'info',
   },
 });
 ```
 
-## Usage
+## NestJS Integration Example
 
-### ESM Import
-
-```javascript
-// Import specific utilities
-import { StringUtils, ArrayUtils } from '@brmorillo/utils';
-
-// Import all utilities
+```typescript
+// utils.module.ts
+import { Module, Global } from '@nestjs/common';
 import { Utils } from '@brmorillo/utils';
-```
 
-### CommonJS Import
+@Global()
+@Module({
+  providers: [
+    {
+      provide: 'UTILS',
+      useFactory: () => {
+        return Utils.getInstance({
+          logger: {
+            type: 'pino',
+            level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+            prettyPrint: process.env.NODE_ENV !== 'production',
+          },
+          http: {
+            clientType: 'axios',
+            baseUrl: process.env.API_BASE_URL,
+            defaultHeaders: {
+              Authorization: `Bearer ${process.env.API_TOKEN}`,
+            },
+            timeout: 10000,
+          },
+          storage: {
+            providerType: process.env.STORAGE_PROVIDER || 'local',
+            local: {
+              basePath: './storage',
+              baseUrl: `${process.env.APP_URL}/files`,
+            },
+            s3: {
+              bucket: process.env.S3_BUCKET,
+              region: process.env.AWS_REGION,
+              accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+              secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+            },
+          },
+        });
+      },
+    },
+  ],
+  exports: ['UTILS'],
+})
+export class UtilsModule {}
 
-```javascript
-// Import specific utilities
-const { StringUtils, ArrayUtils } = require('@brmorillo/utils');
+// app.module.ts
+import { Module } from '@nestjs/common';
+import { UtilsModule } from './utils.module';
 
-// Import all utilities
-const { Utils } = require('@brmorillo/utils');
+@Module({
+  imports: [UtilsModule],
+})
+export class AppModule {}
+
+// users.service.ts
+import { Injectable, Inject } from '@nestjs/common';
+import { Utils } from '@brmorillo/utils';
+
+@Injectable()
+export class UsersService {
+  private logger;
+  private http;
+  private storage;
+
+  constructor(@Inject('UTILS') private utils: Utils) {
+    this.logger = utils.getLogger();
+    this.http = utils.getHttpService();
+    this.storage = utils.getStorageService();
+  }
+
+  async getUsers() {
+    this.logger.info('Fetching users');
+    const response = await this.http.get('/users');
+    return response.data;
+  }
+
+  async uploadAvatar(userId: string, avatar: Buffer) {
+    this.logger.info('Uploading avatar', { userId });
+    const path = `avatars/${userId}.jpg`;
+    const url = await this.storage.uploadFile(path, avatar, {
+      contentType: 'image/jpeg',
+    });
+    return url;
+  }
+}
 ```
 
 ## Available Utilities
 
 The library contains the following utility classes:
 
-### ArrayUtils
+### Core Services
 
-- **removeDuplicates** - Removes duplicate values from an array
-- **intersect** - Finds the intersection between two arrays
-- **flatten** - Flattens a multi-dimensional array
-- **groupBy** - Groups array elements by a key
-- **shuffle** - Randomly shuffles array elements
-- **sort** - Sorts an array with specific criteria
-- **findSubset** - Finds objects that match a subset
-- **isSubset** - Checks if an object contains a subset
+- [**LogService**](./docs/log-service.md) - Configurable logging with support for multiple providers (Pino, Winston, Console)
+- [**HttpService**](./docs/http-service.md) - HTTP client with support for multiple providers (Axios, native HTTP/HTTPS)
+- [**StorageService**](./docs/storage-service.md) - File storage with support for multiple providers (Local, S3)
 
-### BenchmarkUtils
+### Data Manipulation
 
-- **measureExecutionTime** - Measures the execution time of a function
-- **benchmark** - Runs a benchmark with multiple iterations
-- **compare** - Compares the performance of multiple functions
-- **progressiveBenchmark** - Runs benchmarks with increasing workload sizes
-- **measureMemoryUsage** - Measures memory usage during function execution
+- [**ArrayUtils**](./docs/array-utils.md) - Array manipulation utilities (sorting, filtering, grouping)
+- [**ObjectUtils**](./docs/object-utils.md) - Object manipulation utilities (deep clone, merge, pick, omit)
+- [**StringUtils**](./docs/string-utils.md) - String manipulation utilities (formatting, validation, transformation)
+- [**NumberUtils**](./docs/number-utils.md) - Number manipulation utilities (formatting, rounding, validation)
+- [**DateUtils**](./docs/date-utils.md) - Date manipulation utilities (formatting, calculations, timezone conversion)
 
-### ConvertUtils
+### Security & Cryptography
 
-- **toBoolean** - Converts a value to boolean
-- **toNumber** - Converts a value to number
-- **toString** - Converts a value to string
-- **toDate** - Converts a value to date
-- **toArray** - Converts a value to array
-- **toObject** - Converts a value to object
-- **toJSON** - Converts a value to JSON
-- **fromJSON** - Converts JSON to an object
+- [**CryptUtils**](./docs/crypt-utils.md) - Encryption and decryption utilities (AES, RSA, ECC)
+- [**HashUtils**](./docs/hash-utils.md) - Hashing utilities (SHA, bcrypt)
+- [**JwtUtils**](./docs/jwt-utils.md) - JWT token generation and verification
 
-### CryptUtils
+### Identifiers & Validation
 
-- **generateIV** - Generates an initialization vector for AES
-- **aesEncrypt** - Encrypts data using AES-256-CBC
-- **aesDecrypt** - Decrypts data using AES-256-CBC
-- **rsaGenerateKeyPair** - Generates an RSA key pair
-- **rsaEncrypt** - Encrypts data using RSA
-- **rsaDecrypt** - Decrypts data using RSA
-- **rsaSign** - Signs data using RSA
-- **rsaVerify** - Verifies RSA signatures
-- **eccGenerateKeyPair** - Generates an ECC key pair
-- **eccSign** - Signs data using ECC
-- **eccVerify** - Verifies ECC signatures
-- **chacha20Encrypt** - Encrypts data using ChaCha20
-- **chacha20Decrypt** - Decrypts data using ChaCha20
-- **rc4Encrypt** - Encrypts data using RC4
-- **rc4Decrypt** - Decrypts data using RC4
+- [**UuidUtils**](./docs/uuid-utils.md) - UUID generation and validation
+- [**CuidUtils**](./docs/cuid-utils.md) - CUID generation and validation
+- [**SnowflakeUtils**](./docs/snowflake-utils.md) - Snowflake ID generation and decoding
+- [**ValidationUtils**](./docs/validation-utils.md) - Data validation utilities
 
-### CuidUtils
+### Performance & Algorithms
 
-- **generate** - Generates a unique CUID2 identifier
-- **isValid** - Checks if a string is a valid CUID2
+- [**BenchmarkUtils**](./docs/benchmark-utils.md) - Performance measurement utilities
+- [**SortUtils**](./docs/sort-utils.md) - Sorting algorithm implementations
+- [**QueueUtils**](./docs/queue-utils.md) - Queue data structure implementations
 
-### DateUtils
+### Miscellaneous
 
-- **now** - Gets the current date and time
-- **createInterval** - Creates an interval between two dates
-- **addTime** - Adds a duration to a date
-- **removeTime** - Removes a duration from a date
-- **diffBetween** - Calculates the difference between two dates
-- **toUTC** - Converts a date to UTC
-- **toTimeZone** - Converts a date to a specific timezone
-
-### HashUtils
-
-- **bcryptHash** - Encrypts a string using bcrypt
-- **bcryptCompare** - Compares a string with a bcrypt hash
-- **bcryptRandomString** - Generates a random string using bcrypt
-- **sha256Hash** - Generates a SHA-256 hash of a string
-- **sha256HashJson** - Generates a SHA-256 hash of a JSON object
-- **sha256GenerateToken** - Generates a random token using SHA-256
-- **sha512Hash** - Generates a SHA-512 hash of a string
-- **sha512HashJson** - Generates a SHA-512 hash of a JSON object
-- **sha512GenerateToken** - Generates a random token using SHA-512
-
-### JWTUtils
-
-- **generate** - Generates a JWT token
-- **verify** - Verifies a JWT token
-- **decode** - Decodes a JWT token without verification
-- **refresh** - Refreshes a JWT token
-- **isExpired** - Checks if a JWT token is expired
-- **getExpirationTime** - Gets the remaining time until a JWT token expires
-
-### LogService
-
-- **info** - Logs an info message
-- **warn** - Logs a warning message
-- **error** - Logs an error message
-- **debug** - Logs a debug message
-- **configure** - Reconfigures the logger
-
-### MathUtils
-
-- **round** - Rounds a number to a specific number of decimal places
-- **floor** - Rounds a number down
-- **ceil** - Rounds a number up
-- **random** - Generates a random number within a range
-- **sum** - Sums the values of an array
-- **average** - Calculates the average of array values
-- **median** - Calculates the median of array values
-- **mode** - Calculates the mode of array values
-- **standardDeviation** - Calculates the standard deviation of array values
-
-### NumberUtils
-
-- **formatCurrency** - Formats a number as currency
-- **formatPercentage** - Formats a number as percentage
-- **formatDecimal** - Formats a number with specific decimal places
-- **parseNumber** - Converts a string to number
-- **isInteger** - Checks if a number is an integer
-- **isFloat** - Checks if a number is a float
-- **isPositive** - Checks if a number is positive
-- **isNegative** - Checks if a number is negative
-- **isZero** - Checks if a number is zero
-- **clamp** - Limits a number to a specific range
-
-### ObjectUtils
-
-- **deepMerge** - Deeply merges objects
-- **deepClone** - Deeply clones an object
-- **flatten** - Flattens a nested object
-- **unflatten** - Unflattens an object
-- **pick** - Selects specific properties from an object
-- **omit** - Omits specific properties from an object
-- **isEmpty** - Checks if an object is empty
-- **isEqual** - Checks if two objects are equal
-- **hasCircularReference** - Checks if an object has circular references
-- **removeUndefined** - Removes undefined properties from an object
-- **removeNull** - Removes null properties from an object
-- **removeEmptyStrings** - Removes properties with empty strings
-- **removeEmptyArrays** - Removes properties with empty arrays
-- **removeEmptyObjects** - Removes properties with empty objects
-
-### QueueUtils
-
-- **createQueue** - Creates a FIFO queue
-- **createStack** - Creates a LIFO stack
-- **createMultiQueue** - Creates a multi-channel queue
-- **createCircularBuffer** - Creates a fixed-size circular buffer
-- **createPriorityQueue** - Creates a priority queue
-- **createDelayQueue** - Creates a queue with delayed processing
-
-### RequestUtils
-
-- **parseQueryString** - Converts a query string to an object
-- **buildQueryString** - Converts an object to a query string
-- **parseUrl** - Parses a URL into its component parts
-- **buildUrl** - Builds a URL from its parts
-- **isValidUrl** - Checks if a URL is valid
-
-### SnowflakeUtils
-
-- **generate** - Generates a Snowflake ID
-- **decode** - Decodes a Snowflake ID into its components
-- **getTimestamp** - Extracts the timestamp from a Snowflake ID
-- **isValidSnowflake** - Checks if a string is a valid Snowflake ID
-- **compare** - Compares two Snowflake IDs
-- **fromTimestamp** - Creates a Snowflake ID from a timestamp
-- **convert** - Converts a Snowflake ID to a different format
-
-### SortUtils
-
-- **quickSort** - Implementation of the QuickSort algorithm
-- **mergeSort** - Implementation of the MergeSort algorithm
-- **bubbleSort** - Implementation of the BubbleSort algorithm
-- **insertionSort** - Implementation of the InsertionSort algorithm
-- **selectionSort** - Implementation of the SelectionSort algorithm
-- **heapSort** - Implementation of the HeapSort algorithm
-- **countingSort** - Implementation of the CountingSort algorithm
-- **radixSort** - Implementation of the RadixSort algorithm
-- **bucketSort** - Implementation of the BucketSort algorithm
-- **shellSort** - Implementation of the ShellSort algorithm
-- **timSort** - Implementation of the TimSort algorithm
-- **sortByProperty** - Sorts an array of objects by a property
-
-### StringUtils
-
-- **capitalizeFirstLetter** - Capitalizes the first letter of a string
-- **reverse** - Reverses a string
-- **isValidPalindrome** - Checks if a string is a palindrome
-- **truncate** - Truncates a string and adds ellipsis
-- **toKebabCase** - Converts a string to kebab-case
-- **toSnakeCase** - Converts a string to snake_case
-- **toCamelCase** - Converts a string to camelCase
-- **toTitleCase** - Converts a string to Title Case
-- **countOccurrences** - Counts occurrences of a substring
-- **replaceAll** - Replaces all occurrences of a substring
-- **replaceOccurrences** - Replaces a specific number of occurrences
-- **replacePlaceholders** - Replaces placeholders in a string
-
-### UUIDUtils
-
-- **generate** - Generates a v4 UUID
-- **isValid** - Checks if a string is a valid UUID
-- **parse** - Converts a UUID to a specific format
-- **getNil** - Returns the nil UUID (00000000-0000-0000-0000-000000000000)
-
-### ValidationUtils
-
-- **isEmail** - Checks if a string is a valid email
-- **isURL** - Checks if a string is a valid URL
-- **isPhoneNumber** - Checks if a string is a valid phone number
-- **isCPF** - Checks if a string is a valid CPF (Brazilian ID)
-- **isCNPJ** - Checks if a string is a valid CNPJ (Brazilian company ID)
-- **isCreditCard** - Checks if a string is a valid credit card number
-- **isStrongPassword** - Checks if a password is strong
-- **isDate** - Checks if a string is a valid date
-- **isNumeric** - Checks if a string contains only numbers
-- **isAlpha** - Checks if a string contains only letters
-- **isAlphanumeric** - Checks if a string contains only letters and numbers
+- [**ConvertUtils**](./docs/convert-utils.md) - Data type conversion utilities
+- [**RequestUtils**](./docs/request-utils.md) - HTTP request data extraction utilities
+- [**FileUtils**](./docs/file-utils.md) - File system utilities
 
 ## Documentation
 
-For detailed examples and usage instructions, see the [examples.md](./docs/examples.md) file.
+For detailed documentation and examples, see the [docs](./docs) directory.
+
+## License
+
+MIT
+
+## Author
+
+Bruno Morillo
