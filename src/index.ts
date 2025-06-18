@@ -8,6 +8,7 @@ import { JWTUtils } from './services/jwt.service';
 import { MathUtils } from './services/math.service';
 import { NumberUtils } from './services/number.service';
 import { ObjectUtils } from './services/object.service';
+import { QueueUtils } from './services/queue.service';
 import { RequestUtils } from './services/request.service';
 import { SnowflakeUtils } from './services/snowflake.service';
 import { SortUtils } from './services/sort.service';
@@ -32,6 +33,7 @@ export {
   MathUtils,
   NumberUtils,
   ObjectUtils,
+  QueueUtils,
   RequestUtils,
   SnowflakeUtils,
   SortUtils,
@@ -56,6 +58,7 @@ export const Utils = {
   Math: MathUtils,
   Number: NumberUtils,
   Object: ObjectUtils,
+  Queue: QueueUtils,
   Request: RequestUtils,
   Snowflake: SnowflakeUtils,
   Sort: SortUtils,
@@ -83,6 +86,7 @@ export default {
   MathUtils,
   NumberUtils,
   ObjectUtils,
+  QueueUtils,
   RequestUtils,
   SnowflakeUtils,
   SortUtils,
