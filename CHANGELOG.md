@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.2.2](https://github.com/brmorillo/util/compare/v11.2.1...v11.2.2) (2025-06-18)
+
+
+### Documentation
+
+* **examples:** reduce readme and create examples.md ([702d4df](https://github.com/brmorillo/util/commit/702d4df7b119d2dd04138a3ead9378a159aae133))
+
 ### [11.2.1](https://github.com/brmorillo/util/compare/v11.2.0...v11.2.1) (2025-06-18)
 
 ## [11.2.0](https://github.com/brmorillo/util/compare/v11.1.3...v11.2.0) (2025-06-18)
