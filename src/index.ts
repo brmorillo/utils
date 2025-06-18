@@ -111,3 +111,5 @@ export * from './services/sort.service';
 export * from './services/string.service';
 export * from './services/uuid.service';
 export * from './services/validation.service';
+export * from './errors';
+export * from './utils';
