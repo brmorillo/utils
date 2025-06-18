@@ -57,6 +57,13 @@ The library contains the following utility classes:
 - **findSubset** - Finds objects that match a subset
 - **isSubset** - Checks if an object contains a subset
 
+### BenchmarkUtils
+
+- **measureExecutionTime** - Measures the execution time of a function
+- **runBenchmark** - Runs a benchmark multiple times and returns statistics
+- **compareFunctions** - Compares the performance of multiple functions
+- **measureMemoryUsage** - Measures memory usage before and after executing a function
+
 ### ConvertUtils
 
 - **toBoolean** - Converts a value to boolean

@@ -383,14 +383,14 @@ export class MultiQueue<T> implements IMultiQueue<T> {
   constructor(
     initialItems?: Record<string | number, T[]>,
     channelMaxSizes?: Record<string | number, number>,
-    defaultMaxSize?: number
+    defaultMaxSize?: number,
   ) {
     if (initialItems && typeof initialItems === 'object') {
       for (const channel in initialItems) {
         if (Array.isArray(initialItems[channel])) {
           const maxSize = channelMaxSizes?.[channel] || defaultMaxSize;
-          this.queues[channel] = maxSize 
-            ? initialItems[channel].slice(0, maxSize) 
+          this.queues[channel] = maxSize
+            ? initialItems[channel].slice(0, maxSize)
             : [...initialItems[channel]];
         }
       }
@@ -409,12 +409,12 @@ export class MultiQueue<T> implements IMultiQueue<T> {
     if (!this.queues[channel]) {
       this.queues[channel] = [];
     }
-    
+
     const maxSize = this.channelMaxSizes?.[channel] || this.defaultMaxSize;
     if (maxSize !== undefined && this.queues[channel].length >= maxSize) {
       return -1; // Channel is full
     }
-    
+
     this.queues[channel].push(item);
     return this.queues[channel].length;
   }
@@ -576,17 +576,17 @@ export class CircularBuffer<T> {
    */
   public addOverwrite(item: T): T | undefined {
     let overwritten: T | undefined;
-    
+
     if (this.isFull()) {
       overwritten = this.buffer[this.head];
       this.head = (this.head + 1) % this.capacity;
       this.size--;
     }
-    
+
     this.buffer[this.tail] = item;
     this.tail = (this.tail + 1) % this.capacity;
     this.size++;
-    
+
     return overwritten;
   }
 
@@ -813,10 +813,10 @@ export class PriorityQueue<T> implements IPriorityQueue<T> {
 
     // Add the item to the end
     this.items.push({ item, priority });
-    
+
     // Bubble up to maintain heap property
     this.bubbleUp(this.items.length - 1);
-    
+
     return this.items.length;
   }
 
@@ -831,12 +831,12 @@ export class PriorityQueue<T> implements IPriorityQueue<T> {
 
     const top = this.items[0];
     const bottom = this.items.pop();
-    
+
     if (this.items.length > 0 && bottom) {
       this.items[0] = bottom;
       this.bubbleDown(0);
     }
-    
+
     return top.item;
   }
 
@@ -887,19 +887,19 @@ export class PriorityQueue<T> implements IPriorityQueue<T> {
     // Create a copy of the heap and extract elements in priority order
     const copy = [...this.items];
     const result: T[] = [];
-    
+
     while (copy.length > 0) {
       const top = copy[0];
       const bottom = copy.pop();
-      
+
       if (copy.length > 0 && bottom) {
         copy[0] = bottom;
         this.bubbleDownArray(copy, 0);
       }
-      
+
       result.push(top.item);
     }
-    
+
     return result;
   }
 
@@ -909,15 +909,15 @@ export class PriorityQueue<T> implements IPriorityQueue<T> {
    */
   private bubbleUp(index: number): void {
     const item = this.items[index];
-    
+
     while (index > 0) {
       const parentIndex = Math.floor((index - 1) / 2);
       const parent = this.items[parentIndex];
-      
+
       if (parent.priority <= item.priority) {
         break;
       }
-      
+
       this.items[parentIndex] = item;
       this.items[index] = parent;
       index = parentIndex;
@@ -931,27 +931,33 @@ export class PriorityQueue<T> implements IPriorityQueue<T> {
   private bubbleDown(index: number): void {
     const item = this.items[index];
     const length = this.items.length;
-    
+
     while (true) {
       const leftChildIndex = 2 * index + 1;
       const rightChildIndex = 2 * index + 2;
       let smallestChildIndex = index;
-      
+
       // Find the smallest child
-      if (leftChildIndex < length && 
-          this.items[leftChildIndex].priority < this.items[smallestChildIndex].priority) {
+      if (
+        leftChildIndex < length &&
+        this.items[leftChildIndex].priority <
+          this.items[smallestChildIndex].priority
+      ) {
         smallestChildIndex = leftChildIndex;
       }
-      
-      if (rightChildIndex < length && 
-          this.items[rightChildIndex].priority < this.items[smallestChildIndex].priority) {
+
+      if (
+        rightChildIndex < length &&
+        this.items[rightChildIndex].priority <
+          this.items[smallestChildIndex].priority
+      ) {
         smallestChildIndex = rightChildIndex;
       }
-      
+
       if (smallestChildIndex === index) {
         break;
       }
-      
+
       // Swap with the smallest child
       this.items[index] = this.items[smallestChildIndex];
       this.items[smallestChildIndex] = item;
@@ -964,29 +970,36 @@ export class PriorityQueue<T> implements IPriorityQueue<T> {
    * @param array The array to operate on.
    * @param index The index of the element to bubble down.
    */
-  private bubbleDownArray(array: Array<{ item: T; priority: number }>, index: number): void {
+  private bubbleDownArray(
+    array: Array<{ item: T; priority: number }>,
+    index: number,
+  ): void {
     const item = array[index];
     const length = array.length;
-    
+
     while (true) {
       const leftChildIndex = 2 * index + 1;
       const rightChildIndex = 2 * index + 2;
       let smallestChildIndex = index;
-      
-      if (leftChildIndex < length && 
-          array[leftChildIndex].priority < array[smallestChildIndex].priority) {
+
+      if (
+        leftChildIndex < length &&
+        array[leftChildIndex].priority < array[smallestChildIndex].priority
+      ) {
         smallestChildIndex = leftChildIndex;
       }
-      
-      if (rightChildIndex < length && 
-          array[rightChildIndex].priority < array[smallestChildIndex].priority) {
+
+      if (
+        rightChildIndex < length &&
+        array[rightChildIndex].priority < array[smallestChildIndex].priority
+      ) {
         smallestChildIndex = rightChildIndex;
       }
-      
+
       if (smallestChildIndex === index) {
         break;
       }
-      
+
       array[index] = array[smallestChildIndex];
       array[smallestChildIndex] = item;
       index = smallestChildIndex;
@@ -1022,11 +1035,11 @@ export class DelayQueue<T> implements IDelayQueue<T> {
     }
 
     const readyTime = Date.now() + delayMs;
-    
+
     // Insert in sorted order by ready time
     const index = this.findInsertionIndex(readyTime);
     this.items.splice(index, 0, { item, readyTime });
-    
+
     return this.items.length;
   }
 
@@ -1037,11 +1050,11 @@ export class DelayQueue<T> implements IDelayQueue<T> {
   public dequeueReady(): T[] {
     const now = Date.now();
     const ready: T[] = [];
-    
+
     while (this.items.length > 0 && this.items[0].readyTime <= now) {
       ready.push(this.items.shift()!.item);
     }
-    
+
     return ready;
   }
 
@@ -1061,7 +1074,7 @@ export class DelayQueue<T> implements IDelayQueue<T> {
     if (this.isEmpty()) {
       return -1;
     }
-    
+
     const timeLeft = this.items[0].readyTime - Date.now();
     return Math.max(0, timeLeft);
   }
@@ -1113,7 +1126,7 @@ export class DelayQueue<T> implements IDelayQueue<T> {
   private findInsertionIndex(readyTime: number): number {
     let low = 0;
     let high = this.items.length;
-    
+
     while (low < high) {
       const mid = Math.floor((low + high) / 2);
       if (this.items[mid].readyTime > readyTime) {
@@ -1122,7 +1135,7 @@ export class DelayQueue<T> implements IDelayQueue<T> {
         low = mid + 1;
       }
     }
-    
+
     return low;
   }
 }
@@ -1141,11 +1154,14 @@ export class QueueUtils {
    * @example
    * const queue = QueueUtils.createQueue<number>({ initialItems: [1, 2, 3] });
    * console.log(queue.peek()); // 1
-   * 
+   *
    * // Create a bounded queue with maximum size
    * const boundedQueue = QueueUtils.createQueue<number>({ maxSize: 5 });
    */
-  public static createQueue<T>({ initialItems, maxSize }: { initialItems?: T[], maxSize?: number } = {}): IQueue<T> {
+  public static createQueue<T>({
+    initialItems,
+    maxSize,
+  }: { initialItems?: T[]; maxSize?: number } = {}): IQueue<T> {
     return new Queue<T>(initialItems, maxSize);
   }
 
@@ -1159,11 +1175,14 @@ export class QueueUtils {
    * @example
    * const stack = QueueUtils.createStack<string>({ initialItems: ['a', 'b', 'c'] });
    * console.log(stack.peek()); // 'c'
-   * 
+   *
    * // Create a bounded stack with maximum size
    * const boundedStack = QueueUtils.createStack<string>({ maxSize: 10 });
    */
-  public static createStack<T>({ initialItems, maxSize }: { initialItems?: T[], maxSize?: number } = {}): IStack<T> {
+  public static createStack<T>({
+    initialItems,
+    maxSize,
+  }: { initialItems?: T[]; maxSize?: number } = {}): IStack<T> {
     return new Stack<T>(initialItems, maxSize);
   }
 
@@ -1183,7 +1202,7 @@ export class QueueUtils {
    *   }
    * });
    * console.log(multiQueue.peek('high')); // 1
-   * 
+   *
    * // Create a bounded multi-queue with different sizes per channel
    * const boundedMultiQueue = QueueUtils.createMultiQueue<number>({
    *   channelMaxSizes: {
@@ -1218,7 +1237,11 @@ export class QueueUtils {
    * buffer.add(2);
    * console.log(buffer.peek()); // 1
    */
-  public static createCircularBuffer<T>({ capacity }: { capacity: number }): CircularBuffer<T> {
+  public static createCircularBuffer<T>({
+    capacity,
+  }: {
+    capacity: number;
+  }): CircularBuffer<T> {
     return new CircularBuffer<T>(capacity);
   }
 
@@ -1235,7 +1258,9 @@ export class QueueUtils {
    * priorityQueue.enqueue('low task', 10);
    * console.log(priorityQueue.dequeue()); // 'urgent task'
    */
-  public static createPriorityQueue<T>({ maxSize }: { maxSize?: number } = {}): IPriorityQueue<T> {
+  public static createPriorityQueue<T>({
+    maxSize,
+  }: { maxSize?: number } = {}): IPriorityQueue<T> {
     return new PriorityQueue<T>(maxSize);
   }
 
@@ -1249,12 +1274,14 @@ export class QueueUtils {
    * const delayQueue = QueueUtils.createDelayQueue<string>();
    * delayQueue.enqueue('process after 1s', 1000);
    * delayQueue.enqueue('process after 500ms', 500);
-   * 
+   *
    * // Later...
    * const readyItems = delayQueue.dequeueReady();
    * console.log(readyItems); // ['process after 500ms', 'process after 1s']
    */
-  public static createDelayQueue<T>({ maxSize }: { maxSize?: number } = {}): IDelayQueue<T> {
+  public static createDelayQueue<T>({
+    maxSize,
+  }: { maxSize?: number } = {}): IDelayQueue<T> {
     return new DelayQueue<T>(maxSize);
   }
 }

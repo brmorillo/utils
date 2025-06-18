@@ -5,6 +5,7 @@ This document contains detailed examples for using the utility functions provide
 ## Table of Contents
 
 - [ArrayUtils](#arrayutils)
+- [BenchmarkUtils](#benchmarkutils)
 - [ConvertUtils](#convertutils)
 - [CryptUtils](#cryptutils)
 - [CuidUtils](#cuidutils)
@@ -43,6 +44,92 @@ const uniqueObjects = ArrayUtils.removeDuplicates({
   keyFn: item => item.id,
 });
 // Result: [{ id: 1, name: 'John' }, { id: 2, name: 'Jane' }]
+```
+
+## BenchmarkUtils
+
+### measureExecutionTime
+
+```javascript
+// Measure the execution time of a function
+const executionTime = BenchmarkUtils.measureExecutionTime({
+  fn: () => {
+    // Code to benchmark
+    for (let i = 0; i < 1000000; i++) {
+      Math.sqrt(i);
+    }
+  }
+});
+console.log(`Execution time: ${executionTime.toFixed(2)}ms`);
+```
+
+### runBenchmark
+
+```javascript
+// Run a benchmark multiple times and get statistics
+const stats = BenchmarkUtils.runBenchmark({
+  fn: () => {
+    // Code to benchmark
+    const arr = [];
+    for (let i = 0; i < 10000; i++) {
+      arr.push(i);
+    }
+  },
+  iterations: 100, // Number of times to run the benchmark
+  warmup: true     // Whether to perform a warmup run
+});
+
+console.log(`Average: ${stats.average.toFixed(3)}ms`);
+console.log(`Median: ${stats.median.toFixed(3)}ms`);
+console.log(`Min: ${stats.min.toFixed(3)}ms`);
+console.log(`Max: ${stats.max.toFixed(3)}ms`);
+```
+
+### compareFunctions
+
+```javascript
+// Compare the performance of different implementations
+const results = BenchmarkUtils.compareFunctions({
+  fns: {
+    'Array.push': () => {
+      const arr = [];
+      for (let i = 0; i < 10000; i++) {
+        arr.push(i);
+      }
+    },
+    'Array with pre-allocated size': () => {
+      const arr = new Array(10000);
+      for (let i = 0; i < 10000; i++) {
+        arr[i] = i;
+      }
+    },
+    'Array.from with mapping': () => {
+      Array.from({ length: 10000 }, (_, i) => i);
+    }
+  },
+  iterations: 50
+});
+
+// Display the results
+for (const [name, stats] of Object.entries(results)) {
+  console.log(`${name}: ${stats.average.toFixed(3)}ms`);
+}
+```
+
+### measureMemoryUsage
+
+```javascript
+// Measure memory usage of a function
+const memoryUsage = BenchmarkUtils.measureMemoryUsage({
+  fn: () => {
+    // Code that might use memory
+    const largeArray = new Array(1000000).fill(0);
+  }
+});
+
+console.log(`Memory before: ${memoryUsage.before.heapUsed.toFixed(2)}MB`);
+console.log(`Memory after: ${memoryUsage.after.heapUsed.toFixed(2)}MB`);
+console.log(`Heap increase: ${memoryUsage.heapIncrease.toFixed(2)}MB`);
 ```
 
 ### intersect

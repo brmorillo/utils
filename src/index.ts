@@ -1,4 +1,5 @@
 import { ArrayUtils } from './services/array.service';
+import { BenchmarkUtils } from './services/benchmark.service';
 import { ConvertUtils } from './services/convert.service';
 import { CryptUtils } from './services/crypt.service';
 import { CuidUtils } from './services/cuid.service';
@@ -24,6 +25,7 @@ import {
 // Exporta todas as classes de utilidades
 export {
   ArrayUtils,
+  BenchmarkUtils,
   ConvertUtils,
   CryptUtils,
   CuidUtils,
@@ -49,6 +51,7 @@ export {
 // Exporta um objeto Utils que contém todas as utilidades para acesso mais conveniente
 export const Utils = {
   Array: ArrayUtils,
+  Benchmark: BenchmarkUtils,
   Convert: ConvertUtils,
   Crypt: CryptUtils,
   Cuid: CuidUtils,
@@ -77,6 +80,7 @@ export const Utils = {
 export default {
   Utils,
   ArrayUtils,
+  BenchmarkUtils,
   ConvertUtils,
   CryptUtils,
   CuidUtils,
