@@ -31,11 +31,11 @@ export class NumberUtils {
    * @param {number} params.value - The number to check.
    * @returns {boolean} `true` if the number is positive, otherwise `false`.
    * @example
-   * NumberUtils.isValidPositive({ value: 5 }); // true
-   * NumberUtils.isValidPositive({ value: -5 }); // false
-   * NumberUtils.isValidPositive({ value: 0 }); // false
+   * NumberUtils.isPositive({ value: 5 }); // true
+   * NumberUtils.isPositive({ value: -5 }); // false
+   * NumberUtils.isPositive({ value: 0 }); // false
    */
-  public static isValidPositive({ value }: { value: number }): boolean {
+  public static isPositive({ value }: { value: number }): boolean {
     return value > 0;
   }
 
@@ -287,5 +287,18 @@ export class NumberUtils {
       if (value % i === 0 || value % (i + 2) === 0) return false;
     }
     return true;
+  }
+
+  /**
+   * Checks if a number is odd.
+   * @param {object} params - The parameters for the method.
+   * @param {number} params.value - The number to check.
+   * @returns {boolean} `true` if the number is odd, otherwise `false`.
+   * @example
+   * NumberUtils.isOdd({ value: 3 }); // true
+   * NumberUtils.isOdd({ value: 4 }); // false
+   */
+  public static isOdd({ value }: { value: number }): boolean {
+    return value % 2 !== 0;
   }
 }

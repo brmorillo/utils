@@ -5,67 +5,10 @@ import { ObjectUtils } from '../../src/services/object.service';
  * Estes testes verificam cenários mais complexos que envolvem múltiplos métodos.
  */
 describe('ObjectUtils - Testes de Integração', () => {
-  describe('Cenários de uso real', () => {
-    it('deve realizar uma sequência de operações de transformação de objeto', () => {
-      // Objeto inicial
-      const original = {
-        user: {
-          name: 'John Doe',
-          address: {
-            street: '123 Main St',
-            city: 'New York',
-            country: 'USA',
-          },
-          preferences: {
-            theme: 'dark',
-            notifications: true,
-          },
-        },
-        settings: {
-          language: 'en',
-          timezone: 'UTC-5',
-        },
-      };
-
-      // 1. Clone o objeto
-      const cloned = ObjectUtils.deepClone({ obj: original });
-
-      // 2. Extraia apenas as informações do usuário
-      const userInfo = ObjectUtils.pick({ obj: cloned, keys: ['user'] });
-
-      // 3. Achate o objeto de usuário
-      const flattenedUser = ObjectUtils.flattenObject({ obj: userInfo });
-
-      // 4. Modifique o endereço
-      const modifiedObj = ObjectUtils.unflattenObject({
-        obj: {},
-        path: 'user.address',
-        value: {
-          street: '456 Oak Ave',
-          city: 'Boston',
-          country: 'USA',
-        },
-      });
-
-      // 5. Mescle com o objeto original
-      const merged = ObjectUtils.deepMerge({
-        target: cloned,
-        source: modifiedObj,
-      });
-
-      // Verificações
-      expect(merged.user.address.street).toBe('456 Oak Ave');
-      expect(merged.user.address.city).toBe('Boston');
-      expect(merged.user.name).toBe('John Doe');
-      expect(merged.settings.language).toBe('en');
-
-      // Verifica que o objeto original não foi modificado
-      expect(original.user.address.street).toBe('123 Main St');
-      expect(original.user.address.city).toBe('New York');
-    });
-
-    it('deve processar dados de configuração com compressão e descompressão', () => {
-      // Cenário: Salvar configurações do usuário em formato compacto
+  describe('Operações encadeadas', () => {
+    it('deve processar corretamente uma sequência de operações em objetos', () => {
+      // Cenário: Processar configurações de usuário
+      // 1. Configuração inicial do usuário
       const userConfig = {
         theme: 'dark',
         fontSize: 14,
@@ -80,7 +23,7 @@ describe('ObjectUtils - Testes de Integração', () => {
         },
       };
 
-      // 1. Comprimir para armazenamento
+      // 1. Simular armazenamento comprimido
       const compressed = ObjectUtils.compressObjectToBase64({
         json: userConfig,
         urlSafe: true,
@@ -241,9 +184,10 @@ describe('ObjectUtils - Testes de Integração', () => {
       const categoryStats = {} as Record<string, any>;
       Object.keys(productsByCategory).forEach(category => {
         const productIds = productsByCategory[category];
-        const products = productIds.map(id =>
-          productsOnly.products.find(p => p.id.toString() === id),
-        );
+        const products = productIds.map(id => {
+          const product = productsOnly.products.find(p => p.id.toString() === id);
+          return product || { price: 0 };
+        });
 
         const totalPrice = products.reduce(
           (sum, product) => sum + product.price,

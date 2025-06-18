@@ -170,12 +170,12 @@ describe('MathUtils', () => {
     });
   });
 
-  describe('isPrime', () => {
+  describe('isValidPrime', () => {
     it('deve identificar números primos corretamente', () => {
       const primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31];
 
       primes.forEach(prime => {
-        expect(MathUtils.isPrime({ value: prime })).toBe(true);
+        expect(MathUtils.isValidPrime({ value: prime })).toBe(true);
       });
     });
 
@@ -183,20 +183,20 @@ describe('MathUtils', () => {
       const nonPrimes = [1, 4, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20];
 
       nonPrimes.forEach(nonPrime => {
-        expect(MathUtils.isPrime({ value: nonPrime })).toBe(false);
+        expect(MathUtils.isValidPrime({ value: nonPrime })).toBe(false);
       });
     });
 
     it('deve retornar false para números negativos', () => {
-      expect(MathUtils.isPrime({ value: -7 })).toBe(false);
+      expect(MathUtils.isValidPrime({ value: -7 })).toBe(false);
     });
 
     it('deve retornar false para zero', () => {
-      expect(MathUtils.isPrime({ value: 0 })).toBe(false);
+      expect(MathUtils.isValidPrime({ value: 0 })).toBe(false);
     });
 
     it('deve retornar false para um', () => {
-      expect(MathUtils.isPrime({ value: 1 })).toBe(false);
+      expect(MathUtils.isValidPrime({ value: 1 })).toBe(false);
     });
   });
 });

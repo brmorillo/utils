@@ -49,38 +49,38 @@ describe('StringUtils - Testes Unitários', () => {
     });
   });
 
-  describe('isPalindrome', () => {
+  describe('isValidPalindrome', () => {
     it('deve identificar um palíndromo simples', () => {
-      const result = StringUtils.isPalindrome({ input: 'racecar' });
+      const result = StringUtils.isValidPalindrome({ input: 'racecar' });
       expect(result).toBe(true);
     });
 
     it('deve identificar uma string que não é palíndromo', () => {
-      const result = StringUtils.isPalindrome({ input: 'hello' });
+      const result = StringUtils.isValidPalindrome({ input: 'hello' });
       expect(result).toBe(false);
     });
 
     it('deve ignorar espaços e pontuação', () => {
-      const result = StringUtils.isPalindrome({
+      const result = StringUtils.isValidPalindrome({
         input: 'A man, a plan, a canal: Panama',
       });
       expect(result).toBe(true);
     });
 
     it('deve ignorar maiúsculas e minúsculas', () => {
-      const result = StringUtils.isPalindrome({
+      const result = StringUtils.isValidPalindrome({
         input: 'Able was I ere I saw Elba',
       });
       expect(result).toBe(true);
     });
 
     it('deve lidar com strings vazias', () => {
-      const result = StringUtils.isPalindrome({ input: '' });
+      const result = StringUtils.isValidPalindrome({ input: '' });
       expect(result).toBe(true);
     });
 
     it('deve lidar com strings de um único caractere', () => {
-      const result = StringUtils.isPalindrome({ input: 'a' });
+      const result = StringUtils.isValidPalindrome({ input: 'a' });
       expect(result).toBe(true);
     });
   });

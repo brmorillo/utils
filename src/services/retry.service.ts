@@ -1,128 +1,59 @@
-/**
- * Utility class for implementing retry mechanisms with various backoff strategies.
- */
 export class RetryUtils {
   /**
-   * Executes a function with retry capability using exponential backoff.
+   * Retries a function until it succeeds or the maximum number of attempts is reached.
    * @param {object} params - The parameters for the method.
-   * @param {Function} params.fn - The async function to execute.
-   * @param {number} [params.maxRetries=3] - Maximum number of retry attempts.
-   * @param {number} [params.initialDelay=1000] - Initial delay in milliseconds.
-   * @param {number} [params.maxDelay=30000] - Maximum delay in milliseconds.
-   * @param {Function} [params.shouldRetry] - Optional function to determine if a retry should be attempted based on the error.
-   * @returns {Promise<any>} The result of the function execution.
-   * @throws {Error} The last error encountered if all retries fail.
+   * @param {Function} params.fn - The function to retry.
+   * @param {number} [params.maxAttempts=3] - The maximum number of attempts.
+   * @param {number} [params.delay=1000] - The delay between attempts in milliseconds.
+   * @param {boolean} [params.exponentialBackoff=false] - Whether to use exponential backoff for delays.
+   * @returns {Promise<any>} The result of the function.
+   * @throws {Error} The last error encountered if all attempts fail.
    * @example
-   * // Retry a function with default parameters
-   * const result = await RetryUtils.withExponentialBackoff({
+   * const result = await RetryUtils.retry({
    *   fn: async () => {
-   *     const response = await fetch('https://api.example.com/data');
-   *     if (!response.ok) throw new Error('API request failed');
-   *     return response.json();
-   *   }
-   * });
-   * 
-   * // Retry with custom parameters
-   * const result = await RetryUtils.withExponentialBackoff({
-   *   fn: fetchData,
-   *   maxRetries: 5,
-   *   initialDelay: 500,
-   *   maxDelay: 10000,
-   *   shouldRetry: (error) => error.message.includes('timeout')
-   * });
-   */
-  public static async withExponentialBackoff<T>({
-    fn,
-    maxRetries = 3,
-    initialDelay = 1000,
-    maxDelay = 30000,
-    shouldRetry,
-  }: {
-    fn: () => Promise<T>;
-    maxRetries?: number;
-    initialDelay?: number;
-    maxDelay?: number;
-    shouldRetry?: (error: Error) => boolean;
-  }): Promise<T> {
-    let lastError: Error;
-    let delay = initialDelay;
-
-    for (let attempt = 0; attempt <= maxRetries; attempt++) {
-      try {
-        return await fn();
-      } catch (error) {
-        lastError = error as Error;
-
-        if (attempt >= maxRetries) {
-          break;
-        }
-
-        if (shouldRetry && !shouldRetry(lastError)) {
-          break;
-        }
-
-        // Calculate delay with exponential backoff
-        delay = Math.min(delay * 2, maxDelay);
-        
-        // Add some jitter to prevent synchronized retries
-        const jitter = delay * 0.2 * Math.random();
-        const actualDelay = delay + jitter;
-
-        await new Promise(resolve => setTimeout(resolve, actualDelay));
-      }
-    }
-
-    throw lastError;
-  }
-
-  /**
-   * Executes a function with retry capability using linear backoff.
-   * @param {object} params - The parameters for the method.
-   * @param {Function} params.fn - The async function to execute.
-   * @param {number} [params.maxRetries=3] - Maximum number of retry attempts.
-   * @param {number} [params.delay=1000] - Delay in milliseconds between retries.
-   * @param {Function} [params.shouldRetry] - Optional function to determine if a retry should be attempted based on the error.
-   * @returns {Promise<any>} The result of the function execution.
-   * @throws {Error} The last error encountered if all retries fail.
-   * @example
-   * // Retry a function with linear backoff
-   * const result = await RetryUtils.withLinearBackoff({
-   *   fn: async () => {
+   *     // Function that might fail
    *     const response = await fetch('https://api.example.com/data');
    *     if (!response.ok) throw new Error('API request failed');
    *     return response.json();
    *   },
-   *   delay: 2000
+   *   maxAttempts: 5,
+   *   delay: 1000,
+   *   exponentialBackoff: true
    * });
    */
-  public static async withLinearBackoff<T>({
+  public static async retry<T>({
     fn,
-    maxRetries = 3,
+    maxAttempts = 3,
     delay = 1000,
-    shouldRetry,
+    exponentialBackoff = false,
   }: {
     fn: () => Promise<T>;
-    maxRetries?: number;
+    maxAttempts?: number;
     delay?: number;
-    shouldRetry?: (error: Error) => boolean;
+    exponentialBackoff?: boolean;
   }): Promise<T> {
-    let lastError: Error;
+    let lastError: Error = new Error('All retry attempts failed');
 
-    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
         return await fn();
       } catch (error) {
-        lastError = error as Error;
+        if (error instanceof Error) {
+          lastError = error;
+        } else if (typeof error === 'string') {
+          lastError = new Error(error);
+        } else {
+          lastError = new Error('Unknown error occurred during retry');
+        }
 
-        if (attempt >= maxRetries) {
+        if (attempt === maxAttempts) {
           break;
         }
 
-        if (shouldRetry && !shouldRetry(lastError)) {
-          break;
-        }
-
-        await new Promise(resolve => setTimeout(resolve, delay));
+        const waitTime = exponentialBackoff
+          ? delay * Math.pow(2, attempt - 1)
+          : delay;
+        await new Promise(resolve => setTimeout(resolve, waitTime));
       }
     }
 
@@ -130,52 +61,53 @@ export class RetryUtils {
   }
 
   /**
-   * Executes a function with retry capability using a custom backoff strategy.
+   * Retries a function with a custom retry strategy.
    * @param {object} params - The parameters for the method.
-   * @param {Function} params.fn - The async function to execute.
-   * @param {number} [params.maxRetries=3] - Maximum number of retry attempts.
-   * @param {Function} params.backoffStrategy - Function that calculates delay based on attempt number.
-   * @param {Function} [params.shouldRetry] - Optional function to determine if a retry should be attempted based on the error.
-   * @returns {Promise<any>} The result of the function execution.
-   * @throws {Error} The last error encountered if all retries fail.
+   * @param {Function} params.fn - The function to retry.
+   * @param {Function} params.shouldRetry - Function that determines if another retry should be attempted based on the error.
+   * @param {Function} params.getDelay - Function that returns the delay before the next attempt.
+   * @param {number} [params.maxAttempts=3] - The maximum number of attempts.
+   * @returns {Promise<any>} The result of the function.
+   * @throws {Error} The last error encountered if all attempts fail.
    * @example
-   * // Retry with a custom backoff strategy
-   * const result = await RetryUtils.withCustomBackoff({
+   * const result = await RetryUtils.retryWithStrategy({
    *   fn: fetchData,
-   *   maxRetries: 5,
-   *   backoffStrategy: (attempt) => Math.pow(2, attempt) * 1000 + Math.random() * 1000,
-   *   shouldRetry: (error) => !error.message.includes('not found')
+   *   shouldRetry: (error) => error.status === 429, // Only retry on rate limit errors
+   *   getDelay: (attempt) => attempt * 1000, // Linear backoff
+   *   maxAttempts: 5
    * });
    */
-  public static async withCustomBackoff<T>({
+  public static async retryWithStrategy<T>({
     fn,
-    maxRetries = 3,
-    backoffStrategy,
     shouldRetry,
+    getDelay,
+    maxAttempts = 3,
   }: {
     fn: () => Promise<T>;
-    maxRetries?: number;
-    backoffStrategy: (attempt: number) => number;
-    shouldRetry?: (error: Error) => boolean;
+    shouldRetry: (error: any) => boolean;
+    getDelay: (attempt: number) => number;
+    maxAttempts?: number;
   }): Promise<T> {
-    let lastError: Error;
+    let lastError: Error = new Error('All retry attempts failed');
 
-    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
         return await fn();
       } catch (error) {
-        lastError = error as Error;
+        if (error instanceof Error) {
+          lastError = error;
+        } else if (typeof error === 'string') {
+          lastError = new Error(error);
+        } else {
+          lastError = new Error('Unknown error occurred during retry');
+        }
 
-        if (attempt >= maxRetries) {
+        if (attempt === maxAttempts || !shouldRetry(error)) {
           break;
         }
 
-        if (shouldRetry && !shouldRetry(lastError)) {
-          break;
-        }
-
-        const delay = backoffStrategy(attempt);
-        await new Promise(resolve => setTimeout(resolve, delay));
+        const waitTime = getDelay(attempt);
+        await new Promise(resolve => setTimeout(resolve, waitTime));
       }
     }
 
@@ -183,89 +115,71 @@ export class RetryUtils {
   }
 
   /**
-   * Decorates a function with retry capability.
+   * Creates a function that will retry the original function with the specified retry strategy.
    * @param {object} params - The parameters for the method.
-   * @param {Function} params.fn - The async function to decorate.
+   * @param {Function} params.fn - The function to wrap with retry logic.
    * @param {object} [params.options] - Retry options.
-   * @param {number} [params.options.maxRetries=3] - Maximum number of retry attempts.
-   * @param {number} [params.options.initialDelay=1000] - Initial delay in milliseconds.
-   * @param {number} [params.options.maxDelay=30000] - Maximum delay in milliseconds.
-   * @param {Function} [params.options.shouldRetry] - Function to determine if retry should be attempted.
-   * @param {'exponential'|'linear'|'custom'} [params.options.strategy='exponential'] - Backoff strategy.
-   * @param {Function} [params.options.backoffStrategy] - Custom backoff strategy function.
-   * @returns {Function} A decorated function with retry capability.
+   * @param {number} [params.options.maxAttempts=3] - The maximum number of attempts.
+   * @param {number} [params.options.delay=1000] - The delay between attempts in milliseconds.
+   * @param {boolean} [params.options.exponentialBackoff=false] - Whether to use exponential backoff for delays.
+   * @returns {Function} A wrapped function that will retry on failure.
    * @example
-   * // Create a retryable function with exponential backoff
-   * const fetchWithRetry = RetryUtils.retryable({
-   *   fn: fetchData,
+   * const fetchWithRetry = RetryUtils.withRetry({
+   *   fn: fetch,
    *   options: {
-   *     maxRetries: 5,
-   *     initialDelay: 500,
-   *     strategy: 'exponential'
+   *     maxAttempts: 5,
+   *     delay: 1000,
+   *     exponentialBackoff: true
    *   }
    * });
-   * 
-   * // Use the retryable function
-   * const data = await fetchWithRetry(url, options);
+   *
+   * // Now use it like the original function
+   * const response = await fetchWithRetry('https://api.example.com/data');
    */
-  public static retryable<T extends (...args: any[]) => Promise<any>>({
+  public static withRetry<T extends (...args: any[]) => Promise<any>>({
     fn,
     options = {},
   }: {
     fn: T;
     options?: {
-      maxRetries?: number;
-      initialDelay?: number;
-      maxDelay?: number;
+      maxAttempts?: number;
       delay?: number;
-      shouldRetry?: (error: Error) => boolean;
-      strategy?: 'exponential' | 'linear' | 'custom';
-      backoffStrategy?: (attempt: number) => number;
+      exponentialBackoff?: boolean;
     };
   }): T {
     const {
-      maxRetries = 3,
-      initialDelay = 1000,
-      maxDelay = 30000,
+      maxAttempts = 3,
       delay = 1000,
-      shouldRetry,
-      strategy = 'exponential',
-      backoffStrategy,
+      exponentialBackoff = false,
     } = options;
 
     return (async (...args: Parameters<T>): Promise<ReturnType<T>> => {
-      const wrappedFn = () => fn(...args);
+      let lastError: Error = new Error('All retry attempts failed');
 
-      switch (strategy) {
-        case 'linear':
-          return RetryUtils.withLinearBackoff({
-            fn: wrappedFn,
-            maxRetries,
-            delay,
-            shouldRetry,
-          }) as ReturnType<T>;
-
-        case 'custom':
-          if (!backoffStrategy) {
-            throw new Error('Custom backoff strategy function is required when using "custom" strategy');
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+          return await fn(...args);
+        } catch (error) {
+          if (error instanceof Error) {
+            lastError = error;
+          } else if (typeof error === 'string') {
+            lastError = new Error(error);
+          } else {
+            lastError = new Error('Unknown error occurred during retry');
           }
-          return RetryUtils.withCustomBackoff({
-            fn: wrappedFn,
-            maxRetries,
-            backoffStrategy,
-            shouldRetry,
-          }) as ReturnType<T>;
 
-        case 'exponential':
-        default:
-          return RetryUtils.withExponentialBackoff({
-            fn: wrappedFn,
-            maxRetries,
-            initialDelay,
-            maxDelay,
-            shouldRetry,
-          }) as ReturnType<T>;
+          if (attempt === maxAttempts) {
+            break;
+          }
+
+          const waitTime = exponentialBackoff
+            ? delay * Math.pow(2, attempt - 1)
+            : delay;
+          await new Promise(resolve => setTimeout(resolve, waitTime));
+        }
       }
+
+      throw lastError;
     }) as T;
   }
 }

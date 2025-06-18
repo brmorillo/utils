@@ -20,6 +20,38 @@ or
 pnpm add @brmorillo/utils
 ```
 
+## Configuration
+
+The library can be configured with different options:
+
+```javascript
+import { Utils } from '@brmorillo/utils';
+
+// Initialize with default configuration
+const utils = Utils.getInstance();
+
+// Or initialize with custom configuration
+const utils = Utils.getInstance({
+  logger: {
+    type: 'pino', // 'pino', 'winston', or 'console'
+    level: 'info', // 'error', 'warn', 'info', or 'debug'
+    prettyPrint: true, // Format logs for better readability
+  },
+});
+
+// Get the logger instance
+const logger = utils.getLogger();
+logger.info('Application started');
+
+// Reconfigure later if needed
+utils.configure({
+  logger: {
+    type: 'winston',
+    level: 'debug',
+  },
+});
+```
+
 ## Usage
 
 ### ESM Import
@@ -60,9 +92,10 @@ The library contains the following utility classes:
 ### BenchmarkUtils
 
 - **measureExecutionTime** - Measures the execution time of a function
-- **runBenchmark** - Runs a benchmark multiple times and returns statistics
-- **compareFunctions** - Compares the performance of multiple functions
-- **measureMemoryUsage** - Measures memory usage before and after executing a function
+- **benchmark** - Runs a benchmark with multiple iterations
+- **compare** - Compares the performance of multiple functions
+- **progressiveBenchmark** - Runs benchmarks with increasing workload sizes
+- **measureMemoryUsage** - Measures memory usage during function execution
 
 ### ConvertUtils
 
@@ -128,6 +161,14 @@ The library contains the following utility classes:
 - **refresh** - Refreshes a JWT token
 - **isExpired** - Checks if a JWT token is expired
 - **getExpirationTime** - Gets the remaining time until a JWT token expires
+
+### LogService
+
+- **info** - Logs an info message
+- **warn** - Logs a warning message
+- **error** - Logs an error message
+- **debug** - Logs a debug message
+- **configure** - Reconfigures the logger
 
 ### MathUtils
 
@@ -217,7 +258,7 @@ The library contains the following utility classes:
 
 - **capitalizeFirstLetter** - Capitalizes the first letter of a string
 - **reverse** - Reverses a string
-- **isPalindrome** - Checks if a string is a palindrome
+- **isValidPalindrome** - Checks if a string is a palindrome
 - **truncate** - Truncates a string and adds ellipsis
 - **toKebabCase** - Converts a string to kebab-case
 - **toSnakeCase** - Converts a string to snake_case

@@ -1,7 +1,7 @@
 /**
  * Este é um exemplo de como implementar uma fila usando Redis com a interface IQueue.
  * Observe que este é apenas um exemplo e requer a biblioteca 'redis' instalada.
- * 
+ *
  * Para instalar: npm install redis
  */
 
@@ -104,7 +104,9 @@ export class RedisQueue<T> implements IQueue<T> {
  */
 async function redisQueueExample() {
   // Cria uma fila Redis para armazenar mensagens
-  const messageQueue = new RedisQueue<{ id: number; text: string }>('message_queue');
+  const messageQueue = new RedisQueue<{ id: number; text: string }>(
+    'message_queue',
+  );
 
   try {
     // Limpa a fila para começar com uma fila vazia
@@ -115,7 +117,7 @@ async function redisQueueExample() {
     await messageQueue.enqueue({ id: 1, text: 'Primeira mensagem' });
     await messageQueue.enqueue({ id: 2, text: 'Segunda mensagem' });
     await messageQueue.enqueue({ id: 3, text: 'Terceira mensagem' });
-    
+
     // Verifica o tamanho da fila
     const size = await messageQueue.size();
     console.log(`Tamanho da fila: ${size}`);
@@ -126,7 +128,7 @@ async function redisQueueExample() {
 
     // Processa todas as mensagens na fila
     console.log('Processando mensagens:');
-    while (!await messageQueue.isEmpty()) {
+    while (!(await messageQueue.isEmpty())) {
       const message = await messageQueue.dequeue();
       console.log(`- Processando mensagem ${message?.id}: ${message?.text}`);
     }
@@ -134,7 +136,6 @@ async function redisQueueExample() {
     // Verifica se a fila está vazia
     const isEmpty = await messageQueue.isEmpty();
     console.log(`A fila está vazia? ${isEmpty}`);
-
   } catch (error) {
     console.error('Erro ao usar a fila Redis:', error);
   } finally {
@@ -172,7 +173,9 @@ export class RedisPriorityQueue<T> {
    */
   async enqueue(item: T, priority: number): Promise<void> {
     const serializedItem = JSON.stringify(item);
-    await this.client.zAdd(this.queueKey, [{ score: priority, value: serializedItem }]);
+    await this.client.zAdd(this.queueKey, [
+      { score: priority, value: serializedItem },
+    ]);
   }
 
   /**
@@ -183,10 +186,10 @@ export class RedisPriorityQueue<T> {
     // Obtém o item com a maior prioridade (menor score)
     const items = await this.client.zRangeWithScores(this.queueKey, 0, 0);
     if (!items || items.length === 0) return undefined;
-    
+
     // Remove o item da fila
     await this.client.zRem(this.queueKey, items[0].value);
-    
+
     return JSON.parse(items[0].value);
   }
 
@@ -218,7 +221,9 @@ export class RedisPriorityQueue<T> {
  */
 async function redisPriorityQueueExample() {
   // Cria uma fila de prioridade Redis para tarefas
-  const taskQueue = new RedisPriorityQueue<{ id: number; task: string }>('task_priority_queue');
+  const taskQueue = new RedisPriorityQueue<{ id: number; task: string }>(
+    'task_priority_queue',
+  );
 
   try {
     // Limpa a fila para começar com uma fila vazia
@@ -229,18 +234,17 @@ async function redisPriorityQueueExample() {
     await taskQueue.enqueue({ id: 1, task: 'Tarefa de baixa prioridade' }, 3);
     await taskQueue.enqueue({ id: 2, task: 'Tarefa de alta prioridade' }, 1);
     await taskQueue.enqueue({ id: 3, task: 'Tarefa de média prioridade' }, 2);
-    
+
     // Verifica o tamanho da fila
     const size = await taskQueue.size();
     console.log(`Tamanho da fila de prioridade: ${size}`);
 
     // Processa todas as tarefas na ordem de prioridade
     console.log('Processando tarefas por prioridade:');
-    while (await taskQueue.size() > 0) {
+    while ((await taskQueue.size()) > 0) {
       const task = await taskQueue.dequeue();
       console.log(`- Processando tarefa ${task?.id}: ${task?.task}`);
     }
-
   } catch (error) {
     console.error('Erro ao usar a fila de prioridade Redis:', error);
   } finally {

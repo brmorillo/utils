@@ -1,89 +1,62 @@
 {
   "name": "@brmorillo/utils",
-  "version": "11.3.0",
-  "description": "Biblioteca de utilitários",
+  "version": "1.0.0",
+  "description": "Utility library for JavaScript/TypeScript projects",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.js",
-      "import": "./dist/index.mjs"
-    }
-  },
   "scripts": {
-    "build": "tsup",
-    "lint": "eslint \"{src,apps,libs,tests}/**/*.ts\" --fix --max-warnings=1000",
-    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
-    "fix": "npm run format && npm run lint",
-    "test": "jest --passWithNoTests",
-    "test:unit": "jest --selectProjects unit --passWithNoTests",
-    "test:integration": "jest --selectProjects integration --passWithNoTests",
-    "test:benchmark": "jest --selectProjects benchmark --passWithNoTests",
-    "test:watch": "jest --watch",
+    "build": "tsc",
+    "test": "jest",
     "test:coverage": "jest --coverage",
-    "prepare": "husky install",
-    "commit": "cz",
-    "version:bump": "standard-version && git push --follow-tags origin main",
-    "prepub": "npm run build",
-    "pub": "npm run version:bump && npm publish --access public"
+    "lint": "eslint src/**/*.ts",
+    "format": "prettier --write \"src/**/*.ts\""
   },
   "keywords": [
     "utils",
     "utilities",
-    "helpers"
+    "helpers",
+    "typescript"
   ],
   "author": "Bruno Morillo",
   "license": "MIT",
-  "files": [
-    "dist"
-  ],
-  "devDependencies": {
-    "@commitlint/cli": "^17.8.1",
-    "@commitlint/config-conventional": "^17.8.1",
-    "@types/jest": "^29.5.14",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/luxon": "^3.6.2",
-    "@types/node": "^18.19.112",
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "@typescript-eslint/parser": "^6.21.0",
-    "commitizen": "^4.3.1",
-    "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^8.57.1",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.5.0",
-    "husky": "^8.0.3",
-    "jest": "^29.7.0",
-    "lint-staged": "^15.5.2",
-    "prettier": "^3.5.3",
-    "standard-version": "^9.5.0",
-    "ts-jest": "^29.4.0",
-    "tsup": "^8.5.0",
-    "typescript": "^5.8.3"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
-  "lint-staged": {
-    "*.ts": [
-      "prettier --write",
-      "eslint --fix --max-warnings=1000"
-    ]
-  },
   "dependencies": {
     "@paralleldrive/cuid2": "^2.2.2",
     "@sapphire/snowflake": "^3.5.5",
     "bcryptjs": "^3.0.2",
     "jsonwebtoken": "^9.0.2",
     "luxon": "^3.6.1",
+    "pino": "^9.7.0",
     "ua-parser-js": "^2.0.3",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "winston": "^3.17.0"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/brmorillo/util.git"
+  "devDependencies": {
+    "@types/bcryptjs": "^3.0.0",
+    "@types/jest": "^30.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/luxon": "^3.6.2",
+    "@types/node": "^24.0.3",
+    "@types/ua-parser-js": "^0.7.39",
+    "@types/uuid": "^10.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.34.1",
+    "@typescript-eslint/parser": "^8.34.1",
+    "eslint": "^9.29.0",
+    "jest": "^30.0.0",
+    "pino-pretty": "^13.0.0",
+    "prettier": "^3.5.3",
+    "ts-jest": "^29.4.0",
+    "typescript": "^5.8.3"
+  },
+  "peerDependencies": {
+    "pino": "^8.0.0",
+    "winston": "^3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "pino": {
+      "optional": true
+    },
+    "winston": {
+      "optional": true
+    }
   }
 }

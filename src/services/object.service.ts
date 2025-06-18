@@ -1,130 +1,114 @@
+import * as zlib from 'zlib';
+
 export class ObjectUtils {
   /**
-   * Finds a value in an object by a specified key or path.
-   * @template T The expected type of the value being retrieved.
-   * @param {object} params The parameters for the method.
-   * @param {Record<string, any>} params.obj The object to search.
-   * @param {string} params.path The key or dot-separated path (e.g., "user.address.city").
-   * @returns {T | undefined} The value found at the specified path, or `undefined` if not found.
-   * @throws {Error} Throws an error if the path is not a valid string.
+   * Deeply clones an object.
+   * @param {object} params - The parameters for the method.
+   * @param {object} params.obj - The object to clone.
+   * @returns {object} A deep clone of the object.
    * @example
-   * // Example 1: Finding a nested value
-   * const obj = { user: { address: { city: 'NY' } } };
-   * const value = ObjectUtils.findValue({ obj, path: 'user.address.city' });
-   * console.log(value); // Output: 'NY'
-   *
-   * // Example 2: Handling non-existent path
-   * const obj = { user: { address: { city: 'NY' } } };
-   * const value = ObjectUtils.findValue({ obj, path: 'user.phone.number' });
-   * console.log(value); // Output: undefined
-   */
-  public static findValue<T>({
-    obj,
-    path,
-  }: {
-    obj: Record<string, any>;
-    path: string;
-  }): T | undefined {
-    return path.split('.').reduce((acc, key) => acc?.[key], obj) as T;
-  }
-
-  /**
-   * Creates a deep clone of an object.
-   * @template T The type of the object to be cloned.
-   * @param {object} params The parameters for the method.
-   * @param {T} params.obj The object to clone. Must be serializable to JSON.
-   * @returns {T} A deep clone of the input object.
-   * @throws {Error} Throws an error if the object contains circular references or non-serializable values.
-   * @example
-   * // Example 1: Cloning a nested object
-   * const original = { a: { b: 1 } };
+   * const original = { a: 1, b: { c: 2 } };
    * const clone = ObjectUtils.deepClone({ obj: original });
-   * clone.a.b = 2;
-   * console.log(original.a.b); // Output: 1
-   *
-   * // Example 2: Cloning an array
-   * const array = [1, 2, { a: 3 }];
-   * const cloneArray = ObjectUtils.deepClone({ obj: array });
-   * cloneArray[2].a = 4;
-   * console.log(array[2].a); // Output: 3
+   * original.b.c = 3;
+   * console.log(clone.b.c); // 2 (not affected by the change to original)
    */
   public static deepClone<T>({ obj }: { obj: T }): T {
-    return JSON.parse(JSON.stringify(obj));
+    if (obj === null || typeof obj !== 'object') {
+      return obj;
+    }
+
+    if (obj instanceof Date) {
+      return new Date(obj.getTime()) as unknown as T;
+    }
+
+    if (obj instanceof RegExp) {
+      return new RegExp(obj.source, obj.flags) as unknown as T;
+    }
+
+    if (obj instanceof Map) {
+      const clone = new Map();
+      obj.forEach((value, key) => {
+        clone.set(key, ObjectUtils.deepClone({ obj: value }));
+      });
+      return clone as unknown as T;
+    }
+
+    if (obj instanceof Set) {
+      const clone = new Set();
+      obj.forEach(value => {
+        clone.add(ObjectUtils.deepClone({ obj: value }));
+      });
+      return clone as unknown as T;
+    }
+
+    if (Array.isArray(obj)) {
+      return obj.map(item =>
+        ObjectUtils.deepClone({ obj: item }),
+      ) as unknown as T;
+    }
+
+    const clone = {} as Record<string, any>;
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        clone[key] = ObjectUtils.deepClone({
+          obj: (obj as Record<string, any>)[key],
+        });
+      }
+    }
+
+    return clone as T;
   }
 
   /**
-   * Deeply merges two objects, combining properties from both the target and source objects.
-   * If properties in the source object are objects or arrays, they will be deeply merged.
-   * If properties in the source object conflict with the target, the source takes precedence.
-   * @template T The type of the target object.
-   * @template U The type of the source object.
-   * @param {object} params The parameters for the method.
-   * @param {T} params.target The target object. This object provides the base for the merge.
-   * @param {U} params.source The source object. Properties from this object will be merged into the target.
-   * @returns {T & U} A new object with merged values from both the target and source objects.
+   * Deeply merges objects.
+   * @param {object} params - The parameters for the method.
+   * @param {object} params.target - The target object.
+   * @param {object} params.source - The source object.
+   * @returns {object} The merged object.
    * @example
-   * // Example 1: Merging nested objects
-   * const target = { a: { b: 1 } };
-   * const source = { a: { c: 2 } };
+   * const target = { a: 1, b: { c: 2 } };
+   * const source = { b: { d: 3 }, e: 4 };
    * const merged = ObjectUtils.deepMerge({ target, source });
-   * console.log(merged); // Output: { a: { b: 1, c: 2 } }
-   *
-   * // Example 2: Merging arrays
-   * const target = { a: [1, 2] };
-   * const source = { a: [3, 4] };
-   * const merged = ObjectUtils.deepMerge({ target, source });
-   * console.log(merged); // Output: { a: [1, 2, 3, 4] }
-   *
-   * // Example 3: Overwriting primitive values
-   * const target = { a: 1 };
-   * const source = { a: 2, b: 3 };
-   * const merged = ObjectUtils.deepMerge({ target, source });
-   * console.log(merged); // Output: { a: 2, b: 3 }
+   * console.log(merged); // { a: 1, b: { c: 2, d: 3 }, e: 4 }
    */
   public static deepMerge<
     T extends Record<string, any>,
     U extends Record<string, any>,
   >({ target, source }: { target: T; source: U }): T & U {
-    if (typeof target !== 'object' || target === null) return source as T & U;
-    if (typeof source !== 'object' || source === null) return target as T & U;
+    const output = { ...target } as Record<string, any>;
 
-    const result: Record<string, any> = { ...target };
-
-    for (const key of Object.keys(source)) {
-      result[key] =
-        Array.isArray(source[key]) && Array.isArray(result[key])
-          ? [...result[key], ...source[key]]
-          : typeof source[key] === 'object' && !Array.isArray(source[key])
-            ? ObjectUtils.deepMerge({
-                target: result[key] || {},
-                source: source[key],
-              })
-            : source[key];
+    if (isObject(target) && isObject(source)) {
+      Object.keys(source).forEach(key => {
+        if (isObject(source[key])) {
+          if (!(key in target)) {
+            Object.assign(output, { [key]: source[key] });
+          } else {
+            output[key] = ObjectUtils.deepMerge({
+              target: target[key],
+              source: source[key],
+            });
+          }
+        } else {
+          Object.assign(output, { [key]: source[key] });
+        }
+      });
     }
 
-    return result as T & U;
+    return output as T & U;
   }
 
   /**
-   * Picks specific keys from an object and creates a new object containing only those keys.
-   * @template T The type of the object to pick from.
-   * @template K The type of keys to pick from the object.
-   * @param {object} params The parameters for the method.
-   * @param {T} params.obj The object to pick from.
-   * @param {K[]} params.keys An array of keys to pick from the object.
-   * @returns {Pick<T, K>} A new object containing only the specified keys.
+   * Selects specific properties from an object.
+   * @param {object} params - The parameters for the method.
+   * @param {object} params.obj - The object to pick properties from.
+   * @param {string[]} params.keys - The keys to pick.
+   * @returns {object} A new object with only the specified properties.
    * @example
-   * // Example 1: Picking keys from a flat object
-   * const obj = { a: 1, b: 2, c: 3 };
-   * const result = ObjectUtils.pick({ obj, keys: ['a', 'c'] });
-   * console.log(result); // Output: { a: 1, c: 3 }
-   *
-   * // Example 2: Picking keys from a nested object
-   * const obj = { a: 1, b: { x: 10 }, c: 3 };
-   * const result = ObjectUtils.pick({ obj, keys: ['b'] });
-   * console.log(result); // Output: { b: { x: 10 } }
+   * const obj = { a: 1, b: 2, c: 3, d: 4 };
+   * const picked = ObjectUtils.pick({ obj, keys: ['a', 'c'] });
+   * console.log(picked); // { a: 1, c: 3 }
    */
-  public static pick<T extends object, K extends keyof T>({
+  public static pick<T extends Record<string, any>, K extends keyof T>({
     obj,
     keys,
   }: {
@@ -132,147 +116,166 @@ export class ObjectUtils {
     keys: K[];
   }): Pick<T, K> {
     return keys.reduce(
-      (acc, key) => {
-        if (key in obj) acc[key] = obj[key];
-        return acc;
+      (result, key) => {
+        if (key in obj) {
+          result[key] = obj[key];
+        }
+        return result;
       },
       {} as Pick<T, K>,
     );
   }
 
   /**
-   * Omits specific keys from an object and returns a new object without those keys.
-   * @template T The type of the object.
-   * @template K The keys to omit.
-   * @param {object} params The parameters for the method.
-   * @param {T} params.obj The object to omit keys from.
-   * @param {K[]} params.keys An array of keys to omit from the object.
-   * @returns {Omit<T, K>} A new object without the omitted keys.
+   * Omits specific properties from an object.
+   * @param {object} params - The parameters for the method.
+   * @param {object} params.obj - The object to omit properties from.
+   * @param {string[]} params.keys - The keys to omit.
+   * @returns {object} A new object without the specified properties.
    * @example
-   * const obj = { a: 1, b: 2, c: 3 };
-   * const result = ObjectUtils.omit({ obj, keys: ['b'] });
-   * console.log(result); // { a: 1, c: 3 }
+   * const obj = { a: 1, b: 2, c: 3, d: 4 };
+   * const omitted = ObjectUtils.omit({ obj, keys: ['b', 'd'] });
+   * console.log(omitted); // { a: 1, c: 3 }
    */
-  public static omit<T extends object, K extends keyof T>({
+  public static omit<T extends Record<string, any>, K extends keyof T>({
     obj,
     keys,
   }: {
     obj: T;
     keys: K[];
   }): Omit<T, K> {
-    const result = {} as Record<string, any>;
-
-    Object.keys(obj).forEach(key => {
-      if (!keys.includes(key as K)) {
-        result[key] = obj[key as K];
-      }
-    });
-
-    return result as Omit<T, K>;
+    return Object.keys(obj).reduce(
+      (result, key) => {
+        if (!keys.includes(key as K)) {
+          result[key] = obj[key];
+        }
+        return result;
+      },
+      {} as Record<string, any>,
+    ) as Omit<T, K>;
   }
 
   /**
-   * Flattens a nested object into a single level with dot-separated keys.
-   * @param {object} params The parameters for the method.
-   * @param {Record<string, any>} params.obj The object to flatten.
-   * @param {string} [params.prefix=''] The prefix for nested keys (used internally during recursion).
-   * @returns {Record<string, any>} A flattened object with dot-separated keys.
+   * Flattens a nested object.
+   * @param {object} params - The parameters for the method.
+   * @param {object} params.obj - The object to flatten.
+   * @param {string} [params.prefix=''] - The prefix to use for flattened keys.
+   * @param {string} [params.delimiter='.'] - The delimiter to use between key parts.
+   * @returns {object} A flattened object.
    * @example
-   * const obj = { a: { b: 1, c: 2 }, d: 3 };
-   * const result = ObjectUtils.flattenObject({ obj });
-   * console.log(result); // { 'a.b': 1, 'a.c': 2, 'd': 3 }
+   * const obj = { a: 1, b: { c: 2, d: { e: 3 } } };
+   * const flattened = ObjectUtils.flattenObject({ obj });
+   * console.log(flattened); // { 'a': 1, 'b.c': 2, 'b.d.e': 3 }
    */
   public static flattenObject({
     obj,
     prefix = '',
+    delimiter = '.',
   }: {
     obj: Record<string, any>;
     prefix?: string;
+    delimiter?: string;
   }): Record<string, any> {
-    return Object.keys(obj).reduce<Record<string, any>>((acc, key) => {
-      const path = prefix ? `${prefix}.${key}` : key;
-      if (
-        typeof obj[key] === 'object' &&
-        obj[key] !== null &&
-        !Array.isArray(obj[key])
-      ) {
-        Object.assign(
-          acc,
-          ObjectUtils.flattenObject({ obj: obj[key], prefix: path }),
-        );
-      } else {
-        acc[path] = obj[key];
-      }
-      return acc;
-    }, {});
-  }
-
-  /**
-   * Inverts the keys and values of an object.
-   * @param {object} params The parameters for the method.
-   * @param {Record<string, any>} params.obj The object to invert.
-   * @returns {Record<string, string | number>} A new object with inverted keys and values.
-   * @example
-   * const obj = { a: 1, b: 2 };
-   * const result = ObjectUtils.invert({ obj });
-   * console.log(result); // { 1: 'a', 2: 'b' }
-   */
-  public static invert<T>({
-    obj,
-  }: {
-    obj: Record<string, any>;
-  }): Record<string, string | number> {
     return Object.keys(obj).reduce(
       (acc, key) => {
-        acc[obj[key]] = key;
+        const prefixedKey = prefix ? `${prefix}${delimiter}${key}` : key;
+
+        if (
+          typeof obj[key] === 'object' &&
+          obj[key] !== null &&
+          !Array.isArray(obj[key]) &&
+          Object.keys(obj[key]).length > 0
+        ) {
+          Object.assign(
+            acc,
+            ObjectUtils.flattenObject({
+              obj: obj[key],
+              prefix: prefixedKey,
+              delimiter,
+            }),
+          );
+        } else {
+          acc[prefixedKey] = obj[key];
+        }
+
         return acc;
       },
-      {} as Record<string, string | number>,
+      {} as Record<string, any>,
     );
   }
 
   /**
-   * Deeply freezes an object, making it immutable.
-   * @template T The type of the object.
-   * @param {object} params The parameters for the method.
-   * @param {T} params.obj The object to freeze.
-   * @returns {T} The deeply frozen object.
+   * Unflattens an object with delimited keys.
+   * @param {object} params - The parameters for the method.
+   * @param {object} params.obj - The object to modify.
+   * @param {string} params.path - The path to set.
+   * @param {any} params.value - The value to set at the path.
+   * @param {string} [params.delimiter='.'] - The delimiter used in the path.
+   * @returns {object} The modified object.
    * @example
-   * const obj = { a: { b: 1 } };
-   * ObjectUtils.deepFreeze({ obj });
-   * obj.a.b = 2; // Throws an error in strict mode
+   * const obj = {};
+   * ObjectUtils.unflattenObject({ obj, path: 'a.b.c', value: 42 });
+   * console.log(obj); // { a: { b: { c: 42 } } }
    */
-  public static deepFreeze<T extends object>({ obj }: { obj: T }): T {
-    Object.keys(obj).forEach(key => {
-      const value = obj[key as keyof T];
-      if (typeof value === 'object' && value !== null) {
-        ObjectUtils.deepFreeze({ obj: value });
+  public static unflattenObject({
+    obj,
+    path,
+    value,
+    delimiter = '.',
+  }: {
+    obj: Record<string, any>;
+    path: string;
+    value: any;
+    delimiter?: string;
+  }): Record<string, any> {
+    const keys = path.split(delimiter);
+    let current = obj;
+
+    for (let i = 0; i < keys.length - 1; i++) {
+      const key = keys[i];
+      if (!current[key] || typeof current[key] !== 'object') {
+        current[key] = {};
       }
-    });
-    return Object.freeze(obj);
+      current = current[key];
+    }
+
+    current[keys[keys.length - 1]] = value;
+    return obj;
   }
 
   /**
-   * Deeply compares two objects for equality.
-   * @template T The type of the objects.
-   * @param {object} params The parameters for the method.
-   * @param {T} params.obj1 The first object.
-   * @param {T} params.obj2 The second object.
-   * @returns {boolean} `true` if the objects are deeply equal, otherwise `false`.
+   * Checks if an object is empty.
+   * @param {object} params - The parameters for the method.
+   * @param {object} params.obj - The object to check.
+   * @returns {boolean} `true` if the object is empty, otherwise `false`.
    * @example
-   * const obj1 = { a: 1, b: { c: 2 } };
-   * const obj2 = { a: 1, b: { c: 2 } };
-   * const result = ObjectUtils.compare({ obj1, obj2 });
-   * console.log(result); // true
+   * ObjectUtils.isEmpty({ obj: {} }); // true
+   * ObjectUtils.isEmpty({ obj: { a: 1 } }); // false
    */
-  public static compare<T extends object>({
+  public static isEmpty({ obj }: { obj: Record<string, any> }): boolean {
+    return Object.keys(obj).length === 0;
+  }
+
+  /**
+   * Checks if two objects are equal.
+   * @param {object} params - The parameters for the method.
+   * @param {object} params.obj1 - The first object.
+   * @param {object} params.obj2 - The second object.
+   * @returns {boolean} `true` if the objects are equal, otherwise `false`.
+   * @example
+   * ObjectUtils.compare({ obj1: { a: 1, b: 2 }, obj2: { a: 1, b: 2 } }); // true
+   * ObjectUtils.compare({ obj1: { a: 1, b: 2 }, obj2: { a: 1, b: 3 } }); // false
+   */
+  public static compare({
     obj1,
     obj2,
   }: {
-    obj1: T;
-    obj2: T;
+    obj1: Record<string, any>;
+    obj2: Record<string, any>;
   }): boolean {
-    if (obj1 === obj2) return true;
+    if (obj1 === obj2) {
+      return true;
+    }
 
     if (
       typeof obj1 !== 'object' ||
@@ -280,214 +283,451 @@ export class ObjectUtils {
       obj1 === null ||
       obj2 === null
     ) {
+      return obj1 === obj2;
+    }
+
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+
+    if (keys1.length !== keys2.length) {
       return false;
     }
 
-    const keys1 = Object.keys(obj1) as (keyof T)[];
-    const keys2 = Object.keys(obj2) as (keyof T)[];
-
-    if (keys1.length !== keys2.length) return false;
-
     return keys1.every(key => {
-      const value1 = obj1[key];
-      const value2 = obj2[key];
+      if (!Object.prototype.hasOwnProperty.call(obj2, key)) {
+        return false;
+      }
 
-      const areObjects =
-        typeof value1 === 'object' &&
-        typeof value2 === 'object' &&
-        value1 !== null &&
-        value2 !== null;
+      if (
+        typeof obj1[key] === 'object' &&
+        typeof obj2[key] === 'object' &&
+        obj1[key] !== null &&
+        obj2[key] !== null
+      ) {
+        return ObjectUtils.compare({ obj1: obj1[key], obj2: obj2[key] });
+      }
 
-      return areObjects
-        ? ObjectUtils.compare({ obj1: value1, obj2: value2 })
-        : value1 === value2;
+      return obj1[key] === obj2[key];
     });
   }
 
   /**
-   * Groups the keys of an object based on a callback function.
-   * @template T The type of the object values.
-   * @param {object} params The parameters for the method.
-   * @param {Record<string, T>} params.obj The object to group.
-   * @param {Function} params.callback A callback function that determines the group key for each value.
-   * @returns {Record<string | number, string[]>} An object with grouped keys.
+   * Checks if an object has circular references.
+   * @param {object} params - The parameters for the method.
+   * @param {object} params.obj - The object to check.
+   * @returns {boolean} `true` if the object has circular references, otherwise `false`.
    * @example
-   * const obj = { a: 1, b: 2, c: 1 };
-   * const result = ObjectUtils.groupBy({ obj, callback: (value) => value });
-   * console.log(result); // { 1: ['a', 'c'], 2: ['b'] }
+   * const obj = { a: 1 };
+   * obj.self = obj;
+   * ObjectUtils.hasCircularReference({ obj }); // true
+   */
+  public static hasCircularReference({
+    obj,
+  }: {
+    obj: Record<string, any>;
+  }): boolean {
+    const seen = new WeakSet();
+
+    const detect = (obj: Record<string, any>): boolean => {
+      if (typeof obj !== 'object' || obj === null) {
+        return false;
+      }
+
+      if (seen.has(obj)) {
+        return true;
+      }
+
+      seen.add(obj);
+
+      return Object.keys(obj).some(key => {
+        if (typeof obj[key] === 'object' && obj[key] !== null) {
+          return detect(obj[key]);
+        }
+        return false;
+      });
+    };
+
+    return detect(obj);
+  }
+
+  /**
+   * Removes undefined properties from an object.
+   * @param {object} params - The parameters for the method.
+   * @param {object} params.obj - The object to clean.
+   * @returns {object} A new object without undefined properties.
+   * @example
+   * const obj = { a: 1, b: undefined, c: 3 };
+   * const cleaned = ObjectUtils.removeUndefined({ obj });
+   * console.log(cleaned); // { a: 1, c: 3 }
+   */
+  public static removeUndefined({
+    obj,
+  }: {
+    obj: Record<string, any>;
+  }): Record<string, any> {
+    return Object.keys(obj).reduce(
+      (result, key) => {
+        if (obj[key] !== undefined) {
+          result[key] = obj[key];
+        }
+        return result;
+      },
+      {} as Record<string, any>,
+    );
+  }
+
+  /**
+   * Removes null properties from an object.
+   * @param {object} params - The parameters for the method.
+   * @param {object} params.obj - The object to clean.
+   * @returns {object} A new object without null properties.
+   * @example
+   * const obj = { a: 1, b: null, c: 3 };
+   * const cleaned = ObjectUtils.removeNull({ obj });
+   * console.log(cleaned); // { a: 1, c: 3 }
+   */
+  public static removeNull({
+    obj,
+  }: {
+    obj: Record<string, any>;
+  }): Record<string, any> {
+    return Object.keys(obj).reduce(
+      (result, key) => {
+        if (obj[key] !== null) {
+          result[key] = obj[key];
+        }
+        return result;
+      },
+      {} as Record<string, any>,
+    );
+  }
+
+  /**
+   * Finds the differences between two objects.
+   * @param {object} params - The parameters for the method.
+   * @param {object} params.obj1 - The first object.
+   * @param {object} params.obj2 - The second object.
+   * @returns {object} An object containing the differences.
+   * @example
+   * const obj1 = { a: 1, b: 2, c: 3 };
+   * const obj2 = { a: 1, b: 3, d: 4 };
+   * const diff = ObjectUtils.diff({ obj1, obj2 });
+   * console.log(diff); // { b: { obj1: 2, obj2: 3 }, c: { obj1: 3, obj2: undefined }, d: { obj1: undefined, obj2: 4 } }
+   */
+  public static diff<T extends Record<string, any>>({
+    obj1,
+    obj2,
+  }: {
+    obj1: T;
+    obj2: T;
+  }): Record<string, { obj1: any; obj2: any }> {
+    const result: Record<string, { obj1: any; obj2: any }> = {};
+    const allKeys = new Set([...Object.keys(obj1), ...Object.keys(obj2)]);
+
+    allKeys.forEach(key => {
+      if (!ObjectUtils.compare({ obj1: obj1[key], obj2: obj2[key] })) {
+        result[key] = {
+          obj1: obj1[key],
+          obj2: obj2[key],
+        };
+      }
+    });
+
+    return result;
+  }
+
+  /**
+   * Groups an object's values by a key returned by the callback function.
+   * @param {object} params - The parameters for the method.
+   * @param {object} params.obj - The object to group.
+   * @param {Function} params.callback - The function that returns the grouping key.
+   * @returns {object} An object with values grouped by keys.
+   * @example
+   * const users = {
+   *   user1: { id: 'user1', role: 'admin' },
+   *   user2: { id: 'user2', role: 'user' },
+   *   user3: { id: 'user3', role: 'admin' }
+   * };
+   * const grouped = ObjectUtils.groupBy({
+   *   obj: users,
+   *   callback: user => user.role
+   * });
+   * console.log(grouped);
+   * // {
+   * //   admin: ['user1', 'user3'],
+   * //   user: ['user2']
+   * // }
    */
   public static groupBy<T>({
     obj,
     callback,
   }: {
     obj: Record<string, T>;
-    callback: (value: T, key: string) => string | number;
-  }): Record<string | number, string[]> {
+    callback: (value: T) => string;
+  }): Record<string, string[]> {
     return Object.keys(obj).reduce(
-      (acc, key) => {
-        const groupKey = callback(obj[key], key);
-        if (!acc[groupKey]) acc[groupKey] = [];
-        acc[groupKey].push(key);
-        return acc;
+      (result, key) => {
+        const group = callback(obj[key]);
+        if (!result[group]) {
+          result[group] = [];
+        }
+        result[group].push(key);
+        return result;
       },
-      {} as Record<string | number, string[]>,
+      {} as Record<string, string[]>,
     );
   }
 
   /**
-   * Finds the difference between two objects.
-   * @template T The type of the objects.
-   * @param {object} params The parameters for the method.
-   * @param {T} params.obj1 The first object.
-   * @param {T} params.obj2 The second object.
-   * @returns {Partial<T>} An object containing the properties that differ.
+   * Compresses an object to a JSON string.
+   * @param {object} params - The parameters for the method.
+   * @param {object} params.json - The object to compress.
+   * @returns {string} The compressed JSON string.
    * @example
-   * const obj1 = { a: 1, b: 2 };
-   * const obj2 = { a: 1, b: 3 };
-   * const result = ObjectUtils.diff({ obj1, obj2 });
-   * console.log(result); // { b: 3 }
+   * const obj = { a: 1, b: 2, c: { d: 3, e: 4 } };
+   * const compressed = ObjectUtils.compressObject({ json: obj });
+   * console.log(compressed); // Compressed string
    */
-  public static diff<T extends object>({
-    obj1,
-    obj2,
+  public static compressObject({
+    json,
   }: {
-    obj1: T;
-    obj2: T;
-  }): Partial<T> {
-    return Object.keys(obj2).reduce((acc, key) => {
-      if (obj1[key as keyof T] !== obj2[key as keyof T]) {
-        acc[key as keyof T] = obj2[key as keyof T];
-      }
-      return acc;
-    }, {} as Partial<T>);
+    json: Record<string, any>;
+  }): string {
+    const jsonString = JSON.stringify(json);
+    const compressed = zlib.deflateSync(jsonString).toString('base64');
+    return compressed;
   }
 
   /**
-   * Sets a value in a nested object by a dot-separated path.
-   * @template T The type of the value to set.
-   * @param {object} params The parameters for the method.
-   * @param {Record<string, any>} params.obj The object to modify.
-   * @param {string} params.path The dot-separated path to set the value.
-   * @param {T} params.value The value to set.
-   * @returns {Record<string, any>} The modified object with the new value.
+   * Decompresses a JSON string to an object.
+   * @param {object} params - The parameters for the method.
+   * @param {string} params.jsonString - The compressed JSON string.
+   * @returns {object} The decompressed object.
    * @example
-   * const obj = { a: { b: 1 } };
-   * ObjectUtils.unflattenObject({ obj, path: 'a.c', value: 2 });
-   * console.log(obj); // { a: { b: 1, c: 2 } }
-   */
-  public static unflattenObject<T>({
-    obj,
-    path,
-    value,
-  }: {
-    obj: Record<string, any>;
-    path: string;
-    value: T;
-  }): Record<string, any> {
-    const keys = path.split('.');
-    keys.reduce((acc, key, index) => {
-      if (index === keys.length - 1) {
-        acc[key] = value;
-      } else {
-        acc[key] = acc[key] || {};
-      }
-      return acc[key];
-    }, obj);
-    return obj;
-  }
-
-  /**
-   * Compresses a JSON object by converting it to a minified string.
-   * Removes unnecessary whitespace and formatting.
-   *
-   * @param json The JSON object to compress.
-   * @returns A minified JSON string.
-   * @example
-   * const input = { key: "value", nested: { count: 42 } };
-   * const compressed = JsonUtils.compressObject(input);
-   * console.log(compressed); // '{"key":"value","nested":{"count":42}}'
-   */
-  public static compressObject({ json }: { json: object }): string {
-    try {
-      return JSON.stringify(json);
-    } catch (error) {
-      throw new Error('Failed to compress JSON object.');
-    }
-  }
-
-  /**
-   * Decompresses a JSON string back into an object.
-   * Converts a minified JSON string into a manipulable JSON object.
-   *
-   * @param jsonString The minified JSON string to decompress.
-   * @returns The original JSON object.
-   * @example
-   * const compressed = '{"key":"value","nested":{"count":42}}';
-   * const json = JsonUtils.decompressJson(compressed);
-   * console.log(json); // { key: "value", nested: { count: 42 } }
+   * const compressed = '...'; // Compressed string from compressObject
+   * const decompressed = ObjectUtils.decompressObject({ jsonString: compressed });
+   * console.log(decompressed); // { a: 1, b: 2, c: { d: 3, e: 4 } }
    */
   public static decompressObject({
     jsonString,
   }: {
     jsonString: string;
-  }): object {
-    try {
-      return JSON.parse(jsonString);
-    } catch (error) {
-      throw new Error('Failed to decompress JSON string.');
-    }
+  }): Record<string, any> {
+    const buffer = Buffer.from(jsonString, 'base64');
+    const decompressed = zlib.inflateSync(buffer).toString();
+    return JSON.parse(decompressed);
   }
 
   /**
-   * Compresses and encodes a JSON object to a Base64 string.
-   * Useful for compactly storing or transmitting JSON data.
-   *
-   * @param json The JSON object to compress and encode.
-   * @param urlSafe If true, generates a URL-safe Base64 string (default: false).
-   * @returns A Base64-encoded minified JSON string.
+   * Compresses an object to a URL-safe base64 string.
+   * @param {object} params - The parameters for the method.
+   * @param {object} params.json - The object to compress.
+   * @param {boolean} [params.urlSafe=false] - Whether to make the base64 string URL-safe.
+   * @returns {string} The compressed JSON string in base64.
    * @example
-   * const input = { key: "value", nested: { count: 42 } };
-   * const compressed = JsonUtils.compressObjectToBase64(input);
-   * console.log(compressed); // 'eyJrZXkiOiJ2YWx1ZSIsIm5lc3RlZCI6eyJjb3VudCI6NDJ9fQ=='
+   * const obj = { a: 1, b: 2, c: { d: 3, e: 4 } };
+   * const compressed = ObjectUtils.compressObjectToBase64({ json: obj, urlSafe: true });
+   * console.log(compressed); // URL-safe base64 string
    */
   public static compressObjectToBase64({
     json,
     urlSafe = false,
   }: {
-    json: object;
-    urlSafe: boolean;
+    json: Record<string, any>;
+    urlSafe?: boolean;
   }): string {
-    try {
-      const minified = ObjectUtils.compressObject({ json });
-      const base64 = Buffer.from(minified).toString('base64');
-      return urlSafe
-        ? base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
-        : base64;
-    } catch (error) {
-      throw new Error('Failed to compress and encode JSON object to Base64.');
-    }
+    const jsonString = JSON.stringify(json);
+    const compressed = zlib.deflateSync(jsonString).toString('base64');
+    return urlSafe
+      ? compressed.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+      : compressed;
   }
 
   /**
-   * Decompresses a Base64-encoded JSON string back to a JSON object.
-   *
-   * @param base64String The Base64-encoded JSON string to decompress.
-   * @returns The original JSON object.
+   * Decompresses a base64 string to an object.
+   * @param {object} params - The parameters for the method.
+   * @param {string} params.base64String - The compressed base64 string.
+   * @param {boolean} [params.urlSafe=false] - Whether the base64 string is URL-safe.
+   * @returns {object} The decompressed object.
    * @example
-   * const base64 = 'eyJrZXkiOiJ2YWx1ZSIsIm5lc3RlZCI6eyJjb3VudCI6NDJ9fQ==';
-   * const json = JsonUtils.decompressBase64ToObject(base64);
-   * console.log(json); // { key: "value", nested: { count: 42 } }
+   * const compressed = '...'; // Compressed string from compressObjectToBase64
+   * const decompressed = ObjectUtils.decompressBase64ToObject({ base64String: compressed });
+   * console.log(decompressed); // { a: 1, b: 2, c: { d: 3, e: 4 } }
    */
   public static decompressBase64ToObject({
     base64String,
+    urlSafe = false,
   }: {
     base64String: string;
-  }): object {
-    try {
-      const jsonString = Buffer.from(base64String, 'base64').toString('utf-8');
-      return JSON.parse(jsonString);
-    } catch (error) {
-      throw new Error('Failed to decompress Base64 string to JSON object.');
+    urlSafe?: boolean;
+  }): Record<string, any> {
+    let normalizedBase64 = base64String;
+    if (urlSafe) {
+      normalizedBase64 = normalizedBase64.replace(/-/g, '+').replace(/_/g, '/');
+      // Add padding if needed
+      while (normalizedBase64.length % 4) {
+        normalizedBase64 += '=';
+      }
     }
+    const buffer = Buffer.from(normalizedBase64, 'base64');
+    const decompressed = zlib.inflateSync(buffer).toString();
+    return JSON.parse(decompressed);
   }
+
+  /**
+   * Finds objects in an array that match a subset of properties.
+   * @param {object} params - The parameters for the method.
+   * @param {Array} params.array - The array to search.
+   * @param {object} params.subset - The subset of properties to match.
+   * @returns {Array} An array of objects that match the subset.
+   * @example
+   * const array = [
+   *   { id: 1, name: 'John', age: 30 },
+   *   { id: 2, name: 'Jane', age: 25 },
+   *   { id: 3, name: 'John', age: 40 }
+   * ];
+   * const result = ObjectUtils.findSubsetObjects({ array, subset: { name: 'John' } });
+   * console.log(result); // [{ id: 1, name: 'John', age: 30 }, { id: 3, name: 'John', age: 40 }]
+   */
+  public static findSubsetObjects<T extends Record<string, any>>({
+    array,
+    subset,
+  }: {
+    array: T[];
+    subset: Partial<T>;
+  }): T[] {
+    return array.filter(item =>
+      ObjectUtils.isSubsetObject({ superset: item, subset }),
+    );
+  }
+
+  /**
+   * Checks if an object is a subset of another object.
+   * @param {object} params - The parameters for the method.
+   * @param {object} params.superset - The object to check against.
+   * @param {object} params.subset - The potential subset.
+   * @returns {boolean} `true` if the subset is contained in the superset, otherwise `false`.
+   * @example
+   * const superset = { a: 1, b: 2, c: { d: 3, e: 4 } };
+   * const subset = { a: 1, c: { d: 3 } };
+   * const result = ObjectUtils.isSubsetObject({ superset, subset });
+   * console.log(result); // true
+   */
+  public static isSubsetObject<T extends Record<string, any>>({
+    superset,
+    subset,
+  }: {
+    superset: T;
+    subset: Partial<T>;
+  }): boolean {
+    return Object.keys(subset).every(key => {
+      if (subset[key] === undefined) return true;
+      if (superset[key] === undefined) return false;
+
+      if (
+        typeof subset[key] === 'object' &&
+        subset[key] !== null &&
+        typeof superset[key] === 'object' &&
+        superset[key] !== null
+      ) {
+        return ObjectUtils.isSubsetObject({
+          superset: superset[key],
+          subset: subset[key],
+        });
+      }
+
+      return subset[key] === superset[key];
+    });
+  }
+
+  /**
+   * Finds a value in an object by path.
+   * @param {object} params - The parameters for the method.
+   * @param {object} params.obj - The object to search in.
+   * @param {string} params.path - The path to the value.
+   * @param {string} [params.delimiter='.'] - The delimiter used in the path.
+   * @returns {any} The value at the path, or undefined if not found.
+   * @example
+   * const obj = { a: { b: { c: 42 } } };
+   * const value = ObjectUtils.findValue({ obj, path: 'a.b.c' });
+   * console.log(value); // 42
+   */
+  public static findValue({
+    obj,
+    path,
+    delimiter = '.',
+  }: {
+    obj: Record<string, any>;
+    path: string;
+    delimiter?: string;
+  }): any {
+    const keys = path.split(delimiter);
+    let current = obj;
+
+    for (const key of keys) {
+      if (current === undefined || current === null) {
+        return undefined;
+      }
+      current = current[key];
+    }
+
+    return current;
+  }
+
+  /**
+   * Inverts an object's keys and values.
+   * @param {object} params - The parameters for the method.
+   * @param {object} params.obj - The object to invert.
+   * @returns {object} A new object with keys and values swapped.
+   * @example
+   * const obj = { a: 1, b: 2, c: 3 };
+   * const inverted = ObjectUtils.invert({ obj });
+   * console.log(inverted); // { '1': 'a', '2': 'b', '3': 'c' }
+   */
+  public static invert({
+    obj,
+  }: {
+    obj: Record<string, string | number>;
+  }): Record<string, string> {
+    return Object.keys(obj).reduce(
+      (result, key) => {
+        const value = String(obj[key]);
+        result[value] = key;
+        return result;
+      },
+      {} as Record<string, string>,
+    );
+  }
+
+  /**
+   * Deeply freezes an object to make it immutable.
+   * @param {object} params - The parameters for the method.
+   * @param {object} params.obj - The object to freeze.
+   * @returns {object} The frozen object.
+   * @example
+   * const obj = { a: 1, b: { c: 2 } };
+   * const frozen = ObjectUtils.deepFreeze({ obj });
+   * // Attempting to modify frozen.b.c will throw an error in strict mode
+   */
+  public static deepFreeze<T>({ obj }: { obj: T }): Readonly<T> {
+    if (obj === null || typeof obj !== 'object' || Object.isFrozen(obj)) {
+      return obj;
+    }
+
+    const propNames = Object.getOwnPropertyNames(obj);
+
+    for (const name of propNames) {
+      const value = (obj as any)[name];
+      if (value && typeof value === 'object') {
+        (obj as any)[name] = ObjectUtils.deepFreeze({ obj: value });
+      }
+    }
+
+    return Object.freeze(obj);
+  }
+}
+
+// Helper function to check if a value is an object
+function isObject(item: any): boolean {
+  return item && typeof item === 'object' && !Array.isArray(item);
 }

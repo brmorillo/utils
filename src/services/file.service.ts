@@ -3,542 +3,358 @@ import * as path from 'path';
 import * as crypto from 'crypto';
 import { promisify } from 'util';
 
-// Promisify fs functions
-const readFile = promisify(fs.readFile);
-const writeFile = promisify(fs.writeFile);
-const appendFile = promisify(fs.appendFile);
-const mkdir = promisify(fs.mkdir);
-const readdir = promisify(fs.readdir);
-const stat = promisify(fs.stat);
-const unlink = promisify(fs.unlink);
-const rmdir = promisify(fs.rmdir);
-const access = promisify(fs.access);
-
-/**
- * Utility class for common file operations.
- */
 export class FileUtils {
   /**
-   * Reads a file asynchronously.
-   * @param {object} params - The parameters for the method.
-   * @param {string} params.filePath - Path to the file.
-   * @param {string} [params.encoding='utf8'] - File encoding.
-   * @returns {Promise<string|Buffer>} The file contents.
-   * @example
-   * const content = await FileUtils.readFile({
-   *   filePath: '/path/to/file.txt'
-   * });
-   * console.log(content);
+   * Reads a file and returns its contents.
+   * @param filePath Path to the file.
+   * @returns The file contents as a string.
+   * @throws {Error} If the file cannot be read.
    */
-  public static async readFile({
-    filePath,
-    encoding = 'utf8',
-  }: {
-    filePath: string;
-    encoding?: BufferEncoding;
-  }): Promise<string | Buffer> {
+  public static readFile(filePath: string): string {
     try {
-      return await readFile(filePath, { encoding });
-    } catch (error) {
-      throw new Error(`Failed to read file ${filePath}: ${error.message}`);
+      return fs.readFileSync(filePath, 'utf8');
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to read file ${filePath}: ${errorMessage}`);
+    }
+  }
+
+  /**
+   * Reads a file asynchronously and returns its contents.
+   * @param filePath Path to the file.
+   * @returns A promise that resolves to the file contents as a string.
+   * @throws {Error} If the file cannot be read.
+   */
+  public static async readFileAsync(filePath: string): Promise<string> {
+    try {
+      const readFile = promisify(fs.readFile);
+      return await readFile(filePath, 'utf8');
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to read file ${filePath}: ${errorMessage}`);
+    }
+  }
+
+  /**
+   * Writes data to a file.
+   * @param filePath Path to the file.
+   * @param data The data to write.
+   * @throws {Error} If the file cannot be written.
+   */
+  public static writeFile(filePath: string, data: string): void {
+    try {
+      fs.writeFileSync(filePath, data, 'utf8');
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to write file ${filePath}: ${errorMessage}`);
     }
   }
 
   /**
    * Writes data to a file asynchronously.
-   * @param {object} params - The parameters for the method.
-   * @param {string} params.filePath - Path to the file.
-   * @param {string|Buffer} params.data - Data to write.
-   * @param {string} [params.encoding='utf8'] - File encoding.
-   * @param {boolean} [params.createDir=true] - Whether to create parent directories if they don't exist.
-   * @returns {Promise<void>}
-   * @example
-   * await FileUtils.writeFile({
-   *   filePath: '/path/to/file.txt',
-   *   data: 'Hello, world!'
-   * });
+   * @param filePath Path to the file.
+   * @param data The data to write.
+   * @returns A promise that resolves when the file has been written.
+   * @throws {Error} If the file cannot be written.
    */
-  public static async writeFile({
-    filePath,
-    data,
-    encoding = 'utf8',
-    createDir = true,
-  }: {
-    filePath: string;
-    data: string | Buffer;
-    encoding?: BufferEncoding;
-    createDir?: boolean;
-  }): Promise<void> {
+  public static async writeFileAsync(
+    filePath: string,
+    data: string,
+  ): Promise<void> {
     try {
-      if (createDir) {
-        await FileUtils.ensureDir({ dirPath: path.dirname(filePath) });
-      }
-      await writeFile(filePath, data, { encoding });
-    } catch (error) {
-      throw new Error(`Failed to write file ${filePath}: ${error.message}`);
+      const writeFile = promisify(fs.writeFile);
+      await writeFile(filePath, data, 'utf8');
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to write file ${filePath}: ${errorMessage}`);
     }
   }
 
   /**
-   * Appends data to a file asynchronously.
-   * @param {object} params - The parameters for the method.
-   * @param {string} params.filePath - Path to the file.
-   * @param {string|Buffer} params.data - Data to append.
-   * @param {string} [params.encoding='utf8'] - File encoding.
-   * @param {boolean} [params.createDir=true] - Whether to create parent directories if they don't exist.
-   * @returns {Promise<void>}
-   * @example
-   * await FileUtils.appendFile({
-   *   filePath: '/path/to/log.txt',
-   *   data: 'New log entry\n'
-   * });
+   * Appends data to a file.
+   * @param filePath Path to the file.
+   * @param data The data to append.
+   * @throws {Error} If the file cannot be appended to.
    */
-  public static async appendFile({
-    filePath,
-    data,
-    encoding = 'utf8',
-    createDir = true,
-  }: {
-    filePath: string;
-    data: string | Buffer;
-    encoding?: BufferEncoding;
-    createDir?: boolean;
-  }): Promise<void> {
+  public static appendFile(filePath: string, data: string): void {
     try {
-      if (createDir) {
-        await FileUtils.ensureDir({ dirPath: path.dirname(filePath) });
-      }
-      await appendFile(filePath, data, { encoding });
-    } catch (error) {
-      throw new Error(`Failed to append to file ${filePath}: ${error.message}`);
+      fs.appendFileSync(filePath, data, 'utf8');
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to append to file ${filePath}: ${errorMessage}`);
     }
   }
 
   /**
-   * Ensures that a directory exists, creating it and its parents if necessary.
-   * @param {object} params - The parameters for the method.
-   * @param {string} params.dirPath - Path to the directory.
-   * @returns {Promise<void>}
-   * @example
-   * await FileUtils.ensureDir({
-   *   dirPath: '/path/to/directory'
-   * });
+   * Creates a directory if it doesn't exist.
+   * @param dirPath Path to the directory.
+   * @param recursive Whether to create parent directories if they don't exist.
+   * @throws {Error} If the directory cannot be created.
    */
-  public static async ensureDir({
-    dirPath,
-  }: {
-    dirPath: string;
-  }): Promise<void> {
+  public static createDirectory(dirPath: string, recursive = true): void {
     try {
-      await mkdir(dirPath, { recursive: true });
-    } catch (error) {
-      // Ignore error if directory already exists
-      if (error.code !== 'EEXIST') {
-        throw new Error(`Failed to create directory ${dirPath}: ${error.message}`);
+      fs.mkdirSync(dirPath, { recursive });
+    } catch (error: unknown) {
+      if (
+        error instanceof Error &&
+        (error as NodeJS.ErrnoException).code === 'EEXIST'
+      ) {
+        return; // Directory already exists, which is fine
       }
-    }
-  }
-
-  /**
-   * Lists files in a directory.
-   * @param {object} params - The parameters for the method.
-   * @param {string} params.dirPath - Path to the directory.
-   * @param {boolean} [params.recursive=false] - Whether to list files recursively.
-   * @param {RegExp} [params.filter] - Optional regex pattern to filter files.
-   * @returns {Promise<string[]>} Array of file paths.
-   * @example
-   * // List all files in a directory
-   * const files = await FileUtils.listFiles({
-   *   dirPath: '/path/to/directory'
-   * });
-   * 
-   * // List all JavaScript files recursively
-   * const jsFiles = await FileUtils.listFiles({
-   *   dirPath: '/path/to/directory',
-   *   recursive: true,
-   *   filter: /\.js$/
-   * });
-   */
-  public static async listFiles({
-    dirPath,
-    recursive = false,
-    filter,
-  }: {
-    dirPath: string;
-    recursive?: boolean;
-    filter?: RegExp;
-  }): Promise<string[]> {
-    try {
-      const entries = await readdir(dirPath, { withFileTypes: true });
-      
-      const files = await Promise.all(
-        entries.map(async entry => {
-          const fullPath = path.join(dirPath, entry.name);
-          
-          if (entry.isDirectory()) {
-            if (recursive) {
-              return await FileUtils.listFiles({
-                dirPath: fullPath,
-                recursive,
-                filter,
-              });
-            }
-            return [];
-          }
-          
-          if (filter && !filter.test(entry.name)) {
-            return [];
-          }
-          
-          return [fullPath];
-        })
-      );
-      
-      return files.flat();
-    } catch (error) {
-      throw new Error(`Failed to list files in ${dirPath}: ${error.message}`);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to create directory ${dirPath}: ${errorMessage}`);
     }
   }
 
   /**
    * Checks if a file exists.
-   * @param {object} params - The parameters for the method.
-   * @param {string} params.filePath - Path to the file.
-   * @returns {Promise<boolean>} `true` if the file exists, otherwise `false`.
-   * @example
-   * if (await FileUtils.fileExists({
-   *   filePath: '/path/to/file.txt'
-   * })) {
-   *   console.log('File exists');
-   * }
+   * @param filePath Path to the file.
+   * @returns `true` if the file exists, otherwise `false`.
    */
-  public static async fileExists({
-    filePath,
-  }: {
-    filePath: string;
-  }): Promise<boolean> {
+  public static fileExists(filePath: string): boolean {
+    return fs.existsSync(filePath);
+  }
+
+  /**
+   * Gets the extension of a file.
+   * @param filePath Path to the file.
+   * @returns The file extension (e.g., '.txt').
+   */
+  public static getFileExtension(filePath: string): string {
+    return path.extname(filePath);
+  }
+
+  /**
+   * Gets the base name of a file (without extension).
+   * @param filePath Path to the file.
+   * @returns The base name of the file.
+   */
+  public static getBaseName(filePath: string): string {
+    return path.basename(filePath, path.extname(filePath));
+  }
+
+  /**
+   * Lists all files in a directory.
+   * @param dirPath Path to the directory.
+   * @returns An array of file names.
+   * @throws {Error} If the directory cannot be read.
+   */
+  public static listFiles(dirPath: string): string[] {
     try {
-      await access(filePath, fs.constants.F_OK);
-      return true;
-    } catch {
-      return false;
+      return fs.readdirSync(dirPath);
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to list files in ${dirPath}: ${errorMessage}`);
     }
   }
 
   /**
-   * Gets file information.
-   * @param {object} params - The parameters for the method.
-   * @param {string} params.filePath - Path to the file.
-   * @returns {Promise<fs.Stats>} File statistics.
-   * @example
-   * const stats = await FileUtils.getFileInfo({
-   *   filePath: '/path/to/file.txt'
-   * });
-   * console.log(`File size: ${stats.size} bytes`);
-   * console.log(`Last modified: ${stats.mtime}`);
+   * Gets information about a file.
+   * @param filePath Path to the file.
+   * @returns An object containing file information.
+   * @throws {Error} If the file information cannot be retrieved.
    */
-  public static async getFileInfo({
-    filePath,
-  }: {
-    filePath: string;
-  }): Promise<fs.Stats> {
+  public static getFileInfo(filePath: string): fs.Stats {
     try {
-      return await stat(filePath);
-    } catch (error) {
-      throw new Error(`Failed to get file info for ${filePath}: ${error.message}`);
+      return fs.statSync(filePath);
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      throw new Error(
+        `Failed to get file info for ${filePath}: ${errorMessage}`,
+      );
     }
   }
 
   /**
    * Deletes a file.
-   * @param {object} params - The parameters for the method.
-   * @param {string} params.filePath - Path to the file.
-   * @returns {Promise<void>}
-   * @example
-   * await FileUtils.deleteFile({
-   *   filePath: '/path/to/file.txt'
-   * });
+   * @param filePath Path to the file.
+   * @throws {Error} If the file cannot be deleted.
    */
-  public static async deleteFile({
-    filePath,
-  }: {
-    filePath: string;
-  }): Promise<void> {
+  public static deleteFile(filePath: string): void {
     try {
-      await unlink(filePath);
-    } catch (error) {
-      throw new Error(`Failed to delete file ${filePath}: ${error.message}`);
+      fs.unlinkSync(filePath);
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to delete file ${filePath}: ${errorMessage}`);
     }
   }
 
   /**
-   * Deletes a directory and its contents.
-   * @param {object} params - The parameters for the method.
-   * @param {string} params.dirPath - Path to the directory.
-   * @param {boolean} [params.recursive=true] - Whether to delete recursively.
-   * @returns {Promise<void>}
-   * @example
-   * await FileUtils.deleteDir({
-   *   dirPath: '/path/to/directory'
-   * });
+   * Deletes a directory.
+   * @param dirPath Path to the directory.
+   * @param recursive Whether to delete subdirectories and files.
+   * @throws {Error} If the directory cannot be deleted.
    */
-  public static async deleteDir({
-    dirPath,
-    recursive = true,
-  }: {
-    dirPath: string;
-    recursive?: boolean;
-  }): Promise<void> {
+  public static deleteDirectory(dirPath: string, recursive = false): void {
     try {
-      if (recursive) {
-        await FileUtils.deleteDirRecursive({ dirPath });
-      } else {
-        await rmdir(dirPath);
-      }
-    } catch (error) {
-      throw new Error(`Failed to delete directory ${dirPath}: ${error.message}`);
+      fs.rmdirSync(dirPath, { recursive });
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to delete directory ${dirPath}: ${errorMessage}`);
     }
   }
 
   /**
-   * Recursively deletes a directory and its contents.
-   * @private
+   * Recursively deletes a directory and all its contents.
+   * @param dirPath Path to the directory.
+   * @throws {Error} If the directory cannot be deleted.
    */
-  private static async deleteDirRecursive({
-    dirPath,
-  }: {
-    dirPath: string;
-  }): Promise<void> {
+  public static deleteDirectoryRecursive(dirPath: string): void {
     try {
-      const entries = await readdir(dirPath, { withFileTypes: true });
-      
-      await Promise.all(
-        entries.map(async entry => {
-          const fullPath = path.join(dirPath, entry.name);
-          
-          if (entry.isDirectory()) {
-            await FileUtils.deleteDirRecursive({ dirPath: fullPath });
+      if (fs.existsSync(dirPath)) {
+        fs.readdirSync(dirPath).forEach(file => {
+          const curPath = path.join(dirPath, file);
+          if (fs.lstatSync(curPath).isDirectory()) {
+            // Recursive call for directories
+            FileUtils.deleteDirectoryRecursive(curPath);
           } else {
-            await unlink(fullPath);
+            // Delete file
+            fs.unlinkSync(curPath);
           }
-        })
+        });
+        fs.rmdirSync(dirPath);
+      }
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      throw new Error(
+        `Failed to recursively delete directory ${dirPath}: ${errorMessage}`,
       );
-      
-      await rmdir(dirPath);
-    } catch (error) {
-      throw new Error(`Failed to recursively delete directory ${dirPath}: ${error.message}`);
     }
   }
 
   /**
-   * Calculates the MD5 hash of a file.
-   * @param {object} params - The parameters for the method.
-   * @param {string} params.filePath - Path to the file.
-   * @returns {Promise<string>} The MD5 hash as a hexadecimal string.
-   * @example
-   * const hash = await FileUtils.calculateFileHash({
-   *   filePath: '/path/to/file.txt'
-   * });
-   * console.log(`File hash: ${hash}`);
+   * Calculates the hash of a file.
+   * @param filePath Path to the file.
+   * @param algorithm Hash algorithm to use (default: 'sha256').
+   * @returns A promise that resolves to the file hash.
    */
-  public static async calculateFileHash({
-    filePath,
-  }: {
-    filePath: string;
-  }): Promise<string> {
+  public static calculateFileHash(
+    filePath: string,
+    algorithm = 'sha256',
+  ): Promise<string> {
     return new Promise((resolve, reject) => {
-      try {
-        const hash = crypto.createHash('md5');
-        const stream = fs.createReadStream(filePath);
-        
-        stream.on('data', data => {
-          hash.update(data);
-        });
-        
-        stream.on('end', () => {
-          resolve(hash.digest('hex'));
-        });
-        
-        stream.on('error', error => {
-          reject(new Error(`Failed to calculate file hash for ${filePath}: ${error.message}`));
-        });
-      } catch (error) {
-        reject(new Error(`Failed to calculate file hash for ${filePath}: ${error.message}`));
-      }
+      const hash = crypto.createHash(algorithm);
+      const stream = fs.createReadStream(filePath);
+
+      stream.on('error', (error: unknown) => {
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        reject(
+          new Error(
+            `Failed to calculate file hash for ${filePath}: ${errorMessage}`,
+          ),
+        );
+      });
+
+      stream.on('data', chunk => hash.update(chunk));
+      stream.on('end', () => resolve(hash.digest('hex')));
     });
   }
 
   /**
    * Copies a file from one location to another.
-   * @param {object} params - The parameters for the method.
-   * @param {string} params.sourcePath - Path to the source file.
-   * @param {string} params.destPath - Path to the destination file.
-   * @param {boolean} [params.createDir=true] - Whether to create parent directories if they don't exist.
-   * @returns {Promise<void>}
-   * @example
-   * await FileUtils.copyFile({
-   *   sourcePath: '/path/to/source.txt',
-   *   destPath: '/path/to/destination.txt'
-   * });
+   * @param sourcePath Path to the source file.
+   * @param destPath Path to the destination file.
+   * @throws {Error} If the file cannot be copied.
    */
-  public static async copyFile({
-    sourcePath,
-    destPath,
-    createDir = true,
-  }: {
-    sourcePath: string;
-    destPath: string;
-    createDir?: boolean;
-  }): Promise<void> {
+  public static copyFile(sourcePath: string, destPath: string): void {
     try {
-      if (createDir) {
-        await FileUtils.ensureDir({ dirPath: path.dirname(destPath) });
-      }
-      
-      await fs.promises.copyFile(sourcePath, destPath);
-    } catch (error) {
-      throw new Error(`Failed to copy file from ${sourcePath} to ${destPath}: ${error.message}`);
+      fs.copyFileSync(sourcePath, destPath);
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      throw new Error(
+        `Failed to copy file from ${sourcePath} to ${destPath}: ${errorMessage}`,
+      );
     }
   }
 
   /**
    * Moves a file from one location to another.
-   * @param {object} params - The parameters for the method.
-   * @param {string} params.sourcePath - Path to the source file.
-   * @param {string} params.destPath - Path to the destination file.
-   * @param {boolean} [params.createDir=true] - Whether to create parent directories if they don't exist.
-   * @returns {Promise<void>}
-   * @example
-   * await FileUtils.moveFile({
-   *   sourcePath: '/path/to/source.txt',
-   *   destPath: '/path/to/destination.txt'
-   * });
+   * @param sourcePath Path to the source file.
+   * @param destPath Path to the destination file.
+   * @throws {Error} If the file cannot be moved.
    */
-  public static async moveFile({
-    sourcePath,
-    destPath,
-    createDir = true,
-  }: {
-    sourcePath: string;
-    destPath: string;
-    createDir?: boolean;
-  }): Promise<void> {
+  public static moveFile(sourcePath: string, destPath: string): void {
     try {
-      if (createDir) {
-        await FileUtils.ensureDir({ dirPath: path.dirname(destPath) });
-      }
-      
-      await fs.promises.rename(sourcePath, destPath);
-    } catch (error) {
-      // If rename fails (e.g., across different filesystems), try copy + delete
-      if (error.code === 'EXDEV') {
-        await FileUtils.copyFile({ sourcePath, destPath, createDir });
-        await FileUtils.deleteFile({ filePath: sourcePath });
+      fs.renameSync(sourcePath, destPath);
+    } catch (error: unknown) {
+      // If rename fails due to cross-device link, fall back to copy and delete
+      if (
+        error instanceof Error &&
+        (error as NodeJS.ErrnoException).code === 'EXDEV'
+      ) {
+        FileUtils.copyFile(sourcePath, destPath);
+        FileUtils.deleteFile(sourcePath);
       } else {
-        throw new Error(`Failed to move file from ${sourcePath} to ${destPath}: ${error.message}`);
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        throw new Error(
+          `Failed to move file from ${sourcePath} to ${destPath}: ${errorMessage}`,
+        );
       }
     }
   }
 
   /**
-   * Gets the file extension.
-   * @param {object} params - The parameters for the method.
-   * @param {string} params.filePath - Path to the file.
-   * @returns {string} The file extension (without the dot).
-   * @example
-   * const ext = FileUtils.getFileExtension({
-   *   filePath: '/path/to/file.txt'
-   * });
-   * console.log(ext); // 'txt'
+   * Gets the size of a file in bytes.
+   * @param filePath Path to the file.
+   * @returns The size of the file in bytes.
    */
-  public static getFileExtension({
-    filePath,
-  }: {
-    filePath: string;
-  }): string {
-    return path.extname(filePath).slice(1).toLowerCase();
-  }
-
-  /**
-   * Gets the file name without extension.
-   * @param {object} params - The parameters for the method.
-   * @param {string} params.filePath - Path to the file.
-   * @returns {string} The file name without extension.
-   * @example
-   * const name = FileUtils.getFileName({
-   *   filePath: '/path/to/file.txt'
-   * });
-   * console.log(name); // 'file'
-   */
-  public static getFileName({
-    filePath,
-  }: {
-    filePath: string;
-  }): string {
-    return path.basename(filePath, path.extname(filePath));
+  public static getFileSize(filePath: string): number {
+    const stats = FileUtils.getFileInfo(filePath);
+    return stats.size;
   }
 
   /**
    * Reads a JSON file and parses its contents.
-   * @param {object} params - The parameters for the method.
-   * @param {string} params.filePath - Path to the JSON file.
-   * @returns {Promise<any>} The parsed JSON data.
-   * @example
-   * const config = await FileUtils.readJsonFile({
-   *   filePath: '/path/to/config.json'
-   * });
-   * console.log(config.apiKey);
+   * @param filePath Path to the JSON file.
+   * @returns The parsed JSON object.
+   * @throws {Error} If the file cannot be read or parsed.
    */
-  public static async readJsonFile({
-    filePath,
-  }: {
-    filePath: string;
-  }): Promise<any> {
+  public static readJsonFile(filePath: string): any {
     try {
-      const content = await FileUtils.readFile({ filePath });
-      return JSON.parse(content as string);
-    } catch (error) {
-      throw new Error(`Failed to read JSON file ${filePath}: ${error.message}`);
+      const data = FileUtils.readFile(filePath);
+      return JSON.parse(data);
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to read JSON file ${filePath}: ${errorMessage}`);
     }
   }
 
   /**
-   * Writes data to a JSON file.
-   * @param {object} params - The parameters for the method.
-   * @param {string} params.filePath - Path to the JSON file.
-   * @param {any} params.data - Data to write.
-   * @param {boolean} [params.pretty=true] - Whether to format the JSON with indentation.
-   * @param {boolean} [params.createDir=true] - Whether to create parent directories if they don't exist.
-   * @returns {Promise<void>}
-   * @example
-   * await FileUtils.writeJsonFile({
-   *   filePath: '/path/to/config.json',
-   *   data: { apiKey: '123456', debug: true }
-   * });
+   * Writes a JSON object to a file.
+   * @param filePath Path to the JSON file.
+   * @param data The JSON object to write.
+   * @param pretty Whether to format the JSON with indentation.
+   * @throws {Error} If the file cannot be written.
    */
-  public static async writeJsonFile({
-    filePath,
-    data,
-    pretty = true,
-    createDir = true,
-  }: {
-    filePath: string;
-    data: any;
-    pretty?: boolean;
-    createDir?: boolean;
-  }): Promise<void> {
+  public static writeJsonFile(
+    filePath: string,
+    data: any,
+    pretty = false,
+  ): void {
     try {
       const jsonString = pretty
         ? JSON.stringify(data, null, 2)
         : JSON.stringify(data);
-      
-      await FileUtils.writeFile({
-        filePath,
-        data: jsonString,
-        createDir,
-      });
-    } catch (error) {
-      throw new Error(`Failed to write JSON file ${filePath}: ${error.message}`);
+      FileUtils.writeFile(filePath, jsonString);
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to write JSON file ${filePath}: ${errorMessage}`);
     }
   }
 }
