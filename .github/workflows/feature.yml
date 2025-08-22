@@ -2,11 +2,11 @@ name: Git Flow - Feature Branch
 
 on:
   push:
-    branches: 
+    branches:
       - 'feature/**'
       - 'feat/**'
   pull_request:
-    branches: 
+    branches:
       - develop
     types: [opened, synchronize, reopened]
 
@@ -14,40 +14,40 @@ jobs:
   validate:
     name: Validate Feature Branch
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'pnpm'
-          
+
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8
-          
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        
+
       - name: Type checking
         run: pnpm run type-check
-        
+
       - name: Lint
         run: pnpm run lint
-        
+
       - name: Format check
         run: pnpm run format:check
-        
+
       - name: Run tests
         run: pnpm run test:ci
-        
+
       - name: Build
         run: pnpm run build
-        
+
       - name: Validate branch naming
         run: |
           branch_name="${{ github.head_ref || github.ref_name }}"
@@ -56,7 +56,7 @@ jobs:
             exit 1
           fi
           echo "✅ Branch name '$branch_name' follows convention"
-          
+
       - name: Check commit messages
         run: |
           # Check if commits follow conventional commit format
@@ -70,19 +70,19 @@ jobs:
             fi
           done <<< "$commits"
           echo "✅ All commit messages follow conventional format"
-          
+
   auto-assign-reviewers:
     name: Auto Assign Reviewers
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
-    
+
     steps:
       - name: Auto assign reviewers
         uses: actions/github-script@v7
         with:
           script: |
             const { owner, repo, number } = context.issue;
-            
+
             // Add reviewers (customize based on your team)
             await github.rest.pulls.requestReviewers({
               owner,
@@ -90,7 +90,7 @@ jobs:
               pull_number: number,
               reviewers: ['brmorillo'], // Add team members here
             });
-            
+
             // Add labels
             await github.rest.issues.addLabels({
               owner,
