@@ -7,7 +7,7 @@ on:
       - 'feat/**'
   pull_request:
     branches:
-      - develop
+      - v12
     types: [opened, synchronize, reopened]
 
 jobs:
@@ -19,16 +19,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'pnpm'
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -60,7 +60,7 @@ jobs:
       - name: Check commit messages
         run: |
           # Check if commits follow conventional commit format
-          commits=$(git log --pretty=format:"%s" origin/develop..HEAD)
+          commits=$(git log --pretty=format:"%s" origin/v12..HEAD)
           while IFS= read -r commit; do
             if [[ ! "$commit" =~ ^(feat|fix|chore|docs|style|refactor|test|perf|ci|build)(\([^)]*\))?\!?:\ .+ ]]; then
               echo "❌ Commit message does not follow conventional format: $commit"
