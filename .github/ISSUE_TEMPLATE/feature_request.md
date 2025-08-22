@@ -16,6 +16,7 @@ A clear and concise description of what you want to happen.
 A clear and concise description of any alternative solutions or features you've considered.
 
 **Usage example**
+
 ```typescript
 // Add an example of how the feature would be used
 ```

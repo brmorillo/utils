@@ -2,10 +2,10 @@ name: Git Flow - Hotfix
 
 on:
   push:
-    branches: 
+    branches:
       - 'hotfix/**'
   pull_request:
-    branches: 
+    branches:
       - main
     types: [opened, synchronize, reopened]
 
@@ -13,40 +13,40 @@ jobs:
   validate-hotfix:
     name: Validate Hotfix
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'pnpm'
-          
+
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8
-          
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        
+
       - name: Type checking
         run: pnpm run type-check
-        
+
       - name: Lint
         run: pnpm run lint
-        
+
       - name: Format check
         run: pnpm run format:check
-        
+
       - name: Run tests
         run: pnpm run test:ci
-        
+
       - name: Build
         run: pnpm run build
-        
+
       - name: Validate branch naming
         run: |
           branch_name="${{ github.head_ref || github.ref_name }}"
@@ -55,68 +55,68 @@ jobs:
             exit 1
           fi
           echo "✅ Branch name '$branch_name' follows convention"
-          
+
       - name: Validate hotfix necessity
         run: |
           # Check if this is truly a critical fix
           branch_name="${{ github.head_ref || github.ref_name }}"
           echo "🔥 HOTFIX DETECTED: $branch_name"
           echo "⚠️  Please ensure this is a critical production issue that cannot wait for the next regular release"
-          
+
   create-patch-release:
     name: Create Patch Release
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref_type == 'branch'
-    
+
     permissions:
       contents: write
       pull-requests: write
-      
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-          
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'pnpm'
-          
+
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8
-          
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        
+
       - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          
+
       - name: Create hotfix release
         run: |
           # Create patch version
           npm version patch --no-git-tag-version
           new_version=$(node -p "require('./package.json').version")
-          
+
           # Generate changelog for hotfix
           branch_name="${{ github.ref_name }}"
           issue_description=$(echo $branch_name | sed 's/hotfix\///')
-          
+
           changelog="## Hotfix v$new_version\n\n### 🚨 Critical Fix\n- fix: $issue_description\n"
-          
+
           # Update CHANGELOG.md
           if [ -f CHANGELOG.md ]; then
             cp CHANGELOG.md CHANGELOG.md.bak
           else
             echo "# Changelog\n" > CHANGELOG.md
           fi
-          
+
           {
             head -n 3 CHANGELOG.md
             echo ""
@@ -125,18 +125,18 @@ jobs:
               tail -n +4 CHANGELOG.md.bak
             fi
           } > CHANGELOG.md.tmp
-          
+
           mv CHANGELOG.md.tmp CHANGELOG.md
           rm -f CHANGELOG.md.bak
-          
+
           # Commit and tag
           git add package.json CHANGELOG.md
           git commit -m "hotfix: v$new_version - $issue_description"
           git tag "v$new_version"
-          
+
           echo "HOTFIX_VERSION=$new_version" >> $GITHUB_ENV
           echo "HOTFIX_DESCRIPTION=$issue_description" >> $GITHUB_ENV
-          
+
       - name: Create PR to main
         run: |
           gh pr create \

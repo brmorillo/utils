@@ -4,6 +4,7 @@ import { ConvertUtils } from './services/convert.service';
 import { CryptUtils } from './services/crypt.service';
 import { CuidUtils } from './services/cuid.service';
 import { DateUtils } from './services/date.service';
+import { GitFlowTestUtils } from './services/gitflow-test.service';
 import { HashUtils } from './services/hash.service';
 import { JWTUtils } from './services/jwt.service';
 import { MathUtils } from './services/math.service';
@@ -97,6 +98,7 @@ export default {
   StringUtils,
   UUIDUtils,
   ValidationUtils,
+  GitFlowTestUtils,
   normalizeValue,
   normalizeNumber,
   createNormalizedProxy,
