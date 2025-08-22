@@ -91,13 +91,15 @@ describe('StringUtils - Testes de Integração', () => {
       const kebabCase = StringUtils.toKebabCase({ input: camelCase });
 
       // 4. Verificar se é um palíndromo (não deve ser)
-      const isPalindrome = StringUtils.isPalindrome({ input: kebabCase });
+      const isValidPalindrome = StringUtils.isValidPalindrome({
+        input: kebabCase,
+      });
 
       // 5. Reverter a string
       const reversed = StringUtils.reverse({ input: kebabCase });
 
       // 6. Verificar se a string revertida é um palíndromo (deve ser igual à original revertida)
-      const isReversedPalindrome = StringUtils.isPalindrome({
+      const isReversedPalindrome = StringUtils.isValidPalindrome({
         input: kebabCase + reversed,
       });
 
@@ -109,7 +111,7 @@ describe('StringUtils - Testes de Integração', () => {
       expect(kebabCase).toBe(
         'this-is-a-test-string-with-underscores-and-hyphens',
       );
-      expect(isPalindrome).toBe(false);
+      expect(isValidPalindrome).toBe(false);
       expect(reversed).toBe(
         'snehpyh-dna-serocsrednu-htiw-gnirts-tset-a-si-siht',
       );
@@ -204,13 +206,15 @@ describe('StringUtils - Testes de Integração', () => {
       const fullName = `${formattedFirstName} ${formattedLastName}`;
 
       // 4. Verificar se o nome é um palíndromo (não deve ser)
-      const isPalindrome = StringUtils.isPalindrome({ input: fullName });
+      const isValidPalindrome = StringUtils.isValidPalindrome({
+        input: fullName,
+      });
 
       // Verificações
       expect(formattedFirstName).toBe('John');
       expect(formattedLastName).toBe('Doe');
       expect(fullName).toBe('John Doe');
-      expect(isPalindrome).toBe(false);
+      expect(isValidPalindrome).toBe(false);
     });
 
     it('deve validar e formatar um código de produto', () => {

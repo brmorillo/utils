@@ -179,7 +179,9 @@ describe('ArrayUtils - Testes de Integração', () => {
       const usersByRole: Record<string, typeof users> = {};
       activeUsers.forEach(user => {
         user.roles.forEach(role => {
-          if (!usersByRole[role]) usersByRole[role] = [];
+          if (!usersByRole[role]) {
+            usersByRole[role] = [];
+          }
           usersByRole[role].push(user);
         });
       });

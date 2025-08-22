@@ -116,7 +116,7 @@ describe('HashUtils', () => {
   describe('sha256Hash', () => {
     it('deve gerar um hash SHA-256 válido', () => {
       const value = 'texto para hash';
-      const hash = HashUtils.sha256Hash(value);
+      const hash = HashUtils.sha256Hash({ value });
 
       // SHA-256 sempre gera um hash de 64 caracteres hexadecimais
       expect(hash).toHaveLength(64);
@@ -125,22 +125,22 @@ describe('HashUtils', () => {
 
     it('deve gerar o mesmo hash para a mesma entrada', () => {
       const value = 'texto para hash';
-      const hash1 = HashUtils.sha256Hash(value);
-      const hash2 = HashUtils.sha256Hash(value);
+      const hash1 = HashUtils.sha256Hash({ value });
+      const hash2 = HashUtils.sha256Hash({ value });
 
       expect(hash1).toBe(hash2);
     });
 
     it('deve gerar hashes diferentes para entradas diferentes', () => {
-      const hash1 = HashUtils.sha256Hash('texto1');
-      const hash2 = HashUtils.sha256Hash('texto2');
+      const hash1 = HashUtils.sha256Hash({ value: 'texto1' });
+      const hash2 = HashUtils.sha256Hash({ value: 'texto2' });
 
       expect(hash1).not.toBe(hash2);
     });
 
     it('deve lançar erro para valor vazio', () => {
       expect(() => {
-        HashUtils.sha256Hash('');
+        HashUtils.sha256Hash({ value: '' });
       }).toThrow('Invalid input');
     });
   });
@@ -148,7 +148,7 @@ describe('HashUtils', () => {
   describe('sha256HashJson', () => {
     it('deve gerar um hash SHA-256 válido para um objeto JSON', () => {
       const json = { nome: 'teste', valor: 123 };
-      const hash = HashUtils.sha256HashJson(json);
+      const hash = HashUtils.sha256HashJson({ json });
 
       // SHA-256 sempre gera um hash de 64 caracteres hexadecimais
       expect(hash).toHaveLength(64);
@@ -157,8 +157,8 @@ describe('HashUtils', () => {
 
     it('deve gerar o mesmo hash para o mesmo objeto JSON', () => {
       const json = { nome: 'teste', valor: 123 };
-      const hash1 = HashUtils.sha256HashJson(json);
-      const hash2 = HashUtils.sha256HashJson(json);
+      const hash1 = HashUtils.sha256HashJson({ json });
+      const hash2 = HashUtils.sha256HashJson({ json });
 
       expect(hash1).toBe(hash2);
     });
@@ -167,8 +167,8 @@ describe('HashUtils', () => {
       const json1 = { nome: 'teste1' };
       const json2 = { nome: 'teste2' };
 
-      const hash1 = HashUtils.sha256HashJson(json1);
-      const hash2 = HashUtils.sha256HashJson(json2);
+      const hash1 = HashUtils.sha256HashJson({ json: json1 });
+      const hash2 = HashUtils.sha256HashJson({ json: json2 });
 
       expect(hash1).not.toBe(hash2);
     });
@@ -192,7 +192,7 @@ describe('HashUtils', () => {
 
     it('deve gerar um token com o comprimento especificado', () => {
       const length = 16;
-      const token = HashUtils.sha256GenerateToken(length);
+      const token = HashUtils.sha256GenerateToken({ length });
 
       expect(token).toHaveLength(length);
       expect(token).toMatch(/^[0-9a-f]{16}$/);
@@ -207,7 +207,7 @@ describe('HashUtils', () => {
 
     it('deve lançar erro para comprimento inválido', () => {
       expect(() => {
-        HashUtils.sha256GenerateToken(0);
+        HashUtils.sha256GenerateToken({ length: 0 });
       }).toThrow('Invalid length');
     });
   });
@@ -215,7 +215,7 @@ describe('HashUtils', () => {
   describe('sha512Hash', () => {
     it('deve gerar um hash SHA-512 válido', () => {
       const value = 'texto para hash';
-      const hash = HashUtils.sha512Hash(value);
+      const hash = HashUtils.sha512Hash({ value });
 
       // SHA-512 sempre gera um hash de 128 caracteres hexadecimais
       expect(hash).toHaveLength(128);
@@ -224,22 +224,22 @@ describe('HashUtils', () => {
 
     it('deve gerar o mesmo hash para a mesma entrada', () => {
       const value = 'texto para hash';
-      const hash1 = HashUtils.sha512Hash(value);
-      const hash2 = HashUtils.sha512Hash(value);
+      const hash1 = HashUtils.sha512Hash({ value });
+      const hash2 = HashUtils.sha512Hash({ value });
 
       expect(hash1).toBe(hash2);
     });
 
     it('deve gerar hashes diferentes para entradas diferentes', () => {
-      const hash1 = HashUtils.sha512Hash('texto1');
-      const hash2 = HashUtils.sha512Hash('texto2');
+      const hash1 = HashUtils.sha512Hash({ value: 'texto1' });
+      const hash2 = HashUtils.sha512Hash({ value: 'texto2' });
 
       expect(hash1).not.toBe(hash2);
     });
 
     it('deve lançar erro para valor vazio', () => {
       expect(() => {
-        HashUtils.sha512Hash('');
+        HashUtils.sha512Hash({ value: '' });
       }).toThrow('Invalid input');
     });
   });
@@ -247,7 +247,7 @@ describe('HashUtils', () => {
   describe('sha512HashJson', () => {
     it('deve gerar um hash SHA-512 válido para um objeto JSON', () => {
       const json = { nome: 'teste', valor: 123 };
-      const hash = HashUtils.sha512HashJson(json);
+      const hash = HashUtils.sha512HashJson({ json });
 
       // SHA-512 sempre gera um hash de 128 caracteres hexadecimais
       expect(hash).toHaveLength(128);
@@ -256,8 +256,8 @@ describe('HashUtils', () => {
 
     it('deve gerar o mesmo hash para o mesmo objeto JSON', () => {
       const json = { nome: 'teste', valor: 123 };
-      const hash1 = HashUtils.sha512HashJson(json);
-      const hash2 = HashUtils.sha512HashJson(json);
+      const hash1 = HashUtils.sha512HashJson({ json });
+      const hash2 = HashUtils.sha512HashJson({ json });
 
       expect(hash1).toBe(hash2);
     });
@@ -266,8 +266,8 @@ describe('HashUtils', () => {
       const json1 = { nome: 'teste1' };
       const json2 = { nome: 'teste2' };
 
-      const hash1 = HashUtils.sha512HashJson(json1);
-      const hash2 = HashUtils.sha512HashJson(json2);
+      const hash1 = HashUtils.sha512HashJson({ json: json1 });
+      const hash2 = HashUtils.sha512HashJson({ json: json2 });
 
       expect(hash1).not.toBe(hash2);
     });
@@ -291,7 +291,7 @@ describe('HashUtils', () => {
 
     it('deve gerar um token com o comprimento especificado', () => {
       const length = 16;
-      const token = HashUtils.sha512GenerateToken(length);
+      const token = HashUtils.sha512GenerateToken({ length });
 
       expect(token).toHaveLength(length);
       expect(token).toMatch(/^[0-9a-f]{16}$/);
@@ -306,7 +306,7 @@ describe('HashUtils', () => {
 
     it('deve lançar erro para comprimento inválido', () => {
       expect(() => {
-        HashUtils.sha512GenerateToken(0);
+        HashUtils.sha512GenerateToken({ length: 0 });
       }).toThrow('Invalid length');
     });
   });

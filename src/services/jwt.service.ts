@@ -1,5 +1,4 @@
 import * as jwt from 'jsonwebtoken';
-import { handleError } from '../utils/error.util';
 
 export class JWTUtils {
   /**
@@ -41,7 +40,8 @@ export class JWTUtils {
     try {
       return jwt.sign(payload, secretKey, options);
     } catch (error) {
-      return handleError('Failed to generate JWT token', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to generate JWT token: ${errorMessage}`);
     }
   }
 
@@ -83,7 +83,8 @@ export class JWTUtils {
     try {
       return jwt.verify(token, secretKey, options) as object;
     } catch (error) {
-      return handleError('Failed to verify JWT token', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to verify JWT token: ${errorMessage}`);
     }
   }
 
@@ -125,7 +126,8 @@ export class JWTUtils {
       }
       return decoded;
     } catch (error) {
-      return handleError('Failed to decode JWT token', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to decode JWT token: ${errorMessage}`);
     }
   }
 
@@ -158,10 +160,16 @@ export class JWTUtils {
       // Force verification to ensure the token was valid (just expired)
       const decoded = jwt.verify(token, secretKey, {
         ignoreExpiration: true,
-      }) as object;
+      }) as any;
 
       // Remove standard claims that should be regenerated
       const payload = { ...decoded };
+      delete payload.iat;
+      delete payload.exp;
+      delete payload.nbf;
+      delete payload.aud;
+      delete payload.iss;
+      delete payload.sub;
 
       // Generate a new token with the same payload
       return JWTUtils.generate({
@@ -170,7 +178,8 @@ export class JWTUtils {
         options,
       });
     } catch (error) {
-      return handleError('Failed to refresh JWT token', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to refresh JWT token: ${errorMessage}`);
     }
   }
 
@@ -201,7 +210,8 @@ export class JWTUtils {
       const currentTimestamp = Math.floor(Date.now() / 1000);
       return decoded.exp < currentTimestamp;
     } catch (error) {
-      return handleError('Failed to check JWT token expiration', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to check JWT token expiration: ${errorMessage}`);
     }
   }
 
@@ -233,7 +243,8 @@ export class JWTUtils {
 
       return remainingTime > 0 ? remainingTime : 0;
     } catch (error) {
-      return handleError('Failed to get JWT token expiration time', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to get JWT token expiration time: ${errorMessage}`);
     }
   }
 }

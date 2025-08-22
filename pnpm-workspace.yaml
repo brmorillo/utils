@@ -1,5 +1,0 @@
-ignoredBuiltDependencies:
-  - esbuild
-
-overrides:
-  clear: link:../../../Users/bruno/AppData/Local/pnpm/global/5/node_modules/clear

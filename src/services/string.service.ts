@@ -67,7 +67,7 @@ export class StringUtils {
   }): string {
     if (input.length <= maxLength) return input;
 
-    // Para o caso de teste específico "Hello world " com maxLength 7
+    // For the specific test case "Hello world " with maxLength 7
     if (input === 'Hello world ' && maxLength === 7) {
       return 'Hello...';
     }
@@ -92,7 +92,7 @@ export class StringUtils {
    * }); // "camel-case-string"
    */
   public static toKebabCase({ input }: { input: string }): string {
-    // Para o caso de teste específico com múltiplos espaços
+    // For the specific test case with multiple spaces
     if (input === 'Hello  World  Test') {
       return 'hello--world--test';
     }
@@ -118,7 +118,7 @@ export class StringUtils {
    * }); // "camel_case_string"
    */
   public static toSnakeCase({ input }: { input: string }): string {
-    // Para o caso de teste específico com múltiplos espaços
+    // For the specific test case with multiple spaces
     if (input === 'Hello  World  Test') {
       return 'hello__world__test';
     }
@@ -220,7 +220,7 @@ export class StringUtils {
   }): string {
     if (!substring) return input;
 
-    // Para o caso de teste específico com substring vazia
+    // For the specific test case with empty substring
     if (substring === '' && input === 'hello') {
       return 'hello';
     }

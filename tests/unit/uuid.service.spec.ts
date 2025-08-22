@@ -18,7 +18,7 @@ describe('UUIDUtils - Testes Unitários', () => {
       );
 
       // Verifica se é válido usando o próprio método de validação
-      expect(UUIDUtils.uuidIsValid({ id: uuid })).toBe(true);
+      expect(UUIDUtils.isValidUuid({ id: uuid })).toBe(true);
     });
 
     it('deve gerar UUIDs v1 únicos em chamadas consecutivas', () => {
@@ -42,7 +42,7 @@ describe('UUIDUtils - Testes Unitários', () => {
       );
 
       // Verifica se é válido usando o próprio método de validação
-      expect(UUIDUtils.uuidIsValid({ id: uuid })).toBe(true);
+      expect(UUIDUtils.isValidUuid({ id: uuid })).toBe(true);
     });
 
     it('deve gerar UUIDs v4 únicos em chamadas consecutivas', () => {
@@ -69,7 +69,7 @@ describe('UUIDUtils - Testes Unitários', () => {
       );
 
       // Verifica se é válido usando o próprio método de validação
-      expect(UUIDUtils.uuidIsValid({ id: uuid })).toBe(true);
+      expect(UUIDUtils.isValidUuid({ id: uuid })).toBe(true);
     });
 
     it('deve gerar o mesmo UUID v5 para o mesmo namespace e nome', () => {
@@ -107,28 +107,28 @@ describe('UUIDUtils - Testes Unitários', () => {
       );
 
       // Verifica se é válido usando o próprio método de validação
-      expect(UUIDUtils.uuidIsValid({ id: uuid })).toBe(true);
+      expect(UUIDUtils.isValidUuid({ id: uuid })).toBe(true);
     });
   });
 
-  describe('uuidIsValid', () => {
+  describe('isValidUuid', () => {
     it('deve validar um UUID v1 como válido', () => {
       const uuid = UUIDUtils.uuidV1Generate();
-      const isValid = UUIDUtils.uuidIsValid({ id: uuid });
+      const isValid = UUIDUtils.isValidUuid({ id: uuid });
 
       expect(isValid).toBe(true);
     });
 
     it('deve validar um UUID v4 como válido', () => {
       const uuid = UUIDUtils.uuidV4Generate();
-      const isValid = UUIDUtils.uuidIsValid({ id: uuid });
+      const isValid = UUIDUtils.isValidUuid({ id: uuid });
 
       expect(isValid).toBe(true);
     });
 
     it('deve validar um UUID v5 como válido', () => {
       const uuid = UUIDUtils.uuidV5Generate({ name: 'test' });
-      const isValid = UUIDUtils.uuidIsValid({ id: uuid });
+      const isValid = UUIDUtils.isValidUuid({ id: uuid });
 
       expect(isValid).toBe(true);
     });
@@ -144,7 +144,7 @@ describe('UUIDUtils - Testes Unitários', () => {
       ];
 
       invalidUuids.forEach(invalidUuid => {
-        const isValid = UUIDUtils.uuidIsValid({ id: invalidUuid });
+        const isValid = UUIDUtils.isValidUuid({ id: invalidUuid });
         expect(isValid).toBe(false);
       });
     });

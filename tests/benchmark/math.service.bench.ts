@@ -161,14 +161,14 @@ describe('MathUtils - Testes de Benchmark', () => {
     });
   });
 
-  describe('isPrime em massa', () => {
+  describe('isValidPrime em massa', () => {
     it('deve verificar 10.000 números primos em tempo razoável', () => {
       const count = 10000;
       const results: boolean[] = [];
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          results.push(MathUtils.isPrime({ value: 997 })); // Um número primo grande
+          results.push(MathUtils.isValidPrime({ value: 997 })); // Um número primo grande
         }
       });
 
@@ -190,7 +190,7 @@ describe('MathUtils - Testes de Benchmark', () => {
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          results.push(MathUtils.isPrime({ value: 996 })); // Um número não-primo grande
+          results.push(MathUtils.isValidPrime({ value: 996 })); // Um número não-primo grande
         }
       });
 
@@ -254,10 +254,10 @@ describe('MathUtils - Testes de Benchmark', () => {
         }
       });
 
-      // Teste isPrime
-      results.isPrime = measureExecutionTime(() => {
+      // Teste isValidPrime
+      results.isValidPrime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          MathUtils.isPrime({ value: 997 });
+          MathUtils.isValidPrime({ value: 997 });
         }
       });
 
@@ -274,7 +274,7 @@ describe('MathUtils - Testes de Benchmark', () => {
   });
 
   describe('Desempenho com diferentes entradas', () => {
-    it('deve medir o desempenho de isPrime com números de diferentes tamanhos', () => {
+    it('deve medir o desempenho de isValidPrime com números de diferentes tamanhos', () => {
       const count = 1000;
       const numbers = [2, 101, 997, 9973, 99991];
       const results: Record<number, number> = {};
@@ -282,7 +282,7 @@ describe('MathUtils - Testes de Benchmark', () => {
       for (const num of numbers) {
         results[num] = measureExecutionTime(() => {
           for (let i = 0; i < count; i++) {
-            MathUtils.isPrime({ value: num });
+            MathUtils.isValidPrime({ value: num });
           }
         });
 

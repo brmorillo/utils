@@ -117,7 +117,7 @@ describe('CryptUtils - Testes de Integração', () => {
 
       // Camada 1: RC4
       const finalDecrypted = CryptUtils.rc4Decrypt(
-        aesDecrypted as string,
+        String(aesDecrypted),
         rc4Key,
       );
 
