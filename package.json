@@ -27,7 +27,16 @@
     "commit": "cz",
     "version:bump": "standard-version && git push --follow-tags origin main",
     "prepub": "npm run build",
-    "pub": "npm run version:bump && npm publish --access public"
+    "pub": "npm run version:bump && npm publish --access public",
+    "git:flow:hotfix": "echo 'Usage: git checkout -b hotfix/issue-description'",
+    "release:prepare": "npm run build && npm run test:ci",
+    "version:minor": "npm version minor --no-git-tag-version",
+    "version:major": "npm version major --no-git-tag-version",
+    "version:patch": "npm version patch --no-git-tag-version",
+    "git:flow:release": "echo 'Usage: git checkout -b release/vX.Y.Z'",
+    "git:status": "git status",
+    "git:flow:feature": "echo 'Usage: git checkout -b feature/your-feature-name'",
+    "release:check": "git status --porcelain"
   },
   "keywords": [
     "utils",
@@ -85,5 +94,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/brmorillo/util.git"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/brmorillo/utils/issues"
+  },
+  "homepage": "https://github.com/brmorillo/utils#readme"
 }
