@@ -19,34 +19,29 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'pnpm'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: npm ci
 
       - name: Type checking
-        run: pnpm run type-check
+        run: npm run type-check
 
       - name: Lint
-        run: pnpm run lint
+        run: npm run lint
 
       - name: Format check
-        run: pnpm run format:check
+        run: npm run format:check
 
       - name: Run tests
-        run: pnpm run test:ci
+        run: npm run test:ci
 
       - name: Build
-        run: pnpm run build
+        run: npm run build
 
       - name: Validate branch naming
         run: |

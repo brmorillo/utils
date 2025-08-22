@@ -99,10 +99,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/brmorillo/util.git"
+    "url": "git+https://github.com/brmorillo/util.git"
   },
   "bugs": {
     "url": "https://github.com/brmorillo/utils/issues"
   },
-  "homepage": "https://github.com/brmorillo/utils#readme"
+  "homepage": "https://github.com/brmorillo/utils#readme",
+  "directories": {
+    "doc": "docs",
+    "example": "examples",
+    "test": "tests"
+  },
+  "type": "commonjs"
 }
