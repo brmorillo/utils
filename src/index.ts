@@ -103,6 +103,7 @@ export * from './services/cuid.service';
 export * from './services/date.service';
 export * from './services/event.service';
 export * from './services/file.service';
+export * from './services/gitflow-test.service';
 export * from './services/hash.service';
 export * from './services/jwt.service';
 export * from './services/math.service';
