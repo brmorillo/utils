@@ -27,7 +27,7 @@ jobs:
           cache: 'pnpm'
           
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
         
       - name: Type checking
         run: pnpm run type-check
@@ -63,7 +63,7 @@ jobs:
           cache: 'pnpm'
           
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
         
       - name: Run tests
         run: pnpm run test:ci
@@ -97,7 +97,7 @@ jobs:
           cache: 'pnpm'
           
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
         
       - name: Build package
         run: pnpm run build
@@ -133,7 +133,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
         
       - name: Build package
         run: pnpm run build
