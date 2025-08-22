@@ -37,13 +37,13 @@ describe('HashUtils - Testes de Integração', () => {
       const originalValue = 'DadosSensíveis123';
 
       // Primeira camada: hash SHA-256
-      const sha256Hash = HashUtils.sha256Hash(originalValue);
+      const sha256Hash = HashUtils.sha256Hash({ value: originalValue });
 
       // Segunda camada: hash bcrypt do resultado SHA-256
       const finalHash = HashUtils.bcryptHash({ value: sha256Hash });
 
       // Verificação: recria o SHA-256 e compara com bcrypt
-      const verificationSha256 = HashUtils.sha256Hash(originalValue);
+      const verificationSha256 = HashUtils.sha256Hash({ value: originalValue });
       const isValid = HashUtils.bcryptCompare({
         value: verificationSha256,
         encryptedValue: finalHash,
@@ -64,20 +64,20 @@ describe('HashUtils - Testes de Integração', () => {
       };
 
       // Gera hash para o objeto original
-      const originalHash = HashUtils.sha512HashJson(originalData);
+      const originalHash = HashUtils.sha512HashJson({ json: originalData });
 
       // Simula armazenamento e recuperação dos dados
       const retrievedData = { ...originalData };
 
       // Verifica se os dados não foram alterados
-      const retrievedHash = HashUtils.sha512HashJson(retrievedData);
+      const retrievedHash = HashUtils.sha512HashJson({ json: retrievedData });
       expect(retrievedHash).toBe(originalHash);
 
       // Simula uma alteração nos dados
       retrievedData.preco = 89.99;
 
       // Verifica que o hash é diferente após a alteração
-      const modifiedHash = HashUtils.sha512HashJson(retrievedData);
+      const modifiedHash = HashUtils.sha512HashJson({ json: retrievedData });
       expect(modifiedHash).not.toBe(originalHash);
     });
   });
@@ -85,21 +85,21 @@ describe('HashUtils - Testes de Integração', () => {
   describe('Geração de tokens de autenticação', () => {
     it('deve gerar e validar tokens de autenticação', () => {
       // Gera um token aleatório
-      const token = HashUtils.sha256GenerateToken(32);
+      const token = HashUtils.sha256GenerateToken({ length: 32 });
 
       // Simula armazenamento do hash do token
-      const tokenHash = HashUtils.sha256Hash(token);
+      const tokenHash = HashUtils.sha256Hash({ value: token });
 
       // Simula validação do token
       const receivedToken = token; // Em um caso real, isso viria do cliente
-      const receivedTokenHash = HashUtils.sha256Hash(receivedToken);
+      const receivedTokenHash = HashUtils.sha256Hash({ value: receivedToken });
 
       // Verifica se o hash do token recebido corresponde ao hash armazenado
       expect(receivedTokenHash).toBe(tokenHash);
 
       // Simula um token inválido
       const invalidToken = token.substring(0, token.length - 1) + 'X';
-      const invalidTokenHash = HashUtils.sha256Hash(invalidToken);
+      const invalidTokenHash = HashUtils.sha256Hash({ value: invalidToken });
 
       // Verifica que o hash do token inválido não corresponde
       expect(invalidTokenHash).not.toBe(tokenHash);
@@ -111,8 +111,8 @@ describe('HashUtils - Testes de Integração', () => {
       const testValue = 'TextoParaComparaçãoDeHashes';
 
       // Gera hashes com diferentes algoritmos
-      const sha256Result = HashUtils.sha256Hash(testValue);
-      const sha512Result = HashUtils.sha512Hash(testValue);
+      const sha256Result = HashUtils.sha256Hash({ value: testValue });
+      const sha512Result = HashUtils.sha512Hash({ value: testValue });
 
       // Verifica que os resultados são diferentes
       expect(sha256Result).not.toBe(sha512Result);

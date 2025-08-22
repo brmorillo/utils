@@ -141,45 +141,18 @@ describe('CryptUtils - Testes de Benchmark', () => {
     const key = 'chave-secreta-rc4-para-benchmark';
     const testData = 'Teste de criptografia RC4 para benchmark';
 
-    it('deve criptografar 10.000 strings em tempo razoável', () => {
-      const count = 10000;
-      const encryptedResults: string[] = [];
-
-      const executionTime = measureExecutionTime(() => {
-        for (let i = 0; i < count; i++) {
-          const encrypted = CryptUtils.rc4Encrypt(testData, key);
-          encryptedResults.push(encrypted);
-        }
-      });
-
-      console.log(
-        `Tempo para criptografar ${count} strings com RC4: ${executionTime.toFixed(2)}ms`,
-      );
-
-      // O tempo médio por criptografia deve ser menor que 0.2ms
-      const avgTimePerEncryption = executionTime / count;
-      expect(avgTimePerEncryption).toBeLessThan(0.2);
+    it('deve falhar adequadamente quando RC4 não é suportado', () => {
+      // RC4 é depreciado e não suportado em versões modernas do Node.js
+      expect(() => {
+        CryptUtils.rc4Encrypt(testData, key);
+      }).toThrow('RC4 algorithm is not supported in this Node.js version.');
     });
 
-    it('deve descriptografar 10.000 strings em tempo razoável', () => {
-      const count = 10000;
-
-      // Criptografa uma string para usar nos testes
-      const encrypted = CryptUtils.rc4Encrypt(testData, key);
-
-      const executionTime = measureExecutionTime(() => {
-        for (let i = 0; i < count; i++) {
-          CryptUtils.rc4Decrypt(encrypted, key);
-        }
-      });
-
-      console.log(
-        `Tempo para descriptografar ${count} strings com RC4: ${executionTime.toFixed(2)}ms`,
-      );
-
-      // O tempo médio por descriptografia deve ser menor que 0.2ms
-      const avgTimePerDecryption = executionTime / count;
-      expect(avgTimePerDecryption).toBeLessThan(0.2);
+    it('deve falhar adequadamente na descriptografia quando RC4 não é suportado', () => {
+      // RC4 é depreciado e não suportado em versões modernas do Node.js
+      expect(() => {
+        CryptUtils.rc4Decrypt('encrypted-data', key);
+      }).toThrow('RC4 algorithm is not supported in this Node.js version.');
     });
   });
 

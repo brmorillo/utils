@@ -26,7 +26,7 @@ describe('JWTUtils - Testes de Integração', () => {
       // 2. Verificar o token (simulando validação de uma requisição autenticada)
       const decoded = JWTUtils.verify({
         token,
-        secretKey
+        secretKey,
       }) as any;
       
       expect(decoded.id).toBe(userData.id);
@@ -130,53 +130,46 @@ describe('JWTUtils - Testes de Integração', () => {
     });
 
     it('deve simular um cenário de token expirado e renovação', () => {
-      // 1. Criar um token que expira rapidamente
+      // 1. Criar um token que já expirou (no passado)
       const userData = {
         id: 'user123',
         username: 'quickexpire'
       };
       
-      const token = JWTUtils.generate({
-        payload: userData,
-        secretKey,
-        options: { expiresIn: '1s' }
+      const pastTime = Math.floor(Date.now() / 1000) - 10; // 10 segundos no passado
+      const expiredToken = JWTUtils.generate({
+        payload: { ...userData, exp: pastTime },
+        secretKey
       });
       
-      // 2. Esperar o token expirar
-      return new Promise<void>(resolve => {
-        setTimeout(() => {
-          // 3. Verificar que o token está expirado
-          const isExpired = JWTUtils.isExpired({ token });
-          expect(isExpired).toBe(true);
-          
-          // 4. Tentar verificar o token (deve falhar)
-          expect(() => {
-            JWTUtils.verify({ token, secretKey });
-          }).toThrow();
-          
-          // 5. Renovar o token
-          const refreshedToken = JWTUtils.refresh({
-            token,
-            secretKey,
-            options: { expiresIn: '10s' }
-          });
-          
-          // 6. Verificar que o novo token é válido
-          const decoded = JWTUtils.verify({
-            token: refreshedToken,
-            secretKey
-          }) as any;
-          
-          expect(decoded.id).toBe(userData.id);
-          expect(decoded.username).toBe(userData.username);
-          
-          // 7. Verificar que o novo token não está expirado
-          const newIsExpired = JWTUtils.isExpired({ token: refreshedToken });
-          expect(newIsExpired).toBe(false);
-          
-          resolve();
-        }, 1100); // Espera 1.1 segundos para garantir que o token expirou
+      // 2. Verificar que o token está expirado
+      const isExpired = JWTUtils.isExpired({ token: expiredToken });
+      expect(isExpired).toBe(true);
+      
+      // 3. Tentar verificar o token (deve falhar)
+      expect(() => {
+        JWTUtils.verify({ token: expiredToken, secretKey });
+      }).toThrow();
+      
+      // 4. Renovar o token
+      const refreshedToken = JWTUtils.refresh({
+        token: expiredToken,
+        secretKey,
+        options: { expiresIn: '10s' }
       });
+      
+      // 5. Verificar que o novo token é válido
+      const decoded = JWTUtils.verify({
+        token: refreshedToken,
+        secretKey
+      }) as any;
+      
+      expect(decoded.id).toBe(userData.id);
+      expect(decoded.username).toBe(userData.username);
+      
+      // 6. Verificar que o novo token não está expirado
+      const newIsExpired = JWTUtils.isExpired({ token: refreshedToken });
+      expect(newIsExpired).toBe(false);
     });
   });
 });

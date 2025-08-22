@@ -160,10 +160,16 @@ export class JWTUtils {
       // Force verification to ensure the token was valid (just expired)
       const decoded = jwt.verify(token, secretKey, {
         ignoreExpiration: true,
-      }) as object;
+      }) as any;
 
       // Remove standard claims that should be regenerated
       const payload = { ...decoded };
+      delete payload.iat;
+      delete payload.exp;
+      delete payload.nbf;
+      delete payload.aud;
+      delete payload.iss;
+      delete payload.sub;
 
       // Generate a new token with the same payload
       return JWTUtils.generate({

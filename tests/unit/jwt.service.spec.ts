@@ -186,21 +186,16 @@ describe('JWTUtils - Testes Unitários', () => {
     });
 
     it('deve retornar true para token expirado', () => {
-      // Cria um token que expira em 1 segundo
-      const token = JWTUtils.generate({
-        payload,
+      // Cria um token que expira imediatamente (no passado)
+      const pastTime = Math.floor(Date.now() / 1000) - 10; // 10 segundos no passado
+      const expiredToken = JWTUtils.generate({
+        payload: { ...payload, exp: pastTime },
         secretKey,
-        options: { expiresIn: '1s' },
       });
 
-      // Espera o token expirar
-      return new Promise<void>(resolve => {
-        setTimeout(() => {
-          const isExpired = JWTUtils.isExpired({ token });
-          expect(isExpired).toBe(true);
-          resolve();
-        }, 1100);
-      });
+      // Verifica se o token já está expirado
+      const isExpired = JWTUtils.isExpired({ token: expiredToken });
+      expect(isExpired).toBe(true);
     });
 
     it('deve lançar erro para token sem expiração', () => {

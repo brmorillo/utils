@@ -6,13 +6,26 @@ import { promisify } from 'util';
 export class FileUtils {
   /**
    * Reads a file and returns its contents.
-   * @param filePath Path to the file.
-   * @returns The file contents as a string.
+   * @param {object} params - The parameters for the method.
+   * @param {string} params.filePath - Path to the file.
+   * @param {string} [params.encoding='utf8'] - The encoding for reading the file.
+   * @returns {string} The file contents as a string.
    * @throws {Error} If the file cannot be read.
+   * @example
+   * ```typescript
+   * const content = FileUtils.readFile({ filePath: './data.txt' });
+   * console.log(content); // File contents
+   * ```
    */
-  public static readFile(filePath: string): string {
+  public static readFile({ 
+    filePath, 
+    encoding = 'utf8',
+  }: { 
+    filePath: string; 
+    encoding?: BufferEncoding; 
+  }): string {
     try {
-      return fs.readFileSync(filePath, 'utf8');
+      return fs.readFileSync(filePath, encoding);
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
@@ -325,7 +338,7 @@ export class FileUtils {
    */
   public static readJsonFile(filePath: string): any {
     try {
-      const data = FileUtils.readFile(filePath);
+      const data = FileUtils.readFile({ filePath });
       return JSON.parse(data);
     } catch (error: unknown) {
       const errorMessage =
