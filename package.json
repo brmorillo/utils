@@ -16,7 +16,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "test:ci": "jest --coverage --ci --watchAll=false",
+    "test:ci": "cross-env CI=true jest --coverage --ci --watchAll=false --silent --verbose=false",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
     "format": "prettier --write \"src/**/*.ts\"",
@@ -56,10 +56,10 @@
     "bcryptjs": "^3.0.2",
     "jsonwebtoken": "^9.0.2",
     "luxon": "^3.6.1",
-    "pino": "^9.7.0",
+    "pino": "^8.0.0",
     "ua-parser-js": "^2.0.3",
     "uuid": "^11.1.0",
-    "winston": "^3.17.0"
+    "winston": "^3.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
@@ -73,6 +73,7 @@
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^8.34.1",
     "@typescript-eslint/parser": "^8.34.1",
+    "cross-env": "^10.0.0",
     "eslint": "^9.29.0",
     "globals": "^16.3.0",
     "jest": "^30.0.0",

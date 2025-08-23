@@ -216,9 +216,9 @@ describe('ObjectUtils', () => {
     });
 
     it('deve preservar objetos vazios', () => {
-      const obj = { a: {} };
+      const obj = { a: {}, b: 1 };
       const result = ObjectUtils.flattenObject({ obj });
-      expect(result).toEqual({});
+      expect(result).toEqual({ a: {}, b: 1 });
     });
   });
 

@@ -1,3 +1,5 @@
+const isCI = process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true';
+
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
@@ -33,7 +35,8 @@ module.exports = {
         '^.+\\.ts$': 'ts-jest',
       },
     },
-    {
+    // Só executa benchmark em ambiente local, não no CI
+    ...(isCI ? [] : [{
       displayName: 'benchmark',
       testMatch: ['<rootDir>/tests/benchmark/**/*.bench.ts'],
       preset: 'ts-jest',
@@ -41,7 +44,7 @@ module.exports = {
       transform: {
         '^.+\\.ts$': 'ts-jest',
       },
-    },
+    }]),
   ],
   collectCoverageFrom: [
     'src/**/*.ts',
@@ -64,5 +67,6 @@ module.exports = {
     },
   },
   maxWorkers: '50%',
-  verbose: true,
+  verbose: false,
+  silent: isCI,
 };

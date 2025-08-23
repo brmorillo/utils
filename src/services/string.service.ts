@@ -66,15 +66,11 @@ export class StringUtils {
     maxLength: number;
   }): string {
     if (input.length <= maxLength) return input;
-
-    // For the specific test case "Hello world " with maxLength 7
-    if (input === 'Hello world ' && maxLength === 7) {
-      return 'Hello...';
-    }
-
-    // Trim whitespace before adding ellipsis
-    const trimmed = input.slice(0, maxLength).trimEnd();
-    return trimmed + '...';
+    
+    // Se a string for maior que maxLength, truncar deixando espaço para '...'
+    if (maxLength <= 3) return '...';
+    
+    return input.slice(0, maxLength - 3) + '...';
   }
 
   /**
@@ -92,15 +88,13 @@ export class StringUtils {
    * }); // "camel-case-string"
    */
   public static toKebabCase({ input }: { input: string }): string {
-    // For the specific test case with multiple spaces
-    if (input === 'Hello  World  Test') {
-      return 'hello--world--test';
-    }
-
     return input
-      .replace(/([a-z])([A-Z])/g, '$1-$2')
-      .replace(/\s+/g, '-')
-      .toLowerCase();
+      .replace(/([a-z])([A-Z])/g, '$1-$2') // camelCase para kebab-case
+      .replace(/[\s_]+/g, '-') // espaços e underscores para hífens
+      .toLowerCase()
+      .replace(/[^a-zA-Z0-9-]/g, '') // remove caracteres especiais exceto hífens
+      .replace(/-+/g, '-') // múltiplos hífens para um só
+      .replace(/^-|-$/g, ''); // remove hífens do início e fim
   }
 
   /**
@@ -118,15 +112,13 @@ export class StringUtils {
    * }); // "camel_case_string"
    */
   public static toSnakeCase({ input }: { input: string }): string {
-    // For the specific test case with multiple spaces
-    if (input === 'Hello  World  Test') {
-      return 'hello__world__test';
-    }
-
     return input
-      .replace(/([a-z])([A-Z])/g, '$1_$2')
-      .replace(/\s+/g, '_')
-      .toLowerCase();
+      .replace(/([a-z])([A-Z])/g, '$1_$2') // camelCase para snake_case
+      .replace(/[\s-]+/g, '_') // espaços e hífens para underscores
+      .toLowerCase()
+      .replace(/[^a-zA-Z0-9_]/g, '') // remove caracteres especiais exceto underscores
+      .replace(/_+/g, '_') // múltiplos underscores para um só
+      .replace(/^_|_$/g, ''); // remove underscores do início e fim
   }
 
   /**
@@ -144,6 +136,11 @@ export class StringUtils {
    * }); // "snakeCaseString"
    */
   public static toCamelCase({ input }: { input: string }): string {
+    // Se já está em camelCase (contém maiúsculas e não contém separadores), retorna como está
+    if (/^[a-z]+([A-Z][a-z]*)*$/.test(input)) {
+      return input;
+    }
+    
     return input
       .toLowerCase()
       .replace(/[^a-zA-Z0-9]+(.)/g, (_, match) => match.toUpperCase());
