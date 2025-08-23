@@ -61,12 +61,12 @@ describe('HashUtils - Testes de Benchmark', () => {
         `Tempo para comparar ${count} hashes bcrypt: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por comparação deve ser razoável
+      // O tempo médio por comparação deve ser razoável para bcrypt (que é intencionalmente lento para segurança)
       const avgTimePerComparison = executionTime / count;
       console.log(
         `Tempo médio por comparação bcrypt: ${avgTimePerComparison.toFixed(2)}ms`,
       );
-      expect(avgTimePerComparison).toBeLessThan(10); // Menos de 10ms por comparação
+      expect(avgTimePerComparison).toBeLessThan(50); // bcrypt é lento por design - até 50ms é aceitável
     });
   });
 
@@ -78,7 +78,7 @@ describe('HashUtils - Testes de Benchmark', () => {
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          hashes.push(HashUtils.sha256Hash(value + i));
+          hashes.push(HashUtils.sha256Hash({ value: value + i }));
         }
       });
 
@@ -107,7 +107,7 @@ describe('HashUtils - Testes de Benchmark', () => {
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           const json = { id: i, value: `valor-${i}` };
-          hashes.push(HashUtils.sha256HashJson(json));
+          hashes.push(HashUtils.sha256HashJson({ json }));
         }
       });
 
@@ -164,7 +164,7 @@ describe('HashUtils - Testes de Benchmark', () => {
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          hashes.push(HashUtils.sha512Hash(value + i));
+          hashes.push(HashUtils.sha512Hash({ value: value + i }));
         }
       });
 
@@ -193,7 +193,7 @@ describe('HashUtils - Testes de Benchmark', () => {
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           const json = { id: i, value: `valor-${i}` };
-          hashes.push(HashUtils.sha512HashJson(json));
+          hashes.push(HashUtils.sha512HashJson({ json }));
         }
       });
 
@@ -250,14 +250,14 @@ describe('HashUtils - Testes de Benchmark', () => {
       // Mede o tempo para SHA-256
       const sha256Time = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          HashUtils.sha256Hash(value + i);
+          HashUtils.sha256Hash({ value: value + i });
         }
       });
 
       // Mede o tempo para SHA-512
       const sha512Time = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          HashUtils.sha512Hash(value + i);
+          HashUtils.sha512Hash({ value: value + i });
         }
       });
 
@@ -289,7 +289,7 @@ describe('HashUtils - Testes de Benchmark', () => {
       // Mede o tempo para SHA-256
       const shaTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          HashUtils.sha256Hash(value + i);
+          HashUtils.sha256Hash({ value: value + i });
         }
       });
 

@@ -255,12 +255,12 @@ export class SnowflakeUtils {
     }
 
     try {
-      // Primeiro, verifica se o ID é válido
+      // First, check if the ID is valid
       if (typeof snowflakeId === 'string' && !/^\d+$/.test(snowflakeId)) {
         throw new Error('Invalid Snowflake ID: must contain only digits.');
       }
 
-      // Converte para BigInt para validar
+      // Convert to BigInt for validation
       let bigintValue: bigint;
       try {
         bigintValue =
@@ -269,14 +269,14 @@ export class SnowflakeUtils {
         throw new Error('Invalid Snowflake ID: cannot be converted to BigInt.');
       }
 
-      // Converte para o formato desejado
+      // Convert to the desired format
       switch (toFormat) {
         case 'bigint':
           return bigintValue;
         case 'string':
           return bigintValue.toString();
         case 'number':
-          // Verifica se o valor é seguro para ser representado como number
+          // Check if the value is safe to be represented as number
           if (
             bigintValue > BigInt(Number.MAX_SAFE_INTEGER) ||
             bigintValue < BigInt(Number.MIN_SAFE_INTEGER)

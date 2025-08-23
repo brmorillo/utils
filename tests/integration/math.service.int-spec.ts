@@ -144,8 +144,8 @@ describe('MathUtils - Testes de Integração', () => {
           const primo2 = primos[j];
 
           // Verifica se ambos são primos
-          const isPrimo1 = MathUtils.isPrime({ value: primo1 });
-          const isPrimo2 = MathUtils.isPrime({ value: primo2 });
+          const isPrimo1 = MathUtils.isValidPrime({ value: primo1 });
+          const isPrimo2 = MathUtils.isValidPrime({ value: primo2 });
 
           // Calcula o MDC
           const mdc = MathUtils.gcd({ a: primo1, b: primo2 });

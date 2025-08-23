@@ -1,6 +1,79 @@
 # @brmorillo/utils
 
-Utility library for JavaScript/TypeScript projects.
+[![npm version](https://badge.fury.io/js/@brmorillo%2Futils.svg)](https://badge.fury.io/js/@brmorillo%2Futils)
+[![CI/CD Pipeline](https://github.com/brmorillo/utils/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/brmorillo/utils/actions)
+[![codecov](https://codecov.io/gh/brmorillo/utils/branch/main/graph/badge.svg)](https://codecov.io/gh/brmorillo/utils)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue.svg)](https://www.typescriptlang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Downloads](https://img.shields.io/npm/dm/@brmorillo/utils.svg)](https://www.npmjs.com/package/@brmorillo/utils)
+
+> If you have a problem, it's probably already solved here.
+
+A comprehensive, **production-ready** utility library for JavaScript/TypeScript projects that provides a centralized collection of common utilities and helpers to solve everyday programming challenges.
+
+## ✨ Features
+
+- 🔧 **20+ utility services** for common development tasks
+- 🏗️ **Zero-config setup** with sensible defaults
+- 🎯 **Type-safe** with full TypeScript support
+- 🚀 **Tree-shakeable** for optimal bundle size
+- 📦 **Multiple formats** (CJS, ESM) for maximum compatibility
+- 🧪 **100% test coverage** with comprehensive test suite
+- 📚 **Extensive documentation** with examples
+- 🔒 **Security-focused** with regular vulnerability scans
+
+## 📚 Available Services
+
+The library includes 20+ utility services to cover common development needs:
+
+### Core Services
+
+- **ArrayUtils** - Array manipulation, filtering, grouping, and transformations
+- **ObjectUtils** - Deep merging, cloning, flattening, and property manipulation
+- **StringUtils** - Case conversion, validation, templating, and text processing
+- **NumberUtils** - Mathematical operations, formatting, and validations
+- **MathUtils** - Advanced mathematical functions and calculations
+
+### Data & Validation
+
+- **ValidationUtils** - Input validation, sanitization, and type checking
+- **ConvertUtils** - Data type conversions and transformations
+- **DateUtils** - Date manipulation, formatting, and timezone handling (powered by Luxon)
+
+### Security & Cryptography
+
+- **HashUtils** - SHA-256, SHA-512, bcrypt hashing and token generation
+- **CryptUtils** - AES, RSA, ChaCha20 encryption/decryption
+- **JWTUtils** - JWT token generation, verification, and management
+
+### Identifiers & Generators
+
+- **UUIDUtils** - UUID v1, v4, v5 generation and validation
+- **CuidUtils** - CUID generation and validation
+- **SnowflakeUtils** - Twitter Snowflake ID generation
+
+### Data Structures & Algorithms
+
+- **SortUtils** - Multiple sorting algorithms (bubble, merge, quick, heap)
+- **QueueUtils** - Queue, stack, priority queue implementations
+- **CacheUtils** - In-memory caching with TTL support
+
+### Network & HTTP
+
+- **HttpService** - HTTP client abstraction (Axios and native)
+- **RequestUtils** - HTTP request utilities and helpers
+
+### System & Performance
+
+- **BenchmarkUtils** - Performance testing and function comparison
+- **FileUtils** - File system operations and utilities
+- **LogService** - Structured logging (Pino, Winston, Console)
+- **StorageService** - File storage abstraction (Local, AWS S3)
+
+### Event Management
+
+- **EventUtils** - Type-safe event emitter and observer pattern
+- **RetryUtils** - Retry logic with exponential backoff
 
 ## Installation
 
@@ -20,235 +93,285 @@ or
 pnpm add @brmorillo/utils
 ```
 
-## Usage
-
-### ESM Import
+## Quick Start
 
 ```javascript
-// Import specific utilities
-import { StringUtils, ArrayUtils } from '@brmorillo/utils';
-
-// Import all utilities
 import { Utils } from '@brmorillo/utils';
+
+// Initialize with default configuration
+const utils = Utils.getInstance();
+
+// Get logger
+const logger = utils.getLogger();
+logger.info('Application started');
+
+// Get HTTP service
+const http = utils.getHttpService();
+const response = await http.get('https://api.example.com/data');
+
+// Get storage service
+const storage = utils.getStorageService();
+await storage.uploadFile('path/to/file.txt', 'Hello, world!');
 ```
 
-### CommonJS Import
+## Configuration
+
+The library can be configured with different options:
 
 ```javascript
-// Import specific utilities
-const { StringUtils, ArrayUtils } = require('@brmorillo/utils');
+const utils = Utils.getInstance({
+  // Logger configuration
+  logger: {
+    type: 'pino', // 'pino', 'winston', or 'console'
+    level: 'debug', // 'error', 'warn', 'info', or 'debug'
+    prettyPrint: true, // Format logs for better readability
+  },
 
-// Import all utilities
-const { Utils } = require('@brmorillo/utils');
+  // HTTP client configuration
+  http: {
+    clientType: 'axios', // 'axios' or 'http' (native)
+    baseUrl: 'https://api.example.com',
+    defaultHeaders: {
+      Authorization: 'Bearer token',
+      'Content-Type': 'application/json',
+    },
+    timeout: 5000, // Request timeout in milliseconds
+  },
+
+  // Storage configuration
+  storage: {
+    providerType: 'local', // 'local' or 's3'
+
+    // Local storage options (when providerType is 'local')
+    local: {
+      basePath: './storage',
+      baseUrl: 'http://localhost:3000/files',
+    },
+
+    // S3 storage options (when providerType is 's3')
+    s3: {
+      bucket: 'my-bucket',
+      region: 'us-east-1',
+      accessKeyId: 'YOUR_ACCESS_KEY_ID',
+      secretAccessKey: 'YOUR_SECRET_ACCESS_KEY',
+      endpoint: 'https://custom-endpoint.com', // Optional
+      forcePathStyle: true, // Optional
+      baseUrl: 'https://cdn.example.com', // Optional
+    },
+  },
+});
+
+// Reconfigure later if needed
+utils.configure({
+  logger: {
+    type: 'winston',
+    level: 'info',
+  },
+});
 ```
 
-## Available Utilities
+## NestJS Integration Example
 
-The library contains the following utility classes:
+```typescript
+// utils.module.ts
+import { Module, Global } from '@nestjs/common';
+import { Utils } from '@brmorillo/utils';
 
-### ArrayUtils
+@Global()
+@Module({
+  providers: [
+    {
+      provide: 'UTILS',
+      useFactory: () => {
+        return Utils.getInstance({
+          logger: {
+            type: 'pino',
+            level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+            prettyPrint: process.env.NODE_ENV !== 'production',
+          },
+          http: {
+            clientType: 'axios',
+            baseUrl: process.env.API_BASE_URL,
+            defaultHeaders: {
+              Authorization: `Bearer ${process.env.API_TOKEN}`,
+            },
+            timeout: 10000,
+          },
+          storage: {
+            providerType: process.env.STORAGE_PROVIDER || 'local',
+            local: {
+              basePath: './storage',
+              baseUrl: `${process.env.APP_URL}/files`,
+            },
+            s3: {
+              bucket: process.env.S3_BUCKET,
+              region: process.env.AWS_REGION,
+              accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+              secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+            },
+          },
+        });
+      },
+    },
+  ],
+  exports: ['UTILS'],
+})
+export class UtilsModule {}
 
-- **removeDuplicates** - Removes duplicate values from an array
-- **intersect** - Finds the intersection between two arrays
-- **flatten** - Flattens a multi-dimensional array
-- **groupBy** - Groups array elements by a key
-- **shuffle** - Randomly shuffles array elements
-- **sort** - Sorts an array with specific criteria
-- **findSubset** - Finds objects that match a subset
-- **isSubset** - Checks if an object contains a subset
+// app.module.ts
+import { Module } from '@nestjs/common';
+import { UtilsModule } from './utils.module';
 
-### BenchmarkUtils
+@Module({
+  imports: [UtilsModule],
+})
+export class AppModule {}
 
-- **measureExecutionTime** - Measures the execution time of a function
-- **runBenchmark** - Runs a benchmark multiple times and returns statistics
-- **compareFunctions** - Compares the performance of multiple functions
-- **measureMemoryUsage** - Measures memory usage before and after executing a function
+// users.service.ts
+import { Injectable, Inject } from '@nestjs/common';
+import { Utils } from '@brmorillo/utils';
 
-### ConvertUtils
+@Injectable()
+export class UsersService {
+  private logger;
+  private http;
+  private storage;
 
-- **toBoolean** - Converts a value to boolean
-- **toNumber** - Converts a value to number
-- **toString** - Converts a value to string
-- **toDate** - Converts a value to date
-- **toArray** - Converts a value to array
-- **toObject** - Converts a value to object
-- **toJSON** - Converts a value to JSON
-- **fromJSON** - Converts JSON to an object
+  constructor(@Inject('UTILS') private utils: Utils) {
+    this.logger = utils.getLogger();
+    this.http = utils.getHttpService();
+    this.storage = utils.getStorageService();
+  }
 
-### CryptUtils
+  async getUsers() {
+    this.logger.info('Fetching users');
+    const response = await this.http.get('/users');
+    return response.data;
+  }
 
-- **generateIV** - Generates an initialization vector for AES
-- **aesEncrypt** - Encrypts data using AES-256-CBC
-- **aesDecrypt** - Decrypts data using AES-256-CBC
-- **rsaGenerateKeyPair** - Generates an RSA key pair
-- **rsaEncrypt** - Encrypts data using RSA
-- **rsaDecrypt** - Decrypts data using RSA
-- **rsaSign** - Signs data using RSA
-- **rsaVerify** - Verifies RSA signatures
-- **eccGenerateKeyPair** - Generates an ECC key pair
-- **eccSign** - Signs data using ECC
-- **eccVerify** - Verifies ECC signatures
-- **chacha20Encrypt** - Encrypts data using ChaCha20
-- **chacha20Decrypt** - Decrypts data using ChaCha20
-- **rc4Encrypt** - Encrypts data using RC4
-- **rc4Decrypt** - Decrypts data using RC4
+  async uploadAvatar(userId: string, avatar: Buffer) {
+    this.logger.info('Uploading avatar', { userId });
+    const path = `avatars/${userId}.jpg`;
+    const url = await this.storage.uploadFile(path, avatar, {
+      contentType: 'image/jpeg',
+    });
+    return url;
+  }
+}
+```
 
-### CuidUtils
+## 🚀 Getting Started
 
-- **generate** - Generates a unique CUID2 identifier
-- **isValid** - Checks if a string is a valid CUID2
+### Basic Usage
 
-### DateUtils
+```typescript
+import { ArrayUtils, StringUtils, HashUtils } from '@brmorillo/utils';
 
-- **now** - Gets the current date and time
-- **createInterval** - Creates an interval between two dates
-- **addTime** - Adds a duration to a date
-- **removeTime** - Removes a duration from a date
-- **diffBetween** - Calculates the difference between two dates
-- **toUTC** - Converts a date to UTC
-- **toTimeZone** - Converts a date to a specific timezone
+// Array operations
+const numbers = [1, 2, 2, 3, 4, 4, 5];
+const unique = ArrayUtils.removeDuplicates(numbers);
+console.log(unique); // [1, 2, 3, 4, 5]
 
-### HashUtils
+// String operations
+const text = "hello world";
+const camelCase = StringUtils.toCamelCase(text);
+console.log(camelCase); // "helloWorld"
 
-- **bcryptHash** - Encrypts a string using bcrypt
-- **bcryptCompare** - Compares a string with a bcrypt hash
-- **bcryptRandomString** - Generates a random string using bcrypt
-- **sha256Hash** - Generates a SHA-256 hash of a string
-- **sha256HashJson** - Generates a SHA-256 hash of a JSON object
-- **sha256GenerateToken** - Generates a random token using SHA-256
-- **sha512Hash** - Generates a SHA-512 hash of a string
-- **sha512HashJson** - Generates a SHA-512 hash of a JSON object
-- **sha512GenerateToken** - Generates a random token using SHA-512
+// Hashing
+const hash = HashUtils.sha256Hash("sensitive data");
+console.log(hash); // SHA-256 hash string
+```
 
-### JWTUtils
+### Tree-shaking Support
 
-- **generate** - Generates a JWT token
-- **verify** - Verifies a JWT token
-- **decode** - Decodes a JWT token without verification
-- **refresh** - Refreshes a JWT token
-- **isExpired** - Checks if a JWT token is expired
-- **getExpirationTime** - Gets the remaining time until a JWT token expires
+Import only what you need for optimal bundle size:
 
-### MathUtils
+```typescript
+// Instead of importing everything
+import * as utils from '@brmorillo/utils';
 
-- **round** - Rounds a number to a specific number of decimal places
-- **floor** - Rounds a number down
-- **ceil** - Rounds a number up
-- **random** - Generates a random number within a range
-- **sum** - Sums the values of an array
-- **average** - Calculates the average of array values
-- **median** - Calculates the median of array values
-- **mode** - Calculates the mode of array values
-- **standardDeviation** - Calculates the standard deviation of array values
+// Import only specific utilities
+import { ArrayUtils } from '@brmorillo/utils';
+import { StringUtils } from '@brmorillo/utils';
+```
 
-### NumberUtils
+## 📖 Documentation
 
-- **formatCurrency** - Formats a number as currency
-- **formatPercentage** - Formats a number as percentage
-- **formatDecimal** - Formats a number with specific decimal places
-- **parseNumber** - Converts a string to number
-- **isInteger** - Checks if a number is an integer
-- **isFloat** - Checks if a number is a float
-- **isPositive** - Checks if a number is positive
-- **isNegative** - Checks if a number is negative
-- **isZero** - Checks if a number is zero
-- **clamp** - Limits a number to a specific range
+For detailed documentation and examples for each utility, visit our [documentation](./docs/index.md).
 
-### ObjectUtils
+### Quick Links
 
-- **deepMerge** - Deeply merges objects
-- **deepClone** - Deeply clones an object
-- **flatten** - Flattens a nested object
-- **unflatten** - Unflattens an object
-- **pick** - Selects specific properties from an object
-- **omit** - Omits specific properties from an object
-- **isEmpty** - Checks if an object is empty
-- **isEqual** - Checks if two objects are equal
-- **hasCircularReference** - Checks if an object has circular references
-- **removeUndefined** - Removes undefined properties from an object
-- **removeNull** - Removes null properties from an object
-- **removeEmptyStrings** - Removes properties with empty strings
-- **removeEmptyArrays** - Removes properties with empty arrays
-- **removeEmptyObjects** - Removes properties with empty objects
+- [📊 Array Utils](./docs/array-utils.md) - Array manipulation and processing
+- [🔒 Security Utils](./docs/) - Cryptography, hashing, and JWT
+- [🌐 HTTP Utils](./docs/http-service.md) - HTTP client and request utilities
+- [📁 Storage Utils](./docs/storage-service.md) - File storage abstraction
+- [📝 Logging](./docs/log-service.md) - Structured logging
+- [⚡ Performance](./docs/) - Benchmarking and optimization
 
-### QueueUtils
+## 🛠️ Development
 
-- **createQueue** - Creates a FIFO queue
-- **createStack** - Creates a LIFO stack
-- **createMultiQueue** - Creates a multi-channel queue
-- **createCircularBuffer** - Creates a fixed-size circular buffer
-- **createPriorityQueue** - Creates a priority queue
-- **createDelayQueue** - Creates a queue with delayed processing
+### Prerequisites
 
-### RequestUtils
+- Node.js >= 16
+- pnpm >= 8
 
-- **parseQueryString** - Converts a query string to an object
-- **buildQueryString** - Converts an object to a query string
-- **parseUrl** - Parses a URL into its component parts
-- **buildUrl** - Builds a URL from its parts
-- **isValidUrl** - Checks if a URL is valid
+### Setup
 
-### SnowflakeUtils
+```bash
+# Clone the repository
+git clone https://github.com/brmorillo/utils.git
+cd utils
 
-- **generate** - Generates a Snowflake ID
-- **decode** - Decodes a Snowflake ID into its components
-- **getTimestamp** - Extracts the timestamp from a Snowflake ID
-- **isValidSnowflake** - Checks if a string is a valid Snowflake ID
-- **compare** - Compares two Snowflake IDs
-- **fromTimestamp** - Creates a Snowflake ID from a timestamp
-- **convert** - Converts a Snowflake ID to a different format
+# Install dependencies
+pnpm install
 
-### SortUtils
+# Run tests
+pnpm test
 
-- **quickSort** - Implementation of the QuickSort algorithm
-- **mergeSort** - Implementation of the MergeSort algorithm
-- **bubbleSort** - Implementation of the BubbleSort algorithm
-- **insertionSort** - Implementation of the InsertionSort algorithm
-- **selectionSort** - Implementation of the SelectionSort algorithm
-- **heapSort** - Implementation of the HeapSort algorithm
-- **countingSort** - Implementation of the CountingSort algorithm
-- **radixSort** - Implementation of the RadixSort algorithm
-- **bucketSort** - Implementation of the BucketSort algorithm
-- **shellSort** - Implementation of the ShellSort algorithm
-- **timSort** - Implementation of the TimSort algorithm
-- **sortByProperty** - Sorts an array of objects by a property
+# Build the project
+pnpm build
+```
 
-### StringUtils
+### Scripts
 
-- **capitalizeFirstLetter** - Capitalizes the first letter of a string
-- **reverse** - Reverses a string
-- **isPalindrome** - Checks if a string is a palindrome
-- **truncate** - Truncates a string and adds ellipsis
-- **toKebabCase** - Converts a string to kebab-case
-- **toSnakeCase** - Converts a string to snake_case
-- **toCamelCase** - Converts a string to camelCase
-- **toTitleCase** - Converts a string to Title Case
-- **countOccurrences** - Counts occurrences of a substring
-- **replaceAll** - Replaces all occurrences of a substring
-- **replaceOccurrences** - Replaces a specific number of occurrences
-- **replacePlaceholders** - Replaces placeholders in a string
+- `pnpm build` - Build the library
+- `pnpm test` - Run all tests
+- `pnpm test:coverage` - Run tests with coverage
+- `pnpm lint` - Lint the code
+- `pnpm format` - Format the code
 
-### UUIDUtils
+## 🤝 Contributing
 
-- **generate** - Generates a v4 UUID
-- **isValid** - Checks if a string is a valid UUID
-- **parse** - Converts a UUID to a specific format
-- **getNil** - Returns the nil UUID (00000000-0000-0000-0000-000000000000)
+Contributions are welcome! Please read our [Contributing Guide](./docs/CONTRIBUTING.md) for details.
 
-### ValidationUtils
+## 📄 License
 
-- **isEmail** - Checks if a string is a valid email
-- **isURL** - Checks if a string is a valid URL
-- **isPhoneNumber** - Checks if a string is a valid phone number
-- **isCPF** - Checks if a string is a valid CPF (Brazilian ID)
-- **isCNPJ** - Checks if a string is a valid CNPJ (Brazilian company ID)
-- **isCreditCard** - Checks if a string is a valid credit card number
-- **isStrongPassword** - Checks if a password is strong
-- **isDate** - Checks if a string is a valid date
-- **isNumeric** - Checks if a string contains only numbers
-- **isAlpha** - Checks if a string contains only letters
-- **isAlphanumeric** - Checks if a string contains only letters and numbers
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [Luxon](https://moment.github.io/luxon/) for date manipulation
+- [Axios](https://axios-http.com/) for HTTP client
+- [Pino](https://getpino.io/) and [Winston](https://github.com/winstonjs/winston) for logging
+- [AWS SDK](https://aws.amazon.com/sdk-for-javascript/) for S3 storage
+- All the amazing open-source contributors
+
+---
+
+**Made with ❤️ by [Bruno Morillo](https://github.com/brmorillo)**
+
+- [**ConvertUtils**](./docs/convert-utils.md) - Data type conversion utilities
+- [**RequestUtils**](./docs/request-utils.md) - HTTP request data extraction utilities
+- [**FileUtils**](./docs/file-utils.md) - File system utilities
 
 ## Documentation
 
-For detailed examples and usage instructions, see the [examples.md](./docs/examples.md) file.
+For detailed documentation and examples, see the [docs](./docs) directory.
+
+## License
+
+MIT
+
+## Author
+
+Bruno Morillo

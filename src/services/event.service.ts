@@ -7,15 +7,15 @@ export class EventUtils {
    * @returns {EventEmitter} A new event emitter instance.
    * @example
    * const emitter = EventUtils.createEmitter();
-   * 
+   *
    * // Subscribe to an event
    * const unsubscribe = emitter.on('userLoggedIn', (user) => {
    *   console.log(`User logged in: ${user.name}`);
    * });
-   * 
+   *
    * // Emit an event
    * emitter.emit('userLoggedIn', { id: 1, name: 'John' });
-   * 
+   *
    * // Unsubscribe from the event
    * unsubscribe();
    */
@@ -49,7 +49,7 @@ export class EventEmitter {
    * const unsubscribe = emitter.on('dataLoaded', (data) => {
    *   console.log('Data loaded:', data);
    * });
-   * 
+   *
    * // Later, when you want to unsubscribe
    * unsubscribe();
    */
@@ -167,7 +167,7 @@ export class EventEmitter {
    * @example
    * // Remove all listeners for a specific event
    * emitter.removeAllListeners('dataLoaded');
-   * 
+   *
    * // Remove all listeners for all events
    * emitter.removeAllListeners();
    */

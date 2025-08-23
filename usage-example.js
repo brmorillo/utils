@@ -21,12 +21,12 @@ try {
     util.StringUtils.reverse({ input: 'hello' }),
   );
   console.log(
-    "isPalindrome({input: 'radar'}):",
-    util.StringUtils.isPalindrome({ input: 'radar' }),
+    "isValidPalindrome({input: 'radar'}):",
+    util.StringUtils.isValidPalindrome({ input: 'radar' }),
   );
   console.log(
-    "isPalindrome({input: 'hello'}):",
-    util.StringUtils.isPalindrome({ input: 'hello' }),
+    "isValidPalindrome({input: 'hello'}):",
+    util.StringUtils.isValidPalindrome({ input: 'hello' }),
   );
   console.log(
     "truncate({input: 'This is a long string', maxLength: 10}):",
@@ -58,7 +58,10 @@ try {
 // Test NumberUtils
 console.log('\n=== TESTING NumberUtils ===');
 try {
-  console.log('isEven({value: 4}):', util.NumberUtils.isEven({ value: 4 }));
+  console.log(
+    'isValidEven({value: 4}):',
+    util.NumberUtils.isValidEven({ value: 4 }),
+  );
   console.log('isOdd({value: 3}):', util.NumberUtils.isOdd({ value: 3 }));
   console.log(
     'isPositive({value: 5}):',
@@ -211,37 +214,37 @@ console.log('\n=== TESTING JWTUtils ===');
 try {
   const payload = { userId: '123', role: 'admin' };
   const secretKey = 'your-secret-key-for-testing-jwt-utils';
-  
+
   // Generate token
   const token = util.JWTUtils.generate({
     payload,
     secretKey,
-    options: { expiresIn: '1h' }
+    options: { expiresIn: '1h' },
   });
   console.log('generate({ payload, secretKey, options }):', token);
-  
+
   // Verify token
   const verified = util.JWTUtils.verify({
     token,
-    secretKey
+    secretKey,
   });
   console.log('verify({ token, secretKey }):', verified);
-  
+
   // Decode token
   const decoded = util.JWTUtils.decode({
-    token
+    token,
   });
   console.log('decode({ token }):', decoded);
-  
+
   // Check if expired
   const isExpired = util.JWTUtils.isExpired({
-    token
+    token,
   });
   console.log('isExpired({ token }):', isExpired);
-  
+
   // Get expiration time
   const expirationTime = util.JWTUtils.getExpirationTime({
-    token
+    token,
   });
   console.log('getExpirationTime({ token }):', expirationTime, 'seconds');
 } catch (error) {
@@ -315,8 +318,8 @@ try {
   const uuid = util.UUIDUtils.uuidV4Generate();
   console.log('uuidV4Generate():', uuid);
   console.log(
-    'uuidIsValid({id: uuid}):',
-    util.UUIDUtils.uuidIsValid({ id: uuid }),
+    'isValidUuid({id: uuid}):',
+    util.UUIDUtils.isValidUuid({ id: uuid }),
   );
 } catch (error) {
   console.log('Error testing UUIDUtils:', error.message);

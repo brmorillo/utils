@@ -1,0 +1,94 @@
+name: Git Flow - Feature Branch
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+      - 'feat/**'
+  pull_request:
+    branches:
+      - v12
+    types: [opened, synchronize, reopened]
+
+jobs:
+  validate:
+    name: Validate Feature Branch
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Type checking
+        run: npm run type-check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Format check
+        run: npm run format:check
+
+      - name: Run tests
+        run: npm run test:ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Validate branch naming
+        run: |
+          branch_name="${{ github.head_ref || github.ref_name }}"
+          if [[ ! "$branch_name" =~ ^(feature|feat)/.+ ]]; then
+            echo "❌ Branch name '$branch_name' does not follow convention: feature/your-feature-name"
+            exit 1
+          fi
+          echo "✅ Branch name '$branch_name' follows convention"
+
+      - name: Check commit messages
+        run: |
+          # Check if commits follow conventional commit format
+          commits=$(git log --pretty=format:"%s" origin/v12..HEAD)
+          while IFS= read -r commit; do
+            if [[ ! "$commit" =~ ^(feat|fix|chore|docs|style|refactor|test|perf|ci|build)(\([^)]*\))?\!?:\ .+ ]]; then
+              echo "❌ Commit message does not follow conventional format: $commit"
+              echo "Expected format: type(scope): description"
+              echo "Types: feat, fix, chore, docs, style, refactor, test, perf, ci, build"
+              exit 1
+            fi
+          done <<< "$commits"
+          echo "✅ All commit messages follow conventional format"
+
+  auto-assign-reviewers:
+    name: Auto Assign Reviewers
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Auto assign reviewers
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo, number } = context.issue;
+
+            // Add reviewers (customize based on your team)
+            await github.rest.pulls.requestReviewers({
+              owner,
+              repo,
+              pull_number: number,
+              reviewers: ['brmorillo'], // Add team members here
+            });
+
+            // Add labels
+            await github.rest.issues.addLabels({
+              owner,
+              repo,
+              issue_number: number,
+              labels: ['feature', 'review-needed']
+            });

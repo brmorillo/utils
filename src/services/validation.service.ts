@@ -16,10 +16,10 @@ export class ValidationUtils {
   public static isValidEmail({ email }: { email: string }): boolean {
     if (!email || typeof email !== 'string') return false;
 
-    // Regex mais rigorosa para validação de email
+    // More strict regex for email validation
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-    // Verificações adicionais para casos específicos
+    // Additional checks for specific cases
     if (email.includes('..') || email.startsWith('.') || email.endsWith('.')) {
       return false;
     }
@@ -62,12 +62,12 @@ export class ValidationUtils {
   public static isValidURL({ inputUrl }: { inputUrl: string }): boolean {
     if (!inputUrl || typeof inputUrl !== 'string') return false;
 
-    // Verificações adicionais antes de tentar criar o objeto URL
+    // Additional checks before trying to create URL object
     if (inputUrl.includes(' ') || inputUrl.includes('..')) {
       return false;
     }
 
-    // Verificar protocolos permitidos antes de tentar criar o objeto URL
+    // Check allowed protocols before trying to create URL object
     const allowedProtocols = ['http:', 'https:'];
     const protocolMatch = inputUrl.match(/^([a-z]+):/i);
     if (
@@ -77,7 +77,7 @@ export class ValidationUtils {
       return false;
     }
 
-    // Verificar formato específico para http:/example.com (faltando uma barra)
+    // Check specific format for http:/example.com (missing slash)
     if (inputUrl.match(/^https?:\/[^\/]/)) {
       return false;
     }
@@ -382,7 +382,7 @@ export class ValidationUtils {
     // If state is provided, perform state-specific validation
     if (state) {
       switch (state.toUpperCase()) {
-        case 'SP':
+        case 'SP': {
           // São Paulo RG has 9 digits
           if (cleanRG.length !== 9) return false;
 
@@ -398,6 +398,7 @@ export class ValidationUtils {
           if (!/^[\dXx]$/.test(digit)) return false;
 
           return true;
+        }
 
         // Add other states as needed
         default:

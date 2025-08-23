@@ -18,9 +18,9 @@ describe('UUIDUtils - Testes de Integração', () => {
       });
 
       // 2. Valida cada UUID
-      const isV1Valid = UUIDUtils.uuidIsValid({ id: uuidV1 });
-      const isV4Valid = UUIDUtils.uuidIsValid({ id: uuidV4 });
-      const isV5Valid = UUIDUtils.uuidIsValid({ id: uuidV5 });
+      const isV1Valid = UUIDUtils.isValidUuid({ id: uuidV1 });
+      const isV4Valid = UUIDUtils.isValidUuid({ id: uuidV4 });
+      const isV5Valid = UUIDUtils.isValidUuid({ id: uuidV5 });
 
       // Verificações
       expect(isV1Valid).toBe(true);
@@ -51,12 +51,12 @@ describe('UUIDUtils - Testes de Integração', () => {
       expect(userDatabase[userId2].name).toBe('Bob');
 
       // 4. Verifica se os IDs são válidos
-      expect(UUIDUtils.uuidIsValid({ id: userId1 })).toBe(true);
-      expect(UUIDUtils.uuidIsValid({ id: userId2 })).toBe(true);
+      expect(UUIDUtils.isValidUuid({ id: userId1 })).toBe(true);
+      expect(UUIDUtils.isValidUuid({ id: userId2 })).toBe(true);
 
       // 5. Verifica que um ID inválido não existe no banco de dados
       const invalidId = 'not-a-uuid';
-      expect(UUIDUtils.uuidIsValid({ id: invalidId })).toBe(false);
+      expect(UUIDUtils.isValidUuid({ id: invalidId })).toBe(false);
       expect(userDatabase[invalidId]).toBeUndefined();
     });
 
@@ -78,8 +78,8 @@ describe('UUIDUtils - Testes de Integração', () => {
       });
 
       // 3. Verifica que os IDs são válidos
-      expect(UUIDUtils.uuidIsValid({ id: productId })).toBe(true);
-      expect(UUIDUtils.uuidIsValid({ id: categoryId })).toBe(true);
+      expect(UUIDUtils.isValidUuid({ id: productId })).toBe(true);
+      expect(UUIDUtils.isValidUuid({ id: categoryId })).toBe(true);
 
       // 4. Verifica que os IDs são diferentes para recursos diferentes
       expect(productId).not.toBe(categoryId);
@@ -105,7 +105,7 @@ describe('UUIDUtils - Testes de Integração', () => {
       }
 
       // 2. Verifica que todos são válidos
-      const allValid = uuids.every(uuid => UUIDUtils.uuidIsValid({ id: uuid }));
+      const allValid = uuids.every(uuid => UUIDUtils.isValidUuid({ id: uuid }));
       expect(allValid).toBe(true);
 
       // 3. Verifica que todos são únicos
@@ -127,7 +127,7 @@ describe('UUIDUtils - Testes de Integração', () => {
       }
 
       // 2. Verifica que todos são válidos
-      const allValid = uuids.every(uuid => UUIDUtils.uuidIsValid({ id: uuid }));
+      const allValid = uuids.every(uuid => UUIDUtils.isValidUuid({ id: uuid }));
       expect(allValid).toBe(true);
 
       // 3. Verifica que todos são únicos
