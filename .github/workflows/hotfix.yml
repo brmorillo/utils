@@ -13,6 +13,8 @@ jobs:
   validate-hotfix:
     name: Validate Hotfix
     runs-on: ubuntu-latest
+    # Only run on actual hotfix branches
+    if: startsWith(github.head_ref, 'hotfix/') || startsWith(github.ref, 'refs/heads/hotfix/')
 
     steps:
       - name: Checkout code
@@ -22,7 +24,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          
 
       - name: Install dependencies
         run: npm install
@@ -78,7 +79,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          
 
       - name: Install dependencies
         run: npm install

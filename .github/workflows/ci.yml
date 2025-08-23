@@ -10,6 +10,12 @@ jobs:
   quality:
     name: Code Quality
     runs-on: ubuntu-latest
+    # Skip if this is a feature branch that should go to v12, not main
+    if: |
+      github.event_name == 'push' || 
+      (github.event_name == 'pull_request' && 
+       !startsWith(github.head_ref, 'feature/') && 
+       !startsWith(github.head_ref, 'feat/'))
 
     steps:
       - name: Checkout code
