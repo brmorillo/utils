@@ -25,7 +25,6 @@
     "dev": "tsup --watch",
     "prepublishOnly": "npm run build && npm run test:ci",
     "docs:generate": "typedoc src/index.ts --out docs/api",
-    "prepare": "husky install",
     "commit": "cz",
     "version:bump": "standard-version && git push --follow-tags origin main",
     "prepub": "npm run build",
@@ -82,8 +81,8 @@
     "semantic-release": "^22.0.0",
     "ts-jest": "^29.4.0",
     "tsup": "^8.0.0",
-    "typedoc": "^0.26.0",
-    "typescript": "^5.8.3"
+    "typedoc": "^0.27.0",
+    "typescript": "~5.6.3"
   },
   "peerDependencies": {
     "pino": "^8.0.0",
@@ -96,6 +95,9 @@
     "winston": {
       "optional": true
     }
+  },
+  "overrides": {
+    "typescript": "~5.6.3"
   },
   "repository": {
     "type": "git",
