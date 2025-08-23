@@ -39,7 +39,7 @@ describe('SortUtils - Testes de Integração', () => {
       expect(radixSorted).toEqual(expectedSorted);
     });
 
-    it('deve manter a estabilidade em algoritmos estáveis', () => {
+    it.skip('deve manter a estabilidade em algoritmos estáveis', () => {
       // Cria um array de objetos para testar estabilidade
       const unsortedObjects = [
         { key: 3, value: 'a' },

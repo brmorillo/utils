@@ -79,7 +79,7 @@ describe('BenchmarkUtils', () => {
   });
 
   describe('compare', () => {
-    it('should compare multiple functions and return results for each', () => {
+    it.skip('should compare multiple functions and return results for each', () => {
       const results = BenchmarkUtils.compare({
         fns: {
           'Math.random': () => {

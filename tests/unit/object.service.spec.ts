@@ -19,7 +19,9 @@ describe('ObjectUtils', () => {
 
     it('deve respeitar o delimitador personalizado', () => {
       const obj = { a: { b: { c: 42 } } };
-      expect(ObjectUtils.findValue({ obj, path: 'a/b/c', delimiter: '/' })).toBe(42);
+      expect(
+        ObjectUtils.findValue({ obj, path: 'a/b/c', delimiter: '/' }),
+      ).toBe(42);
     });
   });
 
@@ -231,7 +233,12 @@ describe('ObjectUtils', () => {
 
     it('deve usar o delimitador fornecido', () => {
       const obj = {};
-      ObjectUtils.unflattenObject({ obj, path: 'a/b/c', value: 42, delimiter: '/' });
+      ObjectUtils.unflattenObject({
+        obj,
+        path: 'a/b/c',
+        value: 42,
+        delimiter: '/',
+      });
       expect(obj).toEqual({ a: { b: { c: 42 } } });
     });
 
@@ -305,7 +312,7 @@ describe('ObjectUtils', () => {
       const obj1 = { a: 1 };
       const obj2 = { a: 1 };
       expect(ObjectUtils.compare({ obj1, obj2 })).toBe(true);
-      
+
       const obj3 = { a: 1 };
       const obj4 = { a: 2 };
       expect(ObjectUtils.compare({ obj1: obj3, obj2: obj4 })).toBe(false);
@@ -315,7 +322,7 @@ describe('ObjectUtils', () => {
       const obj1 = { a: { b: 1 } };
       const obj2 = { a: { b: 1 } };
       expect(ObjectUtils.compare({ obj1, obj2 })).toBe(true);
-      
+
       const obj3 = { a: { b: 1 } };
       const obj4 = { a: { b: 2 } };
       expect(ObjectUtils.compare({ obj1: obj3, obj2: obj4 })).toBe(false);
@@ -325,7 +332,7 @@ describe('ObjectUtils', () => {
       const obj1 = { a: [1, 2, 3] };
       const obj2 = { a: [1, 2, 3] };
       expect(ObjectUtils.compare({ obj1, obj2 })).toBe(true);
-      
+
       const obj3 = { a: [1, 2, 3] };
       const obj4 = { a: [1, 2, 4] };
       expect(ObjectUtils.compare({ obj1: obj3, obj2: obj4 })).toBe(false);

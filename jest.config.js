@@ -36,21 +36,21 @@ module.exports = {
       },
     },
     // Só executa benchmark em ambiente local, não no CI
-    ...(isCI ? [] : [{
-      displayName: 'benchmark',
-      testMatch: ['<rootDir>/tests/benchmark/**/*.bench.ts'],
-      preset: 'ts-jest',
-      testEnvironment: 'node',
-      transform: {
-        '^.+\\.ts$': 'ts-jest',
-      },
-    }]),
+    ...(isCI
+      ? []
+      : [
+          {
+            displayName: 'benchmark',
+            testMatch: ['<rootDir>/tests/benchmark/**/*.bench.ts'],
+            preset: 'ts-jest',
+            testEnvironment: 'node',
+            transform: {
+              '^.+\\.ts$': 'ts-jest',
+            },
+          },
+        ]),
   ],
-  collectCoverageFrom: [
-    'src/**/*.ts',
-    '!src/**/*.d.ts',
-    '!src/**/index.ts',
-  ],
+  collectCoverageFrom: ['src/**/*.ts', '!src/**/*.d.ts', '!src/**/index.ts'],
   coveragePathIgnorePatterns: [
     '/node_modules/',
     '/dist/',

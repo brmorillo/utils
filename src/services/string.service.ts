@@ -66,10 +66,10 @@ export class StringUtils {
     maxLength: number;
   }): string {
     if (input.length <= maxLength) return input;
-    
+
     // Se a string for maior que maxLength, truncar deixando espaço para '...'
     if (maxLength <= 3) return '...';
-    
+
     return input.slice(0, maxLength - 3) + '...';
   }
 
@@ -89,12 +89,19 @@ export class StringUtils {
    */
   public static toKebabCase({ input }: { input: string }): string {
     return input
-      .replace(/([a-z])([A-Z])/g, '$1-$2') // camelCase para kebab-case
-      .replace(/[\s_]+/g, '-') // espaços e underscores para hífens
+      .trim()
+      // Primeiro substitui underscores e espaços por hífens
+      .replace(/[\s_]+/g, '-')
+      // Adiciona hífen antes de maiúsculas (apenas se precedidas por minúsculas ou números)
+      .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+      // Converte tudo para minúsculo
       .toLowerCase()
-      .replace(/[^a-zA-Z0-9-]/g, '') // remove caracteres especiais exceto hífens
-      .replace(/-+/g, '-') // múltiplos hífens para um só
-      .replace(/^-|-$/g, ''); // remove hífens do início e fim
+      // Remove caracteres especiais exceto hífens
+      .replace(/[^a-z0-9-]/g, '')
+      // Múltiplos hífens para um só
+      .replace(/-+/g, '-')
+      // Remove hífens do início e fim
+      .replace(/^-|-$/g, '');
   }
 
   /**
@@ -113,12 +120,19 @@ export class StringUtils {
    */
   public static toSnakeCase({ input }: { input: string }): string {
     return input
-      .replace(/([a-z])([A-Z])/g, '$1_$2') // camelCase para snake_case
-      .replace(/[\s-]+/g, '_') // espaços e hífens para underscores
+      .trim()
+      // Primeiro substitui hífens e espaços por underscores
+      .replace(/[\s-]+/g, '_')
+      // Adiciona underscore antes de maiúsculas (apenas se precedidas por minúsculas ou números)
+      .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
+      // Converte tudo para minúsculo
       .toLowerCase()
-      .replace(/[^a-zA-Z0-9_]/g, '') // remove caracteres especiais exceto underscores
-      .replace(/_+/g, '_') // múltiplos underscores para um só
-      .replace(/^_|_$/g, ''); // remove underscores do início e fim
+      // Remove caracteres especiais exceto underscores
+      .replace(/[^a-z0-9_]/g, '')
+      // Múltiplos underscores para um só
+      .replace(/_+/g, '_')
+      // Remove underscores do início e fim
+      .replace(/^_|_$/g, '');
   }
 
   /**
@@ -140,7 +154,7 @@ export class StringUtils {
     if (/^[a-z]+([A-Z][a-z]*)*$/.test(input)) {
       return input;
     }
-    
+
     return input
       .toLowerCase()
       .replace(/[^a-zA-Z0-9]+(.)/g, (_, match) => match.toUpperCase());
