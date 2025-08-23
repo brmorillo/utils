@@ -112,11 +112,13 @@ describe('DateUtils - Testes de Integração', () => {
       const intersection = interval1.intersection(interval2);
 
       // 4. Calcular a duração da interseção
-      const duration = intersection ? DateUtils.diffBetween({
-        startDate: intersection.start || DateTime.fromISO('2023-01-15'),
-        endDate: intersection.end || DateTime.fromISO('2023-01-20'),
-        units: ['days'],
-      }) : Duration.fromObject({ days: 0 });
+      const duration = intersection
+        ? DateUtils.diffBetween({
+            startDate: intersection.start || DateTime.fromISO('2023-01-15'),
+            endDate: intersection.end || DateTime.fromISO('2023-01-20'),
+            units: ['days'],
+          })
+        : Duration.fromObject({ days: 0 });
 
       // Verificações
       expect(intersection?.start?.toISODate()).toBe('2023-01-15');
@@ -146,7 +148,9 @@ describe('DateUtils - Testes de Integração', () => {
       // Verificações
       expect(dateNY.toLocaleString(DateTime.DATETIME_FULL)).toContain('EDT');
       expect(dateTokyo.toLocaleString(DateTime.DATETIME_FULL)).toContain('JST');
-      expect(dateParis.toLocaleString(DateTime.DATETIME_FULL)).toContain('CEST');
+      expect(dateParis.toLocaleString(DateTime.DATETIME_FULL)).toContain(
+        'CEST',
+      );
 
       // Todas representam o mesmo instante
       expect(dateNY.toUTC().toISO()).toBe(date.toISO());

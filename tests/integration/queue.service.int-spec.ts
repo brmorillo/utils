@@ -1,4 +1,9 @@
-import { Queue, Stack, MultiQueue, QueueUtils } from '../../src/services/queue.service';
+import {
+  Queue,
+  Stack,
+  MultiQueue,
+  QueueUtils,
+} from '../../src/services/queue.service';
 
 /**
  * Testes de integração para o serviço de filas.
@@ -8,7 +13,11 @@ describe('Queue Service - Testes de Integração', () => {
   describe('Cenário: Sistema de mensagens', () => {
     it('deve processar mensagens na ordem correta usando uma fila', () => {
       // Cenário: Um sistema de mensagens que processa mensagens na ordem de chegada
-      const messageQueue = new Queue<{ id: number; text: string; priority: number }>();
+      const messageQueue = new Queue<{
+        id: number;
+        text: string;
+        priority: number;
+      }>();
       const processedMessages: number[] = [];
 
       // Adiciona mensagens à fila
@@ -34,10 +43,22 @@ describe('Queue Service - Testes de Integração', () => {
       const processedMessages: number[] = [];
 
       // Adiciona mensagens com diferentes prioridades
-      priorityQueue.enqueue({ id: 1, text: 'Mensagem de baixa prioridade' }, 'low');
-      priorityQueue.enqueue({ id: 2, text: 'Mensagem de alta prioridade' }, 'high');
-      priorityQueue.enqueue({ id: 3, text: 'Mensagem de média prioridade' }, 'medium');
-      priorityQueue.enqueue({ id: 4, text: 'Outra mensagem de alta prioridade' }, 'high');
+      priorityQueue.enqueue(
+        { id: 1, text: 'Mensagem de baixa prioridade' },
+        'low',
+      );
+      priorityQueue.enqueue(
+        { id: 2, text: 'Mensagem de alta prioridade' },
+        'high',
+      );
+      priorityQueue.enqueue(
+        { id: 3, text: 'Mensagem de média prioridade' },
+        'medium',
+      );
+      priorityQueue.enqueue(
+        { id: 4, text: 'Outra mensagem de alta prioridade' },
+        'high',
+      );
 
       // Processa primeiro as mensagens de alta prioridade
       while (!priorityQueue.isEmpty('high')) {
@@ -150,19 +171,27 @@ describe('Queue Service - Testes de Integração', () => {
       // Adiciona tarefas com diferentes prioridades
       taskSystem.enqueue(
         { id: 1, description: 'Corrigir bug crítico', assignee: 'Alice' },
-        'critical'
+        'critical',
       );
       taskSystem.enqueue(
-        { id: 2, description: 'Implementar nova funcionalidade', assignee: 'Bob' },
-        'normal'
+        {
+          id: 2,
+          description: 'Implementar nova funcionalidade',
+          assignee: 'Bob',
+        },
+        'normal',
       );
       taskSystem.enqueue(
         { id: 3, description: 'Atualizar documentação', assignee: 'Charlie' },
-        'low'
+        'low',
       );
       taskSystem.enqueue(
-        { id: 4, description: 'Resolver problema de segurança', assignee: 'Alice' },
-        'critical'
+        {
+          id: 4,
+          description: 'Resolver problema de segurança',
+          assignee: 'Alice',
+        },
+        'critical',
       );
 
       // Verifica o número de tarefas por prioridade
@@ -211,7 +240,10 @@ describe('Queue Service - Testes de Integração', () => {
         if (action === 'add') {
           currentText += data;
         } else if (action === 'delete') {
-          currentText = currentText.substring(0, currentText.length - parseInt(data));
+          currentText = currentText.substring(
+            0,
+            currentText.length - parseInt(data),
+          );
         }
       };
 
@@ -230,7 +262,10 @@ describe('Queue Service - Testes de Integração', () => {
 
         // Simula a reversão da ação
         if (lastAction.action === 'add') {
-          currentText = currentText.substring(0, currentText.length - lastAction.data.length);
+          currentText = currentText.substring(
+            0,
+            currentText.length - lastAction.data.length,
+          );
         } else if (lastAction.action === 'delete') {
           currentText += lastAction.data;
         }
@@ -255,7 +290,10 @@ describe('Queue Service - Testes de Integração', () => {
         if (nextAction.action === 'add') {
           currentText += nextAction.data;
         } else if (nextAction.action === 'delete') {
-          currentText = currentText.substring(0, currentText.length - parseInt(nextAction.data));
+          currentText = currentText.substring(
+            0,
+            currentText.length - parseInt(nextAction.data),
+          );
         }
 
         return true;

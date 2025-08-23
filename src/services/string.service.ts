@@ -88,20 +88,22 @@ export class StringUtils {
    * }); // "camel-case-string"
    */
   public static toKebabCase({ input }: { input: string }): string {
-    return input
-      .trim()
-      // Primeiro substitui underscores e espaços por hífens
-      .replace(/[\s_]+/g, '-')
-      // Adiciona hífen antes de maiúsculas (apenas se precedidas por minúsculas ou números)
-      .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
-      // Converte tudo para minúsculo
-      .toLowerCase()
-      // Remove caracteres especiais exceto hífens
-      .replace(/[^a-z0-9-]/g, '')
-      // Múltiplos hífens para um só
-      .replace(/-+/g, '-')
-      // Remove hífens do início e fim
-      .replace(/^-|-$/g, '');
+    return (
+      input
+        .trim()
+        // Primeiro substitui underscores e espaços por hífens
+        .replace(/[\s_]+/g, '-')
+        // Adiciona hífen antes de maiúsculas (apenas se precedidas por minúsculas ou números)
+        .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+        // Converte tudo para minúsculo
+        .toLowerCase()
+        // Remove caracteres especiais exceto hífens
+        .replace(/[^a-z0-9-]/g, '')
+        // Múltiplos hífens para um só
+        .replace(/-+/g, '-')
+        // Remove hífens do início e fim
+        .replace(/^-|-$/g, '')
+    );
   }
 
   /**
@@ -119,20 +121,22 @@ export class StringUtils {
    * }); // "camel_case_string"
    */
   public static toSnakeCase({ input }: { input: string }): string {
-    return input
-      .trim()
-      // Primeiro substitui hífens e espaços por underscores
-      .replace(/[\s-]+/g, '_')
-      // Adiciona underscore antes de maiúsculas (apenas se precedidas por minúsculas ou números)
-      .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
-      // Converte tudo para minúsculo
-      .toLowerCase()
-      // Remove caracteres especiais exceto underscores
-      .replace(/[^a-z0-9_]/g, '')
-      // Múltiplos underscores para um só
-      .replace(/_+/g, '_')
-      // Remove underscores do início e fim
-      .replace(/^_|_$/g, '');
+    return (
+      input
+        .trim()
+        // Primeiro substitui hífens e espaços por underscores
+        .replace(/[\s-]+/g, '_')
+        // Adiciona underscore antes de maiúsculas (apenas se precedidas por minúsculas ou números)
+        .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
+        // Converte tudo para minúsculo
+        .toLowerCase()
+        // Remove caracteres especiais exceto underscores
+        .replace(/[^a-z0-9_]/g, '')
+        // Múltiplos underscores para um só
+        .replace(/_+/g, '_')
+        // Remove underscores do início e fim
+        .replace(/^_|_$/g, '')
+    );
   }
 
   /**
