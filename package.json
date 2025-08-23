@@ -20,7 +20,7 @@
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
     "format": "prettier --write \"src/**/*.ts\"",
-    "format:check": "prettier --check \"src/**/*.ts\"",
+    "format:check": "npm run format && prettier --check \"src/**/*.ts\"",
     "type-check": "tsc --noEmit",
     "dev": "tsup --watch",
     "prepublishOnly": "npm run build && npm run test:ci",
