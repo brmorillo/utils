@@ -10,12 +10,15 @@ jobs:
   quality:
     name: Code Quality
     runs-on: ubuntu-latest
-    # Skip if this is a feature branch that should go to v12, not main
+    # Only run for development PRs, not release PRs
     if: |
       github.event_name == 'push' || 
       (github.event_name == 'pull_request' && 
+       !startsWith(github.head_ref, 'v') && 
+       !startsWith(github.head_ref, 'release/') && 
        !startsWith(github.head_ref, 'feature/') && 
-       !startsWith(github.head_ref, 'feat/'))
+       !startsWith(github.head_ref, 'feat/') && 
+       !startsWith(github.head_ref, 'hotfix/'))
 
     steps:
       - name: Checkout code
@@ -25,7 +28,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          
 
       - name: Install dependencies
         run: npm install
@@ -56,7 +58,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          
 
       - name: Install dependencies
         run: npm install
@@ -90,7 +91,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          
 
       - name: Install dependencies
         run: npm install
@@ -125,7 +125,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          
+
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies

@@ -3,6 +3,9 @@ name: Release Management
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
     inputs:
       release_type:
@@ -16,6 +19,40 @@ on:
           - major
 
 jobs:
+  validate-release:
+    name: Validate Release PR
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'pull_request' && 
+      (startsWith(github.head_ref, 'v') || startsWith(github.head_ref, 'release/'))
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Lint code
+        run: npm run lint
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Build project
+        run: npm run build
+
+      - name: Run tests
+        run: npm run test:ci
+
   release:
     name: Create Release
     runs-on: ubuntu-latest
@@ -42,7 +79,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          
+
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
@@ -206,7 +243,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          
+
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
