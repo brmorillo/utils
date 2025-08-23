@@ -1,4 +1,7 @@
-import { FileMetadata, IStorageProvider } from '../interfaces/storage.interface';
+import {
+  FileMetadata,
+  IStorageProvider,
+} from '../interfaces/storage.interface';
 import { Readable } from 'stream';
 
 /**
@@ -28,41 +31,50 @@ export class S3StorageProvider implements IStorageProvider {
   constructor(options: S3StorageOptions) {
     this.bucket = options.bucket;
     this.baseUrl = options.baseUrl || '';
-    
+
     try {
       // Dynamic import to avoid requiring AWS SDK as a direct dependency
       const { S3Client } = require('@aws-sdk/client-s3');
-      
+
       this.s3Client = new S3Client({
         region: options.region,
-        credentials: options.accessKeyId && options.secretAccessKey ? {
-          accessKeyId: options.accessKeyId,
-          secretAccessKey: options.secretAccessKey,
-        } : undefined,
+        credentials:
+          options.accessKeyId && options.secretAccessKey
+            ? {
+                accessKeyId: options.accessKeyId,
+                secretAccessKey: options.secretAccessKey,
+              }
+            : undefined,
         endpoint: options.endpoint,
         forcePathStyle: options.forcePathStyle,
       });
     } catch (error) {
-      throw new Error('AWS SDK is not installed. Please install @aws-sdk/client-s3 and @aws-sdk/lib-storage to use S3StorageProvider.');
+      throw new Error(
+        'AWS SDK is not installed. Please install @aws-sdk/client-s3 and @aws-sdk/lib-storage to use S3StorageProvider.',
+      );
     }
   }
 
   /**
    * Uploads a file to S3
    */
-  async uploadFile(filePath: string, content: Buffer | string | NodeJS.ReadableStream, metadata?: FileMetadata): Promise<string> {
+  async uploadFile(
+    filePath: string,
+    content: Buffer | string | NodeJS.ReadableStream,
+    metadata?: FileMetadata,
+  ): Promise<string> {
     try {
       const { Upload } = require('@aws-sdk/lib-storage');
       const { PutObjectCommand } = require('@aws-sdk/client-s3');
-      
+
       let body: Buffer | string | Readable;
-      
+
       if (Buffer.isBuffer(content) || typeof content === 'string') {
         body = content;
       } else {
         body = content as Readable;
       }
-      
+
       const upload = new Upload({
         client: this.s3Client,
         params: {
@@ -73,11 +85,13 @@ export class S3StorageProvider implements IStorageProvider {
           Metadata: this.prepareMetadata(metadata),
         },
       });
-      
+
       await upload.done();
       return this.getFileUrl(filePath);
     } catch (error) {
-      throw new Error(`Failed to upload file to S3: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Failed to upload file to S3: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -87,14 +101,14 @@ export class S3StorageProvider implements IStorageProvider {
   async downloadFile(filePath: string): Promise<Buffer> {
     try {
       const { GetObjectCommand } = require('@aws-sdk/client-s3');
-      
+
       const command = new GetObjectCommand({
         Bucket: this.bucket,
         Key: filePath,
       });
-      
+
       const response = await this.s3Client.send(command);
-      
+
       // Convert stream to buffer
       return new Promise((resolve, reject) => {
         const chunks: Buffer[] = [];
@@ -103,7 +117,9 @@ export class S3StorageProvider implements IStorageProvider {
         response.Body.on('error', reject);
       });
     } catch (error) {
-      throw new Error(`Failed to download file from S3: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Failed to download file from S3: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -113,19 +129,21 @@ export class S3StorageProvider implements IStorageProvider {
   async fileExists(filePath: string): Promise<boolean> {
     try {
       const { HeadObjectCommand } = require('@aws-sdk/client-s3');
-      
+
       const command = new HeadObjectCommand({
         Bucket: this.bucket,
         Key: filePath,
       });
-      
+
       await this.s3Client.send(command);
       return true;
     } catch (error: any) {
       if (error.name === 'NotFound') {
         return false;
       }
-      throw new Error(`Failed to check if file exists in S3: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Failed to check if file exists in S3: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -135,15 +153,17 @@ export class S3StorageProvider implements IStorageProvider {
   async deleteFile(filePath: string): Promise<void> {
     try {
       const { DeleteObjectCommand } = require('@aws-sdk/client-s3');
-      
+
       const command = new DeleteObjectCommand({
         Bucket: this.bucket,
         Key: filePath,
       });
-      
+
       await this.s3Client.send(command);
     } catch (error) {
-      throw new Error(`Failed to delete file from S3: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Failed to delete file from S3: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -163,21 +183,23 @@ export class S3StorageProvider implements IStorageProvider {
   async listFiles(prefix: string): Promise<string[]> {
     try {
       const { ListObjectsV2Command } = require('@aws-sdk/client-s3');
-      
+
       const command = new ListObjectsV2Command({
         Bucket: this.bucket,
         Prefix: prefix,
       });
-      
+
       const response = await this.s3Client.send(command);
-      
+
       if (!response.Contents) {
         return [];
       }
-      
+
       return response.Contents.map((item: any) => item.Key);
     } catch (error) {
-      throw new Error(`Failed to list files in S3: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Failed to list files in S3: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -187,14 +209,14 @@ export class S3StorageProvider implements IStorageProvider {
   async getFileMetadata(filePath: string): Promise<FileMetadata> {
     try {
       const { HeadObjectCommand } = require('@aws-sdk/client-s3');
-      
+
       const command = new HeadObjectCommand({
         Bucket: this.bucket,
         Key: filePath,
       });
-      
+
       const response = await this.s3Client.send(command);
-      
+
       return {
         contentType: response.ContentType,
         contentLength: response.ContentLength,
@@ -203,40 +225,54 @@ export class S3StorageProvider implements IStorageProvider {
         ...this.extractMetadata(response.Metadata),
       };
     } catch (error) {
-      throw new Error(`Failed to get file metadata from S3: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Failed to get file metadata from S3: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
   /**
    * Prepares metadata for S3
    */
-  private prepareMetadata(metadata?: FileMetadata): Record<string, string> | undefined {
+  private prepareMetadata(
+    metadata?: FileMetadata,
+  ): Record<string, string> | undefined {
     if (!metadata) {
       return undefined;
     }
-    
+
     const result: Record<string, string> = {};
-    
+
     Object.entries(metadata).forEach(([key, value]) => {
-      if (key !== 'contentType' && key !== 'contentLength' && key !== 'lastModified' && key !== 'etag') {
+      if (
+        key !== 'contentType' &&
+        key !== 'contentLength' &&
+        key !== 'lastModified' &&
+        key !== 'etag'
+      ) {
         result[key] = String(value);
       }
     });
-    
+
     return Object.keys(result).length > 0 ? result : undefined;
   }
 
   /**
    * Extracts metadata from S3 response
    */
-  private extractMetadata(metadata?: Record<string, string>): Record<string, any> {
+  private extractMetadata(
+    metadata?: Record<string, string>,
+  ): Record<string, any> {
     if (!metadata) {
       return {};
     }
-    
-    return Object.entries(metadata).reduce((acc, [key, value]) => {
-      acc[key] = value;
-      return acc;
-    }, {} as Record<string, any>);
+
+    return Object.entries(metadata).reduce(
+      (acc, [key, value]) => {
+        acc[key] = value;
+        return acc;
+      },
+      {} as Record<string, any>,
+    );
   }
 }

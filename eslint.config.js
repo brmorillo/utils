@@ -25,18 +25,21 @@ module.exports = [
     },
     rules: {
       ...js.configs.recommended.rules,
-      
+
       // Code style - relaxed for CI
-      'indent': ['warn', 2],
-      'quotes': ['warn', 'single'],
-      'semi': ['warn', 'always'],
+      indent: ['warn', 2],
+      quotes: ['warn', 'single'],
+      semi: ['warn', 'always'],
       'comma-dangle': ['warn', 'always-multiline'],
-      
+
       // TypeScript specific - relaxed
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        { argsIgnorePattern: '^_' },
+      ],
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/no-explicit-any': 'warn',
-      
+
       // Best practices - relaxed
       'no-console': 'off',
       'no-debugger': 'warn',
@@ -46,9 +49,9 @@ module.exports = [
       'no-unused-vars': 'off', // Disable base rule
       'no-undef': 'off', // TypeScript handles this
       'no-useless-escape': 'warn',
-      
+
       // Complexity - relaxed
-      'complexity': 'off',
+      complexity: 'off',
       'max-depth': 'off',
       'max-lines-per-function': 'off',
     },

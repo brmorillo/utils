@@ -1,6 +1,9 @@
 import { LogService } from './services/log.service';
 import { HttpService, HttpClientType } from './services/http.service';
-import { StorageService, StorageServiceOptions } from './services/storage.service';
+import {
+  StorageService,
+  StorageServiceOptions,
+} from './services/storage.service';
 import { LoggerOptions } from './interfaces/logger.interface';
 import { StorageProviderType } from './interfaces/storage.interface';
 

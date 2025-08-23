@@ -17,12 +17,12 @@ export class FileUtils {
    * console.log(content); // File contents
    * ```
    */
-  public static readFile({ 
-    filePath, 
+  public static readFile({
+    filePath,
     encoding = 'utf8',
-  }: { 
-    filePath: string; 
-    encoding?: BufferEncoding; 
+  }: {
+    filePath: string;
+    encoding?: BufferEncoding;
   }): string {
     try {
       return fs.readFileSync(filePath, encoding);

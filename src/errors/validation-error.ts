@@ -8,12 +8,12 @@ export class ValidationError extends BaseError {
    * Field that failed validation
    */
   public field?: string;
-  
+
   /**
    * Expected value or pattern
    */
   public expected?: any;
-  
+
   /**
    * Actual value that failed validation
    */
@@ -32,15 +32,15 @@ export class ValidationError extends BaseError {
     field?: string,
     expected?: any,
     actual?: any,
-    details?: Record<string, any>
+    details?: Record<string, any>,
   ) {
-    super(
-      message,
-      'VALIDATION_ERROR',
-      400,
-      { field, expected, actual, ...details }
-    );
-    
+    super(message, 'VALIDATION_ERROR', 400, {
+      field,
+      expected,
+      actual,
+      ...details,
+    });
+
     this.field = field;
     this.expected = expected;
     this.actual = actual;
@@ -51,13 +51,16 @@ export class ValidationError extends BaseError {
    * @param field Field name
    * @param details Additional error details
    */
-  public static required(field: string, details?: Record<string, any>): ValidationError {
+  public static required(
+    field: string,
+    details?: Record<string, any>,
+  ): ValidationError {
     return new ValidationError(
       `Field '${field}' is required`,
       field,
       'non-empty value',
       undefined,
-      details
+      details,
     );
   }
 
@@ -72,7 +75,7 @@ export class ValidationError extends BaseError {
     field: string,
     expected: string,
     actual: any,
-    details?: Record<string, any>
+    details?: Record<string, any>,
   ): ValidationError {
     const actualType = typeof actual;
     return new ValidationError(
@@ -80,7 +83,7 @@ export class ValidationError extends BaseError {
       field,
       expected,
       actual,
-      details
+      details,
     );
   }
 
@@ -95,14 +98,14 @@ export class ValidationError extends BaseError {
     field: string,
     format: string,
     actual: any,
-    details?: Record<string, any>
+    details?: Record<string, any>,
   ): ValidationError {
     return new ValidationError(
       `Field '${field}' must be a valid ${format}`,
       field,
       `valid ${format}`,
       actual,
-      details
+      details,
     );
   }
 
@@ -119,14 +122,14 @@ export class ValidationError extends BaseError {
     min: number,
     max: number,
     actual: number,
-    details?: Record<string, any>
+    details?: Record<string, any>,
   ): ValidationError {
     return new ValidationError(
       `Field '${field}' must be between ${min} and ${max}`,
       field,
       `value between ${min} and ${max}`,
       actual,
-      details
+      details,
     );
   }
 }

@@ -1,7 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { promisify } from 'util';
-import { FileMetadata, IStorageProvider } from '../interfaces/storage.interface';
+import {
+  FileMetadata,
+  IStorageProvider,
+} from '../interfaces/storage.interface';
 
 /**
  * Local filesystem storage provider options
@@ -24,7 +27,7 @@ export class LocalStorageProvider implements IStorageProvider {
   constructor(options: LocalStorageOptions) {
     this.basePath = options.basePath;
     this.baseUrl = options.baseUrl || '';
-    
+
     // Ensure base directory exists
     if (!fs.existsSync(this.basePath)) {
       fs.mkdirSync(this.basePath, { recursive: true });
@@ -34,15 +37,19 @@ export class LocalStorageProvider implements IStorageProvider {
   /**
    * Uploads a file to local storage
    */
-  async uploadFile(filePath: string, content: Buffer | string | NodeJS.ReadableStream, metadata?: FileMetadata): Promise<string> {
+  async uploadFile(
+    filePath: string,
+    content: Buffer | string | NodeJS.ReadableStream,
+    metadata?: FileMetadata,
+  ): Promise<string> {
     const fullPath = this.getFullPath(filePath);
-    
+
     // Ensure directory exists
     const dir = path.dirname(fullPath);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
-    
+
     if (Buffer.isBuffer(content) || typeof content === 'string') {
       await promisify(fs.writeFile)(fullPath, content);
     } else {
@@ -50,17 +57,17 @@ export class LocalStorageProvider implements IStorageProvider {
       return new Promise((resolve, reject) => {
         const writeStream = fs.createWriteStream(fullPath);
         content.pipe(writeStream);
-        
+
         writeStream.on('finish', () => {
           resolve(this.getFileUrl(filePath));
         });
-        
-        writeStream.on('error', (err) => {
+
+        writeStream.on('error', err => {
           reject(err);
         });
       });
     }
-    
+
     return this.getFileUrl(filePath);
   }
 
@@ -109,24 +116,24 @@ export class LocalStorageProvider implements IStorageProvider {
    */
   async listFiles(prefix: string): Promise<string[]> {
     const fullPath = this.getFullPath(prefix);
-    
+
     if (!fs.existsSync(fullPath)) {
       return [];
     }
-    
+
     const stat = await promisify(fs.stat)(fullPath);
     if (!stat.isDirectory()) {
       return [prefix];
     }
-    
+
     const files = await promisify(fs.readdir)(fullPath);
     const result: string[] = [];
-    
+
     for (const file of files) {
       const filePath = path.join(prefix, file);
       const fullFilePath = this.getFullPath(filePath);
       const fileStat = await promisify(fs.stat)(fullFilePath);
-      
+
       if (fileStat.isDirectory()) {
         const subFiles = await this.listFiles(filePath);
         result.push(...subFiles);
@@ -134,7 +141,7 @@ export class LocalStorageProvider implements IStorageProvider {
         result.push(filePath);
       }
     }
-    
+
     return result;
   }
 
@@ -144,7 +151,7 @@ export class LocalStorageProvider implements IStorageProvider {
   async getFileMetadata(filePath: string): Promise<FileMetadata> {
     const fullPath = this.getFullPath(filePath);
     const stats = await promisify(fs.stat)(fullPath);
-    
+
     return {
       contentLength: stats.size,
       lastModified: stats.mtime,
@@ -177,7 +184,7 @@ export class LocalStorageProvider implements IStorageProvider {
       '.pdf': 'application/pdf',
       '.txt': 'text/plain',
     };
-    
+
     return contentTypes[ext] || 'application/octet-stream';
   }
 }

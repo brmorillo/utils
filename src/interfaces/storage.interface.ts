@@ -25,7 +25,11 @@ export interface IStorageProvider {
    * @param metadata Optional metadata for the file
    * @returns Promise resolving to the file URL or path
    */
-  uploadFile(path: string, content: Buffer | string | NodeJS.ReadableStream, metadata?: FileMetadata): Promise<string>;
+  uploadFile(
+    path: string,
+    content: Buffer | string | NodeJS.ReadableStream,
+    metadata?: FileMetadata,
+  ): Promise<string>;
 
   /**
    * Downloads a file from storage

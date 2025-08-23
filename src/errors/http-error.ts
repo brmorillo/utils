@@ -15,7 +15,7 @@ export class HttpError extends BaseError {
     message: string,
     statusCode: number = 500,
     code: string = 'HTTP_ERROR',
-    details?: Record<string, any>
+    details?: Record<string, any>,
   ) {
     super(message, code, statusCode, details);
   }
@@ -25,7 +25,10 @@ export class HttpError extends BaseError {
    * @param message Error message
    * @param details Additional error details
    */
-  public static badRequest(message: string = 'Bad Request', details?: Record<string, any>): HttpError {
+  public static badRequest(
+    message: string = 'Bad Request',
+    details?: Record<string, any>,
+  ): HttpError {
     return new HttpError(message, 400, 'BAD_REQUEST', details);
   }
 
@@ -34,7 +37,10 @@ export class HttpError extends BaseError {
    * @param message Error message
    * @param details Additional error details
    */
-  public static unauthorized(message: string = 'Unauthorized', details?: Record<string, any>): HttpError {
+  public static unauthorized(
+    message: string = 'Unauthorized',
+    details?: Record<string, any>,
+  ): HttpError {
     return new HttpError(message, 401, 'UNAUTHORIZED', details);
   }
 
@@ -43,7 +49,10 @@ export class HttpError extends BaseError {
    * @param message Error message
    * @param details Additional error details
    */
-  public static forbidden(message: string = 'Forbidden', details?: Record<string, any>): HttpError {
+  public static forbidden(
+    message: string = 'Forbidden',
+    details?: Record<string, any>,
+  ): HttpError {
     return new HttpError(message, 403, 'FORBIDDEN', details);
   }
 
@@ -52,7 +61,10 @@ export class HttpError extends BaseError {
    * @param message Error message
    * @param details Additional error details
    */
-  public static notFound(message: string = 'Not Found', details?: Record<string, any>): HttpError {
+  public static notFound(
+    message: string = 'Not Found',
+    details?: Record<string, any>,
+  ): HttpError {
     return new HttpError(message, 404, 'NOT_FOUND', details);
   }
 
@@ -61,7 +73,10 @@ export class HttpError extends BaseError {
    * @param message Error message
    * @param details Additional error details
    */
-  public static timeout(message: string = 'Request Timeout', details?: Record<string, any>): HttpError {
+  public static timeout(
+    message: string = 'Request Timeout',
+    details?: Record<string, any>,
+  ): HttpError {
     return new HttpError(message, 408, 'REQUEST_TIMEOUT', details);
   }
 
@@ -70,7 +85,10 @@ export class HttpError extends BaseError {
    * @param message Error message
    * @param details Additional error details
    */
-  public static serverError(message: string = 'Internal Server Error', details?: Record<string, any>): HttpError {
+  public static serverError(
+    message: string = 'Internal Server Error',
+    details?: Record<string, any>,
+  ): HttpError {
     return new HttpError(message, 500, 'SERVER_ERROR', details);
   }
 }

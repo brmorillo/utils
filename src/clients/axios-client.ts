@@ -1,4 +1,8 @@
-import { IHttpClient, RequestOptions, RequestResponse } from '../interfaces/request.interface';
+import {
+  IHttpClient,
+  RequestOptions,
+  RequestResponse,
+} from '../interfaces/request.interface';
 
 /**
  * Axios HTTP client implementation
@@ -11,7 +15,9 @@ export class AxiosClient implements IHttpClient {
       // Dynamic import to avoid requiring axios as a direct dependency
       this.axios = require('axios');
     } catch (error) {
-      throw new Error('Axios is not installed. Please install axios to use AxiosClient.');
+      throw new Error(
+        'Axios is not installed. Please install axios to use AxiosClient.',
+      );
     }
   }
 
@@ -45,7 +51,7 @@ export class AxiosClient implements IHttpClient {
           headers: error.response.headers,
         };
       }
-      
+
       throw error;
     }
   }
@@ -53,7 +59,10 @@ export class AxiosClient implements IHttpClient {
   /**
    * Makes a GET request
    */
-  async get<T = any>(url: string, options?: Omit<RequestOptions, 'url' | 'method'>): Promise<RequestResponse<T>> {
+  async get<T = any>(
+    url: string,
+    options?: Omit<RequestOptions, 'url' | 'method'>,
+  ): Promise<RequestResponse<T>> {
     return this.request<T>({
       url,
       method: 'GET',
@@ -64,7 +73,11 @@ export class AxiosClient implements IHttpClient {
   /**
    * Makes a POST request
    */
-  async post<T = any>(url: string, data?: any, options?: Omit<RequestOptions, 'url' | 'method' | 'data'>): Promise<RequestResponse<T>> {
+  async post<T = any>(
+    url: string,
+    data?: any,
+    options?: Omit<RequestOptions, 'url' | 'method' | 'data'>,
+  ): Promise<RequestResponse<T>> {
     return this.request<T>({
       url,
       method: 'POST',
@@ -76,7 +89,11 @@ export class AxiosClient implements IHttpClient {
   /**
    * Makes a PUT request
    */
-  async put<T = any>(url: string, data?: any, options?: Omit<RequestOptions, 'url' | 'method' | 'data'>): Promise<RequestResponse<T>> {
+  async put<T = any>(
+    url: string,
+    data?: any,
+    options?: Omit<RequestOptions, 'url' | 'method' | 'data'>,
+  ): Promise<RequestResponse<T>> {
     return this.request<T>({
       url,
       method: 'PUT',
@@ -88,7 +105,10 @@ export class AxiosClient implements IHttpClient {
   /**
    * Makes a DELETE request
    */
-  async delete<T = any>(url: string, options?: Omit<RequestOptions, 'url' | 'method'>): Promise<RequestResponse<T>> {
+  async delete<T = any>(
+    url: string,
+    options?: Omit<RequestOptions, 'url' | 'method'>,
+  ): Promise<RequestResponse<T>> {
     return this.request<T>({
       url,
       method: 'DELETE',
@@ -99,7 +119,11 @@ export class AxiosClient implements IHttpClient {
   /**
    * Makes a PATCH request
    */
-  async patch<T = any>(url: string, data?: any, options?: Omit<RequestOptions, 'url' | 'method' | 'data'>): Promise<RequestResponse<T>> {
+  async patch<T = any>(
+    url: string,
+    data?: any,
+    options?: Omit<RequestOptions, 'url' | 'method' | 'data'>,
+  ): Promise<RequestResponse<T>> {
     return this.request<T>({
       url,
       method: 'PATCH',

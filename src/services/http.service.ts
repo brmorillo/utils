@@ -1,6 +1,10 @@
 import { AxiosClient } from '../clients/axios-client';
 import { HttpClient } from '../clients/http-client';
-import { IHttpClient, RequestOptions, RequestResponse } from '../interfaces/request.interface';
+import {
+  IHttpClient,
+  RequestOptions,
+  RequestResponse,
+} from '../interfaces/request.interface';
 
 /**
  * HTTP client type
@@ -93,7 +97,9 @@ export class HttpService {
   /**
    * Merges default headers with request-specific headers
    */
-  private mergeHeaders(headers?: Record<string, string>): Record<string, string> {
+  private mergeHeaders(
+    headers?: Record<string, string>,
+  ): Record<string, string> {
     return {
       ...this.defaultHeaders,
       ...headers,
@@ -103,7 +109,9 @@ export class HttpService {
   /**
    * Makes a generic HTTP request
    */
-  public async request<T = any>(options: RequestOptions): Promise<RequestResponse<T>> {
+  public async request<T = any>(
+    options: RequestOptions,
+  ): Promise<RequestResponse<T>> {
     const fullOptions: RequestOptions = {
       ...options,
       url: this.buildUrl(options.url),
@@ -117,7 +125,10 @@ export class HttpService {
   /**
    * Makes a GET request
    */
-  public async get<T = any>(url: string, options?: Omit<RequestOptions, 'url' | 'method'>): Promise<RequestResponse<T>> {
+  public async get<T = any>(
+    url: string,
+    options?: Omit<RequestOptions, 'url' | 'method'>,
+  ): Promise<RequestResponse<T>> {
     return this.request<T>({
       url,
       method: 'GET',
@@ -128,7 +139,11 @@ export class HttpService {
   /**
    * Makes a POST request
    */
-  public async post<T = any>(url: string, data?: any, options?: Omit<RequestOptions, 'url' | 'method' | 'data'>): Promise<RequestResponse<T>> {
+  public async post<T = any>(
+    url: string,
+    data?: any,
+    options?: Omit<RequestOptions, 'url' | 'method' | 'data'>,
+  ): Promise<RequestResponse<T>> {
     return this.request<T>({
       url,
       method: 'POST',
@@ -140,7 +155,11 @@ export class HttpService {
   /**
    * Makes a PUT request
    */
-  public async put<T = any>(url: string, data?: any, options?: Omit<RequestOptions, 'url' | 'method' | 'data'>): Promise<RequestResponse<T>> {
+  public async put<T = any>(
+    url: string,
+    data?: any,
+    options?: Omit<RequestOptions, 'url' | 'method' | 'data'>,
+  ): Promise<RequestResponse<T>> {
     return this.request<T>({
       url,
       method: 'PUT',
@@ -152,7 +171,10 @@ export class HttpService {
   /**
    * Makes a DELETE request
    */
-  public async delete<T = any>(url: string, options?: Omit<RequestOptions, 'url' | 'method'>): Promise<RequestResponse<T>> {
+  public async delete<T = any>(
+    url: string,
+    options?: Omit<RequestOptions, 'url' | 'method'>,
+  ): Promise<RequestResponse<T>> {
     return this.request<T>({
       url,
       method: 'DELETE',
@@ -163,7 +185,11 @@ export class HttpService {
   /**
    * Makes a PATCH request
    */
-  public async patch<T = any>(url: string, data?: any, options?: Omit<RequestOptions, 'url' | 'method' | 'data'>): Promise<RequestResponse<T>> {
+  public async patch<T = any>(
+    url: string,
+    data?: any,
+    options?: Omit<RequestOptions, 'url' | 'method' | 'data'>,
+  ): Promise<RequestResponse<T>> {
     return this.request<T>({
       url,
       method: 'PATCH',

@@ -21,7 +21,8 @@ export class Cache<T> {
    * @param ttl Time-to-live in milliseconds (null for no expiration, undefined for default)
    */
   set(key: string, value: T, ttl?: number | null): void {
-    const expires = ttl === null ? null : Date.now() + (ttl ?? this.defaultTTL ?? 0);
+    const expires =
+      ttl === null ? null : Date.now() + (ttl ?? this.defaultTTL ?? 0);
     this.cache.set(key, { value, expires });
   }
 
@@ -32,17 +33,17 @@ export class Cache<T> {
    */
   get(key: string): T | undefined {
     const item = this.cache.get(key);
-    
+
     if (!item) {
       return undefined;
     }
-    
+
     // Check if expired
     if (item.expires !== null && item.expires < Date.now()) {
       this.cache.delete(key);
       return undefined;
     }
-    
+
     return item.value;
   }
 
@@ -53,13 +54,17 @@ export class Cache<T> {
    * @param ttl Time-to-live in milliseconds (null for no expiration, undefined for default)
    * @returns The cached or computed value
    */
-  async getOrCompute(key: string, factory: () => Promise<T>, ttl?: number | null): Promise<T> {
+  async getOrCompute(
+    key: string,
+    factory: () => Promise<T>,
+    ttl?: number | null,
+  ): Promise<T> {
     const cachedValue = this.get(key);
-    
+
     if (cachedValue !== undefined) {
       return cachedValue;
     }
-    
+
     const value = await factory();
     this.set(key, value, ttl);
     return value;
@@ -97,14 +102,14 @@ export class Cache<T> {
   prune(): number {
     let count = 0;
     const now = Date.now();
-    
+
     for (const [key, item] of this.cache.entries()) {
       if (item.expires !== null && item.expires < now) {
         this.cache.delete(key);
         count++;
       }
     }
-    
+
     return count;
   }
 

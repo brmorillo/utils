@@ -61,7 +61,8 @@ export class CryptUtils {
         iv: usedIV,
       };
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to encrypt data using AES: ${errorMessage}`);
     }
   }
@@ -106,7 +107,8 @@ export class CryptUtils {
         return decryptedText; // If it's not JSON, return as string.
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to decrypt data using AES: ${errorMessage}`);
     }
   }
@@ -145,7 +147,8 @@ export class CryptUtils {
       ]);
       return encrypted.toString('base64');
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to encrypt data using ChaCha20: ${errorMessage}`);
     }
   }
@@ -184,7 +187,8 @@ export class CryptUtils {
       ]);
       return decrypted.toString('utf8');
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to decrypt data using ChaCha20: ${errorMessage}`);
     }
   }
@@ -210,7 +214,8 @@ export class CryptUtils {
       });
       return { publicKey, privateKey };
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to generate RSA key pair: ${errorMessage}`);
     }
   }
@@ -240,7 +245,8 @@ export class CryptUtils {
       );
       return encrypted.toString('base64');
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to encrypt data using RSA: ${errorMessage}`);
     }
   }
@@ -272,7 +278,8 @@ export class CryptUtils {
       );
       return decrypted.toString('utf8');
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to decrypt data using RSA: ${errorMessage}`);
     }
   }
@@ -301,7 +308,8 @@ export class CryptUtils {
       signer.end();
       return signer.sign(privateKey, 'base64');
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to sign data using RSA: ${errorMessage}`);
     }
   }
@@ -338,7 +346,8 @@ export class CryptUtils {
       verifier.end();
       return verifier.verify(publicKey, signature, 'base64');
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to verify signature using RSA: ${errorMessage}`);
     }
   }
@@ -364,7 +373,8 @@ export class CryptUtils {
       });
       return { publicKey, privateKey };
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to generate ECC key pair: ${errorMessage}`);
     }
   }
@@ -393,7 +403,8 @@ export class CryptUtils {
       signer.end();
       return signer.sign(privateKey, 'base64');
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to sign data using ECC: ${errorMessage}`);
     }
   }
@@ -430,7 +441,8 @@ export class CryptUtils {
       verifier.end();
       return verifier.verify(publicKey, signature, 'base64');
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to verify signature using ECC: ${errorMessage}`);
     }
   }
@@ -467,7 +479,8 @@ export class CryptUtils {
       ]);
       return encrypted.toString('base64');
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to encrypt data using RC4: ${errorMessage}`);
     }
   }
@@ -506,7 +519,8 @@ export class CryptUtils {
       ]);
       return decrypted.toString('utf8');
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to decrypt data using RC4: ${errorMessage}`);
     }
   }

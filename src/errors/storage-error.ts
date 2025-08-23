@@ -13,7 +13,7 @@ export class StorageError extends BaseError {
   constructor(
     message: string,
     code: string = 'STORAGE_ERROR',
-    details?: Record<string, any>
+    details?: Record<string, any>,
   ) {
     super(message, code, undefined, details);
   }
@@ -23,12 +23,14 @@ export class StorageError extends BaseError {
    * @param path File path
    * @param details Additional error details
    */
-  public static fileNotFound(path: string, details?: Record<string, any>): StorageError {
-    return new StorageError(
-      `File not found: ${path}`,
-      'FILE_NOT_FOUND',
-      { path, ...details }
-    );
+  public static fileNotFound(
+    path: string,
+    details?: Record<string, any>,
+  ): StorageError {
+    return new StorageError(`File not found: ${path}`, 'FILE_NOT_FOUND', {
+      path,
+      ...details,
+    });
   }
 
   /**
@@ -36,12 +38,14 @@ export class StorageError extends BaseError {
    * @param path File path
    * @param details Additional error details
    */
-  public static permissionDenied(path: string, details?: Record<string, any>): StorageError {
-    return new StorageError(
-      `Permission denied: ${path}`,
-      'PERMISSION_DENIED',
-      { path, ...details }
-    );
+  public static permissionDenied(
+    path: string,
+    details?: Record<string, any>,
+  ): StorageError {
+    return new StorageError(`Permission denied: ${path}`, 'PERMISSION_DENIED', {
+      path,
+      ...details,
+    });
   }
 
   /**
@@ -49,11 +53,14 @@ export class StorageError extends BaseError {
    * @param path File path
    * @param details Additional error details
    */
-  public static fileAlreadyExists(path: string, details?: Record<string, any>): StorageError {
+  public static fileAlreadyExists(
+    path: string,
+    details?: Record<string, any>,
+  ): StorageError {
     return new StorageError(
       `File already exists: ${path}`,
       'FILE_ALREADY_EXISTS',
-      { path, ...details }
+      { path, ...details },
     );
   }
 
@@ -65,7 +72,7 @@ export class StorageError extends BaseError {
     return new StorageError(
       'Storage quota exceeded',
       'QUOTA_EXCEEDED',
-      details
+      details,
     );
   }
 
@@ -74,11 +81,13 @@ export class StorageError extends BaseError {
    * @param path File path
    * @param details Additional error details
    */
-  public static invalidPath(path: string, details?: Record<string, any>): StorageError {
-    return new StorageError(
-      `Invalid path: ${path}`,
-      'INVALID_PATH',
-      { path, ...details }
-    );
+  public static invalidPath(
+    path: string,
+    details?: Record<string, any>,
+  ): StorageError {
+    return new StorageError(`Invalid path: ${path}`, 'INVALID_PATH', {
+      path,
+      ...details,
+    });
   }
 }

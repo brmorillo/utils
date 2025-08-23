@@ -1,6 +1,16 @@
-import { FileMetadata, IStorageProvider, StorageProviderType } from '../interfaces/storage.interface';
-import { LocalStorageProvider, LocalStorageOptions } from '../providers/local-storage.provider';
-import { S3StorageProvider, S3StorageOptions } from '../providers/s3-storage.provider';
+import {
+  FileMetadata,
+  IStorageProvider,
+  StorageProviderType,
+} from '../interfaces/storage.interface';
+import {
+  LocalStorageProvider,
+  LocalStorageOptions,
+} from '../providers/local-storage.provider';
+import {
+  S3StorageProvider,
+  S3StorageOptions,
+} from '../providers/s3-storage.provider';
 
 /**
  * Storage service configuration options
@@ -48,11 +58,16 @@ export class StorageService {
   /**
    * Creates a storage provider based on the specified type
    */
-  private createProvider(providerType: StorageProviderType, options: StorageServiceOptions): IStorageProvider {
+  private createProvider(
+    providerType: StorageProviderType,
+    options: StorageServiceOptions,
+  ): IStorageProvider {
     switch (providerType) {
       case 'local':
         if (!options.local) {
-          throw new Error('Local storage options are required when using local provider');
+          throw new Error(
+            'Local storage options are required when using local provider',
+          );
         }
         return new LocalStorageProvider(options.local);
       case 's3':
@@ -68,7 +83,11 @@ export class StorageService {
   /**
    * Uploads a file to storage
    */
-  public async uploadFile(path: string, content: Buffer | string | NodeJS.ReadableStream, metadata?: FileMetadata): Promise<string> {
+  public async uploadFile(
+    path: string,
+    content: Buffer | string | NodeJS.ReadableStream,
+    metadata?: FileMetadata,
+  ): Promise<string> {
     return this.provider.uploadFile(path, content, metadata);
   }
 

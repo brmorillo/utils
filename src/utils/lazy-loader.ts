@@ -62,11 +62,11 @@ export class LazyLoader<T> {
     if (this.instance !== null) {
       return this.instance;
     }
-    
+
     if (this.isLoading && this.loadPromise) {
       return this.loadPromise;
     }
-    
+
     this.isLoading = true;
     this.loadPromise = Promise.resolve().then(() => {
       const instance = this.factory();
@@ -74,7 +74,7 @@ export class LazyLoader<T> {
       this.isLoading = false;
       return instance;
     });
-    
+
     return this.loadPromise;
   }
 }
