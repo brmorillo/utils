@@ -235,7 +235,8 @@ describe('DateUtils', () => {
       });
 
       expect(tokyoDate.zoneName).toBe('Asia/Tokyo');
-      expect(tokyoDate.hour).toBe(21); // 12:00 UTC = 21:00 Tokyo (+09:00)
+      // Tokyo está +9 horas de UTC, então 12:00 UTC = 21:00 Tokyo
+      expect(tokyoDate.hour).toBe(21);
     });
   });
 });

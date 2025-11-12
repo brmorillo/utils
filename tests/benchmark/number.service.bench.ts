@@ -13,14 +13,14 @@ describe('NumberUtils - Testes de Benchmark', () => {
     return Number(end - start) / 1_000_000; // Converte para milissegundos
   };
 
-  describe('isEven e isOdd em massa', () => {
+  describe('isValidEven e isOdd em massa', () => {
     it('deve verificar 1.000.000 números pares/ímpares em tempo razoável', () => {
       const count = 1000000;
       const results: boolean[] = [];
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          results.push(NumberUtils.isEven({ value: i }));
+          results.push(NumberUtils.isValidEven({ value: i }));
         }
       });
 
@@ -253,14 +253,14 @@ describe('NumberUtils - Testes de Benchmark', () => {
     });
   });
 
-  describe('isPrime em massa', () => {
+  describe('isValidPrime em massa', () => {
     it('deve verificar se 100.000 números são primos em tempo razoável', () => {
       const count = 100000;
       const results: boolean[] = [];
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          results.push(NumberUtils.isPrime({ value: i }));
+          results.push(NumberUtils.isValidPrime({ value: i }));
         }
       });
 
@@ -279,10 +279,10 @@ describe('NumberUtils - Testes de Benchmark', () => {
       const count = 100000;
       const results: Record<string, number> = {};
 
-      // Teste isEven
-      results.isEven = measureExecutionTime(() => {
+      // Teste isValidEven
+      results.isValidEven = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          NumberUtils.isEven({ value: i });
+          NumberUtils.isValidEven({ value: i });
         }
       });
 
@@ -300,10 +300,10 @@ describe('NumberUtils - Testes de Benchmark', () => {
         }
       });
 
-      // Teste isPrime
-      results.isPrime = measureExecutionTime(() => {
+      // Teste isValidPrime
+      results.isValidPrime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          NumberUtils.isPrime({ value: i % 100 });
+          NumberUtils.isValidPrime({ value: i % 100 });
         }
       });
 
@@ -320,7 +320,7 @@ describe('NumberUtils - Testes de Benchmark', () => {
   });
 
   describe('Desempenho com diferentes entradas', () => {
-    it('deve medir o desempenho de isPrime com números de diferentes tamanhos', () => {
+    it('deve medir o desempenho de isValidPrime com números de diferentes tamanhos', () => {
       const count = 1000;
       const numbers = [2, 101, 997, 9973, 99991];
       const results: Record<number, number> = {};
@@ -328,7 +328,7 @@ describe('NumberUtils - Testes de Benchmark', () => {
       for (const num of numbers) {
         results[num] = measureExecutionTime(() => {
           for (let i = 0; i < count; i++) {
-            NumberUtils.isPrime({ value: num });
+            NumberUtils.isValidPrime({ value: num });
           }
         });
 

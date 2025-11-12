@@ -57,7 +57,7 @@ const results = BenchmarkUtils.compareFunctions({
 console.log('Performance comparison:');
 for (const [name, stats] of Object.entries(results)) {
   console.log(
-    `${name}: ${stats.average.toFixed(3)}ms (median: ${stats.median.toFixed(3)}ms)`
+    `${name}: ${stats.average.toFixed(3)}ms (median: ${stats.median.toFixed(3)}ms)`,
   );
 }
 console.log();
@@ -111,23 +111,23 @@ const sortingResults = BenchmarkUtils.compareFunctions({
         if (low < high) {
           const pivot = arr[high];
           let i = low - 1;
-          
+
           for (let j = low; j < high; j++) {
             if (arr[j] <= pivot) {
               i++;
               [arr[i], arr[j]] = [arr[j], arr[i]];
             }
           }
-          
+
           [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
           const partitionIndex = i + 1;
-          
+
           quickSort(arr, low, partitionIndex - 1);
           quickSort(arr, partitionIndex + 1, high);
         }
         return arr;
       };
-      
+
       quickSort(arr);
     },
   },
@@ -138,7 +138,7 @@ console.log(`Sorting algorithms comparison (array with ${size} elements):`);
 for (const [name, stats] of Object.entries(sortingResults)) {
   console.log(
     `${name}: ${stats.average.toFixed(2)}ms (min: ${stats.min.toFixed(
-      2
-    )}ms, max: ${stats.max.toFixed(2)}ms)`
+      2,
+    )}ms, max: ${stats.max.toFixed(2)}ms)`,
   );
 }

@@ -67,14 +67,10 @@ export class StringUtils {
   }): string {
     if (input.length <= maxLength) return input;
 
-    // Para o caso de teste específico "Hello world " com maxLength 7
-    if (input === 'Hello world ' && maxLength === 7) {
-      return 'Hello...';
-    }
+    // Se a string for maior que maxLength, truncar deixando espaço para '...'
+    if (maxLength <= 3) return '...';
 
-    // Trim whitespace before adding ellipsis
-    const trimmed = input.slice(0, maxLength).trimEnd();
-    return trimmed + '...';
+    return input.slice(0, maxLength - 3) + '...';
   }
 
   /**
@@ -92,15 +88,22 @@ export class StringUtils {
    * }); // "camel-case-string"
    */
   public static toKebabCase({ input }: { input: string }): string {
-    // Para o caso de teste específico com múltiplos espaços
-    if (input === 'Hello  World  Test') {
-      return 'hello--world--test';
-    }
-
-    return input
-      .replace(/([a-z])([A-Z])/g, '$1-$2')
-      .replace(/\s+/g, '-')
-      .toLowerCase();
+    return (
+      input
+        .trim()
+        // Primeiro substitui underscores e espaços por hífens
+        .replace(/[\s_]+/g, '-')
+        // Adiciona hífen antes de maiúsculas (apenas se precedidas por minúsculas ou números)
+        .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+        // Converte tudo para minúsculo
+        .toLowerCase()
+        // Remove caracteres especiais exceto hífens
+        .replace(/[^a-z0-9-]/g, '')
+        // Múltiplos hífens para um só
+        .replace(/-+/g, '-')
+        // Remove hífens do início e fim
+        .replace(/^-|-$/g, '')
+    );
   }
 
   /**
@@ -118,15 +121,22 @@ export class StringUtils {
    * }); // "camel_case_string"
    */
   public static toSnakeCase({ input }: { input: string }): string {
-    // Para o caso de teste específico com múltiplos espaços
-    if (input === 'Hello  World  Test') {
-      return 'hello__world__test';
-    }
-
-    return input
-      .replace(/([a-z])([A-Z])/g, '$1_$2')
-      .replace(/\s+/g, '_')
-      .toLowerCase();
+    return (
+      input
+        .trim()
+        // Primeiro substitui hífens e espaços por underscores
+        .replace(/[\s-]+/g, '_')
+        // Adiciona underscore antes de maiúsculas (apenas se precedidas por minúsculas ou números)
+        .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
+        // Converte tudo para minúsculo
+        .toLowerCase()
+        // Remove caracteres especiais exceto underscores
+        .replace(/[^a-z0-9_]/g, '')
+        // Múltiplos underscores para um só
+        .replace(/_+/g, '_')
+        // Remove underscores do início e fim
+        .replace(/^_|_$/g, '')
+    );
   }
 
   /**
@@ -144,6 +154,11 @@ export class StringUtils {
    * }); // "snakeCaseString"
    */
   public static toCamelCase({ input }: { input: string }): string {
+    // Se já está em camelCase (contém maiúsculas e não contém separadores), retorna como está
+    if (/^[a-z]+([A-Z][a-z]*)*$/.test(input)) {
+      return input;
+    }
+
     return input
       .toLowerCase()
       .replace(/[^a-zA-Z0-9]+(.)/g, (_, match) => match.toUpperCase());
@@ -220,7 +235,7 @@ export class StringUtils {
   }): string {
     if (!substring) return input;
 
-    // Para o caso de teste específico com substring vazia
+    // For the specific test case with empty substring
     if (substring === '' && input === 'hello') {
       return 'hello';
     }

@@ -123,7 +123,7 @@ describe('UUIDUtils - Testes de Benchmark', () => {
     });
   });
 
-  describe('uuidIsValid', () => {
+  describe('isValidUuid', () => {
     it('deve validar 100.000 UUIDs válidos em tempo razoável', () => {
       const count = 100000;
 
@@ -132,7 +132,7 @@ describe('UUIDUtils - Testes de Benchmark', () => {
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          UUIDUtils.uuidIsValid({ id: uuid });
+          UUIDUtils.isValidUuid({ id: uuid });
         }
       });
 
@@ -153,7 +153,7 @@ describe('UUIDUtils - Testes de Benchmark', () => {
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          UUIDUtils.uuidIsValid({ id: invalidUuid });
+          UUIDUtils.isValidUuid({ id: invalidUuid });
         }
       });
 

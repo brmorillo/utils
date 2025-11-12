@@ -40,7 +40,7 @@ export class BenchmarkUtils {
    *   },
    *   iterations: 10000
    * });
-   * 
+   *
    * console.log(`Total time: ${results.totalTime.toFixed(2)}ms`);
    * console.log(`Average time per iteration: ${results.averageTime.toFixed(3)}ms`);
    * console.log(`Operations per second: ${results.opsPerSecond.toFixed(0)}`);
@@ -106,7 +106,7 @@ export class BenchmarkUtils {
    *   },
    *   iterations: 100000
    * });
-   * 
+   *
    * console.log('Benchmark results:');
    * Object.entries(results).forEach(([name, result]) => {
    *   console.log(`${name}: ${result.averageTime.toFixed(6)}ms per op (${result.opsPerSecond.toFixed(0)} ops/sec)`);
@@ -164,7 +164,7 @@ export class BenchmarkUtils {
    *   sizes: [10, 100, 1000, 10000, 100000],
    *   iterationsPerSize: 100
    * });
-   * 
+   *
    * console.log('Progressive benchmark results:');
    * Object.entries(results).forEach(([size, result]) => {
    *   console.log(`Size ${size}: ${result.totalTime.toFixed(2)}ms total, ${result.averageTime.toFixed(6)}ms per op`);
@@ -223,7 +223,7 @@ export class BenchmarkUtils {
    *     const arr = new Array(1000000).fill(0);
    *   }
    * });
-   * 
+   *
    * console.log(`Memory before: ${memoryUsage.before.toFixed(2)}MB`);
    * console.log(`Memory after: ${memoryUsage.after.toFixed(2)}MB`);
    * console.log(`Memory difference: ${memoryUsage.difference.toFixed(2)}MB`);

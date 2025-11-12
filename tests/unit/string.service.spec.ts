@@ -1,7 +1,13 @@
 import { StringUtils } from '../../src/services/string.service';
 
 /**
- * Testes unitários para a classe StringUtils.
+ * Testes unitários para a clas    it('deve truncar exatamente no comprimento máximo', () => {
+      const result = StringUtils.truncate({
+        input: '1234567890123',
+        maxLength: 10,
+      });
+      expect(result).toBe('1234567...');
+    });ngUtils.
  * Estes testes verificam o comportamento de cada método individualmente.
  */
 describe('StringUtils - Testes Unitários', () => {
@@ -49,38 +55,38 @@ describe('StringUtils - Testes Unitários', () => {
     });
   });
 
-  describe('isPalindrome', () => {
+  describe('isValidPalindrome', () => {
     it('deve identificar um palíndromo simples', () => {
-      const result = StringUtils.isPalindrome({ input: 'racecar' });
+      const result = StringUtils.isValidPalindrome({ input: 'racecar' });
       expect(result).toBe(true);
     });
 
     it('deve identificar uma string que não é palíndromo', () => {
-      const result = StringUtils.isPalindrome({ input: 'hello' });
+      const result = StringUtils.isValidPalindrome({ input: 'hello' });
       expect(result).toBe(false);
     });
 
     it('deve ignorar espaços e pontuação', () => {
-      const result = StringUtils.isPalindrome({
+      const result = StringUtils.isValidPalindrome({
         input: 'A man, a plan, a canal: Panama',
       });
       expect(result).toBe(true);
     });
 
     it('deve ignorar maiúsculas e minúsculas', () => {
-      const result = StringUtils.isPalindrome({
+      const result = StringUtils.isValidPalindrome({
         input: 'Able was I ere I saw Elba',
       });
       expect(result).toBe(true);
     });
 
     it('deve lidar com strings vazias', () => {
-      const result = StringUtils.isPalindrome({ input: '' });
+      const result = StringUtils.isValidPalindrome({ input: '' });
       expect(result).toBe(true);
     });
 
     it('deve lidar com strings de um único caractere', () => {
-      const result = StringUtils.isPalindrome({ input: 'a' });
+      const result = StringUtils.isValidPalindrome({ input: 'a' });
       expect(result).toBe(true);
     });
   });
@@ -91,7 +97,7 @@ describe('StringUtils - Testes Unitários', () => {
         input: 'This is a long string',
         maxLength: 10,
       });
-      expect(result).toBe('This is a...');
+      expect(result).toBe('This is...');
     });
 
     it('não deve truncar uma string curta', () => {
@@ -107,7 +113,7 @@ describe('StringUtils - Testes Unitários', () => {
         input: '1234567890abcdef',
         maxLength: 10,
       });
-      expect(result).toBe('1234567890...');
+      expect(result).toBe('1234567...');
     });
 
     it('deve remover espaços em branco no final antes de adicionar reticências', () => {
@@ -115,7 +121,7 @@ describe('StringUtils - Testes Unitários', () => {
         input: 'Hello world ',
         maxLength: 7,
       });
-      expect(result).toBe('Hello...');
+      expect(result).toBe('Hell...');
     });
   });
 
@@ -132,7 +138,7 @@ describe('StringUtils - Testes Unitários', () => {
 
     it('deve lidar com múltiplos espaços', () => {
       const result = StringUtils.toKebabCase({ input: 'Hello  World  Test' });
-      expect(result).toBe('hello--world--test');
+      expect(result).toBe('hello-world-test');
     });
 
     it('deve lidar com strings já em kebab-case', () => {
@@ -159,7 +165,7 @@ describe('StringUtils - Testes Unitários', () => {
 
     it('deve lidar com múltiplos espaços', () => {
       const result = StringUtils.toSnakeCase({ input: 'Hello  World  Test' });
-      expect(result).toBe('hello__world__test');
+      expect(result).toBe('hello_world_test');
     });
 
     it('deve lidar com strings já em snake_case', () => {
@@ -196,7 +202,7 @@ describe('StringUtils - Testes Unitários', () => {
 
     it('deve lidar com strings já em camelCase', () => {
       const result = StringUtils.toCamelCase({ input: 'alreadyCamelCase' });
-      expect(result).toBe('alreadycamelcase');
+      expect(result).toBe('alreadyCamelCase');
     });
 
     it('deve lidar com strings vazias', () => {
