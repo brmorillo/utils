@@ -12,15 +12,22 @@ export class SortUtils {
    * Characteristics: Simple but inefficient for large lists.
    * @param {object} params - The parameters for the method.
    * @param {T[]} params.array - Array to sort.
+   * @param {boolean} [params.inPlace=false] - When `false` (default), a new sorted array is returned and the input is left untouched. When `true`, the input array is sorted in place and the same reference is returned.
    * @returns {T[]} Sorted array.
    * @example
    * SortUtils.bubbleSort({ array: [5, 2, 9, 1] }); // [1, 2, 5, 9]
    */
-  static bubbleSort<T>({ array }: { array: T[] }): T[] {
+  static bubbleSort<T>({
+    array,
+    inPlace = false,
+  }: {
+    array: T[];
+    inPlace?: boolean;
+  }): T[] {
     if (!Array.isArray(array))
       throw new ValidationError('Input must be an array');
 
-    const arr = [...array];
+    const arr = inPlace ? array : [...array];
     for (let i = 0; i < arr.length; i++) {
       for (let j = 0; j < arr.length - i - 1; j++) {
         if (arr[j] > arr[j + 1]) {
@@ -42,19 +49,36 @@ export class SortUtils {
    * Characteristics: Divide and conquer, requires additional space for merging.
    * @param {object} params - The parameters for the method.
    * @param {T[]} params.array - Array to sort.
+   * @param {boolean} [params.inPlace=false] - When `false` (default), a new sorted array is returned and the input is left untouched. When `true`, the input array is sorted in place and the same reference is returned.
    * @returns {T[]} Sorted array.
    * @example
    * SortUtils.mergeSort({ array: [3, 1, 4, 1, 5] }); // [1, 1, 3, 4, 5]
    */
-  static mergeSort<T>({ array }: { array: T[] }): T[] {
+  static mergeSort<T>({
+    array,
+    inPlace = false,
+  }: {
+    array: T[];
+    inPlace?: boolean;
+  }): T[] {
     if (!Array.isArray(array))
       throw new ValidationError('Input must be an array');
 
-    if (array.length <= 1) return array;
+    const result = SortUtils.mergeSortRecursive(array);
+
+    if (inPlace) {
+      array.splice(0, array.length, ...result);
+      return array;
+    }
+    return result;
+  }
+
+  private static mergeSortRecursive<T>(array: T[]): T[] {
+    if (array.length <= 1) return [...array];
 
     const mid = Math.floor(array.length / 2);
-    const left = SortUtils.mergeSort({ array: array.slice(0, mid) });
-    const right = SortUtils.mergeSort({ array: array.slice(mid) });
+    const left = SortUtils.mergeSortRecursive(array.slice(0, mid));
+    const right = SortUtils.mergeSortRecursive(array.slice(mid));
 
     return SortUtils.merge(left, right);
   }
@@ -79,15 +103,34 @@ export class SortUtils {
    * Characteristics: Divide and conquer, efficient in most cases but can be slow for already sorted lists.
    * @param {object} params - The parameters for the method.
    * @param {T[]} params.array - Array to sort.
+   * @param {boolean} [params.inPlace=false] - When `false` (default), a new sorted array is returned and the input is left untouched. When `true`, the input array is sorted in place and the same reference is returned.
    * @returns {T[]} Sorted array.
    * @example
    * SortUtils.quickSort({ array: [5, 2, 9, 1, 7] }); // [1, 2, 5, 7, 9]
    */
-  static quickSort<T>({ array }: { array: T[] }): T[] {
+  static quickSort<T>({
+    array,
+    inPlace = false,
+  }: {
+    array: T[];
+    inPlace?: boolean;
+  }): T[] {
     if (!Array.isArray(array))
       throw new ValidationError('Input must be an array');
 
-    if (array.length <= 1) return array;
+    if (array.length <= 1) return inPlace ? array : [...array];
+
+    const result = SortUtils.quickSortRecursive(array);
+
+    if (inPlace) {
+      array.splice(0, array.length, ...result);
+      return array;
+    }
+    return result;
+  }
+
+  private static quickSortRecursive<T>(array: T[]): T[] {
+    if (array.length <= 1) return [...array];
 
     const pivot = array[array.length - 1];
     const left = array.filter(
@@ -96,9 +139,9 @@ export class SortUtils {
     const right = array.filter(val => val > pivot);
 
     return [
-      ...SortUtils.quickSort({ array: left }),
+      ...SortUtils.quickSortRecursive(left),
       pivot,
-      ...SortUtils.quickSort({ array: right }),
+      ...SortUtils.quickSortRecursive(right),
     ];
   }
 
@@ -113,15 +156,22 @@ export class SortUtils {
    * Characteristics: Efficient sorting based on binary heaps. Not stable but guarantees O(n log n) time.
    * @param {object} params - The parameters for the method.
    * @param {T[]} params.array - Array to sort.
+   * @param {boolean} [params.inPlace=false] - When `false` (default), a new sorted array is returned and the input is left untouched. When `true`, the input array is sorted in place and the same reference is returned.
    * @returns {T[]} Sorted array.
    * @example
    * SortUtils.heapSort({ array: [5, 2, 9, 1, 7] }); // [1, 2, 5, 7, 9]
    */
-  static heapSort<T>({ array }: { array: T[] }): T[] {
+  static heapSort<T>({
+    array,
+    inPlace = false,
+  }: {
+    array: T[];
+    inPlace?: boolean;
+  }): T[] {
     if (!Array.isArray(array))
       throw new ValidationError('Input must be an array');
 
-    const arr = [...array];
+    const arr = inPlace ? array : [...array];
 
     const heapify = (n: number, i: number) => {
       let largest = i;
@@ -160,15 +210,22 @@ export class SortUtils {
    * Characteristics: Simple and intuitive, but inefficient for large lists. Always O(n²) regardless of input.
    * @param {object} params - The parameters for the method.
    * @param {T[]} params.array - Array to sort.
+   * @param {boolean} [params.inPlace=false] - When `false` (default), a new sorted array is returned and the input is left untouched. When `true`, the input array is sorted in place and the same reference is returned.
    * @returns {T[]} Sorted array.
    * @example
    * SortUtils.selectionSort({ array: [5, 2, 9, 1] }); // [1, 2, 5, 9]
    */
-  static selectionSort<T>({ array }: { array: T[] }): T[] {
+  static selectionSort<T>({
+    array,
+    inPlace = false,
+  }: {
+    array: T[];
+    inPlace?: boolean;
+  }): T[] {
     if (!Array.isArray(array))
       throw new ValidationError('Input must be an array');
 
-    const arr = [...array];
+    const arr = inPlace ? array : [...array];
     for (let i = 0; i < arr.length; i++) {
       let minIndex = i;
       for (let j = i + 1; j < arr.length; j++) {
@@ -194,15 +251,22 @@ export class SortUtils {
    * Characteristics: Simple and efficient for small or nearly sorted lists. Performs well with incremental sorting.
    * @param {object} params - The parameters for the method.
    * @param {T[]} params.array - Array to sort.
+   * @param {boolean} [params.inPlace=false] - When `false` (default), a new sorted array is returned and the input is left untouched. When `true`, the input array is sorted in place and the same reference is returned.
    * @returns {T[]} Sorted array.
    * @example
    * SortUtils.insertionSort({ array: [5, 2, 9, 1] }); // [1, 2, 5, 9]
    */
-  static insertionSort<T>({ array }: { array: T[] }): T[] {
+  static insertionSort<T>({
+    array,
+    inPlace = false,
+  }: {
+    array: T[];
+    inPlace?: boolean;
+  }): T[] {
     if (!Array.isArray(array))
       throw new ValidationError('Input must be an array');
 
-    const arr = [...array];
+    const arr = inPlace ? array : [...array];
     for (let i = 1; i < arr.length; i++) {
       const current = arr[i];
       let j = i - 1;
@@ -227,15 +291,22 @@ export class SortUtils {
    *                  Efficient for medium-sized datasets, but not stable.
    * @param {object} params - The parameters for the method.
    * @param {T[]} params.array - Array to sort.
+   * @param {boolean} [params.inPlace=false] - When `false` (default), a new sorted array is returned and the input is left untouched. When `true`, the input array is sorted in place and the same reference is returned.
    * @returns {T[]} Sorted array.
    * @example
    * SortUtils.shellSort({ array: [5, 2, 9, 1, 7] }); // [1, 2, 5, 7, 9]
    */
-  static shellSort<T>({ array }: { array: T[] }): T[] {
+  static shellSort<T>({
+    array,
+    inPlace = false,
+  }: {
+    array: T[];
+    inPlace?: boolean;
+  }): T[] {
     if (!Array.isArray(array))
       throw new ValidationError('Input must be an array');
 
-    const arr = [...array];
+    const arr = inPlace ? array : [...array];
     let gap = Math.floor(arr.length / 2);
 
     while (gap > 0) {
@@ -268,6 +339,7 @@ export class SortUtils {
    * @param {object} params - The parameters for the method.
    * @param {number[]} params.array - Array of integers to sort.
    * @param {number} params.maxValue - Maximum value in the array.
+   * @param {boolean} [params.inPlace=false] - When `false` (default), a new sorted array is returned and the input is left untouched. When `true`, the input array is sorted in place and the same reference is returned.
    * @returns {number[]} Sorted array.
    * @example
    * SortUtils.countingSort({ array: [4, 2, 2, 8, 3], maxValue: 8 }); // [2, 2, 3, 4, 8]
@@ -275,9 +347,11 @@ export class SortUtils {
   static countingSort({
     array,
     maxValue,
+    inPlace = false,
   }: {
     array: number[];
     maxValue: number;
+    inPlace?: boolean;
   }): number[] {
     if (!Array.isArray(array))
       throw new ValidationError('Input must be an array');
@@ -304,6 +378,10 @@ export class SortUtils {
       count[array[i]]--;
     }
 
+    if (inPlace) {
+      array.splice(0, array.length, ...output);
+      return array;
+    }
     return output;
   }
 
@@ -320,18 +398,27 @@ export class SortUtils {
    *                  Requires additional space for intermediate sorting.
    * @param {object} params - The parameters for the method.
    * @param {number[]} params.array - Array of non-negative integers to sort.
+   * @param {boolean} [params.inPlace=false] - When `false` (default), a new sorted array is returned and the input is left untouched. When `true`, the input array is sorted in place and the same reference is returned.
    * @returns {number[]} Sorted array.
    * @example
    * SortUtils.radixSort({ array: [170, 45, 75, 90, 2, 802] }); // [2, 45, 75, 90, 170, 802]
    */
-  static radixSort({ array }: { array: number[] }): number[] {
+  static radixSort({
+    array,
+    inPlace = false,
+  }: {
+    array: number[];
+    inPlace?: boolean;
+  }): number[] {
     if (!Array.isArray(array))
       throw new ValidationError('Input must be an array');
-    if (array.length === 0) return [];
+    if (array.length === 0) return inPlace ? array : [];
     if (array.some(num => num < 0))
       throw new ValidationError('Radix Sort only supports non-negative integers');
 
-    const max = Math.max(...array);
+    const source = array;
+    let working: number[] = [...array];
+    const max = Math.max(...working);
     let exp = 1;
 
     const countingSortForRadix = (arr: number[], exp: number): number[] => {
@@ -357,11 +444,15 @@ export class SortUtils {
     };
 
     while (Math.floor(max / exp) > 0) {
-      array = countingSortForRadix(array, exp);
+      working = countingSortForRadix(working, exp);
       exp *= 10;
     }
 
-    return array;
+    if (inPlace) {
+      source.splice(0, source.length, ...working);
+      return source;
+    }
+    return working;
   }
 
   /**
@@ -377,6 +468,7 @@ export class SortUtils {
    * @param {object} params - The parameters for the method.
    * @param {number[]} params.array - Array of floating-point numbers to sort.
    * @param {number} [params.bucketSize] - Size of each bucket. Defaults to 5.
+   * @param {boolean} [params.inPlace=false] - When `false` (default), a new sorted array is returned and the input is left untouched. When `true`, the input array is sorted in place and the same reference is returned.
    * @returns {number[]} Sorted array.
    * @example
    * SortUtils.bucketSort({ array: [0.42, 0.32, 0.73, 0.12] }); // [0.12, 0.32, 0.42, 0.73]
@@ -385,11 +477,13 @@ export class SortUtils {
   static bucketSort({
     array,
     bucketSize = 5,
+    inPlace = false,
   }: {
     array: number[];
     bucketSize?: number;
+    inPlace?: boolean;
   }): number[] {
-    if (array.length <= 1) return array;
+    if (array.length <= 1) return inPlace ? array : [...array];
 
     const minValue = Math.min(...array);
     const maxValue = Math.max(...array);
@@ -401,9 +495,15 @@ export class SortUtils {
       buckets[bucketIndex].push(num);
     }
 
-    return buckets.reduce((sortedArray, bucket) => {
+    const result = buckets.reduce((sortedArray, bucket) => {
       return sortedArray.concat(SortUtils.insertionSort({ array: bucket }));
-    }, []);
+    }, [] as number[]);
+
+    if (inPlace) {
+      array.splice(0, array.length, ...result);
+      return array;
+    }
+    return result;
   }
 
   /**
@@ -419,15 +519,22 @@ export class SortUtils {
    *                  Uses small runs and merges them.
    * @param {object} params - The parameters for the method.
    * @param {T[]} params.array - Array to sort.
+   * @param {boolean} [params.inPlace=false] - When `false` (default), a new sorted array is returned and the input is left untouched. When `true`, the input array is sorted in place and the same reference is returned.
    * @returns {T[]} Sorted array.
    * @example
    * SortUtils.timSort({ array: [5, 2, 9, 1, 7] }); // [1, 2, 5, 7, 9]
    */
-  static timSort<T>({ array }: { array: T[] }): T[] {
+  static timSort<T>({
+    array,
+    inPlace = false,
+  }: {
+    array: T[];
+    inPlace?: boolean;
+  }): T[] {
     if (!Array.isArray(array))
       throw new ValidationError('Input must be an array');
 
-    const result = [...array];
+    const result = inPlace ? array : [...array];
     const RUN = 32;
 
     const insertionSort = (arr: T[], left: number, right: number) => {
@@ -510,12 +617,19 @@ export class SortUtils {
    *                  Shuffles the array randomly until it becomes sorted.
    * @param {object} params - The parameters for the method.
    * @param {T[]} params.array - Array to sort.
+   * @param {boolean} [params.inPlace=false] - When `false` (default), a new sorted array is returned and the input is left untouched. When `true`, the input array is sorted in place and the same reference is returned.
    * @returns {T[]} Sorted array.
    * @note Avoid using this algorithm in real-world scenarios.
    * @example
    * SortUtils.bogoSort({ array: [3, 1, 2] }); // [1, 2, 3]
    */
-  static bogoSort<T>({ array }: { array: T[] }): T[] {
+  static bogoSort<T>({
+    array,
+    inPlace = false,
+  }: {
+    array: T[];
+    inPlace?: boolean;
+  }): T[] {
     if (!Array.isArray(array))
       throw new ValidationError('Input must be an array');
 
@@ -533,7 +647,7 @@ export class SortUtils {
       }
     };
 
-    const arr = [...array];
+    const arr = inPlace ? array : [...array];
     while (!isSorted(arr)) {
       shuffle(arr);
     }
@@ -552,15 +666,22 @@ export class SortUtils {
    *                  Simple, but inefficient for large datasets.
    * @param {object} params - The parameters for the method.
    * @param {T[]} params.array - Array to sort.
+   * @param {boolean} [params.inPlace=false] - When `false` (default), a new sorted array is returned and the input is left untouched. When `true`, the input array is sorted in place and the same reference is returned.
    * @returns {T[]} Sorted array.
    * @example
    * SortUtils.gnomeSort({ array: [5, 2, 9, 1] }); // [1, 2, 5, 9]
    */
-  static gnomeSort<T>({ array }: { array: T[] }): T[] {
+  static gnomeSort<T>({
+    array,
+    inPlace = false,
+  }: {
+    array: T[];
+    inPlace?: boolean;
+  }): T[] {
     if (!Array.isArray(array))
       throw new ValidationError('Input must be an array');
 
-    const arr = [...array];
+    const arr = inPlace ? array : [...array];
     let index = 0;
 
     while (index < arr.length) {
@@ -587,15 +708,22 @@ export class SortUtils {
    *                  Simulates flipping pancakes to sort them by size.
    * @param {object} params - The parameters for the method.
    * @param {T[]} params.array - Array to sort.
+   * @param {boolean} [params.inPlace=false] - When `false` (default), a new sorted array is returned and the input is left untouched. When `true`, the input array is sorted in place and the same reference is returned.
    * @returns {T[]} Sorted array.
    * @example
    * SortUtils.pancakeSort({ array: [5, 2, 9, 1] }); // [1, 2, 5, 9]
    */
-  static pancakeSort<T>({ array }: { array: T[] }): T[] {
+  static pancakeSort<T>({
+    array,
+    inPlace = false,
+  }: {
+    array: T[];
+    inPlace?: boolean;
+  }): T[] {
     if (!Array.isArray(array))
       throw new ValidationError('Input must be an array');
 
-    const arr = [...array];
+    const arr = inPlace ? array : [...array];
 
     const flip = (arr: T[], k: number): void => {
       let start = 0;
@@ -638,15 +766,22 @@ export class SortUtils {
    *                  The gap decreases gradually until it becomes 1.
    * @param {object} params - The parameters for the method.
    * @param {T[]} params.array - Array to sort.
+   * @param {boolean} [params.inPlace=false] - When `false` (default), a new sorted array is returned and the input is left untouched. When `true`, the input array is sorted in place and the same reference is returned.
    * @returns {T[]} Sorted array.
    * @example
    * SortUtils.combSort({ array: [5, 2, 9, 1, 7] }); // [1, 2, 5, 7, 9]
    */
-  static combSort<T>({ array }: { array: T[] }): T[] {
+  static combSort<T>({
+    array,
+    inPlace = false,
+  }: {
+    array: T[];
+    inPlace?: boolean;
+  }): T[] {
     if (!Array.isArray(array))
       throw new ValidationError('Input must be an array');
 
-    const arr = [...array];
+    const arr = inPlace ? array : [...array];
     const shrinkFactor = 1.3;
     let gap = arr.length;
     let sorted = false;
@@ -681,15 +816,22 @@ export class SortUtils {
    *                  Eliminates turtles (small elements at the end of the array).
    * @param {object} params - The parameters for the method.
    * @param {T[]} params.array - Array to sort.
+   * @param {boolean} [params.inPlace=false] - When `false` (default), a new sorted array is returned and the input is left untouched. When `true`, the input array is sorted in place and the same reference is returned.
    * @returns {T[]} Sorted array.
    * @example
    * SortUtils.cocktailShakerSort({ array: [5, 2, 9, 1] }); // [1, 2, 5, 9]
    */
-  static cocktailShakerSort<T>({ array }: { array: T[] }): T[] {
+  static cocktailShakerSort<T>({
+    array,
+    inPlace = false,
+  }: {
+    array: T[];
+    inPlace?: boolean;
+  }): T[] {
     if (!Array.isArray(array))
       throw new ValidationError('Input must be an array');
 
-    const arr = [...array];
+    const arr = inPlace ? array : [...array];
     let start = 0;
     let end = arr.length - 1;
     let swapped = true;
@@ -731,15 +873,22 @@ export class SortUtils {
    *                  Not commonly used in sequential systems due to overhead.
    * @param {object} params - The parameters for the method.
    * @param {T[]} params.array - Array to sort.
+   * @param {boolean} [params.inPlace=false] - When `false` (default), a new sorted array is returned and the input is left untouched. When `true`, the input array is sorted in place and the same reference is returned.
    * @returns {T[]} Sorted array.
    * @example
    * SortUtils.bitonicSort({ array: [5, 2, 9, 1] }); // [1, 2, 5, 9]
    */
-  static bitonicSort<T>({ array }: { array: T[] }): T[] {
+  static bitonicSort<T>({
+    array,
+    inPlace = false,
+  }: {
+    array: T[];
+    inPlace?: boolean;
+  }): T[] {
     if (!Array.isArray(array))
       throw new ValidationError('Input must be an array');
 
-    const arr = [...array];
+    const arr = inPlace ? array : [...array];
 
     const compareAndSwap = (
       arr: T[],
@@ -798,15 +947,22 @@ export class SortUtils {
    *                  Recursively swaps elements to sort the array.
    * @param {object} params - The parameters for the method.
    * @param {T[]} params.array - Array to sort.
+   * @param {boolean} [params.inPlace=false] - When `false` (default), a new sorted array is returned and the input is left untouched. When `true`, the input array is sorted in place and the same reference is returned.
    * @returns {T[]} Sorted array.
    * @example
    * SortUtils.stoogeSort({ array: [5, 2, 9, 1] }); // [1, 2, 5, 9]
    */
-  static stoogeSort<T>({ array }: { array: T[] }): T[] {
+  static stoogeSort<T>({
+    array,
+    inPlace = false,
+  }: {
+    array: T[];
+    inPlace?: boolean;
+  }): T[] {
     if (!Array.isArray(array))
       throw new ValidationError('Input must be an array');
 
-    const arr = [...array];
+    const arr = inPlace ? array : [...array];
 
     const stoogeSortRecursive = (
       arr: T[],

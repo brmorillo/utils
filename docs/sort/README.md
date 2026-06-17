@@ -2,6 +2,26 @@
 
 The SortUtils class provides a collection of classic sorting algorithms. Most methods are generic and return a new sorted array. Like the rest of the library, these methods take a single destructured object argument.
 
+## Mutability
+
+By default every sort is **non-mutating**: the caller's `array` is left untouched and a **new** sorted array is returned.
+
+Pass `inPlace: true` to sort the caller's array in place; in that case the input is mutated and the **same array reference** is returned. This option is available on every sort method.
+
+```javascript
+const input = [5, 2, 9, 1, 7];
+
+// Default: input is untouched, a new array is returned.
+const sorted = SortUtils.quickSort({ array: input });
+console.log(sorted); // [1, 2, 5, 7, 9]
+console.log(input);  // [5, 2, 9, 1, 7] (unchanged)
+
+// inPlace: input is sorted and returned (same reference).
+const same = SortUtils.quickSort({ array: input, inPlace: true });
+console.log(same === input); // true
+console.log(input);          // [1, 2, 5, 7, 9]
+```
+
 ## Basic Usage
 
 ```javascript

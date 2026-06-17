@@ -816,4 +816,80 @@ describe('SortUtils - Unit Tests', () => {
       }).toThrow('Input must be an array');
     });
   });
+
+  // Immutability invariant: by default no sort mutates the caller's array.
+  describe('immutability (default options)', () => {
+    // Use small, non-negative integers so every sort (including counting/radix/
+    // bucket and the power-of-two bitonic sort) is satisfied by the same input.
+    const sampleInput = [4, 2, 7, 1, 5, 3, 8, 6];
+
+    const methods: Array<{
+      name: string;
+      call: (array: number[]) => number[];
+    }> = [
+      { name: 'bubbleSort', call: array => SortUtils.bubbleSort({ array }) },
+      { name: 'mergeSort', call: array => SortUtils.mergeSort({ array }) },
+      { name: 'quickSort', call: array => SortUtils.quickSort({ array }) },
+      { name: 'heapSort', call: array => SortUtils.heapSort({ array }) },
+      { name: 'selectionSort', call: array => SortUtils.selectionSort({ array }) },
+      { name: 'insertionSort', call: array => SortUtils.insertionSort({ array }) },
+      { name: 'shellSort', call: array => SortUtils.shellSort({ array }) },
+      {
+        name: 'countingSort',
+        call: array => SortUtils.countingSort({ array, maxValue: 8 }),
+      },
+      { name: 'radixSort', call: array => SortUtils.radixSort({ array }) },
+      {
+        name: 'bucketSort',
+        call: array => SortUtils.bucketSort({ array, bucketSize: 5 }),
+      },
+      { name: 'timSort', call: array => SortUtils.timSort({ array }) },
+      { name: 'bogoSort', call: array => SortUtils.bogoSort({ array }) },
+      { name: 'gnomeSort', call: array => SortUtils.gnomeSort({ array }) },
+      { name: 'pancakeSort', call: array => SortUtils.pancakeSort({ array }) },
+      { name: 'combSort', call: array => SortUtils.combSort({ array }) },
+      {
+        name: 'cocktailShakerSort',
+        call: array => SortUtils.cocktailShakerSort({ array }),
+      },
+      { name: 'bitonicSort', call: array => SortUtils.bitonicSort({ array }) },
+      { name: 'stoogeSort', call: array => SortUtils.stoogeSort({ array }) },
+    ];
+
+    it.each(methods)(
+      '$name should not mutate the input array by default',
+      ({ call }) => {
+        const input = [...sampleInput];
+        const snapshot = [...sampleInput];
+        const result = call(input);
+
+        expect(input).toEqual(snapshot); // input untouched
+        expect(result).not.toBe(input); // a new array is returned
+        expect(result).toEqual([1, 2, 3, 4, 5, 6, 7, 8]); // and it is sorted
+      },
+    );
+
+    it('covers all 18 public sort methods', () => {
+      expect(methods).toHaveLength(18);
+    });
+  });
+
+  // inPlace: true mutates the caller's array and returns the same reference.
+  describe('inPlace option', () => {
+    it('bubbleSort (naturally in-place) mutates input and returns same reference', () => {
+      const input = [5, 3, 8, 1, 9, 2];
+      const result = SortUtils.bubbleSort({ array: input, inPlace: true });
+
+      expect(result).toBe(input);
+      expect(input).toEqual([1, 2, 3, 5, 8, 9]);
+    });
+
+    it('mergeSort (allocate-based) mutates input and returns same reference', () => {
+      const input = [5, 3, 8, 1, 9, 2];
+      const result = SortUtils.mergeSort({ array: input, inPlace: true });
+
+      expect(result).toBe(input);
+      expect(input).toEqual([1, 2, 3, 5, 8, 9]);
+    });
+  });
 });
