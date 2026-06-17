@@ -2,9 +2,13 @@
 
 Per-module documentation for **[@brmorillo/utils](../README.md)**. Each module has its own folder with a complete `README.md` (overview, every public method, parameters, return values, examples, and errors thrown).
 
+For architecture, design conventions and contributor guidance, see [CLAUDE.md](../CLAUDE.md).
+
 > Conventions used throughout the library:
-> - **Static utility classes** (e.g. `ArrayUtils`, `StringUtils`) expose only static methods — no instances.
-> - **Single object argument**: utility methods take one destructured object, e.g. `StringUtils.toCamelCase({ input })`. The configurable services (`HttpService`, `LogService`, `StorageService`) use a method-style API instead.
+> - **Static utility classes** (e.g. `ArrayUtils`, `StringUtils`) expose only static methods — no instances. The configurable services (`HttpService`, `LogService`, `StorageService`) are singletons with a method-style API instead.
+> - **Single object argument**: utility methods take one destructured object, e.g. `StringUtils.toCamelCase({ input })`.
+> - **Non-mutating by default**: methods that transform data return a new value and leave the input untouched. In-place mutation is opt-in via `inPlace: true` (on `SortUtils.*` and `ObjectUtils.unflattenObject`). The sole exception is `ObjectUtils.deepFreeze`, which freezes its input in place by design.
+> - **`is*` vs `isValid*`**: property predicates are `is*` (`isEven`, `isPrime`); format validators are `isValid*` (`isValidEmail`, `isValidCPF`).
 > - **Typed errors**: failures throw `ValidationError`, `StorageError`, `HttpError`, `QueueFullError`, or `BaseError` (with a machine-readable `code`). See [Errors](./errors/README.md).
 
 ## Core data
