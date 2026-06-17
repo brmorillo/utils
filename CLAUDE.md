@@ -115,7 +115,11 @@ bun run format         # prettier --write src
 
 Notes:
 - The local TypeScript compiler is `./node_modules/.bin/tsc` (a bare `npx tsc` hits a placeholder).
-- There is currently **no CI workflow** in the repo (`.github/` was removed); run `build` + `test` + `lint` locally before publishing.
+
+## CI/CD (`.github/workflows/`)
+
+- **`ci.yml`** — on PRs to `main` and pushes to `main`: bun install, `type-check`, `lint`, `test:ci` (coverage gate), `build`, and a **gitleaks** secret scan (`.gitleaks.toml`: default rules + custom generic/AWS/GCP rules; test fixtures/examples/docs are allowlisted). `.env` is gitignored so it is never scanned in CI.
+- **`pr-version.yml`** — on PR open/synchronize/reopen to `main`: computes the next version from the PR's conventional commits with `commit-and-tag-version` (config in `.versionrc.json`), updates `package.json` + `CHANGELOG.md`, and commits `chore(release): vX.Y.Z` **back to the PR branch** (no tag). Guard: skips if the PR already contains a release commit, so it bumps once per PR (re-trigger by removing that commit). Same-repo PRs only (`GITHUB_TOKEN` can't push to forks). Tagging/publishing is not wired up — do it at release time.
 
 ## Where to look
 

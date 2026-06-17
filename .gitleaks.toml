@@ -1,0 +1,41 @@
+# Gitleaks configuration for @brmorillo/utils.
+#
+# Extends the built-in default ruleset and adds a few custom rules.
+# Run locally with:
+#   gitleaks detect --source . --no-git --config .gitleaks.toml --redact --verbose
+#
+# Reference: https://github.com/gitleaks/gitleaks/blob/master/config/gitleaks.toml
+
+title = "gitleaks config for @brmorillo/utils"
+
+[extend]
+# Keep the robust default rule set and add the custom rules below.
+useDefault = true
+
+[[rules]]
+id = "custom-generic-api-key"
+description = "Generic API Key"
+regex = '''(?i)((key|api[^Version]|token|secret|password|auth)[a-z0-9_ .\-,]{0,25})(=|>|:=|\|\|:|<=|=>|:).{0,5}['"]([0-9a-zA-Z\-_=]{8,64})['"]'''
+entropy = 3.7
+secretGroup = 4
+
+[[rules]]
+id = "custom-aws-access-key"
+description = "AWS Access Key"
+regex = '''AKIA[0-9A-Z]{16}'''
+
+[[rules]]
+id = "custom-gcp-api-key"
+description = "Google Cloud API Key"
+regex = '''AIza[0-9A-Za-z\-_]{39}'''
+
+[allowlist]
+description = "Test fixtures, examples and docs contain only throwaway sample values — not real secrets."
+paths = [
+  '''(^|/)tests/''',
+  '''(^|/)examples/''',
+  '''(^|/)docs/''',
+  '''(^|/)usage-example\.js$''',
+  '''(^|/)CHANGELOG\.md$''',
+  '''(^|/)bun\.lock$''',
+]
