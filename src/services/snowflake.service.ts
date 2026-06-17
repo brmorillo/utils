@@ -176,13 +176,18 @@ export class SnowflakeUtils {
   public static isValidSnowflake({
     snowflakeId,
   }: {
-    snowflakeId: string;
+    snowflakeId: bigint | string;
   }): boolean {
+    // A bigint produced by `generate` is always a valid, non-negative id.
+    if (typeof snowflakeId === 'bigint') {
+      return snowflakeId >= 0n;
+    }
+
     if (!snowflakeId || typeof snowflakeId !== 'string') {
       return false;
     }
 
-    // Snowflake IDs are numeric strings
+    // Snowflake IDs are non-negative numeric strings
     const numericRegex = /^\d+$/;
     if (!numericRegex.test(snowflakeId)) {
       return false;

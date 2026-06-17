@@ -446,6 +446,13 @@ describe('SortUtils - Unit Tests', () => {
     it('should sort an array with mixed numbers', () => {
       expect(SortUtils.timSort({ array: mixedArray })).toEqual(sortedMixedArray);
     });
+
+    it('should not mutate the input array', () => {
+      const input = [5, 3, 8, 1, 9, 2];
+      const snapshot = [...input];
+      SortUtils.timSort({ array: input });
+      expect(input).toEqual(snapshot);
+    });
   });
 
   // Tests for less common algorithms

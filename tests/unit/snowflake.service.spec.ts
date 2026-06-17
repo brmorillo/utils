@@ -111,6 +111,15 @@ describe('SnowflakeUtils', () => {
         }),
       ).toBe(false);
     });
+
+    it('should accept the bigint returned by generate()', () => {
+      const id = SnowflakeUtils.generate({});
+      expect(SnowflakeUtils.isValidSnowflake({ snowflakeId: id })).toBe(true);
+    });
+
+    it('should return false for a negative bigint', () => {
+      expect(SnowflakeUtils.isValidSnowflake({ snowflakeId: -1n })).toBe(false);
+    });
   });
 
   describe('compare', () => {

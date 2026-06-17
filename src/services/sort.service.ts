@@ -424,6 +424,10 @@ export class SortUtils {
    * SortUtils.timSort({ array: [5, 2, 9, 1, 7] }); // [1, 2, 5, 7, 9]
    */
   static timSort<T>({ array }: { array: T[] }): T[] {
+    if (!Array.isArray(array))
+      throw new ValidationError('Input must be an array');
+
+    const result = [...array];
     const RUN = 32;
 
     const insertionSort = (arr: T[], left: number, right: number) => {
@@ -475,9 +479,9 @@ export class SortUtils {
       }
     };
 
-    const n = array.length;
+    const n = result.length;
     for (let i = 0; i < n; i += RUN) {
-      insertionSort(array, i, Math.min(i + RUN - 1, n - 1));
+      insertionSort(result, i, Math.min(i + RUN - 1, n - 1));
     }
 
     for (let size = RUN; size < n; size = 2 * size) {
@@ -486,12 +490,12 @@ export class SortUtils {
         const right = Math.min(left + 2 * size - 1, n - 1);
 
         if (mid < right) {
-          merge(array, left, mid, right);
+          merge(result, left, mid, right);
         }
       }
     }
 
-    return array;
+    return result;
   }
 
   /**
