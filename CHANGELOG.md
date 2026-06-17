@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [14.0.1](https://github.com/brmorillo/util/compare/v12.0.0...v14.0.1) (2026-06-17)
+
+
+### Bug Fixes
+
+* correct repository URL in package.json (util -> utils) ([beb3e49](https://github.com/brmorillo/util/commit/beb3e49d58d268877f7784912ab8e3f5299882e5))
+* dist path ([efd332e](https://github.com/brmorillo/util/commit/efd332e761ec752a9da36fcdf7215845507fc8c1))
+
 ## [14.0.0](https://github.com/brmorillo/util/compare/v12.0.0...v14.0.0) (2026-06-17)
 
 
