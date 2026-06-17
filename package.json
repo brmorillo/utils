@@ -1,9 +1,17 @@
 {
   "name": "@brmorillo/utils",
-  "version": "14.0.1",
-  "description": "Utility library for JavaScript/TypeScript projects",
+  "version": "14.0.2",
+  "description": "Production-ready utility library for JS/TS — 27 modules behind one type-safe API: arrays, objects, strings, crypto, JWT, UUID, sorting, queues, caches, HTTP, logging, storage and more.",
   "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "files": [
     "dist/**/*",
     "README.md",
@@ -44,7 +52,21 @@
     "utils",
     "utilities",
     "helpers",
-    "typescript"
+    "typescript",
+    "javascript",
+    "nodejs",
+    "type-safe",
+    "cryptography",
+    "jwt",
+    "uuid",
+    "sorting",
+    "queue",
+    "cache",
+    "http",
+    "logging",
+    "storage",
+    "esm",
+    "commonjs"
   ],
   "author": "Bruno Morillo",
   "license": "LGPL-3.0-only",
