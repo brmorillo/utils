@@ -1,9 +1,12 @@
 # @brmorillo/utils
 
-[![npm version](https://badge.fury.io/js/@brmorillo%2Futils.svg)](https://www.npmjs.com/package/@brmorillo/utils)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
-[![License: LGPL-3.0](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
+[![npm version](https://img.shields.io/npm/v/@brmorillo/utils?label=npm&color=cb3837)](https://www.npmjs.com/package/@brmorillo/utils)
+[![CI](https://github.com/brmorillo/utils/actions/workflows/ci.yml/badge.svg)](https://github.com/brmorillo/utils/actions/workflows/ci.yml)
 [![Downloads](https://img.shields.io/npm/dm/@brmorillo/utils.svg)](https://www.npmjs.com/package/@brmorillo/utils)
+[![Bundle size](https://img.shields.io/bundlephobia/minzip/@brmorillo/utils?label=minzipped)](https://bundlephobia.com/package/@brmorillo/utils)
+[![Node.js](https://img.shields.io/node/v/@brmorillo/utils?color=339933)](https://nodejs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6.svg)](https://www.typescriptlang.org/)
+[![License: LGPL-3.0](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 
 > If you have a problem, it's probably already solved here.
 
@@ -179,6 +182,8 @@ guarantees, see the [Security Policy](./SECURITY.md).
 - 📚 **[Module reference](./docs/README.md)** — one page per module
 - 🧪 **[Examples](./examples)** — runnable usage examples
 - 🤖 **[CLAUDE.md](./CLAUDE.md)** — architecture & conventions for contributors and AI assistants
+- 🤝 **[CONTRIBUTING.md](./CONTRIBUTING.md)** — how to contribute
+- 🔒 **[SECURITY.md](./SECURITY.md)** — vulnerability reporting & security policy
 
 ## Development
 
