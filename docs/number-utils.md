@@ -152,23 +152,13 @@ NumberUtils.clamp({ value: 15, min: 0, max: 10 }); // 10
 NumberUtils.clamp({ value: -5, min: 0, max: 10 }); // 0
 ```
 
-### isValidPrime({ value })
+### Primality check
 
-Checks if a number is a prime number.
+`NumberUtils` no longer exposes a prime check. Primality validation lives in
+`MathUtils.isValidPrime`. Use `MathUtils.isValidPrime({ value })` instead.
 
-```javascript
-NumberUtils.isValidPrime({ value: 7 }); // true
-NumberUtils.isValidPrime({ value: 4 }); // false
-```
-
-### isOdd({ value })
-
-Checks if a number is odd.
-
-```javascript
-NumberUtils.isOdd({ value: 3 }); // true
-NumberUtils.isOdd({ value: 4 }); // false
-```
+> Note: For odd-number checks, use `NumberUtils.isValidOdd({ value })`. The
+> former `isOdd` alias has been removed.
 
 ## Examples
 

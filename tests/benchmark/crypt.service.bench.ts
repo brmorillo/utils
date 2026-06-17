@@ -50,11 +50,11 @@ describe('CryptUtils - Benchmark Tests', () => {
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          const { encryptedData } = CryptUtils.aesEncrypt(
-            testData,
+          const { encryptedData } = CryptUtils.aesEncrypt({
+            data: testData,
             secretKey,
             iv,
-          );
+          });
           encryptedResults.push(encryptedData);
         }
       });
@@ -72,11 +72,15 @@ describe('CryptUtils - Benchmark Tests', () => {
       const count = 10000;
 
       // Encrypt a string to use in the tests
-      const { encryptedData } = CryptUtils.aesEncrypt(testData, secretKey, iv);
+      const { encryptedData } = CryptUtils.aesEncrypt({
+        data: testData,
+        secretKey,
+        iv,
+      });
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          CryptUtils.aesDecrypt(encryptedData, secretKey, iv);
+          CryptUtils.aesDecrypt({ encryptedData, secretKey, iv });
         }
       });
 
@@ -101,7 +105,11 @@ describe('CryptUtils - Benchmark Tests', () => {
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          const encrypted = CryptUtils.chacha20Encrypt(testData, key, nonce);
+          const encrypted = CryptUtils.chacha20Encrypt({
+            data: testData,
+            key,
+            nonce,
+          });
           encryptedResults.push(encrypted);
         }
       });
@@ -119,11 +127,15 @@ describe('CryptUtils - Benchmark Tests', () => {
       const count = 10000;
 
       // Encrypt a string to use in the tests
-      const encrypted = CryptUtils.chacha20Encrypt(testData, key, nonce);
+      const encrypted = CryptUtils.chacha20Encrypt({
+        data: testData,
+        key,
+        nonce,
+      });
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          CryptUtils.chacha20Decrypt(encrypted, key, nonce);
+          CryptUtils.chacha20Decrypt({ encryptedData: encrypted, key, nonce });
         }
       });
 
@@ -144,14 +156,14 @@ describe('CryptUtils - Benchmark Tests', () => {
     it('should fail appropriately when RC4 is not supported', () => {
       // RC4 is deprecated and not supported in modern Node.js versions
       expect(() => {
-        CryptUtils.rc4Encrypt(testData, key);
+        CryptUtils.rc4Encrypt({ data: testData, key });
       }).toThrow('RC4 algorithm is not supported in this Node.js version.');
     });
 
     it('should fail appropriately on decryption when RC4 is not supported', () => {
       // RC4 is deprecated and not supported in modern Node.js versions
       expect(() => {
-        CryptUtils.rc4Decrypt('encrypted-data', key);
+        CryptUtils.rc4Decrypt({ encryptedData: 'encrypted-data', key });
       }).toThrow('RC4 algorithm is not supported in this Node.js version.');
     });
   });
@@ -163,7 +175,7 @@ describe('CryptUtils - Benchmark Tests', () => {
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          keyPairs.push(CryptUtils.rsaGenerateKeyPair(1024));
+          keyPairs.push(CryptUtils.rsaGenerateKeyPair({ modulusLength: 1024 }));
         }
       });
 
@@ -186,7 +198,9 @@ describe('CryptUtils - Benchmark Tests', () => {
 
   describe('RSA signing and verification in bulk', () => {
     // Generate a key pair for all the tests
-    const { publicKey, privateKey } = CryptUtils.rsaGenerateKeyPair(1024);
+    const { publicKey, privateKey } = CryptUtils.rsaGenerateKeyPair({
+      modulusLength: 1024,
+    });
     const testData = 'Data to sign with RSA in benchmark';
 
     it('should sign 1,000 messages in a reasonable time', () => {
@@ -195,7 +209,7 @@ describe('CryptUtils - Benchmark Tests', () => {
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          signatures.push(CryptUtils.rsaSign(testData, privateKey));
+          signatures.push(CryptUtils.rsaSign({ data: testData, privateKey }));
         }
       });
 
@@ -212,11 +226,11 @@ describe('CryptUtils - Benchmark Tests', () => {
       const count = 1000;
 
       // Create a signature to verify repeatedly
-      const signature = CryptUtils.rsaSign(testData, privateKey);
+      const signature = CryptUtils.rsaSign({ data: testData, privateKey });
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          CryptUtils.rsaVerify(testData, signature, publicKey);
+          CryptUtils.rsaVerify({ data: testData, signature, publicKey });
         }
       });
 
@@ -269,7 +283,7 @@ describe('CryptUtils - Benchmark Tests', () => {
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          signatures.push(CryptUtils.eccSign(testData, privateKey));
+          signatures.push(CryptUtils.eccSign({ data: testData, privateKey }));
         }
       });
 
@@ -286,11 +300,11 @@ describe('CryptUtils - Benchmark Tests', () => {
       const count = 1000;
 
       // Create a signature to verify repeatedly
-      const signature = CryptUtils.eccSign(testData, privateKey);
+      const signature = CryptUtils.eccSign({ data: testData, privateKey });
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          CryptUtils.eccVerify(testData, signature, publicKey);
+          CryptUtils.eccVerify({ data: testData, signature, publicKey });
         }
       });
 
@@ -316,14 +330,14 @@ describe('CryptUtils - Benchmark Tests', () => {
       // Measure the time for AES
       const aesTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          CryptUtils.aesEncrypt(testData, aesKey, aesIv);
+          CryptUtils.aesEncrypt({ data: testData, secretKey: aesKey, iv: aesIv });
         }
       });
 
       // Measure the time for RC4
       const rc4Time = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          CryptUtils.rc4Encrypt(testData, rc4Key);
+          CryptUtils.rc4Encrypt({ data: testData, key: rc4Key });
         }
       });
 

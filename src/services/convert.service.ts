@@ -1,3 +1,5 @@
+import { ValidationError } from '../errors';
+
 export class ConvertUtils {
   /**
    * Conversion constants for space measurements using meters as the base unit.
@@ -183,7 +185,7 @@ export class ConvertUtils {
 
     if (toType === 'roman') {
       if (typeof value !== 'number' || value <= 0 || !Number.isInteger(value)) {
-        throw new Error(
+        throw new ValidationError(
           'Value must be a positive integer to convert to Roman.',
         );
       }

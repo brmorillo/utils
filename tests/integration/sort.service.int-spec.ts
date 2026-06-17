@@ -11,14 +11,14 @@ describe('SortUtils - Integration Tests', () => {
       const expectedSorted = [3, 9, 10, 27, 38, 43, 82];
 
       // Comparison-based algorithms
-      const bubbleSorted = SortUtils.bubbleSort(unsortedArray);
-      const mergeSorted = SortUtils.mergeSort(unsortedArray);
-      const quickSorted = SortUtils.quickSort(unsortedArray);
-      const heapSorted = SortUtils.heapSort(unsortedArray);
-      const selectionSorted = SortUtils.selectionSort(unsortedArray);
-      const insertionSorted = SortUtils.insertionSort(unsortedArray);
-      const shellSorted = SortUtils.shellSort(unsortedArray);
-      const timSorted = SortUtils.timSort(unsortedArray);
+      const bubbleSorted = SortUtils.bubbleSort({ array: unsortedArray });
+      const mergeSorted = SortUtils.mergeSort({ array: unsortedArray });
+      const quickSorted = SortUtils.quickSort({ array: unsortedArray });
+      const heapSorted = SortUtils.heapSort({ array: unsortedArray });
+      const selectionSorted = SortUtils.selectionSort({ array: unsortedArray });
+      const insertionSorted = SortUtils.insertionSort({ array: unsortedArray });
+      const shellSorted = SortUtils.shellSort({ array: unsortedArray });
+      const timSorted = SortUtils.timSort({ array: unsortedArray });
 
       // Assertions
       expect(bubbleSorted).toEqual(expectedSorted);
@@ -32,8 +32,8 @@ describe('SortUtils - Integration Tests', () => {
 
       // Non-comparison-based algorithms (only for non-negative numbers)
       const positiveArray = [38, 27, 43, 3, 9, 82, 10];
-      const countingSorted = SortUtils.countingSort(positiveArray, 82);
-      const radixSorted = SortUtils.radixSort(positiveArray);
+      const countingSorted = SortUtils.countingSort({ array: positiveArray, maxValue: 82 });
+      const radixSorted = SortUtils.radixSort({ array: positiveArray });
 
       expect(countingSorted).toEqual(expectedSorted);
       expect(radixSorted).toEqual(expectedSorted);
@@ -52,7 +52,7 @@ describe('SortUtils - Integration Tests', () => {
       // Function to sort by key
       const sortByKey = <T extends { key: number }>(
         arr: T[],
-        algorithm: (array: T[]) => T[],
+        algorithm: (params: { array: T[] }) => T[],
       ): T[] => {
         // Create a custom comparison function
         const compare = (a: T, b: T): number => a.key - b.key;
@@ -82,7 +82,7 @@ describe('SortUtils - Integration Tests', () => {
         };
 
         try {
-          return algorithm(arr);
+          return algorithm({ array: arr });
         } finally {
           // Restore the original operators
           (Array.prototype[gtSymbol] as any) = originalGT;
@@ -124,7 +124,7 @@ describe('SortUtils - Integration Tests', () => {
       const grades = students.map(student => student.grade);
 
       // Sort the grades
-      const sortedGrades = SortUtils.quickSort(grades);
+      const sortedGrades = SortUtils.quickSort({ array: grades });
 
       // Reorder the students based on the sorted grades
       const sortedStudents = sortedGrades.map(grade =>
@@ -152,7 +152,7 @@ describe('SortUtils - Integration Tests', () => {
       const prices = products.map(product => product.price);
 
       // Sort the prices (cheapest to most expensive)
-      const sortedPrices = SortUtils.mergeSort(prices);
+      const sortedPrices = SortUtils.mergeSort({ array: prices });
 
       // Reorder the products based on the sorted prices
       const sortedProducts = sortedPrices.map(price =>
@@ -180,7 +180,7 @@ describe('SortUtils - Integration Tests', () => {
       const timestamps = dates.map(date => date.getTime());
 
       // Sort the timestamps
-      const sortedTimestamps = SortUtils.heapSort(timestamps);
+      const sortedTimestamps = SortUtils.heapSort({ array: timestamps });
 
       // Convert sorted timestamps back to dates
       const sortedDates = sortedTimestamps.map(
@@ -202,13 +202,13 @@ describe('SortUtils - Integration Tests', () => {
       const smartSort = <T>(array: T[]): T[] => {
         if (array.length <= 10) {
           // For small arrays, insertion sort is efficient
-          return SortUtils.insertionSort(array);
+          return SortUtils.insertionSort({ array: array });
         } else if (array.length <= 1000) {
           // For medium arrays, quick sort is a good choice
-          return SortUtils.quickSort(array);
+          return SortUtils.quickSort({ array: array });
         } else {
           // For large arrays, merge sort guarantees consistent performance
-          return SortUtils.mergeSort(array);
+          return SortUtils.mergeSort({ array: array });
         }
       };
 
@@ -223,8 +223,8 @@ describe('SortUtils - Integration Tests', () => {
       const sortedMedium = smartSort(mediumArray);
 
       // Verify that the arrays were sorted correctly
-      expect(sortedSmall).toEqual(SortUtils.insertionSort(smallArray));
-      expect(sortedMedium).toEqual(SortUtils.quickSort(mediumArray));
+      expect(sortedSmall).toEqual(SortUtils.insertionSort({ array: smallArray }));
+      expect(sortedMedium).toEqual(SortUtils.quickSort({ array: mediumArray }));
     });
 
     it('should use different algorithms based on the data type', () => {
@@ -245,13 +245,13 @@ describe('SortUtils - Integration Tests', () => {
         if (allNonNegativeIntegers) {
           // For non-negative integers, counting sort is efficient
           const max = Math.max(...array);
-          return SortUtils.countingSort(array, max);
+          return SortUtils.countingSort({ array: array, maxValue: max });
         } else if (allBetweenZeroAndOne) {
           // For numbers between 0 and 1, bucket sort is a good choice
-          return SortUtils.bucketSort(array);
+          return SortUtils.bucketSort({ array: array });
         } else {
           // For other cases, merge sort is safe
-          return SortUtils.mergeSort(array);
+          return SortUtils.mergeSort({ array: array });
         }
       };
 

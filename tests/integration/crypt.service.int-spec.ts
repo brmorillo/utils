@@ -24,14 +24,18 @@ describe('CryptUtils - Integration Tests', () => {
       const iv = CryptUtils.generateIV();
 
       // Encrypt data
-      const { encryptedData } = CryptUtils.aesEncrypt(
-        originalData,
+      const { encryptedData } = CryptUtils.aesEncrypt({
+        data: originalData,
         secretKey,
         iv,
-      );
+      });
 
       // Decrypt data
-      const decryptedData = CryptUtils.aesDecrypt(encryptedData, secretKey, iv);
+      const decryptedData = CryptUtils.aesDecrypt({
+        encryptedData,
+        secretKey,
+        iv,
+      });
 
       // Verify that the data was preserved correctly
       expect(decryptedData).toEqual(originalData);
@@ -43,13 +47,19 @@ describe('CryptUtils - Integration Tests', () => {
 
     it('should sign with RSA and verify correctly', () => {
       // Generate RSA key pair
-      const { publicKey, privateKey } = CryptUtils.rsaGenerateKeyPair(1024);
+      const { publicKey, privateKey } = CryptUtils.rsaGenerateKeyPair({
+        modulusLength: 1024,
+      });
 
       // Sign data
-      const signature = CryptUtils.rsaSign(testData, privateKey);
+      const signature = CryptUtils.rsaSign({ data: testData, privateKey });
 
       // Verify signature
-      const isValid = CryptUtils.rsaVerify(testData, signature, publicKey);
+      const isValid = CryptUtils.rsaVerify({
+        data: testData,
+        signature,
+        publicKey,
+      });
 
       expect(isValid).toBe(true);
     });
@@ -59,28 +69,35 @@ describe('CryptUtils - Integration Tests', () => {
       const { publicKey, privateKey } = CryptUtils.eccGenerateKeyPair();
 
       // Sign data
-      const signature = CryptUtils.eccSign(testData, privateKey);
+      const signature = CryptUtils.eccSign({ data: testData, privateKey });
 
       // Verify signature
-      const isValid = CryptUtils.eccVerify(testData, signature, publicKey);
+      const isValid = CryptUtils.eccVerify({
+        data: testData,
+        signature,
+        publicKey,
+      });
 
       expect(isValid).toBe(true);
     });
 
     it('should detect an invalid signature between different algorithms', () => {
       // Generate key pairs
-      const rsaKeys = CryptUtils.rsaGenerateKeyPair(1024);
+      const rsaKeys = CryptUtils.rsaGenerateKeyPair({ modulusLength: 1024 });
       const eccKeys = CryptUtils.eccGenerateKeyPair();
 
       // Sign with RSA
-      const rsaSignature = CryptUtils.rsaSign(testData, rsaKeys.privateKey);
+      const rsaSignature = CryptUtils.rsaSign({
+        data: testData,
+        privateKey: rsaKeys.privateKey,
+      });
 
       // Try to verify an RSA signature with an ECC key (should fail)
-      const isValid = CryptUtils.eccVerify(
-        testData,
-        rsaSignature,
-        eccKeys.publicKey,
-      );
+      const isValid = CryptUtils.eccVerify({
+        data: testData,
+        signature: rsaSignature,
+        publicKey: eccKeys.publicKey,
+      });
 
       expect(isValid).toBe(false);
     });
@@ -93,33 +110,48 @@ describe('CryptUtils - Integration Tests', () => {
 
       // Layer 1: RC4
       const rc4Key = 'chave-rc4-secreta';
-      const rc4Encrypted = CryptUtils.rc4Encrypt(originalData, rc4Key);
+      const rc4Encrypted = CryptUtils.rc4Encrypt({
+        data: originalData,
+        key: rc4Key,
+      });
 
       // Layer 2: AES
       const aesKey = '12345678901234567890123456789012';
       const aesIV = CryptUtils.generateIV();
-      const { encryptedData: aesEncrypted } = CryptUtils.aesEncrypt(
-        rc4Encrypted,
-        aesKey,
-        aesIV,
-      );
+      const { encryptedData: aesEncrypted } = CryptUtils.aesEncrypt({
+        data: rc4Encrypted,
+        secretKey: aesKey,
+        iv: aesIV,
+      });
 
       // Layer 3: RSA
-      const { publicKey, privateKey } = CryptUtils.rsaGenerateKeyPair(1024);
-      const finalEncrypted = CryptUtils.rsaEncrypt(aesEncrypted, publicKey);
+      const { publicKey, privateKey } = CryptUtils.rsaGenerateKeyPair({
+        modulusLength: 1024,
+      });
+      const finalEncrypted = CryptUtils.rsaEncrypt({
+        data: aesEncrypted,
+        publicKey,
+      });
 
       // Decrypt in reverse order
       // Layer 3: RSA
-      const rsaDecrypted = CryptUtils.rsaDecrypt(finalEncrypted, privateKey);
+      const rsaDecrypted = CryptUtils.rsaDecrypt({
+        encryptedData: finalEncrypted,
+        privateKey,
+      });
 
       // Layer 2: AES
-      const aesDecrypted = CryptUtils.aesDecrypt(rsaDecrypted, aesKey, aesIV);
+      const aesDecrypted = CryptUtils.aesDecrypt({
+        encryptedData: rsaDecrypted,
+        secretKey: aesKey,
+        iv: aesIV,
+      });
 
       // Layer 1: RC4
-      const finalDecrypted = CryptUtils.rc4Decrypt(
-        String(aesDecrypted),
-        rc4Key,
-      );
+      const finalDecrypted = CryptUtils.rc4Decrypt({
+        encryptedData: String(aesDecrypted),
+        key: rc4Key,
+      });
 
       // Verify that the original data was recovered
       expect(finalDecrypted).toBe(originalData);
@@ -133,21 +165,31 @@ describe('CryptUtils - Integration Tests', () => {
       const iv16 = '1234567890123456'; // 16 bytes
 
       // Encrypt with AES
-      const { encryptedData: aesEncrypted } = CryptUtils.aesEncrypt(
-        testData,
-        key32,
-        iv16,
-      );
+      const { encryptedData: aesEncrypted } = CryptUtils.aesEncrypt({
+        data: testData,
+        secretKey: key32,
+        iv: iv16,
+      });
 
       // Encrypt with RC4
-      const rc4Encrypted = CryptUtils.rc4Encrypt(testData, key32);
+      const rc4Encrypted = CryptUtils.rc4Encrypt({
+        data: testData,
+        key: key32,
+      });
 
       // Verify that the outputs are different (different algorithms)
       expect(aesEncrypted).not.toBe(rc4Encrypted);
 
       // Decrypt and verify that both recover the original data
-      const aesDecrypted = CryptUtils.aesDecrypt(aesEncrypted, key32, iv16);
-      const rc4Decrypted = CryptUtils.rc4Decrypt(rc4Encrypted, key32);
+      const aesDecrypted = CryptUtils.aesDecrypt({
+        encryptedData: aesEncrypted,
+        secretKey: key32,
+        iv: iv16,
+      });
+      const rc4Decrypted = CryptUtils.rc4Decrypt({
+        encryptedData: rc4Encrypted,
+        key: key32,
+      });
 
       expect(aesDecrypted).toBe(testData);
       expect(rc4Decrypted).toBe(testData);

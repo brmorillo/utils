@@ -48,15 +48,15 @@ describe('SortUtils - Benchmark Tests', () => {
 
     it('should measure bubbleSort performance', () => {
       const randomTime = measureExecutionTime(() => {
-        SortUtils.bubbleSort(randomArray);
+        SortUtils.bubbleSort({ array: randomArray });
       });
 
       const nearlySortedTime = measureExecutionTime(() => {
-        SortUtils.bubbleSort(nearlySortedArray);
+        SortUtils.bubbleSort({ array: nearlySortedArray });
       });
 
       const reverseSortedTime = measureExecutionTime(() => {
-        SortUtils.bubbleSort(reverseSortedArray);
+        SortUtils.bubbleSort({ array: reverseSortedArray });
       });
 
       console.log(`BubbleSort (${size} elements):`);
@@ -73,15 +73,15 @@ describe('SortUtils - Benchmark Tests', () => {
 
     it('should measure quickSort performance', () => {
       const randomTime = measureExecutionTime(() => {
-        SortUtils.quickSort(randomArray);
+        SortUtils.quickSort({ array: randomArray });
       });
 
       const nearlySortedTime = measureExecutionTime(() => {
-        SortUtils.quickSort(nearlySortedArray);
+        SortUtils.quickSort({ array: nearlySortedArray });
       });
 
       const reverseSortedTime = measureExecutionTime(() => {
-        SortUtils.quickSort(reverseSortedArray);
+        SortUtils.quickSort({ array: reverseSortedArray });
       });
 
       console.log(`QuickSort (${size} elements):`);
@@ -98,15 +98,15 @@ describe('SortUtils - Benchmark Tests', () => {
 
     it('should measure mergeSort performance', () => {
       const randomTime = measureExecutionTime(() => {
-        SortUtils.mergeSort(randomArray);
+        SortUtils.mergeSort({ array: randomArray });
       });
 
       const nearlySortedTime = measureExecutionTime(() => {
-        SortUtils.mergeSort(nearlySortedArray);
+        SortUtils.mergeSort({ array: nearlySortedArray });
       });
 
       const reverseSortedTime = measureExecutionTime(() => {
-        SortUtils.mergeSort(reverseSortedArray);
+        SortUtils.mergeSort({ array: reverseSortedArray });
       });
 
       console.log(`MergeSort (${size} elements):`);
@@ -123,15 +123,15 @@ describe('SortUtils - Benchmark Tests', () => {
 
     it('should measure heapSort performance', () => {
       const randomTime = measureExecutionTime(() => {
-        SortUtils.heapSort(randomArray);
+        SortUtils.heapSort({ array: randomArray });
       });
 
       const nearlySortedTime = measureExecutionTime(() => {
-        SortUtils.heapSort(nearlySortedArray);
+        SortUtils.heapSort({ array: nearlySortedArray });
       });
 
       const reverseSortedTime = measureExecutionTime(() => {
-        SortUtils.heapSort(reverseSortedArray);
+        SortUtils.heapSort({ array: reverseSortedArray });
       });
 
       console.log(`HeapSort (${size} elements):`);
@@ -157,19 +157,19 @@ describe('SortUtils - Benchmark Tests', () => {
 
     it('should measure the performance of efficient algorithms', () => {
       const quickSortTime = measureExecutionTime(() => {
-        SortUtils.quickSort(randomArray);
+        SortUtils.quickSort({ array: randomArray });
       });
 
       const mergeSortTime = measureExecutionTime(() => {
-        SortUtils.mergeSort(randomArray);
+        SortUtils.mergeSort({ array: randomArray });
       });
 
       const heapSortTime = measureExecutionTime(() => {
-        SortUtils.heapSort(randomArray);
+        SortUtils.heapSort({ array: randomArray });
       });
 
       const timSortTime = measureExecutionTime(() => {
-        SortUtils.timSort(randomArray);
+        SortUtils.timSort({ array: randomArray });
       });
 
       console.log(`Efficient algorithms (${size} elements):`);
@@ -189,15 +189,15 @@ describe('SortUtils - Benchmark Tests', () => {
       const smallerArray = generateRandomArray(200);
 
       const insertionSortTime = measureExecutionTime(() => {
-        SortUtils.insertionSort(smallerArray);
+        SortUtils.insertionSort({ array: smallerArray });
       });
 
       const selectionSortTime = measureExecutionTime(() => {
-        SortUtils.selectionSort(smallerArray);
+        SortUtils.selectionSort({ array: smallerArray });
       });
 
       const bubbleSortTime = measureExecutionTime(() => {
-        SortUtils.bubbleSort(smallerArray);
+        SortUtils.bubbleSort({ array: smallerArray });
       });
 
       console.log(`O(n²) algorithms (200 elements):`);
@@ -215,18 +215,18 @@ describe('SortUtils - Benchmark Tests', () => {
       const positiveArray = generateRandomArray(size, 1000);
 
       const countingSortTime = measureExecutionTime(() => {
-        SortUtils.countingSort(positiveArray, 1000);
+        SortUtils.countingSort({ array: positiveArray, maxValue: 1000 });
       });
 
       const radixSortTime = measureExecutionTime(() => {
-        SortUtils.radixSort(positiveArray);
+        SortUtils.radixSort({ array: positiveArray });
       });
 
       // Generate an array of numbers between 0 and 1 for bucket sort
       const floatArray = Array.from({ length: size }, () => Math.random());
 
       const bucketSortTime = measureExecutionTime(() => {
-        SortUtils.bucketSort(floatArray);
+        SortUtils.bucketSort({ array: floatArray });
       });
 
       console.log(`Non-comparative algorithms (${size} elements):`);
@@ -250,15 +250,15 @@ describe('SortUtils - Benchmark Tests', () => {
 
     it('should measure the performance of efficient algorithms with large arrays', () => {
       const quickSortTime = measureExecutionTime(() => {
-        SortUtils.quickSort(randomArray);
+        SortUtils.quickSort({ array: randomArray });
       });
 
       const mergeSortTime = measureExecutionTime(() => {
-        SortUtils.mergeSort(randomArray);
+        SortUtils.mergeSort({ array: randomArray });
       });
 
       const heapSortTime = measureExecutionTime(() => {
-        SortUtils.heapSort(randomArray);
+        SortUtils.heapSort({ array: randomArray });
       });
 
       console.log(`Efficient algorithms (${size} elements):`);
@@ -276,11 +276,11 @@ describe('SortUtils - Benchmark Tests', () => {
       const positiveArray = generateRandomArray(size, 1000);
 
       const countingSortTime = measureExecutionTime(() => {
-        SortUtils.countingSort(positiveArray, 1000);
+        SortUtils.countingSort({ array: positiveArray, maxValue: 1000 });
       });
 
       const radixSortTime = measureExecutionTime(() => {
-        SortUtils.radixSort(positiveArray);
+        SortUtils.radixSort({ array: positiveArray });
       });
 
       console.log(`Non-comparative algorithms (${size} elements):`);
@@ -299,15 +299,15 @@ describe('SortUtils - Benchmark Tests', () => {
       const nearlySortedArray = generateNearlySortedArray(size, swaps);
 
       const insertionSortTime = measureExecutionTime(() => {
-        SortUtils.insertionSort(nearlySortedArray);
+        SortUtils.insertionSort({ array: nearlySortedArray });
       });
 
       const quickSortTime = measureExecutionTime(() => {
-        SortUtils.quickSort(nearlySortedArray);
+        SortUtils.quickSort({ array: nearlySortedArray });
       });
 
       const mergeSortTime = measureExecutionTime(() => {
-        SortUtils.mergeSort(nearlySortedArray);
+        SortUtils.mergeSort({ array: nearlySortedArray });
       });
 
       console.log(
@@ -329,11 +329,11 @@ describe('SortUtils - Benchmark Tests', () => {
       );
 
       const quickSortTime = measureExecutionTime(() => {
-        SortUtils.quickSort(duplicatesArray);
+        SortUtils.quickSort({ array: duplicatesArray });
       });
 
       const countingSortTime = measureExecutionTime(() => {
-        SortUtils.countingSort(duplicatesArray, 9);
+        SortUtils.countingSort({ array: duplicatesArray, maxValue: 9 });
       });
 
       console.log(`Arrays with many duplicates (${size} elements):`);

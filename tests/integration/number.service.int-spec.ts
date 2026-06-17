@@ -1,4 +1,5 @@
 import { NumberUtils } from '../../src/services/number.service';
+import { MathUtils } from '../../src/services/math.service';
 
 /**
  * Integration tests for the NumberUtils class.
@@ -82,7 +83,7 @@ describe('NumberUtils - Integration Tests', () => {
       });
 
       // 3. Check whether it is prime
-      const isPrime = NumberUtils.isValidPrime({ value: clampedValue });
+      const isPrime = MathUtils.isValidPrime({ value: clampedValue });
 
       // 4. Calculate the factorial if it is less than 10, or 0 otherwise
       const factorial =

@@ -1,4 +1,5 @@
 import { NumberUtils } from '../../src/services/number.service';
+import { MathUtils } from '../../src/services/math.service';
 
 /**
  * Benchmark tests for the NumberUtils class.
@@ -260,7 +261,7 @@ describe('NumberUtils - Benchmark Tests', () => {
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          results.push(NumberUtils.isValidPrime({ value: i }));
+          results.push(MathUtils.isValidPrime({ value: i }));
         }
       });
 
@@ -289,7 +290,7 @@ describe('NumberUtils - Benchmark Tests', () => {
       // Test isOdd
       results.isOdd = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          NumberUtils.isOdd({ value: i });
+          NumberUtils.isValidOdd({ value: i });
         }
       });
 
@@ -303,7 +304,7 @@ describe('NumberUtils - Benchmark Tests', () => {
       // Test isValidPrime
       results.isValidPrime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          NumberUtils.isValidPrime({ value: i % 100 });
+          MathUtils.isValidPrime({ value: i % 100 });
         }
       });
 
@@ -328,7 +329,7 @@ describe('NumberUtils - Benchmark Tests', () => {
       for (const num of numbers) {
         results[num] = measureExecutionTime(() => {
           for (let i = 0; i < count; i++) {
-            NumberUtils.isValidPrime({ value: num });
+            MathUtils.isValidPrime({ value: num });
           }
         });
 

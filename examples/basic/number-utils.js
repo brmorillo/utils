@@ -3,7 +3,7 @@
  *
  * Run with: node number-utils.js
  */
-const { NumberUtils } = require('@brmorillo/utils');
+const { NumberUtils, MathUtils } = require('@brmorillo/utils');
 
 // Example 1: Round to a number of decimal places
 console.log('Example 1: Round to a number of decimal places');
@@ -23,8 +23,8 @@ console.log('---');
 
 // Example 4: Check whether a number is prime
 console.log('Example 4: Check whether a number is prime');
-console.log('isValidPrime({ value: 7 }):', NumberUtils.isValidPrime({ value: 7 }));
-console.log('isValidPrime({ value: 8 }):', NumberUtils.isValidPrime({ value: 8 }));
+console.log('isValidPrime({ value: 7 }):', MathUtils.isValidPrime({ value: 7 }));
+console.log('isValidPrime({ value: 8 }):', MathUtils.isValidPrime({ value: 8 }));
 console.log('---');
 
 // Example 5: Convert a monetary value to cents

@@ -14,8 +14,9 @@ export class StorageError extends BaseError {
     message: string,
     code: string = 'STORAGE_ERROR',
     details?: Record<string, any>,
+    options?: { cause?: unknown },
   ) {
-    super(message, code, undefined, details);
+    super(message, code, undefined, details, options);
   }
 
   /**

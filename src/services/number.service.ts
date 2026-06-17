@@ -1,3 +1,5 @@
+import { ValidationError } from '../errors';
+
 export class NumberUtils {
   /**
    * Checks if a number is even.
@@ -148,7 +150,7 @@ export class NumberUtils {
     decimalPlaces: number;
   }): string {
     if (isNaN(value) || decimalPlaces < 0) {
-      throw new Error(
+      throw new ValidationError(
         `Invalid number or decimal places: ${value}, ${decimalPlaces}`,
       );
     }
@@ -187,7 +189,7 @@ export class NumberUtils {
     max: number;
   }): number {
     if (min > max) {
-      throw new Error(
+      throw new ValidationError(
         `Minimum value ${min} is greater than maximum value ${max}`,
       );
     }
@@ -218,7 +220,7 @@ export class NumberUtils {
     decimals?: number;
   }): number {
     if (min > max) {
-      throw new Error(
+      throw new ValidationError(
         `Minimum value ${min} is greater than maximum value ${max}`,
       );
     }
@@ -271,34 +273,8 @@ export class NumberUtils {
   }
 
   /**
-   * Checks if a number is a prime number.
-   * @param {object} params - The parameters for the method.
-   * @param {number} params.value - The number to check.
-   * @returns {boolean} `true` if the number is prime, otherwise `false`.
-   * @example
-   * NumberUtils.isValidPrime({ value: 7 }); // true
-   * NumberUtils.isValidPrime({ value: 4 }); // false
+   * Primality checking lives in `MathUtils.isValidPrime`.
+   * `NumberUtils` intentionally does not expose a duplicate prime check.
+   * @see MathUtils.isValidPrime
    */
-  public static isValidPrime({ value }: { value: number }): boolean {
-    if (value <= 1) return false;
-    if (value <= 3) return true;
-    if (value % 2 === 0 || value % 3 === 0) return false;
-    for (let i = 5; i * i <= value; i += 6) {
-      if (value % i === 0 || value % (i + 2) === 0) return false;
-    }
-    return true;
-  }
-
-  /**
-   * Checks if a number is odd.
-   * @param {object} params - The parameters for the method.
-   * @param {number} params.value - The number to check.
-   * @returns {boolean} `true` if the number is odd, otherwise `false`.
-   * @example
-   * NumberUtils.isOdd({ value: 3 }); // true
-   * NumberUtils.isOdd({ value: 4 }); // false
-   */
-  public static isOdd({ value }: { value: number }): boolean {
-    return value % 2 !== 0;
-  }
 }

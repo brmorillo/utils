@@ -23,14 +23,19 @@ export class BaseError extends Error {
    * @param code Error code
    * @param statusCode HTTP status code (if applicable)
    * @param details Additional error details
+   * @param options Extra options, e.g. the original error as `cause`
    */
   constructor(
     message: string,
     code: string = 'UNKNOWN_ERROR',
     statusCode?: number,
     details?: Record<string, any>,
+    options?: { cause?: unknown },
   ) {
-    super(message);
+    super(
+      message,
+      options?.cause !== undefined ? { cause: options.cause } : undefined,
+    );
     this.name = this.constructor.name;
     this.code = code;
     this.statusCode = statusCode;

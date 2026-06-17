@@ -3,6 +3,7 @@ import {
   IStorageProvider,
 } from '../interfaces/storage.interface';
 import { Readable } from 'stream';
+import { StorageError } from '../errors';
 
 /**
  * S3 storage provider options
@@ -49,8 +50,10 @@ export class S3StorageProvider implements IStorageProvider {
         forcePathStyle: options.forcePathStyle,
       });
     } catch (error) {
-      throw new Error(
+      throw new StorageError(
         'AWS SDK is not installed. Please install @aws-sdk/client-s3 and @aws-sdk/lib-storage to use S3StorageProvider.',
+        'SDK_NOT_INSTALLED',
+        undefined,
         { cause: error },
       );
     }
@@ -90,8 +93,10 @@ export class S3StorageProvider implements IStorageProvider {
       await upload.done();
       return this.getFileUrl(filePath);
     } catch (error) {
-      throw new Error(
+      throw new StorageError(
         `Failed to upload file to S3: ${error instanceof Error ? error.message : String(error)}`,
+        'S3_UPLOAD_ERROR',
+        undefined,
         { cause: error },
       );
     }
@@ -119,8 +124,10 @@ export class S3StorageProvider implements IStorageProvider {
         response.Body.on('error', reject);
       });
     } catch (error) {
-      throw new Error(
+      throw new StorageError(
         `Failed to download file from S3: ${error instanceof Error ? error.message : String(error)}`,
+        'S3_DOWNLOAD_ERROR',
+        undefined,
         { cause: error },
       );
     }
@@ -144,8 +151,10 @@ export class S3StorageProvider implements IStorageProvider {
       if (error.name === 'NotFound') {
         return false;
       }
-      throw new Error(
+      throw new StorageError(
         `Failed to check if file exists in S3: ${error instanceof Error ? error.message : String(error)}`,
+        'S3_METADATA_ERROR',
+        undefined,
         { cause: error },
       );
     }
@@ -165,8 +174,10 @@ export class S3StorageProvider implements IStorageProvider {
 
       await this.s3Client.send(command);
     } catch (error) {
-      throw new Error(
+      throw new StorageError(
         `Failed to delete file from S3: ${error instanceof Error ? error.message : String(error)}`,
+        'S3_DELETE_ERROR',
+        undefined,
         { cause: error },
       );
     }
@@ -202,8 +213,10 @@ export class S3StorageProvider implements IStorageProvider {
 
       return response.Contents.map((item: any) => item.Key);
     } catch (error) {
-      throw new Error(
+      throw new StorageError(
         `Failed to list files in S3: ${error instanceof Error ? error.message : String(error)}`,
+        'S3_LIST_ERROR',
+        undefined,
         { cause: error },
       );
     }
@@ -231,8 +244,10 @@ export class S3StorageProvider implements IStorageProvider {
         ...this.extractMetadata(response.Metadata),
       };
     } catch (error) {
-      throw new Error(
+      throw new StorageError(
         `Failed to get file metadata from S3: ${error instanceof Error ? error.message : String(error)}`,
+        'S3_METADATA_ERROR',
+        undefined,
         { cause: error },
       );
     }

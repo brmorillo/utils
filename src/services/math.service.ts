@@ -1,3 +1,5 @@
+import { ValidationError } from '../errors';
+
 export class MathUtils {
   /**
    * Rounds a number to the specified number of decimal places.
@@ -43,7 +45,7 @@ export class MathUtils {
     part: number;
   }): number {
     if (total === 0) {
-      throw new Error('Total cannot be zero');
+      throw new ValidationError('Total cannot be zero');
     }
     return (part / total) * 100;
   }
@@ -69,7 +71,7 @@ export class MathUtils {
     max: number;
   }): number {
     if (min > max) {
-      throw new Error('Min cannot be greater than max');
+      throw new ValidationError('Min cannot be greater than max');
     }
     return Math.random() * (max - min) + min;
   }

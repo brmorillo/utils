@@ -1,4 +1,5 @@
 import { NumberUtils } from '../../src/services/number.service';
+import { MathUtils } from '../../src/services/math.service';
 
 describe('NumberUtils', () => {
   describe('normalize', () => {
@@ -229,25 +230,25 @@ describe('NumberUtils', () => {
 
   describe('isValidPrime', () => {
     it('should identify prime numbers', () => {
-      expect(NumberUtils.isValidPrime({ value: 2 })).toBe(true);
-      expect(NumberUtils.isValidPrime({ value: 3 })).toBe(true);
-      expect(NumberUtils.isValidPrime({ value: 5 })).toBe(true);
-      expect(NumberUtils.isValidPrime({ value: 7 })).toBe(true);
-      expect(NumberUtils.isValidPrime({ value: 11 })).toBe(true);
+      expect(MathUtils.isValidPrime({ value: 2 })).toBe(true);
+      expect(MathUtils.isValidPrime({ value: 3 })).toBe(true);
+      expect(MathUtils.isValidPrime({ value: 5 })).toBe(true);
+      expect(MathUtils.isValidPrime({ value: 7 })).toBe(true);
+      expect(MathUtils.isValidPrime({ value: 11 })).toBe(true);
     });
 
     it('should identify non-prime numbers', () => {
-      expect(NumberUtils.isValidPrime({ value: 1 })).toBe(false);
-      expect(NumberUtils.isValidPrime({ value: 4 })).toBe(false);
-      expect(NumberUtils.isValidPrime({ value: 6 })).toBe(false);
-      expect(NumberUtils.isValidPrime({ value: 8 })).toBe(false);
-      expect(NumberUtils.isValidPrime({ value: 9 })).toBe(false);
+      expect(MathUtils.isValidPrime({ value: 1 })).toBe(false);
+      expect(MathUtils.isValidPrime({ value: 4 })).toBe(false);
+      expect(MathUtils.isValidPrime({ value: 6 })).toBe(false);
+      expect(MathUtils.isValidPrime({ value: 8 })).toBe(false);
+      expect(MathUtils.isValidPrime({ value: 9 })).toBe(false);
     });
 
     it('should identify negative numbers as non-prime', () => {
-      expect(NumberUtils.isValidPrime({ value: -2 })).toBe(false);
-      expect(NumberUtils.isValidPrime({ value: -3 })).toBe(false);
-      expect(NumberUtils.isValidPrime({ value: -5 })).toBe(false);
+      expect(MathUtils.isValidPrime({ value: -2 })).toBe(false);
+      expect(MathUtils.isValidPrime({ value: -3 })).toBe(false);
+      expect(MathUtils.isValidPrime({ value: -5 })).toBe(false);
     });
   });
 
@@ -285,15 +286,15 @@ describe('NumberUtils', () => {
 
   describe('isOdd', () => {
     it('should return true for odd numbers', () => {
-      expect(NumberUtils.isOdd({ value: 1 })).toBe(true);
-      expect(NumberUtils.isOdd({ value: 3 })).toBe(true);
-      expect(NumberUtils.isOdd({ value: -5 })).toBe(true);
+      expect(NumberUtils.isValidOdd({ value: 1 })).toBe(true);
+      expect(NumberUtils.isValidOdd({ value: 3 })).toBe(true);
+      expect(NumberUtils.isValidOdd({ value: -5 })).toBe(true);
     });
 
     it('should return false for even numbers', () => {
-      expect(NumberUtils.isOdd({ value: 2 })).toBe(false);
-      expect(NumberUtils.isOdd({ value: 0 })).toBe(false);
-      expect(NumberUtils.isOdd({ value: -4 })).toBe(false);
+      expect(NumberUtils.isValidOdd({ value: 2 })).toBe(false);
+      expect(NumberUtils.isValidOdd({ value: 0 })).toBe(false);
+      expect(NumberUtils.isValidOdd({ value: -4 })).toBe(false);
     });
   });
 
@@ -301,9 +302,9 @@ describe('NumberUtils', () => {
     it('should detect composites divisible only by i + 2 in the loop', () => {
       // 49 = 7 * 7: 49 % 5 !== 0 but 49 % 7 === 0, exercising the second
       // operand of the loop condition.
-      expect(NumberUtils.isValidPrime({ value: 49 })).toBe(false);
+      expect(MathUtils.isValidPrime({ value: 49 })).toBe(false);
       // 25 = 5 * 5 keeps a true prime nearby valid.
-      expect(NumberUtils.isValidPrime({ value: 23 })).toBe(true);
+      expect(MathUtils.isValidPrime({ value: 23 })).toBe(true);
     });
   });
 });

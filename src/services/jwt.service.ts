@@ -1,4 +1,5 @@
 import * as jwt from 'jsonwebtoken';
+import { BaseError, ValidationError } from '../errors';
 
 export class JWTUtils {
   /**
@@ -30,11 +31,11 @@ export class JWTUtils {
     options?: jwt.SignOptions;
   }): string {
     if (!payload || typeof payload !== 'object') {
-      throw new Error('Invalid payload: must be a non-empty object.');
+      throw new ValidationError('Invalid payload: must be a non-empty object.');
     }
 
     if (!secretKey || typeof secretKey !== 'string') {
-      throw new Error('Invalid secretKey: must be a non-empty string.');
+      throw new ValidationError('Invalid secretKey: must be a non-empty string.');
     }
 
     try {
@@ -42,7 +43,7 @@ export class JWTUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to generate JWT token: ${errorMessage}`, {
+      throw new BaseError(`Failed to generate JWT token: ${errorMessage}`, 'JWT_ERROR', undefined, undefined, {
         cause: error,
       });
     }
@@ -76,11 +77,11 @@ export class JWTUtils {
     options?: jwt.VerifyOptions;
   }): object {
     if (!token || typeof token !== 'string') {
-      throw new Error('Invalid token: must be a non-empty string.');
+      throw new ValidationError('Invalid token: must be a non-empty string.');
     }
 
     if (!secretKey || typeof secretKey !== 'string') {
-      throw new Error('Invalid secretKey: must be a non-empty string.');
+      throw new ValidationError('Invalid secretKey: must be a non-empty string.');
     }
 
     try {
@@ -88,7 +89,7 @@ export class JWTUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to verify JWT token: ${errorMessage}`, {
+      throw new BaseError(`Failed to verify JWT token: ${errorMessage}`, 'JWT_ERROR', undefined, undefined, {
         cause: error,
       });
     }
@@ -122,19 +123,19 @@ export class JWTUtils {
     complete?: boolean;
   }): object {
     if (!token || typeof token !== 'string') {
-      throw new Error('Invalid token: must be a non-empty string.');
+      throw new ValidationError('Invalid token: must be a non-empty string.');
     }
 
     try {
       const decoded = jwt.decode(token, { complete }) as object;
       if (!decoded) {
-        throw new Error('Invalid token format.');
+        throw new BaseError('Invalid token format.', 'JWT_ERROR');
       }
       return decoded;
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to decode JWT token: ${errorMessage}`, {
+      throw new BaseError(`Failed to decode JWT token: ${errorMessage}`, 'JWT_ERROR', undefined, undefined, {
         cause: error,
       });
     }
@@ -189,7 +190,7 @@ export class JWTUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to refresh JWT token: ${errorMessage}`, {
+      throw new BaseError(`Failed to refresh JWT token: ${errorMessage}`, 'JWT_ERROR', undefined, undefined, {
         cause: error,
       });
     }
@@ -209,13 +210,13 @@ export class JWTUtils {
    */
   public static isExpired({ token }: { token: string }): boolean {
     if (!token || typeof token !== 'string') {
-      throw new Error('Invalid token: must be a non-empty string.');
+      throw new ValidationError('Invalid token: must be a non-empty string.');
     }
 
     try {
       const decoded = jwt.decode(token) as { exp?: number };
       if (!decoded || !decoded.exp) {
-        throw new Error('Invalid token or missing expiration claim.');
+        throw new BaseError('Invalid token or missing expiration claim.', 'JWT_ERROR');
       }
 
       // Compare expiration timestamp with current time
@@ -224,7 +225,7 @@ export class JWTUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to check JWT token expiration: ${errorMessage}`, {
+      throw new BaseError(`Failed to check JWT token expiration: ${errorMessage}`, 'JWT_ERROR', undefined, undefined, {
         cause: error,
       });
     }
@@ -244,13 +245,13 @@ export class JWTUtils {
    */
   public static getExpirationTime({ token }: { token: string }): number {
     if (!token || typeof token !== 'string') {
-      throw new Error('Invalid token: must be a non-empty string.');
+      throw new ValidationError('Invalid token: must be a non-empty string.');
     }
 
     try {
       const decoded = jwt.decode(token) as { exp?: number };
       if (!decoded || !decoded.exp) {
-        throw new Error('Invalid token or missing expiration claim.');
+        throw new BaseError('Invalid token or missing expiration claim.', 'JWT_ERROR');
       }
 
       const currentTimestamp = Math.floor(Date.now() / 1000);
@@ -260,8 +261,11 @@ export class JWTUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(
+      throw new BaseError(
         `Failed to get JWT token expiration time: ${errorMessage}`,
+        'JWT_ERROR',
+        undefined,
+        undefined,
         { cause: error },
       );
     }

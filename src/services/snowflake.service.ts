@@ -1,4 +1,5 @@
 import { Snowflake } from '@sapphire/snowflake';
+import { BaseError, ValidationError } from '../errors';
 
 // Example Discord message id: 1322717493961297921
 
@@ -52,7 +53,7 @@ export class SnowflakeUtils {
     processId?: bigint;
   } = {}): bigint {
     if (!(epoch instanceof Date) || isNaN(epoch.getTime())) {
-      throw new Error('Invalid epoch: must be a valid Date object.');
+      throw new ValidationError('Invalid epoch: must be a valid Date object.');
     }
 
     const snowflake = new Snowflake(epoch.getTime());
@@ -81,13 +82,13 @@ export class SnowflakeUtils {
     epoch?: Date;
   }): SnowflakeComponents {
     if (!snowflakeId || isNaN(Number(snowflakeId))) {
-      throw new Error(
+      throw new ValidationError(
         'Invalid Snowflake ID: must be a valid bigint or string.',
       );
     }
 
     if (!(epoch instanceof Date) || isNaN(epoch.getTime())) {
-      throw new Error('Invalid epoch: must be a valid Date object.');
+      throw new ValidationError('Invalid epoch: must be a valid Date object.');
     }
 
     const snowflake = new Snowflake(epoch.getTime());
@@ -210,11 +211,11 @@ export class SnowflakeUtils {
     epoch?: Date;
   }): bigint {
     if (!(timestamp instanceof Date) || isNaN(timestamp.getTime())) {
-      throw new Error('Invalid timestamp: must be a valid Date object.');
+      throw new ValidationError('Invalid timestamp: must be a valid Date object.');
     }
 
     if (!(epoch instanceof Date) || isNaN(epoch.getTime())) {
-      throw new Error('Invalid epoch: must be a valid Date object.');
+      throw new ValidationError('Invalid epoch: must be a valid Date object.');
     }
 
     const snowflake = new Snowflake(epoch.getTime());
@@ -251,13 +252,13 @@ export class SnowflakeUtils {
     toFormat: SnowflakeFormat;
   }): bigint | string | number {
     if (snowflakeId === undefined || snowflakeId === null) {
-      throw new Error('Invalid Snowflake ID: must not be null or undefined.');
+      throw new ValidationError('Invalid Snowflake ID: must not be null or undefined.');
     }
 
     try {
       // First, check if the ID is valid
       if (typeof snowflakeId === 'string' && !/^\d+$/.test(snowflakeId)) {
-        throw new Error('Invalid Snowflake ID: must contain only digits.');
+        throw new ValidationError('Invalid Snowflake ID: must contain only digits.');
       }
 
       // Convert to BigInt for validation
@@ -266,8 +267,12 @@ export class SnowflakeUtils {
         bigintValue =
           typeof snowflakeId === 'bigint' ? snowflakeId : BigInt(snowflakeId);
       } catch (e) {
-        throw new Error(
+        throw new ValidationError(
           'Invalid Snowflake ID: cannot be converted to BigInt.',
+          undefined,
+          undefined,
+          undefined,
+          undefined,
           { cause: e },
         );
       }
@@ -284,13 +289,13 @@ export class SnowflakeUtils {
             bigintValue > BigInt(Number.MAX_SAFE_INTEGER) ||
             bigintValue < BigInt(Number.MIN_SAFE_INTEGER)
           ) {
-            throw new Error(
+            throw new ValidationError(
               'Snowflake ID is too large to be safely converted to number.',
             );
           }
           return Number(bigintValue);
         default:
-          throw new Error(
+          throw new ValidationError(
             `Unsupported format: ${toFormat}. Supported formats are 'bigint', 'string', and 'number'.`,
           );
       }
@@ -298,7 +303,7 @@ export class SnowflakeUtils {
       if (error instanceof Error) {
         throw error;
       }
-      throw new Error('Invalid Snowflake ID', { cause: error });
+      throw new BaseError('Invalid Snowflake ID', 'SNOWFLAKE_ERROR', undefined, undefined, { cause: error });
     }
   }
 }

@@ -2,6 +2,7 @@
  * Queue Service - Provides implementations for various queue-like data structures.
  * Supports generic types and can be used with both local variables and external storage systems.
  */
+import { ValidationError } from '../errors';
 
 /**
  * Interface for a basic queue data structure.
@@ -547,7 +548,7 @@ export class CircularBuffer<T> {
    */
   constructor(capacity: number) {
     if (capacity <= 0) {
-      throw new Error('Capacity must be greater than 0');
+      throw new ValidationError('Capacity must be greater than 0');
     }
     this.capacity = capacity;
     this.buffer = new Array(capacity);

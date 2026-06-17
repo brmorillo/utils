@@ -68,7 +68,8 @@ MathUtils.clamp({ value: 10, min: 0, max: 5 }); // 5
 
 ### isValidPrime({ value })
 
-Checks if a number is prime.
+Checks if a number is prime. This is the canonical primality check for the
+library; `NumberUtils` does not expose a duplicate.
 
 ```javascript
 MathUtils.isValidPrime({ value: 7 }); // true

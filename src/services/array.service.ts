@@ -1,3 +1,5 @@
+import { ValidationError } from '../errors';
+
 export class ArrayUtils {
   /**
    * Removes duplicate values from an array.
@@ -23,7 +25,7 @@ export class ArrayUtils {
     keyFn?: (item: T) => string | number;
   }): T[] {
     if (!Array.isArray(array)) {
-      throw new Error('Input must be an array');
+      throw new ValidationError('Input must be an array');
     }
 
     const seen = new Set();
@@ -57,7 +59,7 @@ export class ArrayUtils {
     array2: T[];
   }): T[] {
     if (!Array.isArray(array1) || !Array.isArray(array2)) {
-      throw new Error('Both inputs must be arrays');
+      throw new ValidationError('Both inputs must be arrays');
     }
 
     const set2 = new Set(array2);
@@ -76,7 +78,7 @@ export class ArrayUtils {
    */
   public static flatten<T>({ array }: { array: (T | T[])[] }): T[] {
     if (!Array.isArray(array)) {
-      throw new Error('Input must be an array');
+      throw new ValidationError('Input must be an array');
     }
 
     const result: T[] = [];
@@ -117,7 +119,7 @@ export class ArrayUtils {
     keyFn: (item: T) => string | number;
   }): Record<string | number, T[]> {
     if (!Array.isArray(array)) {
-      throw new Error('Input must be an array');
+      throw new ValidationError('Input must be an array');
     }
 
     return array.reduce(
@@ -143,7 +145,7 @@ export class ArrayUtils {
    */
   public static shuffle<T>({ array }: { array: T[] }): T[] {
     if (!Array.isArray(array)) {
-      throw new Error('Input must be an array');
+      throw new ValidationError('Input must be an array');
     }
 
     const result = [...array];
@@ -179,7 +181,7 @@ export class ArrayUtils {
     orderBy: 'asc' | 'desc' | Record<string, 'asc' | 'desc'>;
   }): T[] {
     if (!Array.isArray(array) || array.length === 0) {
-      throw new Error('Input must be a non-empty array');
+      throw new ValidationError('Input must be a non-empty array');
     }
 
     const isPrimitive = typeof array[0] !== 'object';
@@ -206,7 +208,7 @@ export class ArrayUtils {
       });
     }
 
-    throw new Error(
+    throw new ValidationError(
       "Invalid 'orderBy' format. Use 'asc', 'desc', or an object specifying keys and orders.",
     );
   }

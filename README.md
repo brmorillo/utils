@@ -269,16 +269,15 @@ import { ArrayUtils, StringUtils, HashUtils } from '@brmorillo/utils';
 
 // Array operations
 const numbers = [1, 2, 2, 3, 4, 4, 5];
-const unique = ArrayUtils.removeDuplicates(numbers);
+const unique = ArrayUtils.removeDuplicates({ array: numbers });
 console.log(unique); // [1, 2, 3, 4, 5]
 
 // String operations
-const text = "hello world";
-const camelCase = StringUtils.toCamelCase(text);
+const camelCase = StringUtils.toCamelCase({ input: 'hello world' });
 console.log(camelCase); // "helloWorld"
 
 // Hashing
-const hash = HashUtils.sha256Hash("sensitive data");
+const hash = HashUtils.sha256Hash({ value: 'sensitive data' });
 console.log(hash); // SHA-256 hash string
 ```
 

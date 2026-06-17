@@ -41,7 +41,7 @@ describe('FileUtils', () => {
       const content = 'Hello, world!';
 
       // Act
-      FileUtils.writeFile(filePath, content);
+      FileUtils.writeFile({ filePath, data: content });
       const result = FileUtils.readFile({ filePath });
 
       // Assert
@@ -67,8 +67,8 @@ describe('FileUtils', () => {
       const content = 'Async content';
 
       // Act
-      await FileUtils.writeFileAsync(filePath, content);
-      const result = await FileUtils.readFileAsync(filePath);
+      await FileUtils.writeFileAsync({ filePath, data: content });
+      const result = await FileUtils.readFileAsync({ filePath });
 
       // Assert
       expect(result).toBe(content);
@@ -79,7 +79,7 @@ describe('FileUtils', () => {
       const filePath = path.join(tempDir, 'missing-async.txt');
 
       // Act & Assert
-      await expect(FileUtils.readFileAsync(filePath)).rejects.toThrow(
+      await expect(FileUtils.readFileAsync({ filePath })).rejects.toThrow(
         /Failed to read file/,
       );
     });
@@ -90,10 +90,10 @@ describe('FileUtils', () => {
     it('should append data to an existing file', () => {
       // Arrange
       const filePath = path.join(tempDir, 'append.txt');
-      FileUtils.writeFile(filePath, 'first');
+      FileUtils.writeFile({ filePath, data: 'first' });
 
       // Act
-      FileUtils.appendFile(filePath, '-second');
+      FileUtils.appendFile({ filePath, data: '-second' });
       const result = FileUtils.readFile({ filePath });
 
       // Assert
@@ -108,7 +108,7 @@ describe('FileUtils', () => {
       const dirPath = path.join(tempDir, 'newdir');
 
       // Act
-      FileUtils.createDirectory(dirPath);
+      FileUtils.createDirectory({ dirPath });
 
       // Assert
       expect(fs.existsSync(dirPath)).toBe(true);
@@ -119,7 +119,7 @@ describe('FileUtils', () => {
       const dirPath = path.join(tempDir, 'a', 'b', 'c');
 
       // Act
-      FileUtils.createDirectory(dirPath, true);
+      FileUtils.createDirectory({ dirPath, recursive: true });
 
       // Assert
       expect(fs.existsSync(dirPath)).toBe(true);
@@ -128,10 +128,10 @@ describe('FileUtils', () => {
     it('should not throw when the directory already exists', () => {
       // Arrange
       const dirPath = path.join(tempDir, 'existing');
-      FileUtils.createDirectory(dirPath);
+      FileUtils.createDirectory({ dirPath });
 
       // Act & Assert
-      expect(() => FileUtils.createDirectory(dirPath)).not.toThrow();
+      expect(() => FileUtils.createDirectory({ dirPath })).not.toThrow();
     });
   });
 
@@ -140,10 +140,10 @@ describe('FileUtils', () => {
     it('should return true for an existing file', () => {
       // Arrange
       const filePath = path.join(tempDir, 'exists.txt');
-      FileUtils.writeFile(filePath, 'data');
+      FileUtils.writeFile({ filePath, data: 'data' });
 
       // Act
-      const result = FileUtils.fileExists(filePath);
+      const result = FileUtils.fileExists({ filePath });
 
       // Assert
       expect(result).toBe(true);
@@ -154,7 +154,7 @@ describe('FileUtils', () => {
       const filePath = path.join(tempDir, 'nope.txt');
 
       // Act
-      const result = FileUtils.fileExists(filePath);
+      const result = FileUtils.fileExists({ filePath });
 
       // Assert
       expect(result).toBe(false);
@@ -168,7 +168,7 @@ describe('FileUtils', () => {
       const filePath = '/some/path/document.txt';
 
       // Act
-      const result = FileUtils.getFileExtension(filePath);
+      const result = FileUtils.getFileExtension({ filePath });
 
       // Assert
       expect(result).toBe('.txt');
@@ -179,7 +179,7 @@ describe('FileUtils', () => {
       const filePath = '/some/path/README';
 
       // Act
-      const result = FileUtils.getFileExtension(filePath);
+      const result = FileUtils.getFileExtension({ filePath });
 
       // Assert
       expect(result).toBe('');
@@ -193,7 +193,7 @@ describe('FileUtils', () => {
       const filePath = '/some/path/document.txt';
 
       // Act
-      const result = FileUtils.getBaseName(filePath);
+      const result = FileUtils.getBaseName({ filePath });
 
       // Assert
       expect(result).toBe('document');
@@ -204,11 +204,11 @@ describe('FileUtils', () => {
   describe('listFiles', () => {
     it('should list the files contained in a directory', () => {
       // Arrange
-      FileUtils.writeFile(path.join(tempDir, 'one.txt'), '1');
-      FileUtils.writeFile(path.join(tempDir, 'two.txt'), '2');
+      FileUtils.writeFile({ filePath: path.join(tempDir, 'one.txt'), data: '1' });
+      FileUtils.writeFile({ filePath: path.join(tempDir, 'two.txt'), data: '2' });
 
       // Act
-      const result = FileUtils.listFiles(tempDir);
+      const result = FileUtils.listFiles({ dirPath: tempDir });
 
       // Assert
       expect(result).toEqual(expect.arrayContaining(['one.txt', 'two.txt']));
@@ -220,7 +220,7 @@ describe('FileUtils', () => {
       const dirPath = path.join(tempDir, 'missing-dir');
 
       // Act & Assert
-      expect(() => FileUtils.listFiles(dirPath)).toThrow(
+      expect(() => FileUtils.listFiles({ dirPath })).toThrow(
         /Failed to list files/,
       );
     });
@@ -231,10 +231,10 @@ describe('FileUtils', () => {
     it('should return stats for an existing file', () => {
       // Arrange
       const filePath = path.join(tempDir, 'info.txt');
-      FileUtils.writeFile(filePath, 'content');
+      FileUtils.writeFile({ filePath, data: 'content' });
 
       // Act
-      const stats = FileUtils.getFileInfo(filePath);
+      const stats = FileUtils.getFileInfo({ filePath });
 
       // Assert
       expect(stats.isFile()).toBe(true);
@@ -246,7 +246,7 @@ describe('FileUtils', () => {
       const filePath = path.join(tempDir, 'no-info.txt');
 
       // Act & Assert
-      expect(() => FileUtils.getFileInfo(filePath)).toThrow(
+      expect(() => FileUtils.getFileInfo({ filePath })).toThrow(
         /Failed to get file info/,
       );
     });
@@ -258,10 +258,10 @@ describe('FileUtils', () => {
       // Arrange
       const filePath = path.join(tempDir, 'size.txt');
       const content = '12345';
-      FileUtils.writeFile(filePath, content);
+      FileUtils.writeFile({ filePath, data: content });
 
       // Act
-      const result = FileUtils.getFileSize(filePath);
+      const result = FileUtils.getFileSize({ filePath });
 
       // Assert
       expect(result).toBe(Buffer.byteLength(content));
@@ -273,10 +273,10 @@ describe('FileUtils', () => {
     it('should delete an existing file', () => {
       // Arrange
       const filePath = path.join(tempDir, 'delete.txt');
-      FileUtils.writeFile(filePath, 'data');
+      FileUtils.writeFile({ filePath, data: 'data' });
 
       // Act
-      FileUtils.deleteFile(filePath);
+      FileUtils.deleteFile({ filePath });
 
       // Assert
       expect(fs.existsSync(filePath)).toBe(false);
@@ -287,7 +287,7 @@ describe('FileUtils', () => {
       const filePath = path.join(tempDir, 'no-delete.txt');
 
       // Act & Assert
-      expect(() => FileUtils.deleteFile(filePath)).toThrow(
+      expect(() => FileUtils.deleteFile({ filePath })).toThrow(
         /Failed to delete file/,
       );
     });
@@ -298,10 +298,10 @@ describe('FileUtils', () => {
     it('should delete an empty directory recursively', () => {
       // Arrange
       const dirPath = path.join(tempDir, 'empty');
-      FileUtils.createDirectory(dirPath);
+      FileUtils.createDirectory({ dirPath });
 
       // Act
-      FileUtils.deleteDirectory(dirPath, true);
+      FileUtils.deleteDirectory({ dirPath, recursive: true });
 
       // Assert
       expect(fs.existsSync(dirPath)).toBe(false);
@@ -312,7 +312,7 @@ describe('FileUtils', () => {
       const dirPath = path.join(tempDir, 'no-such-dir');
 
       // Act & Assert
-      expect(() => FileUtils.deleteDirectory(dirPath)).toThrow(
+      expect(() => FileUtils.deleteDirectory({ dirPath })).toThrow(
         /Failed to delete directory/,
       );
     });
@@ -320,11 +320,11 @@ describe('FileUtils', () => {
     it('should delete a non-empty directory recursively', () => {
       // Arrange
       const dirPath = path.join(tempDir, 'full');
-      FileUtils.createDirectory(dirPath);
-      FileUtils.writeFile(path.join(dirPath, 'child.txt'), 'data');
+      FileUtils.createDirectory({ dirPath });
+      FileUtils.writeFile({ filePath: path.join(dirPath, 'child.txt'), data: 'data' });
 
       // Act
-      FileUtils.deleteDirectory(dirPath, true);
+      FileUtils.deleteDirectory({ dirPath, recursive: true });
 
       // Assert
       expect(fs.existsSync(dirPath)).toBe(false);
@@ -337,12 +337,12 @@ describe('FileUtils', () => {
       // Arrange
       const dirPath = path.join(tempDir, 'tree');
       const nested = path.join(dirPath, 'nested');
-      FileUtils.createDirectory(nested);
-      FileUtils.writeFile(path.join(dirPath, 'a.txt'), 'a');
-      FileUtils.writeFile(path.join(nested, 'b.txt'), 'b');
+      FileUtils.createDirectory({ dirPath: nested });
+      FileUtils.writeFile({ filePath: path.join(dirPath, 'a.txt'), data: 'a' });
+      FileUtils.writeFile({ filePath: path.join(nested, 'b.txt'), data: 'b' });
 
       // Act
-      FileUtils.deleteDirectoryRecursive(dirPath);
+      FileUtils.deleteDirectoryRecursive({ dirPath });
 
       // Assert
       expect(fs.existsSync(dirPath)).toBe(false);
@@ -353,7 +353,7 @@ describe('FileUtils', () => {
       const dirPath = path.join(tempDir, 'ghost');
 
       // Act & Assert
-      expect(() => FileUtils.deleteDirectoryRecursive(dirPath)).not.toThrow();
+      expect(() => FileUtils.deleteDirectoryRecursive({ dirPath })).not.toThrow();
     });
   });
 
@@ -362,10 +362,10 @@ describe('FileUtils', () => {
     it('should calculate the sha256 hash of a file', async () => {
       // Arrange
       const filePath = path.join(tempDir, 'hash.txt');
-      FileUtils.writeFile(filePath, 'hash me');
+      FileUtils.writeFile({ filePath, data: 'hash me' });
 
       // Act
-      const result = await FileUtils.calculateFileHash(filePath);
+      const result = await FileUtils.calculateFileHash({ filePath });
 
       // Assert
       // sha256 hex digest is 64 characters long
@@ -376,12 +376,12 @@ describe('FileUtils', () => {
       // Arrange
       const fileA = path.join(tempDir, 'a.txt');
       const fileB = path.join(tempDir, 'b.txt');
-      FileUtils.writeFile(fileA, 'same content');
-      FileUtils.writeFile(fileB, 'same content');
+      FileUtils.writeFile({ filePath: fileA, data: 'same content' });
+      FileUtils.writeFile({ filePath: fileB, data: 'same content' });
 
       // Act
-      const hashA = await FileUtils.calculateFileHash(fileA);
-      const hashB = await FileUtils.calculateFileHash(fileB);
+      const hashA = await FileUtils.calculateFileHash({ filePath: fileA });
+      const hashB = await FileUtils.calculateFileHash({ filePath: fileB });
 
       // Assert
       expect(hashA).toBe(hashB);
@@ -392,7 +392,7 @@ describe('FileUtils', () => {
       const filePath = path.join(tempDir, 'no-hash.txt');
 
       // Act & Assert
-      await expect(FileUtils.calculateFileHash(filePath)).rejects.toThrow(
+      await expect(FileUtils.calculateFileHash({ filePath })).rejects.toThrow(
         /Failed to calculate file hash/,
       );
     });
@@ -404,13 +404,13 @@ describe('FileUtils', () => {
       // Arrange
       const source = path.join(tempDir, 'source.txt');
       const dest = path.join(tempDir, 'copy.txt');
-      FileUtils.writeFile(source, 'copy me');
+      FileUtils.writeFile({ filePath: source, data: 'copy me' });
 
       // Act
-      FileUtils.copyFile(source, dest);
+      FileUtils.copyFile({ sourcePath: source, destPath: dest });
 
       // Assert
-      expect(FileUtils.fileExists(source)).toBe(true);
+      expect(FileUtils.fileExists({ filePath: source })).toBe(true);
       expect(FileUtils.readFile({ filePath: dest })).toBe('copy me');
     });
 
@@ -420,9 +420,9 @@ describe('FileUtils', () => {
       const dest = path.join(tempDir, 'dest.txt');
 
       // Act & Assert
-      expect(() => FileUtils.copyFile(source, dest)).toThrow(
-        /Failed to copy file/,
-      );
+      expect(() =>
+        FileUtils.copyFile({ sourcePath: source, destPath: dest }),
+      ).toThrow(/Failed to copy file/);
     });
   });
 
@@ -432,13 +432,13 @@ describe('FileUtils', () => {
       // Arrange
       const source = path.join(tempDir, 'move-source.txt');
       const dest = path.join(tempDir, 'move-dest.txt');
-      FileUtils.writeFile(source, 'move me');
+      FileUtils.writeFile({ filePath: source, data: 'move me' });
 
       // Act
-      FileUtils.moveFile(source, dest);
+      FileUtils.moveFile({ sourcePath: source, destPath: dest });
 
       // Assert
-      expect(FileUtils.fileExists(source)).toBe(false);
+      expect(FileUtils.fileExists({ filePath: source })).toBe(false);
       expect(FileUtils.readFile({ filePath: dest })).toBe('move me');
     });
 
@@ -448,9 +448,9 @@ describe('FileUtils', () => {
       const dest = path.join(tempDir, 'move-dest.txt');
 
       // Act & Assert
-      expect(() => FileUtils.moveFile(source, dest)).toThrow(
-        /Failed to move file/,
-      );
+      expect(() =>
+        FileUtils.moveFile({ sourcePath: source, destPath: dest }),
+      ).toThrow(/Failed to move file/);
     });
   });
 
@@ -462,8 +462,8 @@ describe('FileUtils', () => {
       const data = { name: 'John', age: 30, tags: ['a', 'b'] };
 
       // Act
-      FileUtils.writeJsonFile(filePath, data);
-      const result = FileUtils.readJsonFile(filePath);
+      FileUtils.writeJsonFile({ filePath, data });
+      const result = FileUtils.readJsonFile({ filePath });
 
       // Assert
       expect(result).toEqual(data);
@@ -475,7 +475,7 @@ describe('FileUtils', () => {
       const data = { a: 1 };
 
       // Act
-      FileUtils.writeJsonFile(filePath, data, true);
+      FileUtils.writeJsonFile({ filePath, data, pretty: true });
       const raw = FileUtils.readFile({ filePath });
 
       // Assert
@@ -486,10 +486,10 @@ describe('FileUtils', () => {
     it('should throw an error when the JSON is invalid', () => {
       // Arrange
       const filePath = path.join(tempDir, 'invalid.json');
-      FileUtils.writeFile(filePath, '{ not valid json');
+      FileUtils.writeFile({ filePath, data: '{ not valid json' });
 
       // Act & Assert
-      expect(() => FileUtils.readJsonFile(filePath)).toThrow(
+      expect(() => FileUtils.readJsonFile({ filePath })).toThrow(
         /Failed to read JSON file/,
       );
     });
@@ -507,7 +507,7 @@ describe('FileUtils', () => {
       it('should read with a non-default encoding', () => {
         // Arrange
         const filePath = path.join(tempDir, 'latin1.txt');
-        FileUtils.writeFile(filePath, 'plain ascii');
+        FileUtils.writeFile({ filePath, data: 'plain ascii' });
 
         // Act
         const result = FileUtils.readFile({ filePath, encoding: 'latin1' });
@@ -562,7 +562,7 @@ describe('FileUtils', () => {
 
         // Act & Assert
         try {
-          FileUtils.writeFile(filePath, 'data');
+          FileUtils.writeFile({ filePath, data: 'data' });
           throw new Error('expected writeFile to throw');
         } catch (err) {
           expect((err as Error).message).toContain(filePath);
@@ -587,7 +587,7 @@ describe('FileUtils', () => {
 
         // Act & Assert
         await expect(
-          FileUtils.writeFileAsync(filePath, 'data'),
+          FileUtils.writeFileAsync({ filePath, data: 'data' }),
         ).rejects.toThrow(/Failed to write file .*async write denied/);
       });
 
@@ -603,7 +603,7 @@ describe('FileUtils', () => {
 
         // Act & Assert
         await expect(
-          FileUtils.writeFileAsync(filePath, 'data'),
+          FileUtils.writeFileAsync({ filePath, data: 'data' }),
         ).rejects.toThrow(/Failed to write file .*async string failure/);
       });
     });
@@ -618,7 +618,7 @@ describe('FileUtils', () => {
           throw 'wf string';
         });
         expect(() =>
-          FileUtils.writeFile(path.join(tempDir, 'x'), 'd'),
+          FileUtils.writeFile({ filePath: path.join(tempDir, 'x'), data: 'd' }),
         ).toThrow(/Failed to write file .*wf string/);
       });
 
@@ -628,7 +628,7 @@ describe('FileUtils', () => {
           throw 'af string';
         });
         expect(() =>
-          FileUtils.appendFile(path.join(tempDir, 'x'), 'd'),
+          FileUtils.appendFile({ filePath: path.join(tempDir, 'x'), data: 'd' }),
         ).toThrow(/Failed to append to file .*af string/);
       });
 
@@ -638,7 +638,7 @@ describe('FileUtils', () => {
           throw 'mkdir string';
         });
         expect(() =>
-          FileUtils.createDirectory(path.join(tempDir, 'x')),
+          FileUtils.createDirectory({ dirPath: path.join(tempDir, 'x') }),
         ).toThrow(/Failed to create directory .*mkdir string/);
       });
 
@@ -647,9 +647,9 @@ describe('FileUtils', () => {
           // eslint-disable-next-line no-throw-literal
           throw 'ls string';
         });
-        expect(() => FileUtils.listFiles(path.join(tempDir, 'x'))).toThrow(
-          /Failed to list files .*ls string/,
-        );
+        expect(() =>
+          FileUtils.listFiles({ dirPath: path.join(tempDir, 'x') }),
+        ).toThrow(/Failed to list files .*ls string/);
       });
 
       it('getFileInfo stringifies a non-Error', () => {
@@ -657,9 +657,9 @@ describe('FileUtils', () => {
           // eslint-disable-next-line no-throw-literal
           throw 'stat string';
         });
-        expect(() => FileUtils.getFileInfo(path.join(tempDir, 'x'))).toThrow(
-          /Failed to get file info .*stat string/,
-        );
+        expect(() =>
+          FileUtils.getFileInfo({ filePath: path.join(tempDir, 'x') }),
+        ).toThrow(/Failed to get file info .*stat string/);
       });
 
       it('deleteFile stringifies a non-Error', () => {
@@ -667,9 +667,9 @@ describe('FileUtils', () => {
           // eslint-disable-next-line no-throw-literal
           throw 'unlink string';
         });
-        expect(() => FileUtils.deleteFile(path.join(tempDir, 'x'))).toThrow(
-          /Failed to delete file .*unlink string/,
-        );
+        expect(() =>
+          FileUtils.deleteFile({ filePath: path.join(tempDir, 'x') }),
+        ).toThrow(/Failed to delete file .*unlink string/);
       });
 
       it('deleteDirectory stringifies a non-Error', () => {
@@ -678,7 +678,7 @@ describe('FileUtils', () => {
           throw 'rm string';
         });
         expect(() =>
-          FileUtils.deleteDirectory(path.join(tempDir, 'x')),
+          FileUtils.deleteDirectory({ dirPath: path.join(tempDir, 'x') }),
         ).toThrow(/Failed to delete directory .*rm string/);
       });
 
@@ -688,7 +688,10 @@ describe('FileUtils', () => {
           throw 'rename string';
         });
         expect(() =>
-          FileUtils.moveFile(path.join(tempDir, 'a'), path.join(tempDir, 'b')),
+          FileUtils.moveFile({
+            sourcePath: path.join(tempDir, 'a'),
+            destPath: path.join(tempDir, 'b'),
+          }),
         ).toThrow(/Failed to move file .*rename string/);
       });
 
@@ -698,7 +701,10 @@ describe('FileUtils', () => {
           throw 'copy string';
         });
         expect(() =>
-          FileUtils.copyFile(path.join(tempDir, 'a'), path.join(tempDir, 'b')),
+          FileUtils.copyFile({
+            sourcePath: path.join(tempDir, 'a'),
+            destPath: path.join(tempDir, 'b'),
+          }),
         ).toThrow(/Failed to copy file .*copy string/);
       });
     });
@@ -713,7 +719,7 @@ describe('FileUtils', () => {
         });
 
         // Act & Assert
-        expect(() => FileUtils.appendFile(filePath, 'x')).toThrow(
+        expect(() => FileUtils.appendFile({ filePath, data: 'x' })).toThrow(
           /Failed to append to file/,
         );
       });
@@ -729,7 +735,7 @@ describe('FileUtils', () => {
         });
 
         // Act & Assert
-        expect(() => FileUtils.createDirectory(dirPath)).not.toThrow();
+        expect(() => FileUtils.createDirectory({ dirPath })).not.toThrow();
       });
 
       it('should rethrow a non-EEXIST error wrapped with cause', () => {
@@ -742,7 +748,7 @@ describe('FileUtils', () => {
 
         // Act & Assert
         try {
-          FileUtils.createDirectory(dirPath);
+          FileUtils.createDirectory({ dirPath });
           throw new Error('expected createDirectory to throw');
         } catch (err) {
           expect((err as Error).message).toContain('Failed to create directory');
@@ -762,7 +768,7 @@ describe('FileUtils', () => {
 
         // Act & Assert
         try {
-          FileUtils.listFiles(dirPath);
+          FileUtils.listFiles({ dirPath });
           throw new Error('expected listFiles to throw');
         } catch (err) {
           expect((err as Error).message).toContain('Failed to list files');
@@ -781,7 +787,7 @@ describe('FileUtils', () => {
         });
 
         // Act & Assert
-        expect(() => FileUtils.getFileInfo(filePath)).toThrow(
+        expect(() => FileUtils.getFileInfo({ filePath })).toThrow(
           /Failed to get file info/,
         );
       });
@@ -798,7 +804,7 @@ describe('FileUtils', () => {
 
         // Act & Assert
         try {
-          FileUtils.deleteFile(filePath);
+          FileUtils.deleteFile({ filePath });
           throw new Error('expected deleteFile to throw');
         } catch (err) {
           expect((err as Error).message).toContain('Failed to delete file');
@@ -818,7 +824,7 @@ describe('FileUtils', () => {
 
         // Act & Assert
         try {
-          FileUtils.deleteDirectory(dirPath);
+          FileUtils.deleteDirectory({ dirPath });
           throw new Error('expected deleteDirectory to throw');
         } catch (err) {
           expect((err as Error).message).toContain('Failed to delete directory');
@@ -831,14 +837,14 @@ describe('FileUtils', () => {
       it('should wrap the original error as cause when removal fails', () => {
         // Arrange
         const dirPath = path.join(tempDir, 'recfail');
-        FileUtils.createDirectory(dirPath);
+        FileUtils.createDirectory({ dirPath });
         const original = new Error('rmdir failure');
         jest.spyOn(fsSpyable, 'rmdirSync').mockImplementation(() => {
           throw original;
         });
 
         // Act & Assert
-        expect(() => FileUtils.deleteDirectoryRecursive(dirPath)).toThrow(
+        expect(() => FileUtils.deleteDirectoryRecursive({ dirPath })).toThrow(
           /Failed to recursively delete directory/,
         );
       });
@@ -852,9 +858,9 @@ describe('FileUtils', () => {
         jest
           .spyOn(fsSpyable, 'createReadStream')
           .mockReturnValue(fakeStream as unknown as fs.ReadStream);
-        const promise = FileUtils.calculateFileHash(
-          path.join(tempDir, 'whatever.txt'),
-        );
+        const promise = FileUtils.calculateFileHash({
+          filePath: path.join(tempDir, 'whatever.txt'),
+        });
 
         // Act: emit a non-Error value on the stream
         fakeStream.emit('error', 'stream string error');
@@ -878,7 +884,7 @@ describe('FileUtils', () => {
 
         // Act & Assert
         try {
-          FileUtils.copyFile(source, dest);
+          FileUtils.copyFile({ sourcePath: source, destPath: dest });
           throw new Error('expected copyFile to throw');
         } catch (err) {
           expect((err as Error).message).toContain('Failed to copy file');
@@ -906,7 +912,7 @@ describe('FileUtils', () => {
           .mockImplementation(() => undefined);
 
         // Act
-        FileUtils.moveFile(source, dest);
+        FileUtils.moveFile({ sourcePath: source, destPath: dest });
 
         // Assert: the copy + delete fallback ran
         expect(copySpy).toHaveBeenCalledWith(source, dest);
@@ -926,7 +932,7 @@ describe('FileUtils', () => {
 
         // Act & Assert
         try {
-          FileUtils.moveFile(source, dest);
+          FileUtils.moveFile({ sourcePath: source, destPath: dest });
           throw new Error('expected moveFile to throw');
         } catch (err) {
           expect((err as Error).message).toContain('Failed to move file');
@@ -942,7 +948,7 @@ describe('FileUtils', () => {
         const data = { a: 1, b: 2 };
 
         // Act
-        FileUtils.writeJsonFile(filePath, data, false);
+        FileUtils.writeJsonFile({ filePath, data, pretty: false });
         const raw = FileUtils.readFile({ filePath });
 
         // Assert
@@ -959,9 +965,9 @@ describe('FileUtils', () => {
         });
 
         // Act & Assert
-        expect(() => FileUtils.writeJsonFile(filePath, { a: 1 })).toThrow(
-          /Failed to (write file|write JSON file)/,
-        );
+        expect(() =>
+          FileUtils.writeJsonFile({ filePath, data: { a: 1 } }),
+        ).toThrow(/Failed to (write file|write JSON file)/);
       });
     });
   });

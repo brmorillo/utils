@@ -1,5 +1,6 @@
 import * as bcrypt from 'bcryptjs';
 import * as crypto from 'crypto';
+import { BaseError, ValidationError } from '../errors';
 
 export class HashUtils {
   /**
@@ -20,11 +21,11 @@ export class HashUtils {
     saltRounds?: number;
   }): string {
     if (!value || typeof value !== 'string') {
-      throw new Error('Invalid input: value must be a non-empty string.');
+      throw new ValidationError('Invalid input: value must be a non-empty string.');
     }
 
     if (typeof saltRounds !== 'number' || saltRounds < 4) {
-      throw new Error(
+      throw new ValidationError(
         'Invalid saltRounds: must be a number greater than or equal to 4.',
       );
     }
@@ -34,7 +35,7 @@ export class HashUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to hash value using bcrypt: ${errorMessage}`, {
+      throw new BaseError(`Failed to hash value using bcrypt: ${errorMessage}`, 'HASH_ERROR', undefined, undefined, {
         cause: error,
       });
     }
@@ -58,7 +59,7 @@ export class HashUtils {
     encryptedValue: string;
   }): boolean {
     if (!value || !encryptedValue) {
-      throw new Error(
+      throw new ValidationError(
         'Invalid input: value and encryptedValue must be non-empty strings.',
       );
     }
@@ -68,8 +69,11 @@ export class HashUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(
+      throw new BaseError(
         `Failed to compare values using bcrypt: ${errorMessage}`,
+        'HASH_ERROR',
+        undefined,
+        undefined,
         { cause: error },
       );
     }
@@ -90,7 +94,7 @@ export class HashUtils {
     length?: number;
   }): string {
     if (length < 4) {
-      throw new Error('Invalid length: must be greater than or equal to 4.');
+      throw new ValidationError('Invalid length: must be greater than or equal to 4.');
     }
 
     try {
@@ -99,8 +103,11 @@ export class HashUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(
+      throw new BaseError(
         `Failed to generate random string using bcrypt: ${errorMessage}`,
+        'HASH_ERROR',
+        undefined,
+        undefined,
         { cause: error },
       );
     }
@@ -120,7 +127,7 @@ export class HashUtils {
    */
   public static sha256Hash({ value }: { value: string }): string {
     if (!value || typeof value !== 'string') {
-      throw new Error('Invalid input: value must be a non-empty string.');
+      throw new ValidationError('Invalid input: value must be a non-empty string.');
     }
 
     try {
@@ -128,7 +135,7 @@ export class HashUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to hash value using SHA-256: ${errorMessage}`, {
+      throw new BaseError(`Failed to hash value using SHA-256: ${errorMessage}`, 'HASH_ERROR', undefined, undefined, {
         cause: error,
       });
     }
@@ -148,7 +155,7 @@ export class HashUtils {
    */
   public static sha256HashJson({ json }: { json: object }): string {
     if (typeof json !== 'object' || json === null) {
-      throw new Error('Invalid input: JSON object expected.');
+      throw new ValidationError('Invalid input: JSON object expected.');
     }
 
     try {
@@ -157,8 +164,11 @@ export class HashUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(
+      throw new BaseError(
         `Failed to hash JSON object using SHA-256: ${errorMessage}`,
+        'HASH_ERROR',
+        undefined,
+        undefined,
         { cause: error },
       );
     }
@@ -180,7 +190,7 @@ export class HashUtils {
     length = 32,
   }: { length?: number } = {}): string {
     if (typeof length !== 'number' || length <= 0) {
-      throw new Error('Invalid length: must be a positive number.');
+      throw new ValidationError('Invalid length: must be a positive number.');
     }
 
     try {
@@ -189,8 +199,11 @@ export class HashUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(
+      throw new BaseError(
         `Failed to generate random token using SHA-256: ${errorMessage}`,
+        'HASH_ERROR',
+        undefined,
+        undefined,
         { cause: error },
       );
     }
@@ -210,7 +223,7 @@ export class HashUtils {
    */
   public static sha512Hash({ value }: { value: string }): string {
     if (!value || typeof value !== 'string') {
-      throw new Error('Invalid input: value must be a non-empty string.');
+      throw new ValidationError('Invalid input: value must be a non-empty string.');
     }
 
     try {
@@ -218,7 +231,7 @@ export class HashUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to hash value using SHA-512: ${errorMessage}`, {
+      throw new BaseError(`Failed to hash value using SHA-512: ${errorMessage}`, 'HASH_ERROR', undefined, undefined, {
         cause: error,
       });
     }
@@ -238,7 +251,7 @@ export class HashUtils {
    */
   public static sha512HashJson({ json }: { json: object }): string {
     if (typeof json !== 'object' || json === null) {
-      throw new Error('Invalid input: JSON object expected.');
+      throw new ValidationError('Invalid input: JSON object expected.');
     }
 
     try {
@@ -247,8 +260,11 @@ export class HashUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(
+      throw new BaseError(
         `Failed to hash JSON object using SHA-512: ${errorMessage}`,
+        'HASH_ERROR',
+        undefined,
+        undefined,
         { cause: error },
       );
     }
@@ -270,7 +286,7 @@ export class HashUtils {
     length = 32,
   }: { length?: number } = {}): string {
     if (typeof length !== 'number' || length <= 0) {
-      throw new Error('Invalid length: must be a positive number.');
+      throw new ValidationError('Invalid length: must be a positive number.');
     }
 
     try {
@@ -283,8 +299,11 @@ export class HashUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(
+      throw new BaseError(
         `Failed to generate random token using SHA-512: ${errorMessage}`,
+        'HASH_ERROR',
+        undefined,
+        undefined,
         { cause: error },
       );
     }

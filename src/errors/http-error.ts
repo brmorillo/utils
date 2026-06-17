@@ -16,8 +16,9 @@ export class HttpError extends BaseError {
     statusCode: number = 500,
     code: string = 'HTTP_ERROR',
     details?: Record<string, any>,
+    options?: { cause?: unknown },
   ) {
-    super(message, code, statusCode, details);
+    super(message, code, statusCode, details, options);
   }
 
   /**

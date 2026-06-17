@@ -33,13 +33,20 @@ export class ValidationError extends BaseError {
     expected?: any,
     actual?: any,
     details?: Record<string, any>,
+    options?: { cause?: unknown },
   ) {
-    super(message, 'VALIDATION_ERROR', 400, {
-      field,
-      expected,
-      actual,
-      ...details,
-    });
+    super(
+      message,
+      'VALIDATION_ERROR',
+      400,
+      {
+        field,
+        expected,
+        actual,
+        ...details,
+      },
+      options,
+    );
 
     this.field = field;
     this.expected = expected;

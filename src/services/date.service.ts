@@ -1,4 +1,5 @@
 import { DateTime, Duration, DurationUnit, Interval } from 'luxon';
+import { ValidationError } from '../errors';
 
 export class DateUtils {
   /**
@@ -79,7 +80,7 @@ export class DateUtils {
       );
 
       if (invalidUnits.length > 0) {
-        throw new Error(
+        throw new ValidationError(
           `Invalid duration units: ${invalidUnits.join(
             ', ',
           )}. Valid units are: ${validUnits.join(', ')}`,
@@ -133,7 +134,7 @@ export class DateUtils {
       );
 
       if (invalidUnits.length > 0) {
-        throw new Error(
+        throw new ValidationError(
           `Invalid duration units: ${invalidUnits.join(
             ', ',
           )}. Valid units are: ${validUnits.join(', ')}`,

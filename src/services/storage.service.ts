@@ -11,6 +11,7 @@ import {
   S3StorageProvider,
   S3StorageOptions,
 } from '../providers/s3-storage.provider';
+import { StorageError } from '../errors';
 
 /**
  * Storage service configuration options
@@ -65,18 +66,19 @@ export class StorageService {
     switch (providerType) {
       case 'local':
         if (!options.local) {
-          throw new Error(
+          throw new StorageError(
             'Local storage options are required when using local provider',
+            'STORAGE_CONFIG_ERROR',
           );
         }
         return new LocalStorageProvider(options.local);
       case 's3':
         if (!options.s3) {
-          throw new Error('S3 options are required when using S3 provider');
+          throw new StorageError('S3 options are required when using S3 provider', 'STORAGE_CONFIG_ERROR');
         }
         return new S3StorageProvider(options.s3);
       default:
-        throw new Error(`Unsupported storage provider type: ${providerType}`);
+        throw new StorageError(`Unsupported storage provider type: ${providerType}`, 'STORAGE_CONFIG_ERROR');
     }
   }
 
