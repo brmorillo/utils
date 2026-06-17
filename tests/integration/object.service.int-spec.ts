@@ -112,6 +112,7 @@ describe('ObjectUtils - Integration Tests', () => {
           path: key,
           value:
             normalizedPreferences[key as keyof typeof normalizedPreferences],
+          inPlace: true,
         });
       });
 
@@ -198,6 +199,7 @@ describe('ObjectUtils - Integration Tests', () => {
         ObjectUtils.unflattenObject({
           obj: categoryStats,
           path: `stats.${category}`,
+          inPlace: true,
           value: {
             count: products.length,
             totalPrice,

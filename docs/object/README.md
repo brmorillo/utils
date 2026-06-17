@@ -72,14 +72,15 @@ const flattened = ObjectUtils.flattenObject({ obj });
 console.log(flattened); // { 'a': 1, 'b.c': 2, 'b.d.e': 3 }
 ```
 
-### unflattenObject({ obj, path, value, delimiter })
+### unflattenObject({ obj, path, value, delimiter, inPlace })
 
-Sets a value at a delimited path on an object, creating intermediate objects as needed. `delimiter` defaults to `'.'`. Paths containing dangerous keys (`__proto__`, `constructor`, `prototype`) are ignored to prevent prototype pollution.
+Sets a value at a delimited path, creating intermediate objects as needed. `delimiter` defaults to `'.'`. Paths containing dangerous keys (`__proto__`, `constructor`, `prototype`) are ignored to prevent prototype pollution.
+
+By default (`inPlace: false`) the input object is left untouched and a deep copy with the value set is returned. Pass `inPlace: true` to mutate the input and return the same reference.
 
 ```javascript
-const obj = {};
-ObjectUtils.unflattenObject({ obj, path: 'a.b.c', value: 42 });
-console.log(obj); // { a: { b: { c: 42 } } }
+const result = ObjectUtils.unflattenObject({ obj: {}, path: 'a.b.c', value: 42 });
+console.log(result); // { a: { b: { c: 42 } } }
 ```
 
 ### isEmpty({ obj })
@@ -244,7 +245,7 @@ console.log(inverted); // { '1': 'a', '2': 'b', '3': 'c' }
 
 ### deepFreeze({ obj })
 
-Deeply freezes an object to make it immutable.
+Deeply freezes an object to make it immutable. Unlike the other transformations, this intentionally freezes the object **in place** (same reference returned), matching `Object.freeze` semantics — the goal is to make *your* object immutable. Clone first with `deepClone` if you need a mutable copy.
 
 ```javascript
 const obj = { a: 1, b: { c: 2 } };

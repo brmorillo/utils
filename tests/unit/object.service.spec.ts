@@ -272,33 +272,61 @@ describe('ObjectUtils', () => {
   });
 
   describe('unflattenObject', () => {
-    it('should unflatten an object', () => {
+    it('should set a value at a delimited path', () => {
+      const result = ObjectUtils.unflattenObject({
+        obj: {},
+        path: 'a.b.c',
+        value: 42,
+      });
+      expect(result).toEqual({ a: { b: { c: 42 } } });
+    });
+
+    it('should NOT mutate the input object by default', () => {
       const obj = {};
-      ObjectUtils.unflattenObject({ obj, path: 'a.b.c', value: 42 });
-      expect(obj).toEqual({ a: { b: { c: 42 } } });
+      const result = ObjectUtils.unflattenObject({ obj, path: 'a.b', value: 1 });
+      expect(obj).toEqual({});
+      expect(result).toEqual({ a: { b: 1 } });
+      expect(result).not.toBe(obj);
+    });
+
+    it('should mutate the input when inPlace is true', () => {
+      const obj: Record<string, any> = {};
+      const result = ObjectUtils.unflattenObject({
+        obj,
+        path: 'a.b',
+        value: 1,
+        inPlace: true,
+      });
+      expect(obj).toEqual({ a: { b: 1 } });
+      expect(result).toBe(obj);
     });
 
     it('should use the provided delimiter', () => {
-      const obj = {};
-      ObjectUtils.unflattenObject({
-        obj,
+      const result = ObjectUtils.unflattenObject({
+        obj: {},
         path: 'a/b/c',
         value: 42,
         delimiter: '/',
       });
-      expect(obj).toEqual({ a: { b: { c: 42 } } });
+      expect(result).toEqual({ a: { b: { c: 42 } } });
     });
 
     it('should overwrite existing values', () => {
-      const obj = { a: { b: { c: 1 } } };
-      ObjectUtils.unflattenObject({ obj, path: 'a.b.c', value: 42 });
-      expect(obj).toEqual({ a: { b: { c: 42 } } });
+      const result = ObjectUtils.unflattenObject({
+        obj: { a: { b: { c: 1 } } },
+        path: 'a.b.c',
+        value: 42,
+      });
+      expect(result).toEqual({ a: { b: { c: 42 } } });
     });
 
     it('should create intermediate objects', () => {
-      const obj = { a: { d: 1 } };
-      ObjectUtils.unflattenObject({ obj, path: 'a.b.c', value: 42 });
-      expect(obj).toEqual({ a: { d: 1, b: { c: 42 } } });
+      const result = ObjectUtils.unflattenObject({
+        obj: { a: { d: 1 } },
+        path: 'a.b.c',
+        value: 42,
+      });
+      expect(result).toEqual({ a: { d: 1, b: { c: 42 } } });
     });
 
     it('should NOT pollute Object.prototype via a __proto__ path', () => {
@@ -312,14 +340,13 @@ describe('ObjectUtils', () => {
     });
 
     it('should skip writes that include other dangerous keys', () => {
-      const obj: Record<string, any> = {};
-      ObjectUtils.unflattenObject({
-        obj,
+      const result = ObjectUtils.unflattenObject({
+        obj: {},
         path: 'constructor.prototype.polluted',
         value: 'x',
       });
       expect((Object.prototype as any).polluted).toBeUndefined();
-      expect(obj).toEqual({});
+      expect(result).toEqual({});
     });
   });
 

@@ -221,37 +221,40 @@ export class ObjectUtils {
   }
 
   /**
-   * Unflattens an object with delimited keys.
+   * Sets a value at a delimited path, expanding it into nested objects.
    * @param {object} params - The parameters for the method.
-   * @param {object} params.obj - The object to modify.
+   * @param {object} params.obj - The base object.
    * @param {string} params.path - The path to set.
    * @param {any} params.value - The value to set at the path.
    * @param {string} [params.delimiter='.'] - The delimiter used in the path.
-   * @returns {object} The modified object.
+   * @param {boolean} [params.inPlace=false] - When `false` (default), a deep copy is returned and `obj` is left untouched. When `true`, `obj` is modified in place and returned.
+   * @returns {object} The object with the value set at the path.
    * @example
-   * const obj = {};
-   * ObjectUtils.unflattenObject({ obj, path: 'a.b.c', value: 42 });
-   * console.log(obj); // { a: { b: { c: 42 } } }
+   * const result = ObjectUtils.unflattenObject({ obj: {}, path: 'a.b.c', value: 42 });
+   * console.log(result); // { a: { b: { c: 42 } } }
    */
   public static unflattenObject({
     obj,
     path,
     value,
     delimiter = '.',
+    inPlace = false,
   }: {
     obj: Record<string, any>;
     path: string;
     value: any;
     delimiter?: string;
+    inPlace?: boolean;
   }): Record<string, any> {
     const keys = path.split(delimiter);
+    const target = inPlace ? obj : ObjectUtils.deepClone({ obj });
 
     // Prevent prototype pollution: skip writes targeting dangerous keys.
     if (keys.some(key => DANGEROUS_KEYS.includes(key))) {
-      return obj;
+      return target;
     }
 
-    let current = obj;
+    let current = target;
 
     for (let i = 0; i < keys.length - 1; i++) {
       const key = keys[i];
@@ -262,7 +265,7 @@ export class ObjectUtils {
     }
 
     current[keys[keys.length - 1]] = value;
-    return obj;
+    return target;
   }
 
   /**
@@ -747,9 +750,16 @@ export class ObjectUtils {
 
   /**
    * Deeply freezes an object to make it immutable.
+   *
+   * @remarks
+   * Unlike the other ObjectUtils transformations, this method intentionally
+   * freezes the given object **in place** (the same reference is returned),
+   * matching the semantics of the native `Object.freeze` — the goal is to make
+   * *your* object immutable. Clone first (e.g. with `deepClone`) if you need to
+   * keep a mutable copy.
    * @param {object} params - The parameters for the method.
-   * @param {object} params.obj - The object to freeze.
-   * @returns {object} The frozen object.
+   * @param {object} params.obj - The object to freeze (frozen in place).
+   * @returns {object} The same object, now deeply frozen.
    * @example
    * const obj = { a: 1, b: { c: 2 } };
    * const frozen = ObjectUtils.deepFreeze({ obj });
