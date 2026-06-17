@@ -33,13 +33,20 @@ export class ValidationError extends BaseError {
     expected?: any,
     actual?: any,
     details?: Record<string, any>,
+    options?: { cause?: unknown },
   ) {
-    super(message, 'VALIDATION_ERROR', 400, {
-      field,
-      expected,
-      actual,
-      ...details,
-    });
+    super(
+      message,
+      'VALIDATION_ERROR',
+      400,
+      {
+        field,
+        expected,
+        actual,
+        ...details,
+      },
+      options,
+    );
 
     this.field = field;
     this.expected = expected;
@@ -77,7 +84,11 @@ export class ValidationError extends BaseError {
     actual: any,
     details?: Record<string, any>,
   ): ValidationError {
-    const actualType = typeof actual;
+    const actualType = Array.isArray(actual)
+      ? 'array'
+      : actual === null
+        ? 'null'
+        : typeof actual;
     return new ValidationError(
       `Field '${field}' must be of type '${expected}', but got '${actualType}'`,
       field,

@@ -4,8 +4,10 @@ export class RetryUtils {
    * @param {object} params - The parameters for the method.
    * @param {Function} params.fn - The function to retry.
    * @param {number} [params.maxAttempts=3] - The maximum number of attempts.
-   * @param {number} [params.delay=1000] - The delay between attempts in milliseconds.
+   * @param {number} [params.delay=1000] - The base delay between attempts in milliseconds.
    * @param {boolean} [params.exponentialBackoff=false] - Whether to use exponential backoff for delays.
+   * @param {number} [params.maxDelay=30000] - Upper bound (in ms) the computed delay is clamped to.
+   * @param {boolean} [params.jitter=false] - When true, randomizes the delay in the range [0, delay] to avoid thundering-herd retries.
    * @returns {Promise<any>} The result of the function.
    * @throws {Error} The last error encountered if all attempts fail.
    * @example
@@ -18,7 +20,9 @@ export class RetryUtils {
    *   },
    *   maxAttempts: 5,
    *   delay: 1000,
-   *   exponentialBackoff: true
+   *   exponentialBackoff: true,
+   *   maxDelay: 30000,
+   *   jitter: true
    * });
    */
   public static async retry<T>({
@@ -26,11 +30,15 @@ export class RetryUtils {
     maxAttempts = 3,
     delay = 1000,
     exponentialBackoff = false,
+    maxDelay = 30000,
+    jitter = false,
   }: {
     fn: () => Promise<T>;
     maxAttempts?: number;
     delay?: number;
     exponentialBackoff?: boolean;
+    maxDelay?: number;
+    jitter?: boolean;
   }): Promise<T> {
     let lastError: Error = new Error('All retry attempts failed');
 
@@ -50,14 +58,54 @@ export class RetryUtils {
           break;
         }
 
-        const waitTime = exponentialBackoff
-          ? delay * Math.pow(2, attempt - 1)
-          : delay;
+        const waitTime = RetryUtils.computeBackoff({
+          delay,
+          attempt,
+          exponentialBackoff,
+          maxDelay,
+          jitter,
+        });
         await new Promise(resolve => setTimeout(resolve, waitTime));
       }
     }
 
     throw lastError;
+  }
+
+  /**
+   * Computes the wait time for a retry attempt, applying optional exponential
+   * backoff, clamping to a maximum delay, and optional jitter.
+   * @param {object} params - The parameters for the method.
+   * @param {number} params.delay - The base delay in milliseconds.
+   * @param {number} params.attempt - The current attempt number (1-based).
+   * @param {boolean} params.exponentialBackoff - Whether to grow the delay exponentially.
+   * @param {number} params.maxDelay - Upper bound the delay is clamped to.
+   * @param {boolean} params.jitter - Whether to randomize the delay in [0, delay].
+   * @returns {number} The computed wait time in milliseconds.
+   */
+  private static computeBackoff({
+    delay,
+    attempt,
+    exponentialBackoff,
+    maxDelay,
+    jitter,
+  }: {
+    delay: number;
+    attempt: number;
+    exponentialBackoff: boolean;
+    maxDelay: number;
+    jitter: boolean;
+  }): number {
+    let waitTime = exponentialBackoff
+      ? delay * Math.pow(2, attempt - 1)
+      : delay;
+    // Clamp to the configured maximum backoff.
+    waitTime = Math.min(waitTime, maxDelay);
+    // Apply full jitter: a random value in [0, waitTime].
+    if (jitter) {
+      waitTime = Math.random() * waitTime;
+    }
+    return waitTime;
   }
 
   /**
@@ -120,8 +168,10 @@ export class RetryUtils {
    * @param {Function} params.fn - The function to wrap with retry logic.
    * @param {object} [params.options] - Retry options.
    * @param {number} [params.options.maxAttempts=3] - The maximum number of attempts.
-   * @param {number} [params.options.delay=1000] - The delay between attempts in milliseconds.
+   * @param {number} [params.options.delay=1000] - The base delay between attempts in milliseconds.
    * @param {boolean} [params.options.exponentialBackoff=false] - Whether to use exponential backoff for delays.
+   * @param {number} [params.options.maxDelay=30000] - Upper bound (in ms) the computed delay is clamped to.
+   * @param {boolean} [params.options.jitter=false] - When true, randomizes the delay in the range [0, delay].
    * @returns {Function} A wrapped function that will retry on failure.
    * @example
    * const fetchWithRetry = RetryUtils.withRetry({
@@ -145,15 +195,19 @@ export class RetryUtils {
       maxAttempts?: number;
       delay?: number;
       exponentialBackoff?: boolean;
+      maxDelay?: number;
+      jitter?: boolean;
     };
-  }): T {
+  }): (...args: Parameters<T>) => ReturnType<T> {
     const {
       maxAttempts = 3,
       delay = 1000,
       exponentialBackoff = false,
+      maxDelay = 30000,
+      jitter = false,
     } = options;
 
-    return (async (...args: Parameters<T>): Promise<ReturnType<T>> => {
+    const wrapped = async (...args: Parameters<T>): Promise<any> => {
       let lastError: Error = new Error('All retry attempts failed');
 
       for (let attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -172,14 +226,20 @@ export class RetryUtils {
             break;
           }
 
-          const waitTime = exponentialBackoff
-            ? delay * Math.pow(2, attempt - 1)
-            : delay;
+          const waitTime = RetryUtils.computeBackoff({
+            delay,
+            attempt,
+            exponentialBackoff,
+            maxDelay,
+            jitter,
+          });
           await new Promise(resolve => setTimeout(resolve, waitTime));
         }
       }
 
       throw lastError;
-    }) as T;
+    };
+
+    return wrapped as (...args: Parameters<T>) => ReturnType<T>;
   }
 }

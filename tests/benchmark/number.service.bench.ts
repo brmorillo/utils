@@ -1,41 +1,42 @@
 import { NumberUtils } from '../../src/services/number.service';
+import { MathUtils } from '../../src/services/math.service';
 
 /**
- * Testes de benchmark para a classe NumberUtils.
- * Estes testes verificam o desempenho da classe em operações de alta frequência.
+ * Benchmark tests for the NumberUtils class.
+ * These tests verify the performance of the class in high-frequency operations.
  */
-describe('NumberUtils - Testes de Benchmark', () => {
-  // Função auxiliar para medir o tempo de execução
+describe('NumberUtils - Benchmark Tests', () => {
+  // Helper function to measure execution time
   const measureExecutionTime = (fn: () => void): number => {
     const start = process.hrtime.bigint();
     fn();
     const end = process.hrtime.bigint();
-    return Number(end - start) / 1_000_000; // Converte para milissegundos
+    return Number(end - start) / 1_000_000; // Convert to milliseconds
   };
 
-  describe('isValidEven e isOdd em massa', () => {
-    it('deve verificar 1.000.000 números pares/ímpares em tempo razoável', () => {
+  describe('isEven and isOdd in bulk', () => {
+    it('should check 1,000,000 even/odd numbers in a reasonable time', () => {
       const count = 1000000;
       const results: boolean[] = [];
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          results.push(NumberUtils.isValidEven({ value: i }));
+          results.push(NumberUtils.isEven({ value: i }));
         }
       });
 
       console.log(
-        `Tempo para verificar ${count} números pares: ${executionTime.toFixed(2)}ms`,
+        `Time to check ${count} even numbers: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.001ms
+      // The average time per operation should be less than 0.001ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.001);
     });
   });
 
-  describe('normalize em massa', () => {
-    it('deve normalizar 1.000.000 números em tempo razoável', () => {
+  describe('normalize in bulk', () => {
+    it('should normalize 1,000,000 numbers in a reasonable time', () => {
       const count = 1000000;
       const results: number[] = [];
 
@@ -46,17 +47,17 @@ describe('NumberUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para normalizar ${count} números: ${executionTime.toFixed(2)}ms`,
+        `Time to normalize ${count} numbers: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.001ms
+      // The average time per operation should be less than 0.001ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.001);
     });
   });
 
-  describe('roundDown, roundUp e roundToNearest em massa', () => {
-    it('deve arredondar 1.000.000 números em tempo razoável', () => {
+  describe('roundDown, roundUp and roundToNearest in bulk', () => {
+    it('should round 1,000,000 numbers in a reasonable time', () => {
       const count = 1000000;
       const results: number[] = [];
 
@@ -67,17 +68,17 @@ describe('NumberUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para arredondar ${count} números: ${executionTime.toFixed(2)}ms`,
+        `Time to round ${count} numbers: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.001ms
+      // The average time per operation should be less than 0.001ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.001);
     });
   });
 
-  describe('roundToDecimals em massa', () => {
-    it('deve arredondar 1.000.000 números para decimais em tempo razoável', () => {
+  describe('roundToDecimals in bulk', () => {
+    it('should round 1,000,000 numbers to decimals in a reasonable time', () => {
       const count = 1000000;
       const results: number[] = [];
 
@@ -93,17 +94,17 @@ describe('NumberUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para arredondar ${count} números para decimais: ${executionTime.toFixed(2)}ms`,
+        `Time to round ${count} numbers to decimals: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.001ms
+      // The average time per operation should be less than 0.001ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.001);
     });
   });
 
-  describe('toCents em massa', () => {
-    it('deve converter 1.000.000 números para centavos em tempo razoável', () => {
+  describe('toCents in bulk', () => {
+    it('should convert 1,000,000 numbers to cents in a reasonable time', () => {
       const count = 1000000;
       const results: number[] = [];
 
@@ -114,17 +115,17 @@ describe('NumberUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para converter ${count} números para centavos: ${executionTime.toFixed(2)}ms`,
+        `Time to convert ${count} numbers to cents: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.001ms
+      // The average time per operation should be less than 0.001ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.001);
     });
   });
 
-  describe('addDecimalPlaces em massa', () => {
-    it('deve adicionar casas decimais a 1.000.000 números em tempo razoável', () => {
+  describe('addDecimalPlaces in bulk', () => {
+    it('should add decimal places to 1,000,000 numbers in a reasonable time', () => {
       const count = 1000000;
       const results: string[] = [];
 
@@ -137,17 +138,17 @@ describe('NumberUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para adicionar casas decimais a ${count} números: ${executionTime.toFixed(2)}ms`,
+        `Time to add decimal places to ${count} numbers: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.001ms
+      // The average time per operation should be less than 0.001ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.001);
     });
   });
 
-  describe('removeDecimalPlaces em massa', () => {
-    it('deve remover casas decimais de 1.000.000 números em tempo razoável', () => {
+  describe('removeDecimalPlaces in bulk', () => {
+    it('should remove decimal places from 1,000,000 numbers in a reasonable time', () => {
       const count = 1000000;
       const results: number[] = [];
 
@@ -158,17 +159,17 @@ describe('NumberUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para remover casas decimais de ${count} números: ${executionTime.toFixed(2)}ms`,
+        `Time to remove decimal places from ${count} numbers: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.001ms
+      // The average time per operation should be less than 0.001ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.001);
     });
   });
 
-  describe('randomIntegerInRange em massa', () => {
-    it('deve gerar 1.000.000 números aleatórios inteiros em tempo razoável', () => {
+  describe('randomIntegerInRange in bulk', () => {
+    it('should generate 1,000,000 random integers in a reasonable time', () => {
       const count = 1000000;
       const results: number[] = [];
 
@@ -179,17 +180,17 @@ describe('NumberUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para gerar ${count} números aleatórios inteiros: ${executionTime.toFixed(2)}ms`,
+        `Time to generate ${count} random integers: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.001ms
+      // The average time per operation should be less than 0.001ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.001);
     });
   });
 
-  describe('randomFloatInRange em massa', () => {
-    it('deve gerar 1.000.000 números aleatórios decimais em tempo razoável', () => {
+  describe('randomFloatInRange in bulk', () => {
+    it('should generate 1,000,000 random floats in a reasonable time', () => {
       const count = 1000000;
       const results: number[] = [];
 
@@ -202,38 +203,38 @@ describe('NumberUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para gerar ${count} números aleatórios decimais: ${executionTime.toFixed(2)}ms`,
+        `Time to generate ${count} random floats: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.001ms
+      // The average time per operation should be less than 0.001ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.001);
     });
   });
 
-  describe('factorial em massa', () => {
-    it('deve calcular o fatorial de 100.000 números pequenos em tempo razoável', () => {
+  describe('factorial in bulk', () => {
+    it('should compute the factorial of 100,000 small numbers in a reasonable time', () => {
       const count = 100000;
       const results: number[] = [];
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          results.push(NumberUtils.factorial({ value: i % 10 })); // Usa números de 0 a 9
+          results.push(NumberUtils.factorial({ value: i % 10 })); // Use numbers from 0 to 9
         }
       });
 
       console.log(
-        `Tempo para calcular o fatorial de ${count} números: ${executionTime.toFixed(2)}ms`,
+        `Time to compute the factorial of ${count} numbers: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.01ms
+      // The average time per operation should be less than 0.01ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.01);
     });
   });
 
-  describe('clamp em massa', () => {
-    it('deve limitar 1.000.000 números em tempo razoável', () => {
+  describe('clamp in bulk', () => {
+    it('should clamp 1,000,000 numbers in a reasonable time', () => {
       const count = 1000000;
       const results: number[] = [];
 
@@ -244,83 +245,83 @@ describe('NumberUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para limitar ${count} números: ${executionTime.toFixed(2)}ms`,
+        `Time to clamp ${count} numbers: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.001ms
+      // The average time per operation should be less than 0.001ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.001);
     });
   });
 
-  describe('isValidPrime em massa', () => {
-    it('deve verificar se 100.000 números são primos em tempo razoável', () => {
+  describe('isPrime in bulk', () => {
+    it('should check whether 100,000 numbers are prime in a reasonable time', () => {
       const count = 100000;
       const results: boolean[] = [];
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          results.push(NumberUtils.isValidPrime({ value: i }));
+          results.push(MathUtils.isPrime({ value: i }));
         }
       });
 
       console.log(
-        `Tempo para verificar se ${count} números são primos: ${executionTime.toFixed(2)}ms`,
+        `Time to check whether ${count} numbers are prime: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.01ms
+      // The average time per operation should be less than 0.01ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.01);
     });
   });
 
-  describe('Comparação de desempenho entre métodos', () => {
-    it('deve comparar o desempenho de diferentes métodos', () => {
+  describe('Performance comparison between methods', () => {
+    it('should compare the performance of different methods', () => {
       const count = 100000;
       const results: Record<string, number> = {};
 
-      // Teste isValidEven
-      results.isValidEven = measureExecutionTime(() => {
+      // Test isEven
+      results.isEven = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          NumberUtils.isValidEven({ value: i });
+          NumberUtils.isEven({ value: i });
         }
       });
 
-      // Teste isOdd
+      // Test isOdd
       results.isOdd = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           NumberUtils.isOdd({ value: i });
         }
       });
 
-      // Teste roundToDecimals
+      // Test roundToDecimals
       results.roundToDecimals = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           NumberUtils.roundToDecimals({ value: Math.PI, decimals: 2 });
         }
       });
 
-      // Teste isValidPrime
-      results.isValidPrime = measureExecutionTime(() => {
+      // Test isPrime
+      results.isPrime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          NumberUtils.isValidPrime({ value: i % 100 });
+          MathUtils.isPrime({ value: i % 100 });
         }
       });
 
-      // Exibe os resultados
-      console.log('Comparação de desempenho para diferentes métodos:');
+      // Display the results
+      console.log('Performance comparison for different methods:');
       Object.entries(results).forEach(([method, time]) => {
         console.log(
-          `${method}: ${time.toFixed(2)}ms (${(time / count).toFixed(6)}ms por operação)`,
+          `${method}: ${time.toFixed(2)}ms (${(time / count).toFixed(6)}ms per operation)`,
         );
       });
 
-      // Não fazemos asserções específicas aqui, pois o objetivo é apenas coletar dados para análise
+      // We don't make specific assertions here, as the goal is just to collect data for analysis
     });
   });
 
-  describe('Desempenho com diferentes entradas', () => {
-    it('deve medir o desempenho de isValidPrime com números de diferentes tamanhos', () => {
+  describe('Performance with different inputs', () => {
+    it('should measure the performance of isPrime with numbers of different sizes', () => {
       const count = 1000;
       const numbers = [2, 101, 997, 9973, 99991];
       const results: Record<number, number> = {};
@@ -328,17 +329,17 @@ describe('NumberUtils - Testes de Benchmark', () => {
       for (const num of numbers) {
         results[num] = measureExecutionTime(() => {
           for (let i = 0; i < count; i++) {
-            NumberUtils.isValidPrime({ value: num });
+            MathUtils.isPrime({ value: num });
           }
         });
 
         console.log(
-          `Tempo para verificar ${count} vezes se ${num} é primo: ${results[num].toFixed(2)}ms`,
+          `Time to check ${count} times whether ${num} is prime: ${results[num].toFixed(2)}ms`,
         );
       }
 
-      // Espera-se que números maiores levem mais tempo
-      // Mas não fazemos asserções específicas, pois o desempenho pode variar
+      // Larger numbers are expected to take more time
+      // But we don't make specific assertions, as the performance may vary
     });
   });
 });

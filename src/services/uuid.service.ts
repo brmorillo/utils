@@ -4,6 +4,7 @@ import {
   v5 as uuidv5,
   validate as validateUuid,
 } from 'uuid';
+import { ValidationError } from '../errors';
 
 export class UUIDUtils {
   /**
@@ -27,12 +28,13 @@ export class UUIDUtils {
   }
 
   /**
-   * Generates a UUID (version 5).
-   * If the namespace is not valid, a new UUIDv4 will be generated as the namespace.
+   * Generates a UUID (version 5). Version 5 is deterministic: the same
+   * `namespace` and `name` always produce the same UUID.
    * @param {object} params - The parameters for the method.
-   * @param {string} [params.namespace] - The namespace for UUID generation (must be a valid UUID). Defaults to a generated UUIDv4 if not provided.
+   * @param {string} [params.namespace] - The namespace for UUID generation (must be a valid UUID). Defaults to the standard URL namespace so results stay deterministic.
    * @param {string} params.name - The name to hash within the namespace.
    * @returns {string} A deterministic UUID string based on the namespace and name.
+   * @throws {ValidationError} Throws a ValidationError if `name` is empty or if a provided `namespace` is not a valid UUID.
    * @example
    * UUIDUtils.uuidV5Generate({
    *   namespace: '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
@@ -41,7 +43,7 @@ export class UUIDUtils {
    *
    * UUIDUtils.uuidV5Generate({
    *   name: 'example'
-   * }); // Deterministic UUID using auto-generated namespace
+   * }); // Deterministic UUID using the default URL namespace
    */
   public static uuidV5Generate({
     namespace,
@@ -50,7 +52,15 @@ export class UUIDUtils {
     namespace?: string;
     name: string;
   }): string {
-    const requiredNamespace: string = namespace || uuidv4();
+    if (!name || typeof name !== 'string') {
+      throw new ValidationError('Invalid name: must be a non-empty string.');
+    }
+
+    if (namespace !== undefined && !validateUuid(namespace)) {
+      throw new ValidationError('Invalid namespace: must be a valid UUID.');
+    }
+
+    const requiredNamespace: string = namespace || uuidv5.URL;
     return uuidv5(name, requiredNamespace);
   }
 

@@ -1,25 +1,25 @@
 /**
- * Este é um exemplo de como implementar uma fila usando Redis com a interface IQueue.
- * Observe que este é apenas um exemplo e requer a biblioteca 'redis' instalada.
+ * This is an example of how to implement a queue using Redis with the IQueue interface.
+ * Note that this is just an example and requires the 'redis' library to be installed.
  *
- * Para instalar: npm install redis
+ * To install: npm install redis
  */
 
 import { createClient } from 'redis';
 import { IQueue } from '../src/services/queue.service';
 
 /**
- * Implementação de uma fila usando Redis.
- * @template T O tipo de elementos armazenados na fila.
+ * Implementation of a queue using Redis.
+ * @template T The type of elements stored in the queue.
  */
 export class RedisQueue<T> implements IQueue<T> {
   private client;
   private queueKey: string;
 
   /**
-   * Cria uma nova instância de RedisQueue.
-   * @param queueKey A chave usada para identificar a fila no Redis.
-   * @param redisUrl A URL de conexão do Redis (opcional).
+   * Creates a new RedisQueue instance.
+   * @param queueKey The key used to identify the queue in Redis.
+   * @param redisUrl The Redis connection URL (optional).
    */
   constructor(queueKey: string, redisUrl: string = 'redis://localhost:6379') {
     this.queueKey = queueKey;
@@ -28,9 +28,9 @@ export class RedisQueue<T> implements IQueue<T> {
   }
 
   /**
-   * Adiciona um elemento ao final da fila.
-   * @param item O item a ser enfileirado.
-   * @returns O tamanho atualizado da fila.
+   * Adds an element to the end of the queue.
+   * @param item The item to be enqueued.
+   * @returns The updated size of the queue.
    */
   async enqueue(item: T): Promise<number> {
     const serializedItem = JSON.stringify(item);
@@ -39,8 +39,8 @@ export class RedisQueue<T> implements IQueue<T> {
   }
 
   /**
-   * Remove e retorna o elemento no início da fila.
-   * @returns O item desenfileirado ou undefined se a fila estiver vazia.
+   * Removes and returns the element at the front of the queue.
+   * @returns The dequeued item or undefined if the queue is empty.
    */
   async dequeue(): Promise<T | undefined> {
     const item = await this.client.lPop(this.queueKey);
@@ -49,8 +49,8 @@ export class RedisQueue<T> implements IQueue<T> {
   }
 
   /**
-   * Retorna o elemento no início da fila sem removê-lo.
-   * @returns O item no início ou undefined se a fila estiver vazia.
+   * Returns the element at the front of the queue without removing it.
+   * @returns The item at the front or undefined if the queue is empty.
    */
   async peek(): Promise<T | undefined> {
     const items = await this.client.lRange(this.queueKey, 0, 0);
@@ -59,16 +59,16 @@ export class RedisQueue<T> implements IQueue<T> {
   }
 
   /**
-   * Retorna o tamanho atual da fila.
-   * @returns O número de elementos na fila.
+   * Returns the current size of the queue.
+   * @returns The number of elements in the queue.
    */
   async size(): Promise<number> {
     return await this.client.lLen(this.queueKey);
   }
 
   /**
-   * Verifica se a fila está vazia.
-   * @returns True se a fila estiver vazia, false caso contrário.
+   * Checks whether the queue is empty.
+   * @returns True if the queue is empty, false otherwise.
    */
   async isEmpty(): Promise<boolean> {
     const size = await this.size();
@@ -76,15 +76,15 @@ export class RedisQueue<T> implements IQueue<T> {
   }
 
   /**
-   * Limpa todos os elementos da fila.
+   * Clears all elements from the queue.
    */
   async clear(): Promise<void> {
     await this.client.del(this.queueKey);
   }
 
   /**
-   * Retorna todos os elementos da fila sem removê-los.
-   * @returns Um array contendo todos os elementos da fila.
+   * Returns all elements of the queue without removing them.
+   * @returns An array containing all elements of the queue.
    */
   async toArray(): Promise<T[]> {
     const items = await this.client.lRange(this.queueKey, 0, -1);
@@ -92,7 +92,7 @@ export class RedisQueue<T> implements IQueue<T> {
   }
 
   /**
-   * Fecha a conexão com o Redis.
+   * Closes the connection to Redis.
    */
   async close(): Promise<void> {
     await this.client.quit();
@@ -100,64 +100,64 @@ export class RedisQueue<T> implements IQueue<T> {
 }
 
 /**
- * Exemplo de uso da RedisQueue
+ * Example usage of RedisQueue
  */
 async function redisQueueExample() {
-  // Cria uma fila Redis para armazenar mensagens
+  // Create a Redis queue to store messages
   const messageQueue = new RedisQueue<{ id: number; text: string }>(
     'message_queue',
   );
 
   try {
-    // Limpa a fila para começar com uma fila vazia
+    // Clear the queue to start with an empty queue
     await messageQueue.clear();
-    console.log('Fila limpa.');
+    console.log('Queue cleared.');
 
-    // Adiciona algumas mensagens à fila
-    await messageQueue.enqueue({ id: 1, text: 'Primeira mensagem' });
-    await messageQueue.enqueue({ id: 2, text: 'Segunda mensagem' });
-    await messageQueue.enqueue({ id: 3, text: 'Terceira mensagem' });
+    // Add some messages to the queue
+    await messageQueue.enqueue({ id: 1, text: 'First message' });
+    await messageQueue.enqueue({ id: 2, text: 'Second message' });
+    await messageQueue.enqueue({ id: 3, text: 'Third message' });
 
-    // Verifica o tamanho da fila
+    // Check the size of the queue
     const size = await messageQueue.size();
-    console.log(`Tamanho da fila: ${size}`);
+    console.log(`Queue size: ${size}`);
 
-    // Verifica a primeira mensagem sem removê-la
+    // Check the first message without removing it
     const firstMessage = await messageQueue.peek();
-    console.log('Primeira mensagem na fila:', firstMessage);
+    console.log('First message in the queue:', firstMessage);
 
-    // Processa todas as mensagens na fila
-    console.log('Processando mensagens:');
+    // Process all messages in the queue
+    console.log('Processing messages:');
     while (!(await messageQueue.isEmpty())) {
       const message = await messageQueue.dequeue();
-      console.log(`- Processando mensagem ${message?.id}: ${message?.text}`);
+      console.log(`- Processing message ${message?.id}: ${message?.text}`);
     }
 
-    // Verifica se a fila está vazia
+    // Check whether the queue is empty
     const isEmpty = await messageQueue.isEmpty();
-    console.log(`A fila está vazia? ${isEmpty}`);
+    console.log(`Is the queue empty? ${isEmpty}`);
   } catch (error) {
-    console.error('Erro ao usar a fila Redis:', error);
+    console.error('Error using the Redis queue:', error);
   } finally {
-    // Fecha a conexão com o Redis
+    // Close the connection to Redis
     await messageQueue.close();
   }
 }
 
-// Executa o exemplo (descomente para testar)
+// Run the example (uncomment to test)
 // redisQueueExample().catch(console.error);
 
 /**
- * Exemplo de implementação de uma fila de prioridade usando Redis
+ * Example implementation of a priority queue using Redis
  */
 export class RedisPriorityQueue<T> {
   private client;
   private queueKey: string;
 
   /**
-   * Cria uma nova instância de RedisPriorityQueue.
-   * @param queueKey A chave usada para identificar a fila no Redis.
-   * @param redisUrl A URL de conexão do Redis (opcional).
+   * Creates a new RedisPriorityQueue instance.
+   * @param queueKey The key used to identify the queue in Redis.
+   * @param redisUrl The Redis connection URL (optional).
    */
   constructor(queueKey: string, redisUrl: string = 'redis://localhost:6379') {
     this.queueKey = queueKey;
@@ -166,10 +166,10 @@ export class RedisPriorityQueue<T> {
   }
 
   /**
-   * Adiciona um elemento à fila com uma prioridade específica.
-   * Prioridades menores são processadas primeiro.
-   * @param item O item a ser enfileirado.
-   * @param priority A prioridade do item (menor = maior prioridade).
+   * Adds an element to the queue with a specific priority.
+   * Lower priorities are processed first.
+   * @param item The item to be enqueued.
+   * @param priority The priority of the item (lower = higher priority).
    */
   async enqueue(item: T, priority: number): Promise<void> {
     const serializedItem = JSON.stringify(item);
@@ -179,37 +179,37 @@ export class RedisPriorityQueue<T> {
   }
 
   /**
-   * Remove e retorna o elemento com a maior prioridade (menor score).
-   * @returns O item desenfileirado ou undefined se a fila estiver vazia.
+   * Removes and returns the element with the highest priority (lowest score).
+   * @returns The dequeued item or undefined if the queue is empty.
    */
   async dequeue(): Promise<T | undefined> {
-    // Obtém o item com a maior prioridade (menor score)
+    // Get the item with the highest priority (lowest score)
     const items = await this.client.zRangeWithScores(this.queueKey, 0, 0);
     if (!items || items.length === 0) return undefined;
 
-    // Remove o item da fila
+    // Remove the item from the queue
     await this.client.zRem(this.queueKey, items[0].value);
 
     return JSON.parse(items[0].value);
   }
 
   /**
-   * Retorna o tamanho atual da fila.
-   * @returns O número de elementos na fila.
+   * Returns the current size of the queue.
+   * @returns The number of elements in the queue.
    */
   async size(): Promise<number> {
     return await this.client.zCard(this.queueKey);
   }
 
   /**
-   * Limpa todos os elementos da fila.
+   * Clears all elements from the queue.
    */
   async clear(): Promise<void> {
     await this.client.del(this.queueKey);
   }
 
   /**
-   * Fecha a conexão com o Redis.
+   * Closes the connection to Redis.
    */
   async close(): Promise<void> {
     await this.client.quit();
@@ -217,41 +217,41 @@ export class RedisPriorityQueue<T> {
 }
 
 /**
- * Exemplo de uso da RedisPriorityQueue
+ * Example usage of RedisPriorityQueue
  */
 async function redisPriorityQueueExample() {
-  // Cria uma fila de prioridade Redis para tarefas
+  // Create a Redis priority queue for tasks
   const taskQueue = new RedisPriorityQueue<{ id: number; task: string }>(
     'task_priority_queue',
   );
 
   try {
-    // Limpa a fila para começar com uma fila vazia
+    // Clear the queue to start with an empty queue
     await taskQueue.clear();
-    console.log('Fila de prioridade limpa.');
+    console.log('Priority queue cleared.');
 
-    // Adiciona algumas tarefas com diferentes prioridades
-    await taskQueue.enqueue({ id: 1, task: 'Tarefa de baixa prioridade' }, 3);
-    await taskQueue.enqueue({ id: 2, task: 'Tarefa de alta prioridade' }, 1);
-    await taskQueue.enqueue({ id: 3, task: 'Tarefa de média prioridade' }, 2);
+    // Add some tasks with different priorities
+    await taskQueue.enqueue({ id: 1, task: 'Low priority task' }, 3);
+    await taskQueue.enqueue({ id: 2, task: 'High priority task' }, 1);
+    await taskQueue.enqueue({ id: 3, task: 'Medium priority task' }, 2);
 
-    // Verifica o tamanho da fila
+    // Check the size of the queue
     const size = await taskQueue.size();
-    console.log(`Tamanho da fila de prioridade: ${size}`);
+    console.log(`Priority queue size: ${size}`);
 
-    // Processa todas as tarefas na ordem de prioridade
-    console.log('Processando tarefas por prioridade:');
+    // Process all tasks in priority order
+    console.log('Processing tasks by priority:');
     while ((await taskQueue.size()) > 0) {
       const task = await taskQueue.dequeue();
-      console.log(`- Processando tarefa ${task?.id}: ${task?.task}`);
+      console.log(`- Processing task ${task?.id}: ${task?.task}`);
     }
   } catch (error) {
-    console.error('Erro ao usar a fila de prioridade Redis:', error);
+    console.error('Error using the Redis priority queue:', error);
   } finally {
-    // Fecha a conexão com o Redis
+    // Close the connection to Redis
     await taskQueue.close();
   }
 }
 
-// Executa o exemplo (descomente para testar)
+// Run the example (uncomment to test)
 // redisPriorityQueueExample().catch(console.error);

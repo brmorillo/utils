@@ -1,22 +1,22 @@
 import { SnowflakeUtils } from '../../src/services/snowflake.service';
 
 /**
- * Testes de benchmark para a classe SnowflakeUtils.
- * Estes testes verificam o desempenho da classe em operações de alta frequência.
+ * Benchmark tests for the SnowflakeUtils class.
+ * These tests verify the class performance in high-frequency operations.
  */
-describe('SnowflakeUtils - Testes de Benchmark', () => {
+describe('SnowflakeUtils - Benchmark Tests', () => {
   const testEpoch = new Date('2023-01-01T00:00:00.000Z');
 
-  // Função auxiliar para medir o tempo de execução
+  // Helper function to measure execution time
   const measureExecutionTime = (fn: () => void): number => {
     const start = process.hrtime.bigint();
     fn();
     const end = process.hrtime.bigint();
-    return Number(end - start) / 1_000_000; // Converte para milissegundos
+    return Number(end - start) / 1_000_000; // Convert to milliseconds
   };
 
-  describe('Geração de IDs em massa', () => {
-    it('deve gerar 10.000 IDs em tempo razoável', () => {
+  describe('Bulk ID generation', () => {
+    it('should generate 10,000 IDs in a reasonable time', () => {
       const count = 10000;
       const ids: bigint[] = [];
 
@@ -27,28 +27,28 @@ describe('SnowflakeUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para gerar ${count} IDs: ${executionTime.toFixed(2)}ms`,
+        `Time to generate ${count} IDs: ${executionTime.toFixed(2)}ms`,
       );
 
-      // Verifica se temos IDs únicos (pode haver colisões em execuções rápidas)
+      // Check whether we have unique IDs (collisions may occur in fast runs)
       const uniqueIds = new Set(ids.map(id => id.toString()));
       expect(uniqueIds.size).toBeGreaterThan(0);
 
-      // O tempo médio por ID deve ser menor que 0.1ms
+      // The average time per ID should be less than 0.1ms
       const avgTimePerID = executionTime / count;
       expect(avgTimePerID).toBeLessThan(0.1);
     });
 
-    it('deve gerar 1023 IDs únicos dentro do mesmo milissegundo', () => {
+    it('should generate 1023 unique IDs within the same millisecond', () => {
       const count = 1023;
       const ids: bigint[] = [];
 
-      // Força todos os IDs a terem o mesmo timestamp
+      // Force all IDs to have the same timestamp
       const timestamp = new Date();
       const mockDate = new Date(timestamp);
       const realDate = global.Date;
 
-      // Mock da classe Date para retornar sempre o mesmo timestamp
+      // Mock the Date class to always return the same timestamp
       global.Date = class extends Date {
         constructor() {
           super();
@@ -60,16 +60,16 @@ describe('SnowflakeUtils - Testes de Benchmark', () => {
       } as any;
 
       try {
-        // Gera 1023 IDs (máximo teórico em 1ms com workerId e processId = 0)
+        // Generate 1023 IDs (theoretical maximum in 1ms with workerId and processId = 0)
         for (let i = 0; i < count; i++) {
           ids.push(SnowflakeUtils.generate({ epoch: testEpoch }));
         }
 
-        // Verifica se todos os IDs são únicos
+        // Check whether all IDs are unique
         const uniqueIds = new Set(ids.map(id => id.toString()));
         expect(uniqueIds.size).toBe(count);
 
-        // Verifica se todos os IDs têm o mesmo timestamp
+        // Check whether all IDs have the same timestamp
         const timestamps = new Set();
         ids.forEach(id => {
           const decodedTimestamp = SnowflakeUtils.getTimestamp({
@@ -81,17 +81,17 @@ describe('SnowflakeUtils - Testes de Benchmark', () => {
 
         expect(timestamps.size).toBe(1);
       } finally {
-        // Restaura a classe Date original
+        // Restore the original Date class
         global.Date = realDate;
       }
     });
   });
 
-  describe('Decodificação de IDs em massa', () => {
-    it('deve decodificar 10.000 IDs em tempo razoável', () => {
+  describe('Bulk ID decoding', () => {
+    it('should decode 10,000 IDs in a reasonable time', () => {
       const count = 10000;
 
-      // Gera um ID para decodificar repetidamente
+      // Generate an ID to decode repeatedly
       const id = SnowflakeUtils.generate({ epoch: testEpoch });
 
       const executionTime = measureExecutionTime(() => {
@@ -101,20 +101,20 @@ describe('SnowflakeUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para decodificar ${count} IDs: ${executionTime.toFixed(2)}ms`,
+        `Time to decode ${count} IDs: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por decodificação deve ser menor que 0.05ms
+      // The average time per decode should be less than 0.05ms
       const avgTimePerDecode = executionTime / count;
       expect(avgTimePerDecode).toBeLessThan(0.05);
     });
   });
 
-  describe('Extração de timestamp em massa', () => {
-    it('deve extrair timestamp de 10.000 IDs em tempo razoável', () => {
+  describe('Bulk timestamp extraction', () => {
+    it('should extract the timestamp from 10,000 IDs in a reasonable time', () => {
       const count = 10000;
 
-      // Gera um ID para extrair o timestamp repetidamente
+      // Generate an ID to extract the timestamp repeatedly
       const id = SnowflakeUtils.generate({ epoch: testEpoch });
 
       const executionTime = measureExecutionTime(() => {
@@ -124,20 +124,20 @@ describe('SnowflakeUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para extrair timestamp de ${count} IDs: ${executionTime.toFixed(2)}ms`,
+        `Time to extract the timestamp from ${count} IDs: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por extração deve ser menor que 0.05ms
+      // The average time per extraction should be less than 0.05ms
       const avgTimePerExtraction = executionTime / count;
       expect(avgTimePerExtraction).toBeLessThan(0.05);
     });
   });
 
-  describe('Validação de IDs em massa', () => {
-    it('deve validar 10.000 IDs em tempo razoável', () => {
+  describe('Bulk ID validation', () => {
+    it('should validate 10,000 IDs in a reasonable time', () => {
       const count = 10000;
 
-      // Gera um ID para validar repetidamente
+      // Generate an ID to validate repeatedly
       const id = SnowflakeUtils.generate({ epoch: testEpoch }).toString();
 
       const executionTime = measureExecutionTime(() => {
@@ -147,20 +147,20 @@ describe('SnowflakeUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para validar ${count} IDs: ${executionTime.toFixed(2)}ms`,
+        `Time to validate ${count} IDs: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por validação deve ser menor que 0.01ms
+      // The average time per validation should be less than 0.01ms
       const avgTimePerValidation = executionTime / count;
       expect(avgTimePerValidation).toBeLessThan(0.01);
     });
   });
 
-  describe('Comparação de IDs em massa', () => {
-    it('deve comparar 10.000 pares de IDs em tempo razoável', () => {
+  describe('Bulk ID comparison', () => {
+    it('should compare 10,000 pairs of IDs in a reasonable time', () => {
       const count = 10000;
 
-      // Gera dois IDs para comparar repetidamente
+      // Generate two IDs to compare repeatedly
       const id1 = SnowflakeUtils.generate({ epoch: testEpoch });
       const id2 = SnowflakeUtils.generate({ epoch: testEpoch });
 
@@ -171,20 +171,20 @@ describe('SnowflakeUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para comparar ${count} pares de IDs: ${executionTime.toFixed(2)}ms`,
+        `Time to compare ${count} pairs of IDs: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por comparação deve ser menor que 0.01ms
+      // The average time per comparison should be less than 0.01ms
       const avgTimePerComparison = executionTime / count;
       expect(avgTimePerComparison).toBeLessThan(0.01);
     });
   });
 
-  describe('Criação de IDs a partir de timestamp em massa', () => {
-    it('deve criar 10.000 IDs a partir de timestamps em tempo razoável', () => {
+  describe('Bulk ID creation from timestamp', () => {
+    it('should create 10,000 IDs from timestamps in a reasonable time', () => {
       const count = 10000;
 
-      // Cria um timestamp para usar repetidamente
+      // Create a timestamp to use repeatedly
       const timestamp = new Date();
 
       const executionTime = measureExecutionTime(() => {
@@ -194,20 +194,20 @@ describe('SnowflakeUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para criar ${count} IDs a partir de timestamps: ${executionTime.toFixed(2)}ms`,
+        `Time to create ${count} IDs from timestamps: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por criação deve ser menor que 0.1ms
+      // The average time per creation should be less than 0.1ms
       const avgTimePerCreation = executionTime / count;
       expect(avgTimePerCreation).toBeLessThan(0.1);
     });
   });
 
-  describe('Conversão de IDs em massa', () => {
-    it('deve converter 10.000 IDs de bigint para string em tempo razoável', () => {
+  describe('Bulk ID conversion', () => {
+    it('should convert 10,000 IDs from bigint to string in a reasonable time', () => {
       const count = 10000;
 
-      // Gera um ID para converter repetidamente
+      // Generate an ID to convert repeatedly
       const id = SnowflakeUtils.generate({ epoch: testEpoch });
 
       const executionTime = measureExecutionTime(() => {
@@ -217,18 +217,18 @@ describe('SnowflakeUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para converter ${count} IDs de bigint para string: ${executionTime.toFixed(2)}ms`,
+        `Time to convert ${count} IDs from bigint to string: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por conversão deve ser menor que 0.01ms
+      // The average time per conversion should be less than 0.01ms
       const avgTimePerConversion = executionTime / count;
       expect(avgTimePerConversion).toBeLessThan(0.01);
     });
 
-    it('deve converter 10.000 IDs de string para bigint em tempo razoável', () => {
+    it('should convert 10,000 IDs from string to bigint in a reasonable time', () => {
       const count = 10000;
 
-      // Gera um ID como string para converter repetidamente
+      // Generate an ID as a string to convert repeatedly
       const idString = SnowflakeUtils.generate({ epoch: testEpoch }).toString();
 
       const executionTime = measureExecutionTime(() => {
@@ -238,18 +238,18 @@ describe('SnowflakeUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para converter ${count} IDs de string para bigint: ${executionTime.toFixed(2)}ms`,
+        `Time to convert ${count} IDs from string to bigint: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por conversão deve ser menor que 0.01ms
+      // The average time per conversion should be less than 0.01ms
       const avgTimePerConversion = executionTime / count;
       expect(avgTimePerConversion).toBeLessThan(0.01);
     });
 
-    it('deve converter 10.000 IDs pequenos para number em tempo razoável', () => {
+    it('should convert 10,000 small IDs to number in a reasonable time', () => {
       const count = 10000;
 
-      // Usa um ID pequeno que pode ser convertido para number
+      // Use a small ID that can be converted to number
       const smallId = 123456789n;
 
       const executionTime = measureExecutionTime(() => {
@@ -259,49 +259,49 @@ describe('SnowflakeUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para converter ${count} IDs para number: ${executionTime.toFixed(2)}ms`,
+        `Time to convert ${count} IDs to number: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por conversão deve ser menor que 0.01ms
+      // The average time per conversion should be less than 0.01ms
       const avgTimePerConversion = executionTime / count;
       expect(avgTimePerConversion).toBeLessThan(0.01);
     });
   });
 
-  describe('Fluxo completo em massa', () => {
-    it('deve executar o fluxo completo para 1.000 IDs em tempo razoável', () => {
+  describe('Bulk complete flow', () => {
+    it('should run the complete flow for 1,000 IDs in a reasonable time', () => {
       const count = 1000;
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          // Gera um ID
+          // Generate an ID
           const id = SnowflakeUtils.generate({ epoch: testEpoch });
 
-          // Decodifica o ID
+          // Decode the ID
           const components = SnowflakeUtils.decode({
             snowflakeId: id,
             epoch: testEpoch,
           });
 
-          // Extrai o timestamp
+          // Extract the timestamp
           const timestamp = SnowflakeUtils.getTimestamp({
             snowflakeId: id,
             epoch: testEpoch,
           });
 
-          // Cria um novo ID a partir do timestamp
+          // Create a new ID from the timestamp
           const newId = SnowflakeUtils.fromTimestamp({
             timestamp,
             epoch: testEpoch,
           });
 
-          // Compara os IDs
+          // Compare the IDs
           SnowflakeUtils.compare({ first: id, second: newId });
 
-          // Valida o ID
+          // Validate the ID
           SnowflakeUtils.isValidSnowflake({ snowflakeId: id.toString() });
 
-          // Converte o ID para string e de volta para bigint
+          // Convert the ID to string and back to bigint
           const stringId = SnowflakeUtils.convert({
             snowflakeId: id,
             toFormat: 'string',
@@ -311,10 +311,10 @@ describe('SnowflakeUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para executar o fluxo completo para ${count} IDs: ${executionTime.toFixed(2)}ms`,
+        `Time to run the complete flow for ${count} IDs: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por fluxo completo deve ser menor que 0.5ms
+      // The average time per complete flow should be less than 0.5ms
       const avgTimePerFlow = executionTime / count;
       expect(avgTimePerFlow).toBeLessThan(0.5);
     });

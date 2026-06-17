@@ -1,23 +1,23 @@
 import { HashUtils } from '../../src/services/hash.service';
 
 /**
- * Testes de benchmark para a classe HashUtils.
- * Estes testes verificam o desempenho da classe em operações de alta frequência.
+ * Benchmark tests for the HashUtils class.
+ * These tests verify the class's performance in high-frequency operations.
  */
-describe('HashUtils - Testes de Benchmark', () => {
-  // Função auxiliar para medir o tempo de execução
+describe('HashUtils - Benchmark Tests', () => {
+  // Helper function to measure execution time
   const measureExecutionTime = (fn: () => void): number => {
     const start = process.hrtime.bigint();
     fn();
     const end = process.hrtime.bigint();
-    return Number(end - start) / 1_000_000; // Converte para milissegundos
+    return Number(end - start) / 1_000_000; // Convert to milliseconds
   };
 
-  describe('bcryptHash em massa', () => {
-    it('deve gerar 100 hashes bcrypt em tempo razoável', () => {
-      const count = 100; // bcrypt é intencionalmente lento, então usamos um número menor
+  describe('bcryptHash in bulk', () => {
+    it('should generate 100 bcrypt hashes in a reasonable time', () => {
+      const count = 100; // bcrypt is intentionally slow, so we use a smaller number
       const value = 'senha123';
-      const saltRounds = 8; // Menor número de rounds para o benchmark
+      const saltRounds = 8; // Smaller number of rounds for the benchmark
       const hashes: string[] = [];
 
       const executionTime = measureExecutionTime(() => {
@@ -27,28 +27,28 @@ describe('HashUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para gerar ${count} hashes bcrypt: ${executionTime.toFixed(2)}ms`,
+        `Time to generate ${count} bcrypt hashes: ${executionTime.toFixed(2)}ms`,
       );
 
-      // Verifica se todos os hashes são diferentes
+      // Check whether all hashes are different
       const uniqueHashes = new Set(hashes);
       expect(uniqueHashes.size).toBe(count);
 
-      // O tempo médio por hash deve ser razoável (bcrypt é lento por design)
+      // The average time per hash should be reasonable (bcrypt is slow by design)
       const avgTimePerHash = executionTime / count;
       console.log(
-        `Tempo médio por hash bcrypt: ${avgTimePerHash.toFixed(2)}ms`,
+        `Average time per bcrypt hash: ${avgTimePerHash.toFixed(2)}ms`,
       );
-      expect(avgTimePerHash).toBeLessThan(100); // Menos de 100ms por hash
+      expect(avgTimePerHash).toBeLessThan(100); // Less than 100ms per hash
     });
   });
 
-  describe('bcryptCompare em massa', () => {
-    it('deve comparar 1.000 hashes bcrypt em tempo razoável', () => {
+  describe('bcryptCompare in bulk', () => {
+    it('should compare 1,000 bcrypt hashes in a reasonable time', () => {
       const count = 1000;
       const value = 'senha123';
 
-      // Gera um hash para comparar repetidamente
+      // Generate a hash to compare repeatedly
       const hash = HashUtils.bcryptHash({ value, saltRounds: 8 });
 
       const executionTime = measureExecutionTime(() => {
@@ -58,20 +58,20 @@ describe('HashUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para comparar ${count} hashes bcrypt: ${executionTime.toFixed(2)}ms`,
+        `Time to compare ${count} bcrypt hashes: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por comparação deve ser razoável para bcrypt (que é intencionalmente lento para segurança)
+      // The average time per comparison should be reasonable for bcrypt (which is intentionally slow for security)
       const avgTimePerComparison = executionTime / count;
       console.log(
-        `Tempo médio por comparação bcrypt: ${avgTimePerComparison.toFixed(2)}ms`,
+        `Average time per bcrypt comparison: ${avgTimePerComparison.toFixed(2)}ms`,
       );
-      expect(avgTimePerComparison).toBeLessThan(50); // bcrypt é lento por design - até 50ms é aceitável
+      expect(avgTimePerComparison).toBeLessThan(50); // bcrypt is slow by design - up to 50ms is acceptable
     });
   });
 
-  describe('sha256Hash em massa', () => {
-    it('deve gerar 10.000 hashes SHA-256 em tempo razoável', () => {
+  describe('sha256Hash in bulk', () => {
+    it('should generate 10,000 SHA-256 hashes in a reasonable time', () => {
       const count = 10000;
       const value = 'texto para hash';
       const hashes: string[] = [];
@@ -83,24 +83,24 @@ describe('HashUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para gerar ${count} hashes SHA-256: ${executionTime.toFixed(2)}ms`,
+        `Time to generate ${count} SHA-256 hashes: ${executionTime.toFixed(2)}ms`,
       );
 
-      // Verifica se todos os hashes são diferentes
+      // Check whether all hashes are different
       const uniqueHashes = new Set(hashes);
       expect(uniqueHashes.size).toBe(count);
 
-      // O tempo médio por hash deve ser muito rápido
+      // The average time per hash should be very fast
       const avgTimePerHash = executionTime / count;
       console.log(
-        `Tempo médio por hash SHA-256: ${avgTimePerHash.toFixed(3)}ms`,
+        `Average time per SHA-256 hash: ${avgTimePerHash.toFixed(3)}ms`,
       );
-      expect(avgTimePerHash).toBeLessThan(0.1); // Menos de 0.1ms por hash
+      expect(avgTimePerHash).toBeLessThan(0.1); // Less than 0.1ms per hash
     });
   });
 
-  describe('sha256HashJson em massa', () => {
-    it('deve gerar 10.000 hashes SHA-256 de objetos JSON em tempo razoável', () => {
+  describe('sha256HashJson in bulk', () => {
+    it('should generate 10,000 SHA-256 hashes of JSON objects in a reasonable time', () => {
       const count = 10000;
       const hashes: string[] = [];
 
@@ -112,24 +112,24 @@ describe('HashUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para gerar ${count} hashes SHA-256 de JSON: ${executionTime.toFixed(2)}ms`,
+        `Time to generate ${count} SHA-256 hashes of JSON: ${executionTime.toFixed(2)}ms`,
       );
 
-      // Verifica se todos os hashes são diferentes
+      // Check whether all hashes are different
       const uniqueHashes = new Set(hashes);
       expect(uniqueHashes.size).toBe(count);
 
-      // O tempo médio por hash deve ser rápido
+      // The average time per hash should be fast
       const avgTimePerHash = executionTime / count;
       console.log(
-        `Tempo médio por hash SHA-256 de JSON: ${avgTimePerHash.toFixed(3)}ms`,
+        `Average time per SHA-256 hash of JSON: ${avgTimePerHash.toFixed(3)}ms`,
       );
-      expect(avgTimePerHash).toBeLessThan(0.2); // Menos de 0.2ms por hash
+      expect(avgTimePerHash).toBeLessThan(0.2); // Less than 0.2ms per hash
     });
   });
 
-  describe('sha256GenerateToken em massa', () => {
-    it('deve gerar 10.000 tokens SHA-256 em tempo razoável', () => {
+  describe('sha256GenerateToken in bulk', () => {
+    it('should generate 10,000 SHA-256 tokens in a reasonable time', () => {
       const count = 10000;
       const tokens: string[] = [];
 
@@ -140,24 +140,24 @@ describe('HashUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para gerar ${count} tokens SHA-256: ${executionTime.toFixed(2)}ms`,
+        `Time to generate ${count} SHA-256 tokens: ${executionTime.toFixed(2)}ms`,
       );
 
-      // Verifica se todos os tokens são diferentes
+      // Check whether all tokens are different
       const uniqueTokens = new Set(tokens);
       expect(uniqueTokens.size).toBe(count);
 
-      // O tempo médio por token deve ser rápido
+      // The average time per token should be fast
       const avgTimePerToken = executionTime / count;
       console.log(
-        `Tempo médio por token SHA-256: ${avgTimePerToken.toFixed(3)}ms`,
+        `Average time per SHA-256 token: ${avgTimePerToken.toFixed(3)}ms`,
       );
-      expect(avgTimePerToken).toBeLessThan(0.2); // Menos de 0.2ms por token
+      expect(avgTimePerToken).toBeLessThan(0.2); // Less than 0.2ms per token
     });
   });
 
-  describe('sha512Hash em massa', () => {
-    it('deve gerar 10.000 hashes SHA-512 em tempo razoável', () => {
+  describe('sha512Hash in bulk', () => {
+    it('should generate 10,000 SHA-512 hashes in a reasonable time', () => {
       const count = 10000;
       const value = 'texto para hash';
       const hashes: string[] = [];
@@ -169,24 +169,24 @@ describe('HashUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para gerar ${count} hashes SHA-512: ${executionTime.toFixed(2)}ms`,
+        `Time to generate ${count} SHA-512 hashes: ${executionTime.toFixed(2)}ms`,
       );
 
-      // Verifica se todos os hashes são diferentes
+      // Check whether all hashes are different
       const uniqueHashes = new Set(hashes);
       expect(uniqueHashes.size).toBe(count);
 
-      // O tempo médio por hash deve ser rápido
+      // The average time per hash should be fast
       const avgTimePerHash = executionTime / count;
       console.log(
-        `Tempo médio por hash SHA-512: ${avgTimePerHash.toFixed(3)}ms`,
+        `Average time per SHA-512 hash: ${avgTimePerHash.toFixed(3)}ms`,
       );
-      expect(avgTimePerHash).toBeLessThan(0.1); // Menos de 0.1ms por hash
+      expect(avgTimePerHash).toBeLessThan(0.1); // Less than 0.1ms per hash
     });
   });
 
-  describe('sha512HashJson em massa', () => {
-    it('deve gerar 10.000 hashes SHA-512 de objetos JSON em tempo razoável', () => {
+  describe('sha512HashJson in bulk', () => {
+    it('should generate 10,000 SHA-512 hashes of JSON objects in a reasonable time', () => {
       const count = 10000;
       const hashes: string[] = [];
 
@@ -198,24 +198,24 @@ describe('HashUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para gerar ${count} hashes SHA-512 de JSON: ${executionTime.toFixed(2)}ms`,
+        `Time to generate ${count} SHA-512 hashes of JSON: ${executionTime.toFixed(2)}ms`,
       );
 
-      // Verifica se todos os hashes são diferentes
+      // Check whether all hashes are different
       const uniqueHashes = new Set(hashes);
       expect(uniqueHashes.size).toBe(count);
 
-      // O tempo médio por hash deve ser rápido
+      // The average time per hash should be fast
       const avgTimePerHash = executionTime / count;
       console.log(
-        `Tempo médio por hash SHA-512 de JSON: ${avgTimePerHash.toFixed(3)}ms`,
+        `Average time per SHA-512 hash of JSON: ${avgTimePerHash.toFixed(3)}ms`,
       );
-      expect(avgTimePerHash).toBeLessThan(0.2); // Menos de 0.2ms por hash
+      expect(avgTimePerHash).toBeLessThan(0.2); // Less than 0.2ms per hash
     });
   });
 
-  describe('sha512GenerateToken em massa', () => {
-    it('deve gerar 10.000 tokens SHA-512 em tempo razoável', () => {
+  describe('sha512GenerateToken in bulk', () => {
+    it('should generate 10,000 SHA-512 tokens in a reasonable time', () => {
       const count = 10000;
       const tokens: string[] = [];
 
@@ -226,35 +226,35 @@ describe('HashUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para gerar ${count} tokens SHA-512: ${executionTime.toFixed(2)}ms`,
+        `Time to generate ${count} SHA-512 tokens: ${executionTime.toFixed(2)}ms`,
       );
 
-      // Verifica se todos os tokens são diferentes
+      // Check whether all tokens are different
       const uniqueTokens = new Set(tokens);
       expect(uniqueTokens.size).toBe(count);
 
-      // O tempo médio por token deve ser rápido
+      // The average time per token should be fast
       const avgTimePerToken = executionTime / count;
       console.log(
-        `Tempo médio por token SHA-512: ${avgTimePerToken.toFixed(3)}ms`,
+        `Average time per SHA-512 token: ${avgTimePerToken.toFixed(3)}ms`,
       );
-      expect(avgTimePerToken).toBeLessThan(0.2); // Menos de 0.2ms por token
+      expect(avgTimePerToken).toBeLessThan(0.2); // Less than 0.2ms per token
     });
   });
 
-  describe('Comparação de desempenho entre algoritmos', () => {
-    it('deve comparar o desempenho entre SHA-256 e SHA-512', () => {
+  describe('Performance comparison between algorithms', () => {
+    it('should compare the performance between SHA-256 and SHA-512', () => {
       const count = 5000;
       const value = 'texto para comparação de desempenho';
 
-      // Mede o tempo para SHA-256
+      // Measure the time for SHA-256
       const sha256Time = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           HashUtils.sha256Hash({ value: value + i });
         }
       });
 
-      // Mede o tempo para SHA-512
+      // Measure the time for SHA-512
       const sha512Time = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           HashUtils.sha512Hash({ value: value + i });
@@ -262,31 +262,31 @@ describe('HashUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para ${count} hashes SHA-256: ${sha256Time.toFixed(2)}ms`,
+        `Time for ${count} SHA-256 hashes: ${sha256Time.toFixed(2)}ms`,
       );
       console.log(
-        `Tempo para ${count} hashes SHA-512: ${sha512Time.toFixed(2)}ms`,
+        `Time for ${count} SHA-512 hashes: ${sha512Time.toFixed(2)}ms`,
       );
       console.log(
-        `Proporção SHA-512/SHA-256: ${(sha512Time / sha256Time).toFixed(2)}x`,
+        `SHA-512/SHA-256 ratio: ${(sha512Time / sha256Time).toFixed(2)}x`,
       );
 
-      // SHA-512 deve ser um pouco mais lento que SHA-256
+      // SHA-512 should be slightly slower than SHA-256
       expect(sha512Time).toBeGreaterThan(sha256Time * 0.8);
     });
 
-    it('deve comparar o desempenho entre bcrypt e SHA', () => {
-      const count = 100; // Número menor para bcrypt
+    it('should compare the performance between bcrypt and SHA', () => {
+      const count = 100; // Smaller number for bcrypt
       const value = 'texto para comparação de desempenho';
 
-      // Mede o tempo para bcrypt
+      // Measure the time for bcrypt
       const bcryptTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           HashUtils.bcryptHash({ value: value + i, saltRounds: 8 });
         }
       });
 
-      // Mede o tempo para SHA-256
+      // Measure the time for SHA-256
       const shaTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           HashUtils.sha256Hash({ value: value + i });
@@ -294,16 +294,16 @@ describe('HashUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para ${count} hashes bcrypt: ${bcryptTime.toFixed(2)}ms`,
+        `Time for ${count} bcrypt hashes: ${bcryptTime.toFixed(2)}ms`,
       );
       console.log(
-        `Tempo para ${count} hashes SHA-256: ${shaTime.toFixed(2)}ms`,
+        `Time for ${count} SHA-256 hashes: ${shaTime.toFixed(2)}ms`,
       );
       console.log(
-        `bcrypt é aproximadamente ${(bcryptTime / shaTime).toFixed(2)}x mais lento que SHA-256`,
+        `bcrypt is approximately ${(bcryptTime / shaTime).toFixed(2)}x slower than SHA-256`,
       );
 
-      // bcrypt deve ser significativamente mais lento que SHA-256 (por design)
+      // bcrypt should be significantly slower than SHA-256 (by design)
       expect(bcryptTime).toBeGreaterThan(shaTime * 10);
     });
   });

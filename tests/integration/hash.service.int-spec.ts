@@ -1,48 +1,48 @@
 import { HashUtils } from '../../src/services/hash.service';
 
 /**
- * Testes de integração para a classe HashUtils.
- * Estes testes verificam o comportamento da classe em cenários mais complexos
- * e com interações entre diferentes métodos.
+ * Integration tests for the HashUtils class.
+ * These tests verify the behavior of the class in more complex scenarios
+ * and with interactions between different methods.
  */
-describe('HashUtils - Testes de Integração', () => {
-  describe('Fluxo de autenticação', () => {
-    it('deve criar um hash bcrypt e validar corretamente', () => {
-      // Simula um fluxo de registro e login
-      const senha = 'MinhaS3nhaF0rte!';
+describe('HashUtils - Integration Tests', () => {
+  describe('Authentication flow', () => {
+    it('should create a bcrypt hash and validate correctly', () => {
+      // Simulates a registration and login flow
+      const password = 'MinhaS3nhaF0rte!';
 
-      // Registro: gera hash da senha
-      const hashSenha = HashUtils.bcryptHash({ value: senha, saltRounds: 10 });
+      // Registration: generates the password hash
+      const passwordHash = HashUtils.bcryptHash({ value: password, saltRounds: 10 });
 
-      // Login: valida a senha
+      // Login: validates the password
       const isValid = HashUtils.bcryptCompare({
-        value: senha,
-        encryptedValue: hashSenha,
+        value: password,
+        encryptedValue: passwordHash,
       });
 
       expect(isValid).toBe(true);
 
-      // Tentativa com senha incorreta
+      // Attempt with an incorrect password
       const isInvalid = HashUtils.bcryptCompare({
         value: 'SenhaErrada',
-        encryptedValue: hashSenha,
+        encryptedValue: passwordHash,
       });
 
       expect(isInvalid).toBe(false);
     });
   });
 
-  describe('Combinação de algoritmos de hash', () => {
-    it('deve combinar SHA-256 e bcrypt para hash em camadas', () => {
+  describe('Combination of hash algorithms', () => {
+    it('should combine SHA-256 and bcrypt for layered hashing', () => {
       const originalValue = 'DadosSensíveis123';
 
-      // Primeira camada: hash SHA-256
+      // First layer: SHA-256 hash
       const sha256Hash = HashUtils.sha256Hash({ value: originalValue });
 
-      // Segunda camada: hash bcrypt do resultado SHA-256
+      // Second layer: bcrypt hash of the SHA-256 result
       const finalHash = HashUtils.bcryptHash({ value: sha256Hash });
 
-      // Verificação: recria o SHA-256 e compara com bcrypt
+      // Verification: recreate the SHA-256 and compare with bcrypt
       const verificationSha256 = HashUtils.sha256Hash({ value: originalValue });
       const isValid = HashUtils.bcryptCompare({
         value: verificationSha256,
@@ -53,73 +53,73 @@ describe('HashUtils - Testes de Integração', () => {
     });
   });
 
-  describe('Verificação de integridade de dados', () => {
-    it('deve verificar a integridade de um objeto JSON usando SHA-512', () => {
-      // Objeto de dados original
+  describe('Data integrity verification', () => {
+    it('should verify the integrity of a JSON object using SHA-512', () => {
+      // Original data object
       const originalData = {
         id: 123,
-        nome: 'Produto Teste',
-        preco: 99.99,
-        disponivel: true,
+        name: 'Produto Teste',
+        price: 99.99,
+        available: true,
       };
 
-      // Gera hash para o objeto original
+      // Generate hash for the original object
       const originalHash = HashUtils.sha512HashJson({ json: originalData });
 
-      // Simula armazenamento e recuperação dos dados
+      // Simulates storing and retrieving the data
       const retrievedData = { ...originalData };
 
-      // Verifica se os dados não foram alterados
+      // Verifies that the data was not altered
       const retrievedHash = HashUtils.sha512HashJson({ json: retrievedData });
       expect(retrievedHash).toBe(originalHash);
 
-      // Simula uma alteração nos dados
-      retrievedData.preco = 89.99;
+      // Simulates a change in the data
+      retrievedData.price = 89.99;
 
-      // Verifica que o hash é diferente após a alteração
+      // Verifies that the hash is different after the change
       const modifiedHash = HashUtils.sha512HashJson({ json: retrievedData });
       expect(modifiedHash).not.toBe(originalHash);
     });
   });
 
-  describe('Geração de tokens de autenticação', () => {
-    it('deve gerar e validar tokens de autenticação', () => {
-      // Gera um token aleatório
+  describe('Authentication token generation', () => {
+    it('should generate and validate authentication tokens', () => {
+      // Generates a random token
       const token = HashUtils.sha256GenerateToken({ length: 32 });
 
-      // Simula armazenamento do hash do token
+      // Simulates storing the token hash
       const tokenHash = HashUtils.sha256Hash({ value: token });
 
-      // Simula validação do token
-      const receivedToken = token; // Em um caso real, isso viria do cliente
+      // Simulates token validation
+      const receivedToken = token; // In a real case, this would come from the client
       const receivedTokenHash = HashUtils.sha256Hash({ value: receivedToken });
 
-      // Verifica se o hash do token recebido corresponde ao hash armazenado
+      // Verifies that the hash of the received token matches the stored hash
       expect(receivedTokenHash).toBe(tokenHash);
 
-      // Simula um token inválido
+      // Simulates an invalid token
       const invalidToken = token.substring(0, token.length - 1) + 'X';
       const invalidTokenHash = HashUtils.sha256Hash({ value: invalidToken });
 
-      // Verifica que o hash do token inválido não corresponde
+      // Verifies that the hash of the invalid token does not match
       expect(invalidTokenHash).not.toBe(tokenHash);
     });
   });
 
-  describe('Comparação entre algoritmos de hash', () => {
-    it('deve demonstrar a diferença entre SHA-256 e SHA-512', () => {
+  describe('Comparison between hash algorithms', () => {
+    it('should demonstrate the difference between SHA-256 and SHA-512', () => {
       const testValue = 'TextoParaComparaçãoDeHashes';
 
-      // Gera hashes com diferentes algoritmos
+      // Generates hashes with different algorithms
       const sha256Result = HashUtils.sha256Hash({ value: testValue });
       const sha512Result = HashUtils.sha512Hash({ value: testValue });
 
-      // Verifica que os resultados são diferentes
+      // Verifies that the results are different
       expect(sha256Result).not.toBe(sha512Result);
 
-      // Verifica os comprimentos corretos
-      expect(sha256Result).toHaveLength(64); // 256 bits = 64 caracteres hex
-      expect(sha512Result).toHaveLength(128); // 512 bits = 128 caracteres hex
+      // Verifies the correct lengths
+      expect(sha256Result).toHaveLength(64); // 256 bits = 64 hex characters
+      expect(sha512Result).toHaveLength(128); // 512 bits = 128 hex characters
     });
   });
 });

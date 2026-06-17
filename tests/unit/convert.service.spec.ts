@@ -1,11 +1,11 @@
 import { ConvertUtils } from '../../src/services/convert.service';
 
 /**
- * Testes unitários para a classe ConvertUtils.
+ * Unit tests for the ConvertUtils class.
  */
 describe('ConvertUtils', () => {
   describe('space', () => {
-    it('deve converter metros para quilômetros corretamente', () => {
+    it('should convert meters to kilometers correctly', () => {
       const result = ConvertUtils.space({
         value: 1000,
         fromType: 'meters',
@@ -14,7 +14,7 @@ describe('ConvertUtils', () => {
       expect(result).toBe(1);
     });
 
-    it('deve converter quilômetros para metros corretamente', () => {
+    it('should convert kilometers to meters correctly', () => {
       const result = ConvertUtils.space({
         value: 1,
         fromType: 'kilometers',
@@ -23,7 +23,7 @@ describe('ConvertUtils', () => {
       expect(result).toBe(1000);
     });
 
-    it('deve converter metros para milhas corretamente', () => {
+    it('should convert meters to miles correctly', () => {
       const result = ConvertUtils.space({
         value: 1609.344,
         fromType: 'meters',
@@ -32,7 +32,7 @@ describe('ConvertUtils', () => {
       expect(result).toBeCloseTo(1, 5);
     });
 
-    it('deve converter pés para metros corretamente', () => {
+    it('should convert feet to meters correctly', () => {
       const result = ConvertUtils.space({
         value: 3.28084,
         fromType: 'feet',
@@ -43,7 +43,7 @@ describe('ConvertUtils', () => {
   });
 
   describe('weight', () => {
-    it('deve converter quilogramas para libras corretamente', () => {
+    it('should convert kilograms to pounds correctly', () => {
       const result = ConvertUtils.weight({
         value: 1,
         fromType: 'kilograms',
@@ -52,7 +52,7 @@ describe('ConvertUtils', () => {
       expect(result).toBeCloseTo(2.20462, 5);
     });
 
-    it('deve converter libras para quilogramas corretamente', () => {
+    it('should convert pounds to kilograms correctly', () => {
       const result = ConvertUtils.weight({
         value: 2.20462,
         fromType: 'pounds',
@@ -61,7 +61,7 @@ describe('ConvertUtils', () => {
       expect(result).toBeCloseTo(1, 5);
     });
 
-    it('deve converter quilogramas para gramas corretamente', () => {
+    it('should convert kilograms to grams correctly', () => {
       const result = ConvertUtils.weight({
         value: 1,
         fromType: 'kilograms',
@@ -70,7 +70,7 @@ describe('ConvertUtils', () => {
       expect(result).toBe(1000);
     });
 
-    it('deve converter onças para gramas corretamente', () => {
+    it('should convert ounces to grams correctly', () => {
       const result = ConvertUtils.weight({
         value: 1,
         fromType: 'ounces',
@@ -81,7 +81,7 @@ describe('ConvertUtils', () => {
   });
 
   describe('volume', () => {
-    it('deve converter litros para galões corretamente', () => {
+    it('should convert liters to gallons correctly', () => {
       const result = ConvertUtils.volume({
         value: 1,
         fromType: 'liters',
@@ -90,7 +90,7 @@ describe('ConvertUtils', () => {
       expect(result).toBeCloseTo(0.264172, 6);
     });
 
-    it('deve converter galões para litros corretamente', () => {
+    it('should convert gallons to liters correctly', () => {
       const result = ConvertUtils.volume({
         value: 1,
         fromType: 'gallons',
@@ -99,7 +99,7 @@ describe('ConvertUtils', () => {
       expect(result).toBeCloseTo(3.78541, 5);
     });
 
-    it('deve converter litros para mililitros corretamente', () => {
+    it('should convert liters to milliliters correctly', () => {
       const result = ConvertUtils.volume({
         value: 1,
         fromType: 'liters',
@@ -108,7 +108,7 @@ describe('ConvertUtils', () => {
       expect(result).toBe(1000);
     });
 
-    it('deve converter metros cúbicos para litros corretamente', () => {
+    it('should convert cubic meters to liters correctly', () => {
       const result = ConvertUtils.volume({
         value: 1,
         fromType: 'cubicMeters',
@@ -119,7 +119,7 @@ describe('ConvertUtils', () => {
   });
 
   describe('value', () => {
-    it('deve converter string para number corretamente', () => {
+    it('should convert string to number correctly', () => {
       const result = ConvertUtils.value({
         value: '42.5',
         toType: 'number',
@@ -127,7 +127,7 @@ describe('ConvertUtils', () => {
       expect(result).toBe(42.5);
     });
 
-    it('deve converter string para integer corretamente', () => {
+    it('should convert string to integer correctly', () => {
       const result = ConvertUtils.value({
         value: '42.5',
         toType: 'integer',
@@ -135,7 +135,31 @@ describe('ConvertUtils', () => {
       expect(result).toBe(42);
     });
 
-    it('deve converter number para string corretamente', () => {
+    it('should convert number to integer by truncating', () => {
+      expect(ConvertUtils.value({ value: 42.9, toType: 'integer' })).toBe(42);
+      expect(ConvertUtils.value({ value: -42.9, toType: 'integer' })).toBe(-42);
+    });
+
+    it('should return null when converting null/undefined to string', () => {
+      expect(ConvertUtils.value({ value: null, toType: 'string' })).toBeNull();
+      expect(
+        ConvertUtils.value({ value: undefined, toType: 'string' }),
+      ).toBeNull();
+    });
+
+    it('should throw when converting a value above the Roman range', () => {
+      expect(() => {
+        ConvertUtils.value({ value: 4000, toType: 'roman' });
+      }).toThrow('classic Roman numeral range');
+    });
+
+    it('should convert the maximum Roman value (3999) correctly', () => {
+      expect(ConvertUtils.value({ value: 3999, toType: 'roman' })).toBe(
+        'MMMCMXCIX',
+      );
+    });
+
+    it('should convert number to string correctly', () => {
       const result = ConvertUtils.value({
         value: 42.5,
         toType: 'string',
@@ -143,7 +167,7 @@ describe('ConvertUtils', () => {
       expect(result).toBe('42.5');
     });
 
-    it('deve converter number para bigint corretamente', () => {
+    it('should convert number to bigint correctly', () => {
       const result = ConvertUtils.value({
         value: 42.5,
         toType: 'bigint',
@@ -151,7 +175,7 @@ describe('ConvertUtils', () => {
       expect(result).toBe(42n);
     });
 
-    it('deve converter string para bigint corretamente', () => {
+    it('should convert string to bigint correctly', () => {
       const result = ConvertUtils.value({
         value: '42',
         toType: 'bigint',
@@ -159,7 +183,7 @@ describe('ConvertUtils', () => {
       expect(result).toBe(42n);
     });
 
-    it('deve converter number para roman corretamente', () => {
+    it('should convert number to roman correctly', () => {
       const result = ConvertUtils.value({
         value: 42,
         toType: 'roman',
@@ -167,7 +191,7 @@ describe('ConvertUtils', () => {
       expect(result).toBe('XLII');
     });
 
-    it('deve retornar null para conversão inválida de string para number', () => {
+    it('should return null for an invalid string to number conversion', () => {
       const result = ConvertUtils.value({
         value: 'abc',
         toType: 'number',
@@ -175,7 +199,7 @@ describe('ConvertUtils', () => {
       expect(result).toBeNull();
     });
 
-    it('deve retornar null para conversão inválida de string para integer', () => {
+    it('should return null for an invalid string to integer conversion', () => {
       const result = ConvertUtils.value({
         value: 'abc',
         toType: 'integer',
@@ -183,7 +207,7 @@ describe('ConvertUtils', () => {
       expect(result).toBeNull();
     });
 
-    it('deve retornar null para conversão inválida de string para bigint', () => {
+    it('should return null for an invalid string to bigint conversion', () => {
       const result = ConvertUtils.value({
         value: 'abc',
         toType: 'bigint',
@@ -191,7 +215,7 @@ describe('ConvertUtils', () => {
       expect(result).toBeNull();
     });
 
-    it('deve lançar erro ao converter número negativo para roman', () => {
+    it('should throw an error when converting a negative number to roman', () => {
       expect(() => {
         ConvertUtils.value({
           value: -1,
@@ -200,7 +224,7 @@ describe('ConvertUtils', () => {
       }).toThrow('Value must be a positive integer');
     });
 
-    it('deve lançar erro ao converter número decimal para roman', () => {
+    it('should throw an error when converting a decimal number to roman', () => {
       expect(() => {
         ConvertUtils.value({
           value: 1.5,
@@ -209,13 +233,21 @@ describe('ConvertUtils', () => {
       }).toThrow('Value must be a positive integer');
     });
 
-    it('deve retornar o mesmo valor quando o tipo de entrada já é o tipo desejado', () => {
+    it('should return the same value when the input type is already the desired type', () => {
       const value = 42;
       const result = ConvertUtils.value({
         value,
         toType: 'number',
       });
       expect(result).toBe(value);
+    });
+
+    it('should return null when the source type cannot be converted to the target', () => {
+      // A boolean does not match any of the integer/number/bigint guarded
+      // branches, so the method falls through to the final `return null`.
+      expect(ConvertUtils.value({ value: true, toType: 'integer' })).toBeNull();
+      expect(ConvertUtils.value({ value: true, toType: 'number' })).toBeNull();
+      expect(ConvertUtils.value({ value: true, toType: 'bigint' })).toBeNull();
     });
   });
 });

@@ -22,7 +22,15 @@ export interface HttpServiceOptions {
 }
 
 /**
- * HTTP service for making HTTP requests
+ * HTTP service for making HTTP requests.
+ *
+ * @remarks
+ * All request methods RESOLVE with the response for every completed request,
+ * including non-2xx status codes. They do NOT throw or reject based on the HTTP
+ * status code — callers must inspect `response.status` to detect HTTP errors.
+ * A rejected promise indicates only a transport-level failure (connection error
+ * or timeout). This is consistent across both the `axios` and native `http`
+ * clients. The native client additionally does not follow redirects.
  */
 export class HttpService {
   private static instance: HttpService;

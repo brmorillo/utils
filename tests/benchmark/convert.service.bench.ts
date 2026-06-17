@@ -1,20 +1,20 @@
 import { ConvertUtils } from '../../src/services/convert.service';
 
 /**
- * Testes de benchmark para a classe ConvertUtils.
- * Estes testes verificam o desempenho da classe em operações de alta frequência.
+ * Benchmark tests for the ConvertUtils class.
+ * These tests check the class performance in high-frequency operations.
  */
-describe('ConvertUtils - Testes de Benchmark', () => {
-  // Função auxiliar para medir o tempo de execução
+describe('ConvertUtils - Benchmark Tests', () => {
+  // Helper function to measure execution time
   const measureExecutionTime = (fn: () => void): number => {
     const start = process.hrtime.bigint();
     fn();
     const end = process.hrtime.bigint();
-    return Number(end - start) / 1_000_000; // Converte para milissegundos
+    return Number(end - start) / 1_000_000; // Convert to milliseconds
   };
 
-  describe('Conversão de espaço em massa', () => {
-    it('deve converter 100.000 valores de metros para quilômetros em tempo razoável', () => {
+  describe('Space conversion in bulk', () => {
+    it('should convert 100,000 values from meters to kilometers in a reasonable time', () => {
       const count = 100000;
 
       const executionTime = measureExecutionTime(() => {
@@ -28,17 +28,17 @@ describe('ConvertUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para converter ${count} valores de metros para quilômetros: ${executionTime.toFixed(2)}ms`,
+        `Time to convert ${count} values from meters to kilometers: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por conversão deve ser menor que 0.001ms
+      // The average time per conversion should be less than 0.001ms
       const avgTimePerConversion = executionTime / count;
       expect(avgTimePerConversion).toBeLessThan(0.001);
     });
   });
 
-  describe('Conversão de peso em massa', () => {
-    it('deve converter 100.000 valores de quilogramas para libras em tempo razoável', () => {
+  describe('Weight conversion in bulk', () => {
+    it('should convert 100,000 values from kilograms to pounds in a reasonable time', () => {
       const count = 100000;
 
       const executionTime = measureExecutionTime(() => {
@@ -52,17 +52,17 @@ describe('ConvertUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para converter ${count} valores de quilogramas para libras: ${executionTime.toFixed(2)}ms`,
+        `Time to convert ${count} values from kilograms to pounds: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por conversão deve ser menor que 0.001ms
+      // The average time per conversion should be less than 0.001ms
       const avgTimePerConversion = executionTime / count;
       expect(avgTimePerConversion).toBeLessThan(0.001);
     });
   });
 
-  describe('Conversão de volume em massa', () => {
-    it('deve converter 100.000 valores de litros para galões em tempo razoável', () => {
+  describe('Volume conversion in bulk', () => {
+    it('should convert 100,000 values from liters to gallons in a reasonable time', () => {
       const count = 100000;
 
       const executionTime = measureExecutionTime(() => {
@@ -76,17 +76,17 @@ describe('ConvertUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para converter ${count} valores de litros para galões: ${executionTime.toFixed(2)}ms`,
+        `Time to convert ${count} values from liters to gallons: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por conversão deve ser menor que 0.001ms
+      // The average time per conversion should be less than 0.001ms
       const avgTimePerConversion = executionTime / count;
       expect(avgTimePerConversion).toBeLessThan(0.001);
     });
   });
 
-  describe('Conversão de valor em massa', () => {
-    it('deve converter 100.000 valores de string para number em tempo razoável', () => {
+  describe('Value conversion in bulk', () => {
+    it('should convert 100,000 values from string to number in a reasonable time', () => {
       const count = 100000;
 
       const executionTime = measureExecutionTime(() => {
@@ -99,15 +99,15 @@ describe('ConvertUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para converter ${count} valores de string para number: ${executionTime.toFixed(2)}ms`,
+        `Time to convert ${count} values from string to number: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por conversão deve ser menor que 0.001ms
+      // The average time per conversion should be less than 0.001ms
       const avgTimePerConversion = executionTime / count;
       expect(avgTimePerConversion).toBeLessThan(0.001);
     });
 
-    it('deve converter 10.000 valores de number para roman em tempo razoável', () => {
+    it('should convert 10,000 values from number to roman in a reasonable time', () => {
       const count = 10000;
 
       const executionTime = measureExecutionTime(() => {
@@ -120,44 +120,44 @@ describe('ConvertUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para converter ${count} valores de number para roman: ${executionTime.toFixed(2)}ms`,
+        `Time to convert ${count} values from number to roman: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por conversão deve ser menor que 0.05ms
+      // The average time per conversion should be less than 0.05ms
       const avgTimePerConversion = executionTime / count;
       expect(avgTimePerConversion).toBeLessThan(0.05);
     });
   });
 
-  describe('Fluxo completo em massa', () => {
-    it('deve executar um fluxo completo de conversões para 10.000 valores em tempo razoável', () => {
+  describe('Complete flow in bulk', () => {
+    it('should run a complete conversion flow for 10,000 values in a reasonable time', () => {
       const count = 10000;
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 1; i <= count; i++) {
-          // Converter metros para quilômetros
+          // Convert meters to kilometers
           const kmValue = ConvertUtils.space({
             value: i,
             fromType: 'meters',
             toType: 'kilometers',
           });
 
-          // Converter quilômetros para string
+          // Convert kilometers to string
           const strValue = ConvertUtils.value({
             value: kmValue,
             toType: 'string',
           });
 
-          // Converter string de volta para number
+          // Convert string back to number
           const numValue = ConvertUtils.value({
             value: strValue,
             toType: 'number',
           });
 
-          // Converter number para litros (simulando uma conversão entre sistemas)
-          const literValue = numValue;
+          // Convert number to liters (simulating a conversion between systems)
+          const literValue = numValue as number;
 
-          // Converter litros para galões
+          // Convert liters to gallons
           ConvertUtils.volume({
             value: literValue,
             fromType: 'liters',
@@ -167,10 +167,10 @@ describe('ConvertUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para executar fluxo completo para ${count} valores: ${executionTime.toFixed(2)}ms`,
+        `Time to run complete flow for ${count} values: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por fluxo completo deve ser menor que 0.05ms
+      // The average time per complete flow should be less than 0.05ms
       const avgTimePerFlow = executionTime / count;
       expect(avgTimePerFlow).toBeLessThan(0.05);
     });

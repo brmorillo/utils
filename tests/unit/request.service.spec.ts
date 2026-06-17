@@ -1,12 +1,12 @@
 import { RequestUtils } from '../../src/services/request.service';
 
 /**
- * Testes unitários para a classe RequestUtils.
- * Estes testes verificam o comportamento de cada método individualmente.
+ * Unit tests for the RequestUtils class.
+ * These tests verify the behavior of each method individually.
  */
-describe('RequestUtils - Testes Unitários', () => {
+describe('RequestUtils - Unit Tests', () => {
   describe('extractRequestData', () => {
-    it('deve extrair dados de um objeto de requisição completo', () => {
+    it('should extract data from a complete request object', () => {
       const mockRequest = {
         headers: {
           'user-agent':
@@ -33,10 +33,10 @@ describe('RequestUtils - Testes Unitários', () => {
       expect(result.host).toBe('api.example.com');
       expect(result.browser).toBe('Chrome');
       expect(result.os).toBe('Windows');
-      expect(result.device).toBeUndefined(); // Desktop não é identificado como device específico
+      expect(result.device).toBeUndefined(); // Desktop is not identified as a specific device
     });
 
-    it('deve lidar com objeto de requisição sem headers', () => {
+    it('should handle a request object without headers', () => {
       const mockRequest = {};
 
       const result = RequestUtils.extractRequestData({ request: mockRequest });
@@ -53,7 +53,7 @@ describe('RequestUtils - Testes Unitários', () => {
       expect(result.device).toBeUndefined();
     });
 
-    it('deve lidar com headers vazios', () => {
+    it('should handle empty headers', () => {
       const mockRequest = {
         headers: {},
       };
@@ -72,7 +72,7 @@ describe('RequestUtils - Testes Unitários', () => {
       expect(result.device).toBeUndefined();
     });
 
-    it('deve extrair corretamente o primeiro IP de x-forwarded-for com múltiplos IPs', () => {
+    it('should correctly extract the first IP from x-forwarded-for with multiple IPs', () => {
       const mockRequest = {
         headers: {
           'x-forwarded-for': '192.168.1.1, 10.0.0.1, 172.16.0.1',
@@ -84,7 +84,7 @@ describe('RequestUtils - Testes Unitários', () => {
       expect(result.xForwardedFor).toBe('192.168.1.1');
     });
 
-    it('deve identificar corretamente o navegador e sistema operacional de um dispositivo móvel', () => {
+    it('should correctly identify the browser and operating system of a mobile device', () => {
       const mockRequest = {
         headers: {
           'user-agent':
@@ -99,7 +99,7 @@ describe('RequestUtils - Testes Unitários', () => {
       expect(result.device).toBe('mobile');
     });
 
-    it('deve identificar corretamente o navegador e sistema operacional de um tablet', () => {
+    it('should correctly identify the browser and operating system of a tablet', () => {
       const mockRequest = {
         headers: {
           'user-agent':
@@ -114,7 +114,7 @@ describe('RequestUtils - Testes Unitários', () => {
       expect(result.device).toBe('tablet');
     });
 
-    it('deve lidar com user-agent desconhecido', () => {
+    it('should handle an unknown user-agent', () => {
       const mockRequest = {
         headers: {
           'user-agent': 'Unknown/1.0',
@@ -127,6 +127,40 @@ describe('RequestUtils - Testes Unitários', () => {
       expect(result.browser).toBeUndefined();
       expect(result.os).toBeUndefined();
       expect(result.device).toBeUndefined();
+    });
+
+    it('should normalize array-valued headers to the first entry', () => {
+      const mockRequest = {
+        headers: {
+          'user-agent': ['Mozilla/5.0', 'second-value'],
+          'x-forwarded-for': ['203.0.113.5, 10.0.0.1', '198.51.100.2'],
+          'x-real-ip': ['203.0.113.5'],
+          host: ['api.example.com'],
+        },
+      };
+
+      const result = RequestUtils.extractRequestData({ request: mockRequest });
+
+      // Should not throw (no .split on an array) and should pick the first IP.
+      expect(result.xForwardedFor).toBe('203.0.113.5');
+      expect(result.xRealIp).toBe('203.0.113.5');
+      expect(result.host).toBe('api.example.com');
+      expect(result.userAgent).toBe('Mozilla/5.0');
+    });
+
+    it('should throw a ValidationError when request is null', () => {
+      expect(() =>
+        RequestUtils.extractRequestData({ request: null as any }),
+      ).toThrow(/required/);
+    });
+
+    it('should throw a ValidationError when request is undefined', () => {
+      try {
+        RequestUtils.extractRequestData({ request: undefined as any });
+        throw new Error('expected extractRequestData to throw');
+      } catch (err) {
+        expect((err as { code?: string }).code).toBe('VALIDATION_ERROR');
+      }
     });
   });
 });

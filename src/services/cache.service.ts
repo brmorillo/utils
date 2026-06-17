@@ -1,3 +1,30 @@
+import { ValidationError } from '../errors';
+
+/**
+ * Validates ttl / maxSize cache options.
+ * @param ttl Default time-to-live in milliseconds (0 = no expiration).
+ * @param maxSize Maximum number of items (0 = unlimited).
+ * @throws {ValidationError} If ttl or maxSize is negative, NaN or non-numeric.
+ */
+function validateCacheOptions(ttl: number, maxSize: number): void {
+  if (typeof ttl !== 'number' || Number.isNaN(ttl) || ttl < 0) {
+    throw new ValidationError(
+      'ttl must be a non-negative number',
+      'ttl',
+      'non-negative number',
+      ttl,
+    );
+  }
+  if (typeof maxSize !== 'number' || Number.isNaN(maxSize) || maxSize < 0) {
+    throw new ValidationError(
+      'maxSize must be a non-negative number',
+      'maxSize',
+      'non-negative number',
+      maxSize,
+    );
+  }
+}
+
 export class CacheUtils {
   /**
    * Creates a simple in-memory cache with optional TTL.
@@ -19,11 +46,13 @@ export class CacheUtils {
     ttl?: number;
     maxSize?: number;
   } = {}) {
-    const cache = new Map<
-      string,
-      { value: any; expiry: number | null; lastAccessed: number }
-    >();
-    const accessQueue: string[] = [];
+    validateCacheOptions(ttl, maxSize);
+
+    // The Map's own insertion order is the source of truth for recency: the
+    // first key is the least-recently-used and the last key is the most
+    // recent. On get() we delete+set to move the entry to the tail (O(1)),
+    // and we evict from the head via keys().next().value.
+    const cache = new Map<string, { value: any; expiry: number | null }>();
 
     return {
       /**
@@ -41,8 +70,9 @@ export class CacheUtils {
           return undefined;
         }
 
-        // Update last accessed time for LRU
-        item.lastAccessed = now;
+        // Move to the tail to mark it as most-recently-used (O(1)).
+        cache.delete(key);
+        cache.set(key, item);
         return item.value;
       },
 
@@ -50,42 +80,25 @@ export class CacheUtils {
        * Sets a value in the cache.
        * @param {string} key - The key to set.
        * @param {any} value - The value to cache.
-       * @param {number} [itemTtl] - Optional TTL for this specific item.
+       * @param {number} [itemTtl] - Optional TTL for this specific item (0 = no expiry).
        * @returns {boolean} True if the item was set successfully.
        */
       set(key: string, value: any, itemTtl?: number): boolean {
         const now = Date.now();
-        const expiry = itemTtl || ttl ? now + (itemTtl || ttl) : null;
+        const effectiveTtl = itemTtl ?? ttl;
+        const expiry = effectiveTtl ? now + effectiveTtl : null;
 
-        // If maxSize is reached, remove least recently used item
+        // If maxSize is reached, remove least recently used item (the head).
         if (maxSize > 0 && cache.size >= maxSize && !cache.has(key)) {
-          let lruKey: string | undefined;
-          let lruTime = Infinity;
-
-          for (const [k, item] of cache.entries()) {
-            if (item.lastAccessed < lruTime) {
-              lruKey = k;
-              lruTime = item.lastAccessed;
-            }
-          }
-
-          if (lruKey) {
+          const lruKey = cache.keys().next().value;
+          if (lruKey !== undefined) {
             cache.delete(lruKey);
-            const index = accessQueue.indexOf(lruKey);
-            if (index !== -1) {
-              accessQueue.splice(index, 1);
-            }
           }
         }
 
-        cache.set(key, { value, expiry, lastAccessed: now });
-
-        // Update access queue
-        const index = accessQueue.indexOf(key);
-        if (index !== -1) {
-          accessQueue.splice(index, 1);
-        }
-        accessQueue.push(key);
+        // Delete first so re-insertion moves the key to the tail (most recent).
+        cache.delete(key);
+        cache.set(key, { value, expiry });
 
         return true;
       },
@@ -114,12 +127,7 @@ export class CacheUtils {
        * @returns {boolean} True if the key was deleted, false if it didn't exist.
        */
       delete(key: string): boolean {
-        const result = cache.delete(key);
-        const index = accessQueue.indexOf(key);
-        if (index !== -1) {
-          accessQueue.splice(index, 1);
-        }
-        return result;
+        return cache.delete(key);
       },
 
       /**
@@ -127,7 +135,6 @@ export class CacheUtils {
        */
       clear(): void {
         cache.clear();
-        accessQueue.length = 0;
       },
 
       /**
@@ -157,10 +164,6 @@ export class CacheUtils {
         for (const [key, item] of cache.entries()) {
           if (item.expiry !== null && now > item.expiry) {
             cache.delete(key);
-            const index = accessQueue.indexOf(key);
-            if (index !== -1) {
-              accessQueue.splice(index, 1);
-            }
             count++;
           }
         }
@@ -189,6 +192,8 @@ export class CacheUtils {
     ttl?: number;
     maxSize?: number;
   } = {}) {
+    validateCacheOptions(ttl, maxSize);
+
     const cache = new Map<
       string,
       { value: any; expiry: number | null; frequency: number }
@@ -224,7 +229,8 @@ export class CacheUtils {
        */
       set(key: string, value: any, itemTtl?: number): boolean {
         const now = Date.now();
-        const expiry = itemTtl || ttl ? now + (itemTtl || ttl) : null;
+        const effectiveTtl = itemTtl ?? ttl;
+        const expiry = effectiveTtl ? now + effectiveTtl : null;
 
         // If maxSize is reached, remove least frequently used item
         if (maxSize > 0 && cache.size >= maxSize && !cache.has(key)) {
@@ -350,6 +356,8 @@ export class CacheUtils {
     ttl?: number;
     maxSize?: number;
   } = {}) {
+    validateCacheOptions(ttl, maxSize);
+
     const cache = new Map<string, { value: any; expiry: number | null }>();
     const insertionOrder: string[] = [];
 
@@ -385,7 +393,8 @@ export class CacheUtils {
        */
       set(key: string, value: any, itemTtl?: number): boolean {
         const now = Date.now();
-        const expiry = itemTtl || ttl ? now + (itemTtl || ttl) : null;
+        const effectiveTtl = itemTtl ?? ttl;
+        const expiry = effectiveTtl ? now + effectiveTtl : null;
 
         // If maxSize is reached, remove oldest item (FIFO)
         if (maxSize > 0 && cache.size >= maxSize && !cache.has(key)) {
@@ -396,16 +405,13 @@ export class CacheUtils {
           }
         }
 
-        // If key already exists, update its position in the insertion order
-        if (cache.has(key)) {
-          const index = insertionOrder.indexOf(key);
-          if (index !== -1) {
-            insertionOrder.splice(index, 1);
-          }
-        }
-
+        // True FIFO: updating an existing key keeps its original insertion
+        // position, so only record the order for genuinely new keys.
+        const isNew = !cache.has(key);
         cache.set(key, { value, expiry });
-        insertionOrder.push(key);
+        if (isNew) {
+          insertionOrder.push(key);
+        }
         return true;
       },
 

@@ -3,6 +3,7 @@ import {
   RequestOptions,
   RequestResponse,
 } from '../interfaces/request.interface';
+import { HttpError } from '../errors';
 
 /**
  * Axios HTTP client implementation
@@ -15,8 +16,12 @@ export class AxiosClient implements IHttpClient {
       // Dynamic import to avoid requiring axios as a direct dependency
       this.axios = require('axios');
     } catch (error) {
-      throw new Error(
+      throw new HttpError(
         'Axios is not installed. Please install axios to use AxiosClient.',
+        500,
+        'CLIENT_NOT_INSTALLED',
+        undefined,
+        { cause: error },
       );
     }
   }

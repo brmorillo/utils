@@ -1,27 +1,53 @@
+import { ValidationError } from '../errors';
+
 export class NumberUtils {
   /**
    * Checks if a number is even.
+   *
+   * Only finite integers are considered valid input: a non-integer or non-finite
+   * value (e.g. `NaN`, `Infinity`, `4.5`) throws a {@link ValidationError}.
    * @param {object} params - The parameters for the method.
-   * @param {number} params.value - The number to check.
+   * @param {number} params.value - The integer to check.
    * @returns {boolean} `true` if the number is even, otherwise `false`.
+   * @throws {ValidationError} If `value` is not a finite integer.
    * @example
-   * NumberUtils.isValidEven({ value: 4 }); // true
-   * NumberUtils.isValidEven({ value: 5 }); // false
+   * NumberUtils.isEven({ value: 4 }); // true
+   * NumberUtils.isEven({ value: 5 }); // false
    */
-  public static isValidEven({ value }: { value: number }): boolean {
+  public static isEven({ value }: { value: number }): boolean {
+    if (!Number.isInteger(value)) {
+      throw new ValidationError(
+        `Field 'value' must be a finite integer`,
+        'value',
+        'integer',
+        value,
+      );
+    }
     return value % 2 === 0;
   }
 
   /**
    * Checks if a number is odd.
+   *
+   * Only finite integers are considered valid input: a non-integer or non-finite
+   * value (e.g. `NaN`, `Infinity`, `4.5`) throws a {@link ValidationError}.
    * @param {object} params - The parameters for the method.
-   * @param {number} params.value - The number to check.
+   * @param {number} params.value - The integer to check.
    * @returns {boolean} `true` if the number is odd, otherwise `false`.
+   * @throws {ValidationError} If `value` is not a finite integer.
    * @example
-   * NumberUtils.isValidOdd({ value: 3 }); // true
-   * NumberUtils.isValidOdd({ value: 4 }); // false
+   * NumberUtils.isOdd({ value: 3 }); // true
+   * NumberUtils.isOdd({ value: 4 }); // false
    */
-  public static isValidOdd({ value }: { value: number }): boolean {
+  public static isOdd({ value }: { value: number }): boolean {
+    if (!Number.isInteger(value)) {
+      throw new ValidationError(
+        `Field 'value' must be a finite integer`,
+        'value',
+        'integer',
+        value,
+      );
+    }
     return value % 2 !== 0;
   }
 
@@ -148,7 +174,7 @@ export class NumberUtils {
     decimalPlaces: number;
   }): string {
     if (isNaN(value) || decimalPlaces < 0) {
-      throw new Error(
+      throw new ValidationError(
         `Invalid number or decimal places: ${value}, ${decimalPlaces}`,
       );
     }
@@ -187,7 +213,7 @@ export class NumberUtils {
     max: number;
   }): number {
     if (min > max) {
-      throw new Error(
+      throw new ValidationError(
         `Minimum value ${min} is greater than maximum value ${max}`,
       );
     }
@@ -218,7 +244,7 @@ export class NumberUtils {
     decimals?: number;
   }): number {
     if (min > max) {
-      throw new Error(
+      throw new ValidationError(
         `Minimum value ${min} is greater than maximum value ${max}`,
       );
     }
@@ -228,23 +254,39 @@ export class NumberUtils {
   }
 
   /**
-   * Calculates the factorial of a number.
+   * Calculates the factorial of a non-negative integer.
+   *
+   * Computed iteratively. Negative or non-integer input throws a
+   * {@link ValidationError} rather than returning `0` or recursing infinitely.
    * @param {object} params - The parameters for the method.
-   * @param {number} params.value - The number to calculate the factorial of.
+   * @param {number} params.value - The non-negative integer to calculate the factorial of.
    * @returns {number} The factorial of the number.
+   * @throws {ValidationError} If `value` is negative or not a finite integer.
    * @example
    * NumberUtils.factorial({ value: 5 }); // 120
    * NumberUtils.factorial({ value: 0 }); // 1
    */
   public static factorial({ value }: { value: number }): number {
-    if (value < 0) {
-      return 0;
+    if (!Number.isInteger(value) || value < 0) {
+      throw new ValidationError(
+        `Field 'value' must be a non-negative integer`,
+        'value',
+        'non-negative integer',
+        value,
+      );
     }
-    return value <= 1 ? 1 : value * NumberUtils.factorial({ value: value - 1 });
+    let result = 1;
+    for (let i = 2; i <= value; i++) {
+      result *= i;
+    }
+    return result;
   }
 
   /**
    * Clamps a number within a specified range.
+   *
+   * If `min` is greater than `max`, the two bounds are automatically swapped so
+   * the range is always well-defined.
    * @param {object} params - The parameters for the method.
    * @param {number} params.value - The number to clamp.
    * @param {number} params.min - The minimum value of the range.
@@ -253,6 +295,8 @@ export class NumberUtils {
    * @example
    * NumberUtils.clamp({ value: 15, min: 0, max: 10 }); // 10
    * NumberUtils.clamp({ value: -5, min: 0, max: 10 }); // 0
+   * // Bounds are auto-swapped when min > max:
+   * NumberUtils.clamp({ value: 5, min: 10, max: 0 }); // 5
    */
   public static clamp({
     value,
@@ -271,34 +315,8 @@ export class NumberUtils {
   }
 
   /**
-   * Checks if a number is a prime number.
-   * @param {object} params - The parameters for the method.
-   * @param {number} params.value - The number to check.
-   * @returns {boolean} `true` if the number is prime, otherwise `false`.
-   * @example
-   * NumberUtils.isValidPrime({ value: 7 }); // true
-   * NumberUtils.isValidPrime({ value: 4 }); // false
+   * Primality checking lives in `MathUtils.isPrime`.
+   * `NumberUtils` intentionally does not expose a duplicate prime check.
+   * @see MathUtils.isPrime
    */
-  public static isValidPrime({ value }: { value: number }): boolean {
-    if (value <= 1) return false;
-    if (value <= 3) return true;
-    if (value % 2 === 0 || value % 3 === 0) return false;
-    for (let i = 5; i * i <= value; i += 6) {
-      if (value % i === 0 || value % (i + 2) === 0) return false;
-    }
-    return true;
-  }
-
-  /**
-   * Checks if a number is odd.
-   * @param {object} params - The parameters for the method.
-   * @param {number} params.value - The number to check.
-   * @returns {boolean} `true` if the number is odd, otherwise `false`.
-   * @example
-   * NumberUtils.isOdd({ value: 3 }); // true
-   * NumberUtils.isOdd({ value: 4 }); // false
-   */
-  public static isOdd({ value }: { value: number }): boolean {
-    return value % 2 !== 0;
-  }
 }

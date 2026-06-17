@@ -21,12 +21,12 @@ try {
     util.StringUtils.reverse({ input: 'hello' }),
   );
   console.log(
-    "isValidPalindrome({input: 'radar'}):",
-    util.StringUtils.isValidPalindrome({ input: 'radar' }),
+    "isPalindrome({input: 'radar'}):",
+    util.StringUtils.isPalindrome({ input: 'radar' }),
   );
   console.log(
-    "isValidPalindrome({input: 'hello'}):",
-    util.StringUtils.isValidPalindrome({ input: 'hello' }),
+    "isPalindrome({input: 'hello'}):",
+    util.StringUtils.isPalindrome({ input: 'hello' }),
   );
   console.log(
     "truncate({input: 'This is a long string', maxLength: 10}):",
@@ -59,8 +59,8 @@ try {
 console.log('\n=== TESTING NumberUtils ===');
 try {
   console.log(
-    'isValidEven({value: 4}):',
-    util.NumberUtils.isValidEven({ value: 4 }),
+    'isEven({value: 4}):',
+    util.NumberUtils.isEven({ value: 4 }),
   );
   console.log('isOdd({value: 3}):', util.NumberUtils.isOdd({ value: 3 }));
   console.log(
@@ -184,7 +184,11 @@ try {
   console.log('generateIV():', util.CryptUtils.generateIV());
   const secretKey = '12345678901234567890123456789012'; // 32 bytes
   const iv = util.CryptUtils.generateIV();
-  const encrypted = util.CryptUtils.aesEncrypt('test data', secretKey, iv);
+  const encrypted = util.CryptUtils.aesEncrypt({
+    data: 'test data',
+    secretKey,
+    iv,
+  });
   console.log('aesEncrypt result:', encrypted);
 } catch (error) {
   console.log('Error testing CryptUtils:', error.message);
@@ -195,15 +199,15 @@ console.log('\n=== TESTING HashUtils ===');
 try {
   console.log(
     "sha256Hash('password123'):",
-    util.HashUtils.sha256Hash('password123'),
+    util.HashUtils.sha256Hash({ value: 'password123' }),
   );
   console.log(
     "sha512Hash('password123'):",
-    util.HashUtils.sha512Hash('password123'),
+    util.HashUtils.sha512Hash({ value: 'password123' }),
   );
   console.log(
     'sha256GenerateToken(16):',
-    util.HashUtils.sha256GenerateToken(16),
+    util.HashUtils.sha256GenerateToken({ length: 16 }),
   );
 } catch (error) {
   console.log('Error testing HashUtils:', error.message);
@@ -307,7 +311,10 @@ console.log('\n=== TESTING CuidUtils ===');
 try {
   const cuid = util.CuidUtils.generate();
   console.log('generate():', cuid);
-  console.log('isValid({id: cuid}):', util.CuidUtils.isValid({ id: cuid }));
+  console.log(
+    'isValidCuid({id: cuid}):',
+    util.CuidUtils.isValidCuid({ id: cuid }),
+  );
 } catch (error) {
   console.log('Error testing CuidUtils:', error.message);
 }
@@ -343,106 +350,49 @@ console.log('\n=== TESTING SortUtils ===');
 try {
   console.log(
     'bubbleSort([3, 1, 4, 2, 5]):',
-    util.SortUtils.bubbleSort([3, 1, 4, 2, 5]),
+    util.SortUtils.bubbleSort({ array: [3, 1, 4, 2, 5] }),
   );
   console.log(
     'mergeSort([3, 1, 4, 2, 5]):',
-    util.SortUtils.mergeSort([3, 1, 4, 2, 5]),
+    util.SortUtils.mergeSort({ array: [3, 1, 4, 2, 5] }),
   );
   console.log(
     'quickSort([3, 1, 4, 2, 5]):',
-    util.SortUtils.quickSort([3, 1, 4, 2, 5]),
+    util.SortUtils.quickSort({ array: [3, 1, 4, 2, 5] }),
   );
   console.log(
     'heapSort([3, 1, 4, 2, 5]):',
-    util.SortUtils.heapSort([3, 1, 4, 2, 5]),
+    util.SortUtils.heapSort({ array: [3, 1, 4, 2, 5] }),
   );
 } catch (error) {
   console.log('Error testing SortUtils:', error.message);
 }
 
-// Test Utils (main object)
-console.log('\n=== TESTING Utils (main object) ===');
+// Test a few services together
+console.log('\n=== TESTING combined service usage ===');
 try {
   console.log(
-    "Utils.String.toKebabCase({input: 'Hello World'}):",
-    util.Utils.String.toKebabCase({ input: 'Hello World' }),
+    "StringUtils.toKebabCase({input: 'Hello World'}):",
+    util.StringUtils.toKebabCase({ input: 'Hello World' }),
   );
   console.log(
-    'Utils.Array.removeDuplicates({array: [1, 2, 3, 4, 5, 3, 2]}):',
-    util.Utils.Array.removeDuplicates({ array: [1, 2, 3, 4, 5, 3, 2] }),
+    'ArrayUtils.removeDuplicates({array: [1, 2, 3, 4, 5, 3, 2]}):',
+    util.ArrayUtils.removeDuplicates({ array: [1, 2, 3, 4, 5, 3, 2] }),
   );
   console.log(
-    'Utils.Math.percentage({total: 200, part: 50}):',
-    util.Utils.Math.percentage({ total: 200, part: 50 }),
+    'MathUtils.percentage({total: 200, part: 50}):',
+    util.MathUtils.percentage({ total: 200, part: 50 }),
   );
   console.log(
-    'Utils.Convert.space({value: 1000, fromType: "meters", toType: "kilometers"}):',
-    util.Utils.Convert.space({
+    'ConvertUtils.space({value: 1000, fromType: "meters", toType: "kilometers"}):',
+    util.ConvertUtils.space({
       value: 1000,
       fromType: 'meters',
       toType: 'kilometers',
     }),
   );
 } catch (error) {
-  console.log('Error testing Utils:', error.message);
-}
-
-// Test normalize utilities
-console.log('\n=== TESTING normalize utilities ===');
-try {
-  console.log('normalizeNumber(-0):', util.normalizeNumber(-0));
-  console.log(
-    'normalizeValue({x: -0, y: 5}):',
-    util.normalizeValue({ x: -0, y: 5 }),
-  );
-  const proxy = util.createNormalizedProxy({ x: -0, y: 5 });
-  console.log('createNormalizedProxy({x: -0, y: 5}).x:', proxy.x);
-} catch (error) {
-  console.log('Error testing normalize utilities:', error.message);
-}
-
-console.log('\n=== TESTS COMPLETED SUCCESSFULLY ===');
-
-// Test Utils (main object)
-console.log('\n=== TESTING Utils (main object) ===');
-try {
-  console.log(
-    "Utils.String.toKebabCase({input: 'Hello World'}):",
-    util.Utils.String.toKebabCase({ input: 'Hello World' }),
-  );
-  console.log(
-    'Utils.Array.removeDuplicates({array: [1, 2, 3, 4, 5, 3, 2]}):',
-    util.Utils.Array.removeDuplicates({ array: [1, 2, 3, 4, 5, 3, 2] }),
-  );
-  console.log(
-    'Utils.Math.percentage({total: 200, part: 50}):',
-    util.Utils.Math.percentage({ total: 200, part: 50 }),
-  );
-  console.log(
-    'Utils.Convert.space({value: 1000, fromType: "meters", toType: "kilometers"}):',
-    util.Utils.Convert.space({
-      value: 1000,
-      fromType: 'meters',
-      toType: 'kilometers',
-    }),
-  );
-} catch (error) {
-  console.log('Error testing Utils:', error.message);
-}
-
-// Test normalize utilities
-console.log('\n=== TESTING normalize utilities ===');
-try {
-  console.log('normalizeNumber(-0):', util.normalizeNumber(-0));
-  console.log(
-    'normalizeValue({x: -0, y: 5}):',
-    util.normalizeValue({ x: -0, y: 5 }),
-  );
-  const proxy = util.createNormalizedProxy({ x: -0, y: 5 });
-  console.log('createNormalizedProxy({x: -0, y: 5}).x:', proxy.x);
-} catch (error) {
-  console.log('Error testing normalize utilities:', error.message);
+  console.log('Error testing combined usage:', error.message);
 }
 
 console.log('\n=== TESTS COMPLETED SUCCESSFULLY ===');

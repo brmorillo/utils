@@ -1,4 +1,5 @@
 import { Snowflake } from '@sapphire/snowflake';
+import { BaseError, ValidationError } from '../errors';
 
 // Example Discord message id: 1322717493961297921
 
@@ -10,6 +11,7 @@ export interface SnowflakeComponents {
   workerId: bigint;
   processId: bigint;
   increment: bigint;
+  epoch: bigint;
 }
 
 /**
@@ -24,13 +26,44 @@ export class SnowflakeUtils {
   private static readonly DEFAULT_EPOCH = new Date('2025-01-01T00:00:00.000Z');
 
   /**
+   * Persistent Snowflake instances keyed by `epoch.getTime()`.
+   *
+   * The underlying `@sapphire/snowflake` `Snowflake` instance keeps an internal
+   * increment counter that advances when multiple IDs are generated within the
+   * same millisecond. Reusing the same instance per epoch is what guarantees
+   * that two `generate`/`fromTimestamp` calls in the same millisecond produce
+   * distinct IDs instead of colliding.
+   */
+  private static readonly instances = new Map<number, Snowflake>();
+
+  /**
+   * Returns the persistent Snowflake instance for the given epoch, creating it
+   * on first use. Reusing the instance preserves the increment counter so that
+   * same-millisecond generations do not collide.
+   * @param {Date} epoch - The (already validated) epoch.
+   * @returns {Snowflake} The cached Snowflake instance for the epoch.
+   */
+  private static getInstance(epoch: Date): Snowflake {
+    const key = epoch.getTime();
+    let instance = SnowflakeUtils.instances.get(key);
+    if (!instance) {
+      instance = new Snowflake(key);
+      SnowflakeUtils.instances.set(key, instance);
+    }
+    return instance;
+  }
+
+  /**
    * Generates a Snowflake ID using a custom epoch.
+   *
+   * Snowflake IDs are epoch-relative: the SAME `epoch` must be supplied to
+   * `decode`/`getTimestamp` to recover the correct timestamp.
    * @param {object} [params] - The parameters for the method.
    * @param {Date} [params.epoch=DEFAULT_EPOCH] - The custom epoch to use for generating the Snowflake.
    * @param {bigint} [params.workerId=0n] - The worker ID.
    * @param {bigint} [params.processId=0n] - The process ID.
    * @returns {bigint} The generated Snowflake ID.
-   * @throws {Error} Throws an error if the epoch is invalid.
+   * @throws {ValidationError} Throws a ValidationError if the epoch is invalid.
    * @example
    * // Generate a Snowflake ID with default parameters
    * const id = SnowflakeUtils.generate();
@@ -52,10 +85,10 @@ export class SnowflakeUtils {
     processId?: bigint;
   } = {}): bigint {
     if (!(epoch instanceof Date) || isNaN(epoch.getTime())) {
-      throw new Error('Invalid epoch: must be a valid Date object.');
+      throw new ValidationError('Invalid epoch: must be a valid Date object.');
     }
 
-    const snowflake = new Snowflake(epoch.getTime());
+    const snowflake = SnowflakeUtils.getInstance(epoch);
     return snowflake.generate({ workerId, processId });
   }
 
@@ -65,13 +98,16 @@ export class SnowflakeUtils {
    * @param {bigint | string} params.snowflakeId - The Snowflake ID to deconstruct.
    * @param {Date} [params.epoch=DEFAULT_EPOCH] - The custom epoch to use for deconstruction.
    * @returns {SnowflakeComponents} The components of the Snowflake ID.
-   * @throws {Error} Throws an error if the Snowflake ID or epoch is invalid.
+   * @throws {ValidationError} Throws a ValidationError if the Snowflake ID or epoch is invalid.
+   * @remarks
+   * You MUST pass the same `epoch` that was used when the Snowflake was
+   * generated. Decoding with a different epoch yields an incorrect timestamp.
    * @example
    * // Decode a Snowflake ID
    * const components = SnowflakeUtils.decode({
    *   snowflakeId: "1322717493961297921"
    * });
-   * console.log(components); // { timestamp: 1234567890n, workerId: 1n, processId: 0n, increment: 42n }
+   * console.log(components); // { timestamp: 1234567890n, workerId: 1n, processId: 0n, increment: 42n, epoch: 1735689600000n }
    */
   public static decode({
     snowflakeId,
@@ -80,17 +116,17 @@ export class SnowflakeUtils {
     snowflakeId: bigint | string;
     epoch?: Date;
   }): SnowflakeComponents {
-    if (!snowflakeId || isNaN(Number(snowflakeId))) {
-      throw new Error(
+    if (!snowflakeId || !/^\d+$/.test(snowflakeId.toString())) {
+      throw new ValidationError(
         'Invalid Snowflake ID: must be a valid bigint or string.',
       );
     }
 
     if (!(epoch instanceof Date) || isNaN(epoch.getTime())) {
-      throw new Error('Invalid epoch: must be a valid Date object.');
+      throw new ValidationError('Invalid epoch: must be a valid Date object.');
     }
 
-    const snowflake = new Snowflake(epoch.getTime());
+    const snowflake = SnowflakeUtils.getInstance(epoch);
     return snowflake.deconstruct(BigInt(snowflakeId));
   }
 
@@ -100,7 +136,10 @@ export class SnowflakeUtils {
    * @param {bigint | string} params.snowflakeId - The Snowflake ID.
    * @param {Date} [params.epoch=DEFAULT_EPOCH] - The custom epoch to use.
    * @returns {Date} The extracted timestamp as a Date object.
-   * @throws {Error} Throws an error if the Snowflake ID or epoch is invalid.
+   * @throws {ValidationError} Throws a ValidationError if the Snowflake ID or epoch is invalid.
+   * @remarks
+   * You MUST pass the same `epoch` that was used when the Snowflake was
+   * generated, otherwise the recovered timestamp will be wrong.
    * @example
    * // Get the timestamp from a Snowflake ID
    * const timestamp = SnowflakeUtils.getTimestamp({
@@ -137,13 +176,18 @@ export class SnowflakeUtils {
   public static isValidSnowflake({
     snowflakeId,
   }: {
-    snowflakeId: string;
+    snowflakeId: bigint | string;
   }): boolean {
+    // A bigint produced by `generate` is always a valid, non-negative id.
+    if (typeof snowflakeId === 'bigint') {
+      return snowflakeId >= 0n;
+    }
+
     if (!snowflakeId || typeof snowflakeId !== 'string') {
       return false;
     }
 
-    // Snowflake IDs are numeric strings
+    // Snowflake IDs are non-negative numeric strings
     const numericRegex = /^\d+$/;
     if (!numericRegex.test(snowflakeId)) {
       return false;
@@ -164,7 +208,7 @@ export class SnowflakeUtils {
    * @param {bigint | string} params.first - The first Snowflake ID.
    * @param {bigint | string} params.second - The second Snowflake ID.
    * @returns {number} 1 if first is newer, -1 if second is newer, 0 if they are the same.
-   * @throws {Error} Throws an error if either Snowflake ID is invalid.
+   * @throws {ValidationError} Throws a ValidationError if either Snowflake ID is invalid.
    * @example
    * // Compare two Snowflake IDs
    * const result = SnowflakeUtils.compare({
@@ -194,7 +238,7 @@ export class SnowflakeUtils {
    * @param {Date} params.timestamp - The timestamp to create the Snowflake from.
    * @param {Date} [params.epoch=DEFAULT_EPOCH] - The custom epoch to use.
    * @returns {bigint} A Snowflake ID with the specified timestamp.
-   * @throws {Error} Throws an error if the timestamp or epoch is invalid.
+   * @throws {ValidationError} Throws a ValidationError if the timestamp or epoch is invalid.
    * @example
    * // Create a Snowflake ID from a timestamp
    * const id = SnowflakeUtils.fromTimestamp({
@@ -210,14 +254,14 @@ export class SnowflakeUtils {
     epoch?: Date;
   }): bigint {
     if (!(timestamp instanceof Date) || isNaN(timestamp.getTime())) {
-      throw new Error('Invalid timestamp: must be a valid Date object.');
+      throw new ValidationError('Invalid timestamp: must be a valid Date object.');
     }
 
     if (!(epoch instanceof Date) || isNaN(epoch.getTime())) {
-      throw new Error('Invalid epoch: must be a valid Date object.');
+      throw new ValidationError('Invalid epoch: must be a valid Date object.');
     }
 
-    const snowflake = new Snowflake(epoch.getTime());
+    const snowflake = SnowflakeUtils.getInstance(epoch);
     return snowflake.generate({ timestamp: timestamp.getTime() });
   }
 
@@ -227,7 +271,13 @@ export class SnowflakeUtils {
    * @param {bigint | string | number} params.snowflakeId - The Snowflake ID to convert.
    * @param {SnowflakeFormat} params.toFormat - The format to convert to ('bigint', 'string', or 'number').
    * @returns {bigint | string | number} The converted Snowflake ID.
-   * @throws {Error} Throws an error if the Snowflake ID is invalid or if the format is unsupported.
+   * @throws {ValidationError} Throws a ValidationError if the Snowflake ID is invalid or if the format is unsupported.
+   * @remarks
+   * WARNING: the `'number'` format is unusable for real-world Snowflake IDs.
+   * A typical Snowflake exceeds `Number.MAX_SAFE_INTEGER`, so converting it to a
+   * JavaScript `number` loses precision; this method throws rather than return a
+   * corrupted value. `'number'` is retained only for small/synthetic IDs. Prefer
+   * `'bigint'` or `'string'` for genuine Snowflakes.
    * @example
    * // Convert a Snowflake ID to string format
    * const stringId = SnowflakeUtils.convert({
@@ -251,13 +301,13 @@ export class SnowflakeUtils {
     toFormat: SnowflakeFormat;
   }): bigint | string | number {
     if (snowflakeId === undefined || snowflakeId === null) {
-      throw new Error('Invalid Snowflake ID: must not be null or undefined.');
+      throw new ValidationError('Invalid Snowflake ID: must not be null or undefined.');
     }
 
     try {
       // First, check if the ID is valid
       if (typeof snowflakeId === 'string' && !/^\d+$/.test(snowflakeId)) {
-        throw new Error('Invalid Snowflake ID: must contain only digits.');
+        throw new ValidationError('Invalid Snowflake ID: must contain only digits.');
       }
 
       // Convert to BigInt for validation
@@ -266,7 +316,14 @@ export class SnowflakeUtils {
         bigintValue =
           typeof snowflakeId === 'bigint' ? snowflakeId : BigInt(snowflakeId);
       } catch (e) {
-        throw new Error('Invalid Snowflake ID: cannot be converted to BigInt.');
+        throw new ValidationError(
+          'Invalid Snowflake ID: cannot be converted to BigInt.',
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          { cause: e },
+        );
       }
 
       // Convert to the desired format
@@ -281,13 +338,13 @@ export class SnowflakeUtils {
             bigintValue > BigInt(Number.MAX_SAFE_INTEGER) ||
             bigintValue < BigInt(Number.MIN_SAFE_INTEGER)
           ) {
-            throw new Error(
+            throw new ValidationError(
               'Snowflake ID is too large to be safely converted to number.',
             );
           }
           return Number(bigintValue);
         default:
-          throw new Error(
+          throw new ValidationError(
             `Unsupported format: ${toFormat}. Supported formats are 'bigint', 'string', and 'number'.`,
           );
       }
@@ -295,7 +352,7 @@ export class SnowflakeUtils {
       if (error instanceof Error) {
         throw error;
       }
-      throw new Error('Invalid Snowflake ID');
+      throw new BaseError('Invalid Snowflake ID', 'SNOWFLAKE_ERROR', undefined, undefined, { cause: error });
     }
   }
 }

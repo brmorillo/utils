@@ -1,4 +1,5 @@
 import * as jwt from 'jsonwebtoken';
+import { BaseError, ValidationError } from '../errors';
 
 export class JWTUtils {
   /**
@@ -13,6 +14,10 @@ export class JWTUtils {
    * @param {string} [params.options.subject] - The subject of the token.
    * @returns {string} The generated JWT token.
    * @throws {Error} If token generation fails.
+   * @remarks
+   * When `options.expiresIn` is not supplied, the token defaults to a `'1h'`
+   * expiry. The signing algorithm is pinned to `'HS256'` unless explicitly
+   * overridden via `options.algorithm`.
    * @example
    * const token = JWTUtils.generate({
    *   payload: { userId: '123', role: 'admin' },
@@ -30,19 +35,38 @@ export class JWTUtils {
     options?: jwt.SignOptions;
   }): string {
     if (!payload || typeof payload !== 'object') {
-      throw new Error('Invalid payload: must be a non-empty object.');
+      throw new ValidationError('Invalid payload: must be a non-empty object.');
     }
 
     if (!secretKey || typeof secretKey !== 'string') {
-      throw new Error('Invalid secretKey: must be a non-empty string.');
+      throw new ValidationError('Invalid secretKey: must be a non-empty string.');
     }
 
     try {
-      return jwt.sign(payload, secretKey, options);
+      // Default to a 1h expiry and pin HS256 unless the caller overrides them.
+      const signOptions: jwt.SignOptions = {
+        expiresIn: '1h',
+        algorithm: 'HS256',
+        ...options,
+      };
+
+      // jsonwebtoken rejects `expiresIn` when the payload already carries an
+      // `exp` claim, and also rejects an explicit `expiresIn: undefined`. Drop
+      // the key in those cases so callers can opt out of the default expiry.
+      if (
+        signOptions.expiresIn === undefined ||
+        (typeof payload === 'object' && 'exp' in payload)
+      ) {
+        delete signOptions.expiresIn;
+      }
+
+      return jwt.sign(payload, secretKey, signOptions);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to generate JWT token: ${errorMessage}`);
+      throw new BaseError(`Failed to generate JWT token: ${errorMessage}`, 'JWT_ERROR', undefined, undefined, {
+        cause: error,
+      });
     }
   }
 
@@ -57,6 +81,10 @@ export class JWTUtils {
    * @param {string} [params.options.subject] - The required subject of the token.
    * @returns {object} The decoded token payload if verification succeeds.
    * @throws {Error} If token verification fails.
+   * @remarks
+   * Verification enforces an algorithms allowlist. By default only `'HS256'`
+   * is accepted; callers may widen the list via `options.algorithms`, but the
+   * insecure `'none'` algorithm is always stripped and rejected.
    * @example
    * const decoded = JWTUtils.verify({
    *   token: 'your-jwt-token',
@@ -74,24 +102,39 @@ export class JWTUtils {
     options?: jwt.VerifyOptions;
   }): object {
     if (!token || typeof token !== 'string') {
-      throw new Error('Invalid token: must be a non-empty string.');
+      throw new ValidationError('Invalid token: must be a non-empty string.');
     }
 
     if (!secretKey || typeof secretKey !== 'string') {
-      throw new Error('Invalid secretKey: must be a non-empty string.');
+      throw new ValidationError('Invalid secretKey: must be a non-empty string.');
     }
 
     try {
-      return jwt.verify(token, secretKey, options) as object;
+      // Enforce an algorithms allowlist; default to HS256 and never allow 'none'.
+      const algorithms = (options.algorithms ?? ['HS256']).filter(
+        alg => alg.toLowerCase() !== 'none',
+      ) as jwt.Algorithm[];
+      return jwt.verify(token, secretKey, {
+        ...options,
+        algorithms,
+      }) as object;
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to verify JWT token: ${errorMessage}`);
+      throw new BaseError(`Failed to verify JWT token: ${errorMessage}`, 'JWT_ERROR', undefined, undefined, {
+        cause: error,
+      });
     }
   }
 
   /**
    * Decodes a JWT token without verifying its signature.
+   *
+   * @remarks
+   * ⚠️ SECURITY WARNING: `decode()` does NOT verify the token signature. The
+   * returned payload is UNTRUSTED and may have been forged or tampered with.
+   * Never make authentication or authorization decisions based on its output.
+   * Use {@link JWTUtils.verify} whenever the payload must be trusted.
    * @param {object} params - The parameters for the method.
    * @param {string} params.token - The JWT token to decode.
    * @param {boolean} [params.complete=false] - If true, returns the decoded header and payload; otherwise, returns only the payload.
@@ -118,19 +161,21 @@ export class JWTUtils {
     complete?: boolean;
   }): object {
     if (!token || typeof token !== 'string') {
-      throw new Error('Invalid token: must be a non-empty string.');
+      throw new ValidationError('Invalid token: must be a non-empty string.');
     }
 
     try {
       const decoded = jwt.decode(token, { complete }) as object;
       if (!decoded) {
-        throw new Error('Invalid token format.');
+        throw new BaseError('Invalid token format.', 'JWT_ERROR');
       }
       return decoded;
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to decode JWT token: ${errorMessage}`);
+      throw new BaseError(`Failed to decode JWT token: ${errorMessage}`, 'JWT_ERROR', undefined, undefined, {
+        cause: error,
+      });
     }
   }
 
@@ -143,6 +188,14 @@ export class JWTUtils {
    * @param {string | number} [params.options.expiresIn] - Expiration time for the new token (e.g., '1h', '7d', 3600).
    * @returns {string} The new JWT token.
    * @throws {Error} If token refresh fails.
+   * @remarks
+   * The old token's signature is verified (with `ignoreExpiration: true`) using
+   * the same algorithms allowlist as {@link JWTUtils.verify} (default `'HS256'`,
+   * never `'none'`).
+   *
+   * ⚠️ NOTE: `refresh()` does NOT consult any revocation/blocklist. A token that
+   * has a valid signature will be refreshed even if it was logically revoked.
+   * Callers requiring revocation must enforce it separately before refreshing.
    * @example
    * const newToken = JWTUtils.refresh({
    *   token: 'your-expired-token',
@@ -159,10 +212,23 @@ export class JWTUtils {
     secretKey: string;
     options?: jwt.SignOptions;
   }): string {
+    if (!token || typeof token !== 'string') {
+      throw new ValidationError('Invalid token: must be a non-empty string.');
+    }
+
+    if (!secretKey || typeof secretKey !== 'string') {
+      throw new ValidationError('Invalid secretKey: must be a non-empty string.');
+    }
+
     try {
-      // Force verification to ensure the token was valid (just expired)
+      // Force verification to ensure the token was valid (just expired),
+      // enforcing the same algorithms allowlist (default HS256, never 'none').
+      const verifyAlgorithms = (
+        options.algorithm ? [options.algorithm] : ['HS256']
+      ).filter(alg => alg.toLowerCase() !== 'none') as jwt.Algorithm[];
       const decoded = jwt.verify(token, secretKey, {
         ignoreExpiration: true,
+        algorithms: verifyAlgorithms,
       }) as any;
 
       // Remove standard claims that should be regenerated
@@ -183,12 +249,19 @@ export class JWTUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to refresh JWT token: ${errorMessage}`);
+      throw new BaseError(`Failed to refresh JWT token: ${errorMessage}`, 'JWT_ERROR', undefined, undefined, {
+        cause: error,
+      });
     }
   }
 
   /**
    * Checks if a JWT token is expired.
+   *
+   * @remarks
+   * ⚠️ SECURITY WARNING: This reads the `exp` claim via `decode()` and does NOT
+   * verify the token signature. The result is based on UNTRUSTED data and must
+   * not be relied upon for security decisions.
    * @param {object} params - The parameters for the method.
    * @param {string} params.token - The JWT token to check.
    * @returns {boolean} `true` if the token is expired, otherwise `false`.
@@ -201,13 +274,13 @@ export class JWTUtils {
    */
   public static isExpired({ token }: { token: string }): boolean {
     if (!token || typeof token !== 'string') {
-      throw new Error('Invalid token: must be a non-empty string.');
+      throw new ValidationError('Invalid token: must be a non-empty string.');
     }
 
     try {
       const decoded = jwt.decode(token) as { exp?: number };
       if (!decoded || !decoded.exp) {
-        throw new Error('Invalid token or missing expiration claim.');
+        throw new BaseError('Invalid token or missing expiration claim.', 'JWT_ERROR');
       }
 
       // Compare expiration timestamp with current time
@@ -216,12 +289,19 @@ export class JWTUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to check JWT token expiration: ${errorMessage}`);
+      throw new BaseError(`Failed to check JWT token expiration: ${errorMessage}`, 'JWT_ERROR', undefined, undefined, {
+        cause: error,
+      });
     }
   }
 
   /**
    * Gets the remaining time until a JWT token expires.
+   *
+   * @remarks
+   * ⚠️ SECURITY WARNING: This reads the `exp` claim via `decode()` and does NOT
+   * verify the token signature. The result is based on UNTRUSTED data and must
+   * not be relied upon for security decisions.
    * @param {object} params - The parameters for the method.
    * @param {string} params.token - The JWT token to check.
    * @returns {number} The remaining time in seconds until the token expires. Returns 0 if the token is already expired.
@@ -234,13 +314,13 @@ export class JWTUtils {
    */
   public static getExpirationTime({ token }: { token: string }): number {
     if (!token || typeof token !== 'string') {
-      throw new Error('Invalid token: must be a non-empty string.');
+      throw new ValidationError('Invalid token: must be a non-empty string.');
     }
 
     try {
       const decoded = jwt.decode(token) as { exp?: number };
       if (!decoded || !decoded.exp) {
-        throw new Error('Invalid token or missing expiration claim.');
+        throw new BaseError('Invalid token or missing expiration claim.', 'JWT_ERROR');
       }
 
       const currentTimestamp = Math.floor(Date.now() / 1000);
@@ -250,8 +330,12 @@ export class JWTUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(
+      throw new BaseError(
         `Failed to get JWT token expiration time: ${errorMessage}`,
+        'JWT_ERROR',
+        undefined,
+        undefined,
+        { cause: error },
       );
     }
   }

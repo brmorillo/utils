@@ -2,20 +2,20 @@ import { CryptUtils } from '../../src/services/crypt.service';
 import * as crypto from 'crypto';
 
 /**
- * Testes de benchmark para a classe CryptUtils.
- * Estes testes verificam o desempenho da classe em operações de alta frequência.
+ * Benchmark tests for the CryptUtils class.
+ * These tests check the class performance in high-frequency operations.
  */
-describe('CryptUtils - Testes de Benchmark', () => {
-  // Função auxiliar para medir o tempo de execução
+describe('CryptUtils - Benchmark Tests', () => {
+  // Helper function to measure execution time
   const measureExecutionTime = (fn: () => void): number => {
     const start = process.hrtime.bigint();
     fn();
     const end = process.hrtime.bigint();
-    return Number(end - start) / 1_000_000; // Converte para milissegundos
+    return Number(end - start) / 1_000_000; // Convert to milliseconds
   };
 
-  describe('Geração de IV em massa', () => {
-    it('deve gerar 10.000 IVs em tempo razoável', () => {
+  describe('IV generation in bulk', () => {
+    it('should generate 10,000 IVs in a reasonable time', () => {
       const count = 10000;
       const ivs: string[] = [];
 
@@ -26,212 +26,207 @@ describe('CryptUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para gerar ${count} IVs: ${executionTime.toFixed(2)}ms`,
+        `Time to generate ${count} IVs: ${executionTime.toFixed(2)}ms`,
       );
 
-      // Verifica se temos IVs únicos
+      // Check whether we have unique IVs
       const uniqueIvs = new Set(ivs);
       expect(uniqueIvs.size).toBe(count);
 
-      // O tempo médio por IV deve ser menor que 0.1ms
+      // The average time per IV should be less than 0.1ms
       const avgTimePerIV = executionTime / count;
       expect(avgTimePerIV).toBeLessThan(0.1);
     });
   });
 
-  describe('Criptografia AES em massa', () => {
+  describe('AES encryption in bulk', () => {
     const secretKey = '12345678901234567890123456789012'; // 32 bytes
-    const testData = 'Teste de criptografia AES para benchmark';
-    const iv = CryptUtils.generateIV();
+    const testData = 'AES encryption test for benchmark';
+    const iv = CryptUtils.generateGcmIV();
 
-    it('deve criptografar 10.000 strings em tempo razoável', () => {
+    it('should encrypt 10,000 strings in a reasonable time', () => {
       const count = 10000;
       const encryptedResults: string[] = [];
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          const { encryptedData } = CryptUtils.aesEncrypt(
-            testData,
+          const { encryptedData } = CryptUtils.aesEncrypt({
+            data: testData,
             secretKey,
             iv,
-          );
+          });
           encryptedResults.push(encryptedData);
         }
       });
 
       console.log(
-        `Tempo para criptografar ${count} strings com AES: ${executionTime.toFixed(2)}ms`,
+        `Time to encrypt ${count} strings with AES: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por criptografia deve ser menor que 0.5ms
+      // The average time per encryption should be less than 0.5ms
       const avgTimePerEncryption = executionTime / count;
       expect(avgTimePerEncryption).toBeLessThan(0.5);
     });
 
-    it('deve descriptografar 10.000 strings em tempo razoável', () => {
+    it('should decrypt 10,000 strings in a reasonable time', () => {
       const count = 10000;
 
-      // Criptografa uma string para usar nos testes
-      const { encryptedData } = CryptUtils.aesEncrypt(testData, secretKey, iv);
+      // Encrypt a string to use in the tests
+      const { encryptedData, authTag } = CryptUtils.aesEncrypt({
+        data: testData,
+        secretKey,
+        iv,
+      });
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          CryptUtils.aesDecrypt(encryptedData, secretKey, iv);
+          CryptUtils.aesDecrypt({ encryptedData, secretKey, iv, authTag });
         }
       });
 
       console.log(
-        `Tempo para descriptografar ${count} strings com AES: ${executionTime.toFixed(2)}ms`,
+        `Time to decrypt ${count} strings with AES: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por descriptografia deve ser menor que 0.5ms
+      // The average time per decryption should be less than 0.5ms
       const avgTimePerDecryption = executionTime / count;
       expect(avgTimePerDecryption).toBeLessThan(0.5);
     });
   });
 
-  describe('Criptografia ChaCha20 em massa', () => {
+  describe('ChaCha20 encryption in bulk', () => {
     const key = Buffer.from('12345678901234567890123456789012'); // 32 bytes
     const nonce = Buffer.from('123456789012'); // 12 bytes
-    const testData = 'Teste de criptografia ChaCha20 para benchmark';
+    const testData = 'ChaCha20 encryption test for benchmark';
 
-    it('deve criptografar 10.000 strings em tempo razoável', () => {
+    it('should encrypt 10,000 strings in a reasonable time', () => {
       const count = 10000;
       const encryptedResults: string[] = [];
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          const encrypted = CryptUtils.chacha20Encrypt(testData, key, nonce);
-          encryptedResults.push(encrypted);
+          const { encryptedData } = CryptUtils.chacha20Encrypt({
+            data: testData,
+            key,
+            nonce,
+          });
+          encryptedResults.push(encryptedData);
         }
       });
 
       console.log(
-        `Tempo para criptografar ${count} strings com ChaCha20: ${executionTime.toFixed(2)}ms`,
+        `Time to encrypt ${count} strings with ChaCha20: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por criptografia deve ser menor que 0.5ms
+      // The average time per encryption should be less than 0.5ms
       const avgTimePerEncryption = executionTime / count;
       expect(avgTimePerEncryption).toBeLessThan(0.5);
     });
 
-    it('deve descriptografar 10.000 strings em tempo razoável', () => {
+    it('should decrypt 10,000 strings in a reasonable time', () => {
       const count = 10000;
 
-      // Criptografa uma string para usar nos testes
-      const encrypted = CryptUtils.chacha20Encrypt(testData, key, nonce);
+      // Encrypt a string to use in the tests
+      const { encryptedData, authTag } = CryptUtils.chacha20Encrypt({
+        data: testData,
+        key,
+        nonce,
+      });
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          CryptUtils.chacha20Decrypt(encrypted, key, nonce);
+          CryptUtils.chacha20Decrypt({ encryptedData, key, nonce, authTag });
         }
       });
 
       console.log(
-        `Tempo para descriptografar ${count} strings com ChaCha20: ${executionTime.toFixed(2)}ms`,
+        `Time to decrypt ${count} strings with ChaCha20: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por descriptografia deve ser menor que 0.5ms
+      // The average time per decryption should be less than 0.5ms
       const avgTimePerDecryption = executionTime / count;
       expect(avgTimePerDecryption).toBeLessThan(0.5);
     });
   });
 
-  describe('Criptografia RC4 em massa', () => {
-    const key = 'chave-secreta-rc4-para-benchmark';
-    const testData = 'Teste de criptografia RC4 para benchmark';
-
-    it('deve falhar adequadamente quando RC4 não é suportado', () => {
-      // RC4 é depreciado e não suportado em versões modernas do Node.js
-      expect(() => {
-        CryptUtils.rc4Encrypt(testData, key);
-      }).toThrow('RC4 algorithm is not supported in this Node.js version.');
-    });
-
-    it('deve falhar adequadamente na descriptografia quando RC4 não é suportado', () => {
-      // RC4 é depreciado e não suportado em versões modernas do Node.js
-      expect(() => {
-        CryptUtils.rc4Decrypt('encrypted-data', key);
-      }).toThrow('RC4 algorithm is not supported in this Node.js version.');
-    });
-  });
-
-  describe('Geração de chaves RSA', () => {
-    it('deve gerar 10 pares de chaves RSA em tempo razoável', () => {
+  describe('RSA key generation', () => {
+    it('should generate 10 RSA key pairs in a reasonable time', () => {
       const count = 10;
       const keyPairs: { publicKey: string; privateKey: string }[] = [];
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          keyPairs.push(CryptUtils.rsaGenerateKeyPair(1024));
+          keyPairs.push(CryptUtils.rsaGenerateKeyPair({ modulusLength: 1024 }));
         }
       });
 
       console.log(
-        `Tempo para gerar ${count} pares de chaves RSA (1024 bits): ${executionTime.toFixed(2)}ms`,
+        `Time to generate ${count} RSA key pairs (1024 bits): ${executionTime.toFixed(2)}ms`,
       );
 
-      // Verifica se as chaves foram geradas corretamente
+      // Check whether the keys were generated correctly
       expect(keyPairs.length).toBe(count);
       keyPairs.forEach(({ publicKey, privateKey }) => {
         expect(publicKey).toContain('BEGIN RSA PUBLIC KEY');
         expect(privateKey).toContain('BEGIN RSA PRIVATE KEY');
       });
 
-      // O tempo médio por geração deve ser razoável (RSA é naturalmente lento)
+      // The average time per generation should be reasonable (RSA is naturally slow)
       const avgTimePerGeneration = executionTime / count;
-      expect(avgTimePerGeneration).toBeLessThan(1000); // Menos de 1 segundo por par
+      expect(avgTimePerGeneration).toBeLessThan(1000); // Less than 1 second per pair
     });
   });
 
-  describe('Assinatura e verificação RSA em massa', () => {
-    // Gera um par de chaves para todos os testes
-    const { publicKey, privateKey } = CryptUtils.rsaGenerateKeyPair(1024);
-    const testData = 'Dados para assinar com RSA em benchmark';
+  describe('RSA signing and verification in bulk', () => {
+    // Generate a key pair for all the tests
+    const { publicKey, privateKey } = CryptUtils.rsaGenerateKeyPair({
+      modulusLength: 1024,
+    });
+    const testData = 'Data to sign with RSA in benchmark';
 
-    it('deve assinar 1.000 mensagens em tempo razoável', () => {
+    it('should sign 1,000 messages in a reasonable time', () => {
       const count = 1000;
       const signatures: string[] = [];
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          signatures.push(CryptUtils.rsaSign(testData, privateKey));
+          signatures.push(CryptUtils.rsaSign({ data: testData, privateKey }));
         }
       });
 
       console.log(
-        `Tempo para assinar ${count} mensagens com RSA: ${executionTime.toFixed(2)}ms`,
+        `Time to sign ${count} messages with RSA: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por assinatura deve ser razoável
+      // The average time per signature should be reasonable
       const avgTimePerSignature = executionTime / count;
-      expect(avgTimePerSignature).toBeLessThan(5); // Menos de 5ms por assinatura
+      expect(avgTimePerSignature).toBeLessThan(5); // Less than 5ms per signature
     });
 
-    it('deve verificar 1.000 assinaturas em tempo razoável', () => {
+    it('should verify 1,000 signatures in a reasonable time', () => {
       const count = 1000;
 
-      // Cria uma assinatura para verificar repetidamente
-      const signature = CryptUtils.rsaSign(testData, privateKey);
+      // Create a signature to verify repeatedly
+      const signature = CryptUtils.rsaSign({ data: testData, privateKey });
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          CryptUtils.rsaVerify(testData, signature, publicKey);
+          CryptUtils.rsaVerify({ data: testData, signature, publicKey });
         }
       });
 
       console.log(
-        `Tempo para verificar ${count} assinaturas com RSA: ${executionTime.toFixed(2)}ms`,
+        `Time to verify ${count} signatures with RSA: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por verificação deve ser razoável
+      // The average time per verification should be reasonable
       const avgTimePerVerification = executionTime / count;
-      expect(avgTimePerVerification).toBeLessThan(1); // Menos de 1ms por verificação
+      expect(avgTimePerVerification).toBeLessThan(1); // Less than 1ms per verification
     });
   });
 
-  describe('Geração de chaves ECC', () => {
-    it('deve gerar 50 pares de chaves ECC em tempo razoável', () => {
+  describe('ECC key generation', () => {
+    it('should generate 50 ECC key pairs in a reasonable time', () => {
       const count = 50;
       const keyPairs: { publicKey: string; privateKey: string }[] = [];
 
@@ -242,103 +237,106 @@ describe('CryptUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para gerar ${count} pares de chaves ECC: ${executionTime.toFixed(2)}ms`,
+        `Time to generate ${count} ECC key pairs: ${executionTime.toFixed(2)}ms`,
       );
 
-      // Verifica se as chaves foram geradas corretamente
+      // Check whether the keys were generated correctly
       expect(keyPairs.length).toBe(count);
       keyPairs.forEach(({ publicKey, privateKey }) => {
         expect(publicKey).toContain('BEGIN PUBLIC KEY');
         expect(privateKey).toContain('BEGIN PRIVATE KEY');
       });
 
-      // O tempo médio por geração deve ser razoável
+      // The average time per generation should be reasonable
       const avgTimePerGeneration = executionTime / count;
-      expect(avgTimePerGeneration).toBeLessThan(100); // Menos de 100ms por par
+      expect(avgTimePerGeneration).toBeLessThan(100); // Less than 100ms per pair
     });
   });
 
-  describe('Assinatura e verificação ECC em massa', () => {
-    // Gera um par de chaves para todos os testes
+  describe('ECC signing and verification in bulk', () => {
+    // Generate a key pair for all the tests
     const { publicKey, privateKey } = CryptUtils.eccGenerateKeyPair();
-    const testData = 'Dados para assinar com ECC em benchmark';
+    const testData = 'Data to sign with ECC in benchmark';
 
-    it('deve assinar 1.000 mensagens em tempo razoável', () => {
+    it('should sign 1,000 messages in a reasonable time', () => {
       const count = 1000;
       const signatures: string[] = [];
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          signatures.push(CryptUtils.eccSign(testData, privateKey));
+          signatures.push(CryptUtils.eccSign({ data: testData, privateKey }));
         }
       });
 
       console.log(
-        `Tempo para assinar ${count} mensagens com ECC: ${executionTime.toFixed(2)}ms`,
+        `Time to sign ${count} messages with ECC: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por assinatura deve ser razoável
+      // The average time per signature should be reasonable
       const avgTimePerSignature = executionTime / count;
-      expect(avgTimePerSignature).toBeLessThan(2); // Menos de 2ms por assinatura
+      expect(avgTimePerSignature).toBeLessThan(2); // Less than 2ms per signature
     });
 
-    it('deve verificar 1.000 assinaturas em tempo razoável', () => {
+    it('should verify 1,000 signatures in a reasonable time', () => {
       const count = 1000;
 
-      // Cria uma assinatura para verificar repetidamente
-      const signature = CryptUtils.eccSign(testData, privateKey);
+      // Create a signature to verify repeatedly
+      const signature = CryptUtils.eccSign({ data: testData, privateKey });
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          CryptUtils.eccVerify(testData, signature, publicKey);
+          CryptUtils.eccVerify({ data: testData, signature, publicKey });
         }
       });
 
       console.log(
-        `Tempo para verificar ${count} assinaturas com ECC: ${executionTime.toFixed(2)}ms`,
+        `Time to verify ${count} signatures with ECC: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por verificação deve ser razoável
+      // The average time per verification should be reasonable
       const avgTimePerVerification = executionTime / count;
-      expect(avgTimePerVerification).toBeLessThan(1); // Menos de 1ms por verificação
+      expect(avgTimePerVerification).toBeLessThan(1); // Less than 1ms per verification
     });
   });
 
-  describe('Comparação de desempenho entre algoritmos', () => {
-    const testData = 'Dados para comparação de desempenho entre algoritmos';
+  describe('Performance comparison between algorithms', () => {
+    const testData = 'Data for performance comparison between algorithms';
     const aesKey = '12345678901234567890123456789012'; // 32 bytes
-    const aesIv = CryptUtils.generateIV();
-    const rc4Key = 'chave-secreta-rc4-para-benchmark';
+    const aesIv = CryptUtils.generateGcmIV();
+    const chachaKey = Buffer.from('12345678901234567890123456789012'); // 32 bytes
+    const chachaNonce = Buffer.from('123456789012'); // 12 bytes
 
-    it('deve comparar o desempenho de criptografia entre AES e RC4', () => {
+    it('should compare encryption performance between AES-GCM and ChaCha20-Poly1305', () => {
       const count = 5000;
 
-      // Mede o tempo para AES
+      // Measure the time for AES-256-GCM
       const aesTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          CryptUtils.aesEncrypt(testData, aesKey, aesIv);
+          CryptUtils.aesEncrypt({ data: testData, secretKey: aesKey, iv: aesIv });
         }
       });
 
-      // Mede o tempo para RC4
-      const rc4Time = measureExecutionTime(() => {
+      // Measure the time for ChaCha20-Poly1305
+      const chachaTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          CryptUtils.rc4Encrypt(testData, rc4Key);
+          CryptUtils.chacha20Encrypt({
+            data: testData,
+            key: chachaKey,
+            nonce: chachaNonce,
+          });
         }
       });
 
       console.log(
-        `Tempo para ${count} criptografias AES: ${aesTime.toFixed(2)}ms`,
+        `Time for ${count} AES-256-GCM encryptions: ${aesTime.toFixed(2)}ms`,
       );
       console.log(
-        `Tempo para ${count} criptografias RC4: ${rc4Time.toFixed(2)}ms`,
-      );
-      console.log(
-        `RC4 é aproximadamente ${(aesTime / rc4Time).toFixed(2)}x mais rápido que AES`,
+        `Time for ${count} ChaCha20-Poly1305 encryptions: ${chachaTime.toFixed(2)}ms`,
       );
 
-      // RC4 deve ser mais rápido que AES
-      expect(rc4Time).toBeLessThan(aesTime);
+      // Both AEAD ciphers should complete the workload.
+      expect(aesTime).toBeGreaterThan(0);
+      expect(chachaTime).toBeGreaterThan(0);
     });
   });
 });

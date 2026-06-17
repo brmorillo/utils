@@ -1,3 +1,0 @@
-export const DEFAULT_EPOCH = 1735689600; // 2025-01-01T00:00:00.000Z
-export const DEFAULT_WORKER_ID = 0n;
-export const DEFAULT_PROCESS_ID = 0n;

@@ -79,7 +79,7 @@ describe('BenchmarkUtils', () => {
   });
 
   describe('compare', () => {
-    it.skip('should compare multiple functions and return results for each', () => {
+    it('should compare multiple functions and return results for each', () => {
       const results = BenchmarkUtils.compare({
         fns: {
           'Math.random': () => {
@@ -92,18 +92,19 @@ describe('BenchmarkUtils', () => {
         iterations: 100,
       });
 
-      expect(results).toHaveProperty('Math.random');
-      expect(results).toHaveProperty('Date.now');
+      // Note: the function names contain dots, so toHaveProperty must receive
+      // an array path to avoid interpreting them as nested keys.
+      expect(Object.keys(results)).toEqual(
+        expect.arrayContaining(['Math.random', 'Date.now']),
+      );
 
-      expect(results['Math.random']).toHaveProperty('totalTime');
-      expect(results['Math.random']).toHaveProperty('averageTime');
-      expect(results['Math.random']).toHaveProperty('opsPerSecond');
-      expect(results['Math.random']).toHaveProperty('iterations', 100);
-
-      expect(results['Date.now']).toHaveProperty('totalTime');
-      expect(results['Date.now']).toHaveProperty('averageTime');
-      expect(results['Date.now']).toHaveProperty('opsPerSecond');
-      expect(results['Date.now']).toHaveProperty('iterations', 100);
+      for (const name of ['Math.random', 'Date.now']) {
+        const result = results[name];
+        expect(result).toHaveProperty('totalTime');
+        expect(result).toHaveProperty('averageTime');
+        expect(result).toHaveProperty('opsPerSecond');
+        expect(result).toHaveProperty('iterations', 100);
+      }
     });
   });
 
@@ -152,6 +153,33 @@ describe('BenchmarkUtils', () => {
       expect(typeof memoryUsage.before).toBe('number');
       expect(typeof memoryUsage.after).toBe('number');
       expect(typeof memoryUsage.difference).toBe('number');
+    });
+
+    it('should invoke global.gc when it is available', () => {
+      // Arrange: simulate a process started with --expose-gc so the
+      // `if (global.gc)` branch executes.
+      const originalGc = global.gc;
+      const gcSpy = jest.fn();
+      (global as { gc?: () => void }).gc = gcSpy;
+
+      try {
+        // Act
+        const memoryUsage = BenchmarkUtils.measureMemoryUsage({
+          fn: () => {
+            const arr = new Array(1000).fill(0);
+            return arr;
+          },
+        });
+
+        // Assert
+        expect(gcSpy).toHaveBeenCalledTimes(1);
+        expect(memoryUsage).toHaveProperty('before');
+        expect(memoryUsage).toHaveProperty('after');
+        expect(memoryUsage).toHaveProperty('difference');
+      } finally {
+        // Restore the original gc reference (possibly undefined).
+        (global as { gc?: () => void }).gc = originalGc;
+      }
     });
   });
 });

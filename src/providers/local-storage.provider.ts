@@ -5,6 +5,7 @@ import {
   FileMetadata,
   IStorageProvider,
 } from '../interfaces/storage.interface';
+import { StorageError } from '../errors';
 
 /**
  * Local filesystem storage provider options
@@ -112,7 +113,17 @@ export class LocalStorageProvider implements IStorageProvider {
   }
 
   /**
-   * Lists files in a directory
+   * Maximum recursion depth for {@link listFiles}. Bounds the traversal so a
+   * deeply nested tree (or a symlink loop) cannot cause runaway recursion / DoS.
+   */
+  private static readonly MAX_LIST_DEPTH = 32;
+
+  /**
+   * Lists files in a directory.
+   *
+   * The recursion is bounded by {@link LocalStorageProvider.MAX_LIST_DEPTH} to
+   * avoid runaway traversal or symlink-loop denial of service. Directories at
+   * the depth limit are not descended into.
    */
   async listFiles(prefix: string): Promise<string[]> {
     const fullPath = this.getFullPath(prefix);
@@ -126,16 +137,32 @@ export class LocalStorageProvider implements IStorageProvider {
       return [prefix];
     }
 
-    const files = await promisify(fs.readdir)(fullPath);
+    return this.listFilesRecursive(prefix, 0);
+  }
+
+  /**
+   * Recursive helper for {@link listFiles} that tracks the current depth.
+   */
+  private async listFilesRecursive(
+    prefix: string,
+    depth: number,
+  ): Promise<string[]> {
+    if (depth >= LocalStorageProvider.MAX_LIST_DEPTH) {
+      return [];
+    }
+
+    const fullPath = this.getFullPath(prefix);
+    // Use withFileTypes to avoid a stat() per entry.
+    const entries = await promisify(fs.readdir)(fullPath, {
+      withFileTypes: true,
+    });
     const result: string[] = [];
 
-    for (const file of files) {
-      const filePath = path.join(prefix, file);
-      const fullFilePath = this.getFullPath(filePath);
-      const fileStat = await promisify(fs.stat)(fullFilePath);
+    for (const entry of entries) {
+      const filePath = path.join(prefix, entry.name);
 
-      if (fileStat.isDirectory()) {
-        const subFiles = await this.listFiles(filePath);
+      if (entry.isDirectory()) {
+        const subFiles = await this.listFilesRecursive(filePath, depth + 1);
         result.push(...subFiles);
       } else {
         result.push(filePath);
@@ -160,10 +187,31 @@ export class LocalStorageProvider implements IStorageProvider {
   }
 
   /**
-   * Gets the full path for a file
+   * Resolves the full path for a file and confines it to {@link basePath}.
+   *
+   * @remarks
+   * SECURITY: This guards against path traversal. Any `filePath` that resolves
+   * outside the storage root (e.g. `'../../etc/passwd'`) or is an absolute path
+   * pointing elsewhere is rejected with a {@link StorageError}. Every method
+   * that touches the filesystem routes through this so traversal is impossible.
+   *
+   * @param filePath Caller-supplied (untrusted) relative path.
+   * @returns The absolute, confined path within the storage root.
+   * @throws {StorageError} If the resolved path escapes the storage root.
    */
   private getFullPath(filePath: string): string {
-    return path.join(this.basePath, filePath);
+    const root = path.resolve(this.basePath);
+    const resolved = path.resolve(this.basePath, filePath);
+
+    if (resolved !== root && !resolved.startsWith(root + path.sep)) {
+      throw new StorageError(
+        'Invalid path: outside storage root',
+        'INVALID_PATH',
+        { path: filePath },
+      );
+    }
+
+    return resolved;
   }
 
   /**

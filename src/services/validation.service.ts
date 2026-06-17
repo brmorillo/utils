@@ -63,7 +63,7 @@ export class ValidationUtils {
     if (!inputUrl || typeof inputUrl !== 'string') return false;
 
     // Additional checks before trying to create URL object
-    if (inputUrl.includes(' ') || inputUrl.includes('..')) {
+    if (inputUrl.includes(' ')) {
       return false;
     }
 
@@ -84,17 +84,35 @@ export class ValidationUtils {
 
     try {
       const url = new URL(inputUrl);
-      return url.protocol === 'http:' || url.protocol === 'https:';
+      if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+        return false;
+      }
+
+      // Reject malformed hosts with empty labels (e.g. `example..com`).
+      // The check is scoped to the hostname only so that valid `..`
+      // sequences in the path or query string are not wrongly rejected.
+      if (url.hostname.split('.').some(label => label.length === 0)) {
+        return false;
+      }
+
+      return true;
     } catch {
       return false;
     }
   }
 
   /**
-   * Validates if a string is a valid phone number (generic format).
+   * Validates if a string is a digits-only phone number in a simplified
+   * E.164-like format.
+   *
+   * This performs a format/length check only: an optional leading `+`,
+   * followed by a first digit of 1-9, then 9 to 14 more digits (10-15 digits
+   * total). It does NOT validate country codes, area codes or whether the
+   * number is actually assignable; characters such as spaces, parentheses or
+   * dashes are not accepted.
    * @param {object} params - The parameters for the method.
    * @param {string} params.phoneNumber - The string to validate.
-   * @returns {boolean} `true` if the string is a valid phone number, otherwise `false`.
+   * @returns {boolean} `true` if the string matches the E.164-digits format, otherwise `false`.
    * @example
    * ValidationUtils.isValidPhoneNumber({
    *   phoneNumber: '+1234567890'
@@ -115,10 +133,15 @@ export class ValidationUtils {
   }
 
   /**
-   * Validates if a value is a number.
+   * Validates if a value is a finite number or a string that represents one.
+   *
+   * Only finite numbers and decimal numeric strings pass. Booleans,
+   * `null`/`undefined`, empty or whitespace-only strings, non-finite numbers
+   * (`NaN`, `Infinity`, `-Infinity`) and non-decimal numeric strings such as
+   * `'0x1F'` are rejected.
    * @param {object} params - The parameters for the method.
-   * @param {any} params.value - The value to validate.
-   * @returns {boolean} `true` if the value is a number, otherwise `false`.
+   * @param {unknown} params.value - The value to validate.
+   * @returns {boolean} `true` if the value is (or parses to) a finite number, otherwise `false`.
    * @example
    * ValidationUtils.isNumber({
    *   value: 123
@@ -132,11 +155,25 @@ export class ValidationUtils {
    *   value: 'abc'
    * }); // false
    */
-  public static isNumber({ value }: { value: any }): boolean {
+  public static isNumber({ value }: { value: unknown }): boolean {
     if (value === null || value === undefined) return false;
     if (typeof value === 'boolean') return false;
-    if (value === Infinity || value === -Infinity) return false;
-    return !isNaN(parseFloat(value)) && isFinite(value);
+
+    if (typeof value === 'number') {
+      return Number.isFinite(value);
+    }
+
+    if (typeof value === 'string') {
+      // Reject empty or whitespace-only strings. `Number('')` and
+      // `Number('   ')` both yield 0, which would otherwise pass.
+      if (value.trim() === '') return false;
+      // Reject non-decimal numeric strings such as '0x1F' which `Number`
+      // would happily parse.
+      if (/^0[xob]/i.test(value.trim())) return false;
+      return Number.isFinite(Number(value));
+    }
+
+    return false;
   }
 
   /**
@@ -349,11 +386,20 @@ export class ValidationUtils {
   }
 
   /**
-   * Validates if a string is a valid RG (Brazilian ID document).
+   * Validates the FORMAT of a Brazilian RG (ID document).
+   *
+   * This is a format/length check only and does NOT perform real check-digit
+   * validation. After stripping non-alphanumeric characters it verifies the
+   * cleaned value is 5-12 characters long and consists of digits with an
+   * optional trailing `X`/`x`. When `state: 'SP'` is provided a slightly
+   * stricter (but still simplified) path requires exactly 9 characters with a
+   * numeric 8-digit body and a numeric or `X` check character; it does NOT
+   * compute the real São Paulo check digit. Other states fall back to the
+   * generic format check.
    * @param {object} params - The parameters for the method.
    * @param {string} params.rg - The string to validate.
    * @param {string} [params.state] - Optional. The Brazilian state that issued the RG.
-   * @returns {boolean} `true` if the string is a valid RG format, otherwise `false`.
+   * @returns {boolean} `true` if the string matches the expected RG format, otherwise `false`.
    * @example
    * ValidationUtils.isValidRG({
    *   rg: '12.345.678-9'

@@ -1,27 +1,27 @@
 import { UUIDUtils } from '../../src/services/uuid.service';
 
 /**
- * Testes unitários para a classe UUIDUtils.
- * Estes testes verificam o comportamento de cada método individualmente.
+ * Unit tests for the UUIDUtils class.
+ * These tests verify the behavior of each method individually.
  */
-describe('UUIDUtils - Testes Unitários', () => {
+describe('UUIDUtils - Unit Tests', () => {
   describe('uuidV1Generate', () => {
-    it('deve gerar um UUID v1 válido', () => {
+    it('should generate a valid UUID v1', () => {
       const uuid = UUIDUtils.uuidV1Generate();
 
-      // Verifica se é uma string
+      // Verify that it is a string
       expect(typeof uuid).toBe('string');
 
-      // Verifica se tem o formato correto de UUID
+      // Verify that it has the correct UUID format
       expect(uuid).toMatch(
         /^[0-9a-f]{8}-[0-9a-f]{4}-1[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
       );
 
-      // Verifica se é válido usando o próprio método de validação
+      // Verify that it is valid using the validation method itself
       expect(UUIDUtils.isValidUuid({ id: uuid })).toBe(true);
     });
 
-    it('deve gerar UUIDs v1 únicos em chamadas consecutivas', () => {
+    it('should generate unique UUIDs v1 on consecutive calls', () => {
       const uuid1 = UUIDUtils.uuidV1Generate();
       const uuid2 = UUIDUtils.uuidV1Generate();
 
@@ -30,22 +30,22 @@ describe('UUIDUtils - Testes Unitários', () => {
   });
 
   describe('uuidV4Generate', () => {
-    it('deve gerar um UUID v4 válido', () => {
+    it('should generate a valid UUID v4', () => {
       const uuid = UUIDUtils.uuidV4Generate();
 
-      // Verifica se é uma string
+      // Verify that it is a string
       expect(typeof uuid).toBe('string');
 
-      // Verifica se tem o formato correto de UUID v4
+      // Verify that it has the correct UUID v4 format
       expect(uuid).toMatch(
         /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
       );
 
-      // Verifica se é válido usando o próprio método de validação
+      // Verify that it is valid using the validation method itself
       expect(UUIDUtils.isValidUuid({ id: uuid })).toBe(true);
     });
 
-    it('deve gerar UUIDs v4 únicos em chamadas consecutivas', () => {
+    it('should generate unique UUIDs v4 on consecutive calls', () => {
       const uuid1 = UUIDUtils.uuidV4Generate();
       const uuid2 = UUIDUtils.uuidV4Generate();
 
@@ -54,25 +54,25 @@ describe('UUIDUtils - Testes Unitários', () => {
   });
 
   describe('uuidV5Generate', () => {
-    it('deve gerar um UUID v5 válido com namespace e nome', () => {
-      const namespace = '6ba7b810-9dad-11d1-80b4-00c04fd430c8'; // Namespace DNS
+    it('should generate a valid UUID v5 with namespace and name', () => {
+      const namespace = '6ba7b810-9dad-11d1-80b4-00c04fd430c8'; // DNS namespace
       const name = 'example.com';
 
       const uuid = UUIDUtils.uuidV5Generate({ namespace, name });
 
-      // Verifica se é uma string
+      // Verify that it is a string
       expect(typeof uuid).toBe('string');
 
-      // Verifica se tem o formato correto de UUID v5
+      // Verify that it has the correct UUID v5 format
       expect(uuid).toMatch(
         /^[0-9a-f]{8}-[0-9a-f]{4}-5[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
       );
 
-      // Verifica se é válido usando o próprio método de validação
+      // Verify that it is valid using the validation method itself
       expect(UUIDUtils.isValidUuid({ id: uuid })).toBe(true);
     });
 
-    it('deve gerar o mesmo UUID v5 para o mesmo namespace e nome', () => {
+    it('should generate the same UUID v5 for the same namespace and name', () => {
       const namespace = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
       const name = 'example.com';
 
@@ -82,7 +82,7 @@ describe('UUIDUtils - Testes Unitários', () => {
       expect(uuid1).toBe(uuid2);
     });
 
-    it('deve gerar UUIDs v5 diferentes para nomes diferentes com o mesmo namespace', () => {
+    it('should generate different UUIDs v5 for different names with the same namespace', () => {
       const namespace = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
       const name1 = 'example.com';
       const name2 = 'example.org';
@@ -93,54 +93,69 @@ describe('UUIDUtils - Testes Unitários', () => {
       expect(uuid1).not.toBe(uuid2);
     });
 
-    it('deve gerar um UUID v5 válido sem namespace fornecido', () => {
+    it('should generate a valid UUID v5 without a provided namespace', () => {
       const name = 'example.com';
 
       const uuid = UUIDUtils.uuidV5Generate({ name });
 
-      // Verifica se é uma string
+      // Verify that it is a string
       expect(typeof uuid).toBe('string');
 
-      // Verifica se tem o formato correto de UUID v5
+      // Verify that it has the correct UUID v5 format
       expect(uuid).toMatch(
         /^[0-9a-f]{8}-[0-9a-f]{4}-5[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
       );
 
-      // Verifica se é válido usando o próprio método de validação
+      // Verify that it is valid using the validation method itself
       expect(UUIDUtils.isValidUuid({ id: uuid })).toBe(true);
+    });
+
+    it('should throw a ValidationError for an invalid namespace', () => {
+      expect(() => {
+        UUIDUtils.uuidV5Generate({
+          namespace: 'not-a-valid-uuid',
+          name: 'example.com',
+        });
+      }).toThrow('Invalid namespace');
+    });
+
+    it('should throw a ValidationError for an empty name', () => {
+      expect(() => {
+        UUIDUtils.uuidV5Generate({ name: '' });
+      }).toThrow('Invalid name');
     });
   });
 
   describe('isValidUuid', () => {
-    it('deve validar um UUID v1 como válido', () => {
+    it('should validate a UUID v1 as valid', () => {
       const uuid = UUIDUtils.uuidV1Generate();
       const isValid = UUIDUtils.isValidUuid({ id: uuid });
 
       expect(isValid).toBe(true);
     });
 
-    it('deve validar um UUID v4 como válido', () => {
+    it('should validate a UUID v4 as valid', () => {
       const uuid = UUIDUtils.uuidV4Generate();
       const isValid = UUIDUtils.isValidUuid({ id: uuid });
 
       expect(isValid).toBe(true);
     });
 
-    it('deve validar um UUID v5 como válido', () => {
+    it('should validate a UUID v5 as valid', () => {
       const uuid = UUIDUtils.uuidV5Generate({ name: 'test' });
       const isValid = UUIDUtils.isValidUuid({ id: uuid });
 
       expect(isValid).toBe(true);
     });
 
-    it('deve validar uma string não-UUID como inválida', () => {
+    it('should validate a non-UUID string as invalid', () => {
       const invalidUuids = [
         'not-a-uuid',
-        '123e4567-e89b-12d3-a456-4266554400', // muito curto
-        '123e4567-e89b-12d3-a456-42665544000000', // muito longo
-        '123e4567-e89b-12d3-a456_426655440000', // caractere inválido
-        '123e4567-e89b-12d3-a456', // incompleto
-        '', // vazio
+        '123e4567-e89b-12d3-a456-4266554400', // too short
+        '123e4567-e89b-12d3-a456-42665544000000', // too long
+        '123e4567-e89b-12d3-a456_426655440000', // invalid character
+        '123e4567-e89b-12d3-a456', // incomplete
+        '', // empty
       ];
 
       invalidUuids.forEach(invalidUuid => {

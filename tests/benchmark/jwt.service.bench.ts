@@ -1,23 +1,23 @@
 import { JWTUtils } from '../../src/services/jwt.service';
 
 /**
- * Testes de benchmark para a classe JWTUtils.
- * Estes testes verificam o desempenho da classe em operações de alta frequência.
+ * Benchmark tests for the JWTUtils class.
+ * These tests verify the class's performance in high-frequency operations.
  */
-describe('JWTUtils - Testes de Benchmark', () => {
-  // Função auxiliar para medir o tempo de execução
+describe('JWTUtils - Benchmark Tests', () => {
+  // Helper function to measure execution time
   const measureExecutionTime = (fn: () => void): number => {
     const start = process.hrtime.bigint();
     fn();
     const end = process.hrtime.bigint();
-    return Number(end - start) / 1_000_000; // Converte para milissegundos
+    return Number(end - start) / 1_000_000; // Convert to milliseconds
   };
 
   const secretKey = 'benchmark-test-secret-key';
   const payload = { userId: '123', role: 'user', data: 'benchmark test payload' };
 
-  describe('Geração de tokens em massa', () => {
-    it('deve gerar 1.000 tokens JWT em tempo razoável', () => {
+  describe('Generating tokens in bulk', () => {
+    it('should generate 1,000 JWT tokens in a reasonable time', () => {
       const count = 1000;
       const tokens: string[] = [];
       
@@ -32,27 +32,27 @@ describe('JWTUtils - Testes de Benchmark', () => {
       });
       
       console.log(
-        `Tempo para gerar ${count} tokens JWT: ${executionTime.toFixed(2)}ms`,
+        `Time to generate ${count} JWT tokens: ${executionTime.toFixed(2)}ms`,
       );
-      
-      // Verifica se todos os tokens são diferentes
+
+      // Check whether all tokens are different
       const uniqueTokens = new Set(tokens);
       expect(uniqueTokens.size).toBe(count);
-      
-      // O tempo médio por token deve ser menor que 1ms
+
+      // The average time per token should be less than 1ms
       const avgTimePerToken = executionTime / count;
       console.log(
-        `Tempo médio por token JWT: ${avgTimePerToken.toFixed(2)}ms`,
+        `Average time per JWT token: ${avgTimePerToken.toFixed(2)}ms`,
       );
       expect(avgTimePerToken).toBeLessThan(1);
     });
   });
 
-  describe('Verificação de tokens em massa', () => {
-    it('deve verificar 1.000 tokens JWT em tempo razoável', () => {
+  describe('Verifying tokens in bulk', () => {
+    it('should verify 1,000 JWT tokens in a reasonable time', () => {
       const count = 1000;
-      
-      // Gera um token para verificar repetidamente
+
+      // Generate a token to verify repeatedly
       const token = JWTUtils.generate({
         payload,
         secretKey,
@@ -69,23 +69,23 @@ describe('JWTUtils - Testes de Benchmark', () => {
       });
       
       console.log(
-        `Tempo para verificar ${count} tokens JWT: ${executionTime.toFixed(2)}ms`,
+        `Time to verify ${count} JWT tokens: ${executionTime.toFixed(2)}ms`,
       );
-      
-      // O tempo médio por verificação deve ser menor que 1ms
+
+      // The average time per verification should be less than 1ms
       const avgTimePerVerification = executionTime / count;
       console.log(
-        `Tempo médio por verificação de token JWT: ${avgTimePerVerification.toFixed(2)}ms`,
+        `Average time per JWT token verification: ${avgTimePerVerification.toFixed(2)}ms`,
       );
       expect(avgTimePerVerification).toBeLessThan(1);
     });
   });
 
-  describe('Decodificação de tokens em massa', () => {
-    it('deve decodificar 10.000 tokens JWT em tempo razoável', () => {
+  describe('Decoding tokens in bulk', () => {
+    it('should decode 10,000 JWT tokens in a reasonable time', () => {
       const count = 10000;
-      
-      // Gera um token para decodificar repetidamente
+
+      // Generate a token to decode repeatedly
       const token = JWTUtils.generate({
         payload,
         secretKey
@@ -100,23 +100,23 @@ describe('JWTUtils - Testes de Benchmark', () => {
       });
       
       console.log(
-        `Tempo para decodificar ${count} tokens JWT: ${executionTime.toFixed(2)}ms`,
+        `Time to decode ${count} JWT tokens: ${executionTime.toFixed(2)}ms`,
       );
-      
-      // O tempo médio por decodificação deve ser menor que 0.1ms
+
+      // The average time per decoding should be less than 0.1ms
       const avgTimePerDecode = executionTime / count;
       console.log(
-        `Tempo médio por decodificação de token JWT: ${avgTimePerDecode.toFixed(2)}ms`,
+        `Average time per JWT token decoding: ${avgTimePerDecode.toFixed(2)}ms`,
       );
       expect(avgTimePerDecode).toBeLessThan(0.1);
     });
   });
 
-  describe('Verificação de expiração em massa', () => {
-    it('deve verificar a expiração de 10.000 tokens JWT em tempo razoável', () => {
+  describe('Verifying expiration in bulk', () => {
+    it('should check the expiration of 10,000 JWT tokens in a reasonable time', () => {
       const count = 10000;
-      
-      // Gera um token com expiração para verificar repetidamente
+
+      // Generate a token with expiration to check repeatedly
       const token = JWTUtils.generate({
         payload,
         secretKey,
@@ -132,30 +132,30 @@ describe('JWTUtils - Testes de Benchmark', () => {
       });
       
       console.log(
-        `Tempo para verificar expiração de ${count} tokens JWT: ${executionTime.toFixed(2)}ms`,
+        `Time to check expiration of ${count} JWT tokens: ${executionTime.toFixed(2)}ms`,
       );
-      
-      // O tempo médio por verificação de expiração deve ser menor que 0.1ms
+
+      // The average time per expiration check should be less than 0.1ms
       const avgTimePerCheck = executionTime / count;
       console.log(
-        `Tempo médio por verificação de expiração: ${avgTimePerCheck.toFixed(2)}ms`,
+        `Average time per expiration check: ${avgTimePerCheck.toFixed(2)}ms`,
       );
       expect(avgTimePerCheck).toBeLessThan(0.1);
     });
   });
 
-  describe('Renovação de tokens em massa', () => {
-    it('deve renovar 1.000 tokens JWT em tempo razoável', () => {
+  describe('Refreshing tokens in bulk', () => {
+    it('should refresh 1,000 JWT tokens in a reasonable time', () => {
       const count = 1000;
-      
-      // Gera um token para renovar repetidamente
+
+      // Generate a token to refresh repeatedly
       const token = JWTUtils.generate({
         payload,
         secretKey,
         options: { expiresIn: '1s' }
       });
       
-      // Espera o token expirar
+      // Wait for the token to expire
       return new Promise<void>(resolve => {
         setTimeout(() => {
           const executionTime = measureExecutionTime(() => {
@@ -169,24 +169,24 @@ describe('JWTUtils - Testes de Benchmark', () => {
           });
           
           console.log(
-            `Tempo para renovar ${count} tokens JWT: ${executionTime.toFixed(2)}ms`,
+            `Time to refresh ${count} JWT tokens: ${executionTime.toFixed(2)}ms`,
           );
-          
-          // O tempo médio por renovação deve ser menor que 1ms
+
+          // The average time per refresh should be less than 1ms
           const avgTimePerRefresh = executionTime / count;
           console.log(
-            `Tempo médio por renovação de token JWT: ${avgTimePerRefresh.toFixed(2)}ms`,
+            `Average time per JWT token refresh: ${avgTimePerRefresh.toFixed(2)}ms`,
           );
           expect(avgTimePerRefresh).toBeLessThan(1);
-          
+
           resolve();
-        }, 1100); // Espera 1.1 segundos para garantir que o token expirou
+        }, 1100); // Wait 1.1 seconds to ensure the token has expired
       });
     });
   });
 
-  describe('Comparação de algoritmos', () => {
-    it('deve comparar o desempenho de diferentes algoritmos de assinatura', () => {
+  describe('Algorithm comparison', () => {
+    it('should compare the performance of different signing algorithms', () => {
       const count = 100;
       const algorithms = ['HS256', 'HS384', 'HS512'];
       const results: Record<string, number> = {};
@@ -207,14 +207,14 @@ describe('JWTUtils - Testes de Benchmark', () => {
         
         results[algorithm] = executionTime / count;
         console.log(
-          `Tempo médio por token com ${algorithm}: ${results[algorithm].toFixed(2)}ms`,
+          `Average time per token with ${algorithm}: ${results[algorithm].toFixed(2)}ms`,
         );
       }
-      
-      // Verifica se os resultados foram registrados
+
+      // Check whether the results were recorded
       expect(Object.keys(results).length).toBe(algorithms.length);
-      
-      // Todos os algoritmos devem ter desempenho razoável
+
+      // All algorithms should have reasonable performance
       for (const algorithm of algorithms) {
         expect(results[algorithm]).toBeLessThan(1);
       }

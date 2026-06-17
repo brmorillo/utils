@@ -23,14 +23,19 @@ export class BaseError extends Error {
    * @param code Error code
    * @param statusCode HTTP status code (if applicable)
    * @param details Additional error details
+   * @param options Extra options, e.g. the original error as `cause`
    */
   constructor(
     message: string,
     code: string = 'UNKNOWN_ERROR',
     statusCode?: number,
     details?: Record<string, any>,
+    options?: { cause?: unknown },
   ) {
-    super(message);
+    super(
+      message,
+      options?.cause !== undefined ? { cause: options.cause } : undefined,
+    );
     this.name = this.constructor.name;
     this.code = code;
     this.statusCode = statusCode;
@@ -41,16 +46,30 @@ export class BaseError extends Error {
   }
 
   /**
-   * Converts the error to a plain object for serialization
+   * Converts the error to a plain object for serialization.
+   *
+   * @remarks
+   * For security reasons the `stack` is NOT included by default: stack traces
+   * leak filesystem paths and internal structure when serialized into HTTP
+   * responses. Pass `{ includeStack: true }` to opt in (e.g. for internal logs).
+   * @param options Optional serialization options.
+   * @param options.includeStack When `true`, includes the `stack` property. Defaults to `false`.
    */
-  public toJSON(): Record<string, any> {
-    return {
+  public toJSON({
+    includeStack = false,
+  }: { includeStack?: boolean } = {}): Record<string, any> {
+    const json: Record<string, any> = {
       name: this.name,
       message: this.message,
       code: this.code,
       statusCode: this.statusCode,
       details: this.details,
-      stack: this.stack,
     };
+
+    if (includeStack) {
+      json.stack = this.stack;
+    }
+
+    return json;
   }
 }

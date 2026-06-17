@@ -1,19 +1,19 @@
 import { ObjectUtils } from '../../src/services/object.service';
 /**
- * Testes de benchmark para a classe ObjectUtils.
- * Estes testes verificam o desempenho da classe em operações de alta frequência.
+ * Benchmark tests for the ObjectUtils class.
+ * These tests verify the performance of the class in high-frequency operations.
  */
-describe('ObjectUtils - Testes de Benchmark', () => {
-  // Função auxiliar para medir o tempo de execução
+describe('ObjectUtils - Benchmark Tests', () => {
+  // Helper function to measure execution time
   const measureExecutionTime = (fn: () => void): number => {
     const start = process.hrtime.bigint();
     fn();
     const end = process.hrtime.bigint();
-    return Number(end - start) / 1_000_000; // Converte para milissegundos
+    return Number(end - start) / 1_000_000; // Convert to milliseconds
   };
 
   describe('deepClone', () => {
-    it('deve clonar 100.000 objetos simples em tempo razoável', () => {
+    it('should clone 100,000 simple objects in a reasonable time', () => {
       const obj = { a: 1, b: 2, c: 3 };
       const count = 100000;
       const executionTime = measureExecutionTime(() => {
@@ -22,14 +22,14 @@ describe('ObjectUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para clonar ${count} objetos simples: ${executionTime.toFixed(2)}ms`,
+        `Time to clone ${count} simple objects: ${executionTime.toFixed(2)}ms`,
       );
-      // O tempo médio por clonagem deve ser menor que 0.01ms
+      // The average time per clone should be less than 0.01ms
       const avgTimePerClone = executionTime / count;
       expect(avgTimePerClone).toBeLessThan(0.01);
     });
 
-    it('deve clonar 10.000 objetos complexos em tempo razoável', () => {
+    it('should clone 10,000 complex objects in a reasonable time', () => {
       const obj = {
         a: { b: { c: { d: 1, e: 2, f: 3 } } },
         g: [1, 2, 3, { h: 4, i: [5, 6, 7] }],
@@ -44,16 +44,16 @@ describe('ObjectUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para clonar ${count} objetos complexos: ${executionTime.toFixed(2)}ms`,
+        `Time to clone ${count} complex objects: ${executionTime.toFixed(2)}ms`,
       );
-      // O tempo médio por clonagem deve ser menor que 0.05ms
+      // The average time per clone should be less than 0.05ms
       const avgTimePerClone = executionTime / count;
       expect(avgTimePerClone).toBeLessThan(0.05);
     });
   });
 
   describe('pick', () => {
-    it('deve selecionar chaves de 100.000 objetos em tempo razoável', () => {
+    it('should select keys from 100,000 objects in a reasonable time', () => {
       const obj = { a: 1, b: 2, c: 3, d: 4, e: 5 };
       const keys = ['a', 'c', 'e'] as ('a' | 'b' | 'c' | 'd' | 'e')[];
       const count = 100000;
@@ -63,16 +63,16 @@ describe('ObjectUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para selecionar chaves de ${count} objetos: ${executionTime.toFixed(2)}ms`,
+        `Time to select keys from ${count} objects: ${executionTime.toFixed(2)}ms`,
       );
-      // O tempo médio por seleção deve ser menor que 0.01ms
+      // The average time per pick should be less than 0.01ms
       const avgTimePerPick = executionTime / count;
       expect(avgTimePerPick).toBeLessThan(0.01);
     });
   });
 
   describe('omit', () => {
-    it('deve omitir chaves de 100.000 objetos em tempo razoável', () => {
+    it('should omit keys from 100,000 objects in a reasonable time', () => {
       const obj = { a: 1, b: 2, c: 3, d: 4, e: 5 };
       const keys = ['b', 'd'] as ('a' | 'b' | 'c' | 'd' | 'e')[];
       const count = 100000;
@@ -82,16 +82,16 @@ describe('ObjectUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para omitir chaves de ${count} objetos: ${executionTime.toFixed(2)}ms`,
+        `Time to omit keys from ${count} objects: ${executionTime.toFixed(2)}ms`,
       );
-      // O tempo médio por omissão deve ser menor que 0.01ms
+      // The average time per omit should be less than 0.01ms
       const avgTimePerOmit = executionTime / count;
       expect(avgTimePerOmit).toBeLessThan(0.01);
     });
   });
 
   describe('flattenObject', () => {
-    it('deve achatar 10.000 objetos simples em tempo razoável', () => {
+    it('should flatten 10,000 simple objects in a reasonable time', () => {
       const obj = { a: 1, b: { c: 2, d: 3 }, e: { f: { g: 4 } } };
       const count = 10000;
       const executionTime = measureExecutionTime(() => {
@@ -100,15 +100,15 @@ describe('ObjectUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para achatar ${count} objetos simples: ${executionTime.toFixed(2)}ms`,
+        `Time to flatten ${count} simple objects: ${executionTime.toFixed(2)}ms`,
       );
-      // O tempo médio por achatamento deve ser menor que 0.05ms
+      // The average time per flatten should be less than 0.05ms
       const avgTimePerFlatten = executionTime / count;
       expect(avgTimePerFlatten).toBeLessThan(0.05);
     });
 
-    it('deve achatar 1.000 objetos complexos em tempo razoável', () => {
-      // Cria um objeto com muitos níveis de aninhamento
+    it('should flatten 1,000 complex objects in a reasonable time', () => {
+      // Create an object with many levels of nesting
       const createNestedObject = (depth: number, breadth: number): any => {
         if (depth === 0) return 'value';
         const obj: Record<string, any> = {};
@@ -126,18 +126,18 @@ describe('ObjectUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para achatar ${count} objetos complexos: ${executionTime.toFixed(
+        `Time to flatten ${count} complex objects: ${executionTime.toFixed(
           2,
         )}ms`,
       );
-      // O tempo médio por achatamento deve ser menor que 0.5ms
+      // The average time per flatten should be less than 0.5ms
       const avgTimePerFlatten = executionTime / count;
       expect(avgTimePerFlatten).toBeLessThan(0.5);
     });
   });
 
   describe('unflattenObject', () => {
-    it('deve desachatar 10.000 objetos simples em tempo razoável', () => {
+    it('should unflatten 10,000 simple objects in a reasonable time', () => {
       const obj = {};
       const path = 'a.b.c';
       const value = 42;
@@ -148,16 +148,16 @@ describe('ObjectUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para desachatar ${count} objetos simples: ${executionTime.toFixed(
+        `Time to unflatten ${count} simple objects: ${executionTime.toFixed(
           2,
         )}ms`,
       );
-      // O tempo médio por desachatamento deve ser menor que 0.05ms
+      // The average time per unflatten should be less than 0.05ms
       const avgTimePerUnflatten = executionTime / count;
       expect(avgTimePerUnflatten).toBeLessThan(0.05);
     });
 
-    it('deve desachatar 10.000 objetos com caminhos complexos em tempo razoável', () => {
+    it('should unflatten 10,000 objects with complex paths in a reasonable time', () => {
       const obj = {};
       const paths = [
         'a.b.c.d.e',
@@ -180,18 +180,18 @@ describe('ObjectUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para desachatar ${
+        `Time to unflatten ${
           count * paths.length
-        } objetos com caminhos complexos: ${executionTime.toFixed(2)}ms`,
+        } objects with complex paths: ${executionTime.toFixed(2)}ms`,
       );
-      // O tempo médio por desachatamento deve ser menor que 0.05ms
+      // The average time per unflatten should be less than 0.05ms
       const avgTimePerUnflatten = executionTime / (count * paths.length);
       expect(avgTimePerUnflatten).toBeLessThan(0.05);
     });
   });
 
   describe('deepMerge', () => {
-    it('deve mesclar 10.000 objetos simples em tempo razoável', () => {
+    it('should merge 10,000 simple objects in a reasonable time', () => {
       const target = { a: 1, b: 2 };
       const source = { b: 3, c: 4 };
       const count = 10000;
@@ -201,16 +201,16 @@ describe('ObjectUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para mesclar ${count} objetos simples: ${executionTime.toFixed(
+        `Time to merge ${count} simple objects: ${executionTime.toFixed(
           2,
         )}ms`,
       );
-      // O tempo médio por mesclagem deve ser menor que 0.05ms
+      // The average time per merge should be less than 0.05ms
       const avgTimePerMerge = executionTime / count;
       expect(avgTimePerMerge).toBeLessThan(0.05);
     });
 
-    it('deve mesclar 1.000 objetos complexos em tempo razoável', () => {
+    it('should merge 1,000 complex objects in a reasonable time', () => {
       const target = {
         a: { b: { c: 1, d: 2 }, e: [1, 2] },
         f: { g: 3 },
@@ -226,18 +226,18 @@ describe('ObjectUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para mesclar ${count} objetos complexos: ${executionTime.toFixed(
+        `Time to merge ${count} complex objects: ${executionTime.toFixed(
           2,
         )}ms`,
       );
-      // O tempo médio por mesclagem deve ser menor que 0.5ms
+      // The average time per merge should be less than 0.5ms
       const avgTimePerMerge = executionTime / count;
       expect(avgTimePerMerge).toBeLessThan(0.5);
     });
   });
 
   describe('compare', () => {
-    it('deve comparar 10.000 objetos simples em tempo razoável', () => {
+    it('should compare 10,000 simple objects in a reasonable time', () => {
       const obj1 = { a: 1, b: 2, c: 3 };
       const obj2 = { a: 1, b: 2, c: 3 };
       const count = 10000;
@@ -247,16 +247,16 @@ describe('ObjectUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para comparar ${count} objetos simples: ${executionTime.toFixed(
+        `Time to compare ${count} simple objects: ${executionTime.toFixed(
           2,
         )}ms`,
       );
-      // O tempo médio por comparação deve ser menor que 0.01ms
+      // The average time per compare should be less than 0.01ms
       const avgTimePerCompare = executionTime / count;
       expect(avgTimePerCompare).toBeLessThan(0.01);
     });
 
-    it('deve comparar 1.000 objetos complexos em tempo razoável', () => {
+    it('should compare 1,000 complex objects in a reasonable time', () => {
       const obj1 = {
         a: { b: { c: 1, d: 2 }, e: [1, 2] },
         f: { g: 3 },
@@ -278,18 +278,18 @@ describe('ObjectUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para comparar ${count} objetos complexos: ${executionTime.toFixed(
+        `Time to compare ${count} complex objects: ${executionTime.toFixed(
           2,
         )}ms`,
       );
-      // O tempo médio por comparação deve ser menor que 0.1ms
+      // The average time per compare should be less than 0.1ms
       const avgTimePerCompare = executionTime / count;
       expect(avgTimePerCompare).toBeLessThan(0.1);
     });
   });
 
   describe('diff', () => {
-    it('deve encontrar diferenças entre 10.000 pares de objetos em tempo razoável', () => {
+    it('should find differences between 10,000 pairs of objects in a reasonable time', () => {
       const obj1 = { a: 1, b: 2, c: 3, d: 4, e: 5 };
       const obj2 = { a: 1, b: 3, c: 3, d: 5, e: 5 };
       const count = 10000;
@@ -299,18 +299,18 @@ describe('ObjectUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para encontrar diferenças entre ${count} pares de objetos: ${executionTime.toFixed(
+        `Time to find differences between ${count} pairs of objects: ${executionTime.toFixed(
           2,
         )}ms`,
       );
-      // O tempo médio por operação diff deve ser menor que 0.01ms
+      // The average time per diff operation should be less than 0.01ms
       const avgTimePerDiff = executionTime / count;
       expect(avgTimePerDiff).toBeLessThan(0.01);
     });
   });
 
   describe('findSubsetObjects', () => {
-    it('deve encontrar subconjuntos em 10.000 objetos em tempo razoável', () => {
+    it('should find subsets in 10,000 objects in a reasonable time', () => {
       const array = [
         { id: 1, name: 'Item 1', value: 100 },
         { id: 2, name: 'Item 2', value: 200 },
@@ -326,18 +326,18 @@ describe('ObjectUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para encontrar subconjuntos em ${count} objetos: ${executionTime.toFixed(
+        `Time to find subsets in ${count} objects: ${executionTime.toFixed(
           2,
         )}ms`,
       );
-      // O tempo médio por busca de subconjunto deve ser menor que 0.01ms
+      // The average time per subset search should be less than 0.01ms
       const avgTimePerFindSubset = executionTime / count;
       expect(avgTimePerFindSubset).toBeLessThan(0.01);
     });
   });
 
   describe('isSubsetObject', () => {
-    it('deve verificar se um objeto é subconjunto de outro 10.000 vezes em tempo razoável', () => {
+    it('should check whether an object is a subset of another 10,000 times in a reasonable time', () => {
       const superset = {
         id: 1,
         name: 'Item',
@@ -355,18 +355,18 @@ describe('ObjectUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para verificar subconjuntos ${count} vezes: ${executionTime.toFixed(
+        `Time to check subsets ${count} times: ${executionTime.toFixed(
           2,
         )}ms`,
       );
-      // O tempo médio por verificação de subconjunto deve ser menor que 0.01ms
+      // The average time per subset check should be less than 0.01ms
       const avgTimePerIsSubset = executionTime / count;
       expect(avgTimePerIsSubset).toBeLessThan(0.01);
     });
   });
 
-  describe('compressObject e decompressObject', () => {
-    it('deve comprimir e descomprimir 10.000 objetos em tempo razoável', () => {
+  describe('compressObject and decompressObject', () => {
+    it('should compress and decompress 10,000 objects in a reasonable time', () => {
       const json = {
         id: 1,
         name: 'Test Object',
@@ -386,7 +386,7 @@ describe('ObjectUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para comprimir ${count} objetos: ${compressionTime.toFixed(2)}ms`,
+        `Time to compress ${count} objects: ${compressionTime.toFixed(2)}ms`,
       );
 
       const decompressionTime = measureExecutionTime(() => {
@@ -395,16 +395,16 @@ describe('ObjectUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para descomprimir ${count} objetos: ${decompressionTime.toFixed(
+        `Time to decompress ${count} objects: ${decompressionTime.toFixed(
           2,
         )}ms`,
       );
 
-      // O tempo médio por compressão deve ser menor que 0.05ms
+      // The average time per compression should be less than 0.05ms
       const avgTimePerCompression = compressionTime / count;
       expect(avgTimePerCompression).toBeLessThan(0.05);
 
-      // O tempo médio por descompressão deve ser menor que 0.05ms
+      // The average time per decompression should be less than 0.05ms
       const avgTimePerDecompression = decompressionTime / count;
       expect(avgTimePerDecompression).toBeLessThan(0.05);
     });

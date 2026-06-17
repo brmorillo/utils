@@ -114,7 +114,10 @@ export class EventEmitter {
     const handlers = this.events.get(eventName);
     if (!handlers) return;
 
-    handlers.forEach(handler => {
+    // Snapshot the handlers before iterating so that subscriptions or
+    // unsubscriptions performed by a handler during emit do not affect the
+    // current dispatch (avoids mutation-during-iteration issues).
+    [...handlers].forEach(handler => {
       try {
         handler(data);
       } catch (error) {

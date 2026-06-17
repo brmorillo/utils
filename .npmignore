@@ -4,25 +4,25 @@ tests/
 __tests__/
 
 # Config files
-.eslintrc.js
 .prettierrc
-.versionrc.json
+eslint.config.js
+commitlint.config.js
 jest.config.js
 tsconfig.json
+tsup.config.ts
 
 # Git files
 .git/
 .gitignore
 .husky/
 
-# CI/CD
-.github/
-
-# Docs
-CONTRIBUTING.md
-STRUCTURE.md
+# AI / contributor context
+CLAUDE.md
 
 # Development files
+docs/
+examples/
+usage-example.js
 *.log
 *.tgz
 coverage/

@@ -1,13 +1,13 @@
 import { RequestUtils } from '../../src/services/request.service';
 
 /**
- * Testes de integração para a classe RequestUtils.
- * Estes testes verificam cenários mais complexos que envolvem múltiplos métodos.
+ * Integration tests for the RequestUtils class.
+ * These tests verify more complex scenarios involving multiple methods.
  */
-describe('RequestUtils - Testes de Integração', () => {
-  describe('Cenários de uso real', () => {
-    it('deve processar requisições de diferentes tipos de clientes', () => {
-      // Cenário: Processar requisições de diferentes dispositivos
+describe('RequestUtils - Integration Tests', () => {
+  describe('Real-world usage scenarios', () => {
+    it('should process requests from different types of clients', () => {
+      // Scenario: Process requests from different devices
       const requests = [
         // Desktop Windows/Chrome
         {
@@ -47,34 +47,34 @@ describe('RequestUtils - Testes de Integração', () => {
         },
       ];
 
-      // Processa cada requisição
+      // Process each request
       const results = requests.map(request =>
         RequestUtils.extractRequestData({ request }),
       );
 
-      // Verificações para o cliente Desktop
+      // Assertions for the Desktop client
       expect(results[0].browser).toBe('Chrome');
       expect(results[0].os).toBe('Windows');
       expect(results[0].device).toBeUndefined();
       expect(results[0].xForwardedFor).toBe('192.168.1.1');
 
-      // Verificações para o cliente Mobile
+      // Assertions for the Mobile client
       expect(results[1].browser).toBe('Mobile Safari');
       expect(results[1].os).toBe('iOS');
       expect(results[1].device).toBe('mobile');
       expect(results[1].xForwardedFor).toBe('192.168.2.1');
 
-      // Verificações para o cliente Tablet
+      // Assertions for the Tablet client
       expect(results[2].browser).toBe('Chrome');
       expect(results[2].os).toBe('Android');
       expect(results[2].device).toBe('tablet');
       expect(results[2].xForwardedFor).toBe('192.168.3.1');
     });
 
-    it('deve processar requisições com diferentes configurações de proxy', () => {
-      // Cenário: Processar requisições com diferentes configurações de proxy
+    it('should process requests with different proxy configurations', () => {
+      // Scenario: Process requests with different proxy configurations
       const requests = [
-        // Sem proxy
+        // No proxy
         {
           headers: {
             'user-agent':
@@ -83,7 +83,7 @@ describe('RequestUtils - Testes de Integração', () => {
           },
           ip: '192.168.1.1',
         },
-        // Com X-Forwarded-For
+        // With X-Forwarded-For
         {
           headers: {
             'user-agent':
@@ -93,7 +93,7 @@ describe('RequestUtils - Testes de Integração', () => {
           },
           ip: '192.168.1.2',
         },
-        // Com X-Real-IP
+        // With X-Real-IP
         {
           headers: {
             'user-agent':
@@ -103,7 +103,7 @@ describe('RequestUtils - Testes de Integração', () => {
           },
           ip: '192.168.1.3',
         },
-        // Com ambos X-Forwarded-For e X-Real-IP
+        // With both X-Forwarded-For and X-Real-IP
         {
           headers: {
             'user-agent':
@@ -116,36 +116,36 @@ describe('RequestUtils - Testes de Integração', () => {
         },
       ];
 
-      // Processa cada requisição
+      // Process each request
       const results = requests.map(request =>
         RequestUtils.extractRequestData({ request }),
       );
 
-      // Verificações para requisição sem proxy
+      // Assertions for request without proxy
       expect(results[0].ipAddress).toBe('192.168.1.1');
       expect(results[0].xForwardedFor).toBeUndefined();
       expect(results[0].xRealIp).toBeUndefined();
 
-      // Verificações para requisição com X-Forwarded-For
+      // Assertions for request with X-Forwarded-For
       expect(results[1].ipAddress).toBe('192.168.1.2');
       expect(results[1].xForwardedFor).toBe('203.0.113.1');
       expect(results[1].xRealIp).toBeUndefined();
 
-      // Verificações para requisição com X-Real-IP
+      // Assertions for request with X-Real-IP
       expect(results[2].ipAddress).toBe('192.168.1.3');
       expect(results[2].xForwardedFor).toBeUndefined();
       expect(results[2].xRealIp).toBe('203.0.113.2');
 
-      // Verificações para requisição com ambos X-Forwarded-For e X-Real-IP
+      // Assertions for request with both X-Forwarded-For and X-Real-IP
       expect(results[3].ipAddress).toBe('192.168.1.4');
       expect(results[3].xForwardedFor).toBe('203.0.113.3');
       expect(results[3].xRealIp).toBe('203.0.113.3');
     });
 
-    it('deve processar requisições com diferentes origens e referenciadores', () => {
-      // Cenário: Processar requisições com diferentes origens e referenciadores
+    it('should process requests with different origins and referers', () => {
+      // Scenario: Process requests with different origins and referers
       const requests = [
-        // Requisição direta
+        // Direct request
         {
           headers: {
             'user-agent':
@@ -153,7 +153,7 @@ describe('RequestUtils - Testes de Integração', () => {
             host: 'api.example.com',
           },
         },
-        // Requisição de um site
+        // Request from a website
         {
           headers: {
             'user-agent':
@@ -163,7 +163,7 @@ describe('RequestUtils - Testes de Integração', () => {
             referer: 'https://example.com/page1',
           },
         },
-        // Requisição de outro site
+        // Request from another website
         {
           headers: {
             'user-agent':
@@ -175,22 +175,22 @@ describe('RequestUtils - Testes de Integração', () => {
         },
       ];
 
-      // Processa cada requisição
+      // Process each request
       const results = requests.map(request =>
         RequestUtils.extractRequestData({ request }),
       );
 
-      // Verificações para requisição direta
+      // Assertions for direct request
       expect(results[0].origin).toBeUndefined();
       expect(results[0].referer).toBeUndefined();
       expect(results[0].host).toBe('api.example.com');
 
-      // Verificações para requisição de um site
+      // Assertions for request from a website
       expect(results[1].origin).toBe('https://example.com');
       expect(results[1].referer).toBe('https://example.com/page1');
       expect(results[1].host).toBe('api.example.com');
 
-      // Verificações para requisição de outro site
+      // Assertions for request from another website
       expect(results[2].origin).toBe('https://otherdomain.com');
       expect(results[2].referer).toBe('https://otherdomain.com/page2');
       expect(results[2].host).toBe('api.example.com');
