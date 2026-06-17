@@ -2,116 +2,116 @@ import { DateUtils } from '../../src/services/date.service';
 import { DateTime, Duration } from 'luxon';
 
 /**
- * Testes de integração para a classe DateUtils.
- * Estes testes verificam cenários mais complexos que envolvem múltiplos métodos.
+ * Integration tests for the DateUtils class.
+ * These tests verify more complex scenarios that involve multiple methods.
  */
-describe('DateUtils - Testes de Integração', () => {
-  describe('Operações encadeadas', () => {
-    it('deve calcular corretamente a duração de um evento', () => {
-      // Cenário: Calcular a duração de um evento em diferentes unidades
-      // 1. Criar um intervalo de datas
+describe('DateUtils - Integration Tests', () => {
+  describe('Chained operations', () => {
+    it('should correctly calculate the duration of an event', () => {
+      // Scenario: Calculate the duration of an event in different units
+      // 1. Create a date interval
       const interval = DateUtils.createInterval({
         startDate: '2023-01-01T10:00:00Z',
         endDate: '2023-01-03T15:30:00Z',
       });
 
-      // 2. Calcular a duração em dias, horas e minutos
+      // 2. Calculate the duration in days, hours and minutes
       const duration = DateUtils.diffBetween({
         startDate: interval.start || DateTime.fromISO('2023-01-01T10:00:00Z'),
         endDate: interval.end || DateTime.fromISO('2023-01-03T15:30:00Z'),
         units: ['days', 'hours', 'minutes'],
       });
 
-      // 3. Adicionar a duração a uma nova data
+      // 3. Add the duration to a new date
       const newDate = DateUtils.addTime({
         date: interval.start || DateTime.fromISO('2023-01-01T10:00:00Z'),
         timeToAdd: duration,
       });
 
-      // Verificações
+      // Assertions
       expect(duration.days).toBe(2);
       expect(duration.hours).toBe(5);
       expect(duration.minutes).toBe(30);
       expect(newDate.toISO()).toBe(interval.end?.toISO());
     });
 
-    it('deve converter corretamente entre timezones', () => {
-      // Cenário: Converter uma data entre diferentes timezones
-      // 1. Criar uma data UTC
+    it('should correctly convert between timezones', () => {
+      // Scenario: Convert a date between different timezones
+      // 1. Create a UTC date
       const utcDate = DateUtils.now({ utc: true });
 
-      // 2. Converter para timezone de Nova York
+      // 2. Convert to New York timezone
       const nyDate = DateUtils.toTimeZone({
         date: utcDate,
         timeZone: 'America/New_York',
       });
 
-      // 3. Converter para timezone de Tóquio
+      // 3. Convert to Tokyo timezone
       const tokyoDate = DateUtils.toTimeZone({
         date: utcDate,
         timeZone: 'Asia/Tokyo',
       });
 
-      // 4. Converter de volta para UTC
+      // 4. Convert back to UTC
       const backToUtc = DateUtils.toUTC({ date: nyDate });
 
-      // Verificações
-      expect(utcDate.hour).not.toBe(nyDate.hour); // Horas diferentes em timezones diferentes
+      // Assertions
+      expect(utcDate.hour).not.toBe(nyDate.hour); // Different hours in different timezones
       expect(utcDate.hour).not.toBe(tokyoDate.hour);
       expect(nyDate.hour).not.toBe(tokyoDate.hour);
-      expect(utcDate.toMillis()).toBe(backToUtc.toMillis()); // Mesmo timestamp ao converter de volta
+      expect(utcDate.toMillis()).toBe(backToUtc.toMillis()); // Same timestamp when converting back
     });
 
-    it('deve calcular corretamente datas relativas', () => {
-      // Cenário: Calcular datas relativas a partir de uma data base
-      // 1. Obter a data atual
+    it('should correctly calculate relative dates', () => {
+      // Scenario: Calculate relative dates from a base date
+      // 1. Get the current date
       const now = DateUtils.now();
 
-      // 2. Calcular uma data no passado (1 mês atrás)
+      // 2. Calculate a date in the past (1 month ago)
       const oneMonthAgo = DateUtils.removeTime({
         date: now,
         timeToRemove: { months: 1 },
       });
 
-      // 3. Calcular uma data no futuro (2 semanas à frente)
+      // 3. Calculate a date in the future (2 weeks ahead)
       const twoWeeksLater = DateUtils.addTime({
         date: now,
         timeToAdd: { weeks: 2 },
       });
 
-      // 4. Calcular a diferença entre as datas
+      // 4. Calculate the difference between the dates
       const totalDuration = DateUtils.diffBetween({
         startDate: oneMonthAgo,
         endDate: twoWeeksLater,
         units: ['days'],
       });
 
-      // Verificações
+      // Assertions
       expect(oneMonthAgo < now).toBe(true);
       expect(twoWeeksLater > now).toBe(true);
-      expect(totalDuration.days).toBeGreaterThan(30); // Aproximadamente 1 mês + 2 semanas
+      expect(totalDuration.days).toBeGreaterThan(30); // Approximately 1 month + 2 weeks
     });
   });
 
-  describe('Cenários de uso real', () => {
-    it('deve calcular corretamente a interseção de dois intervalos de datas', () => {
-      // Cenário: Verificar a sobreposição de dois eventos
-      // 1. Criar o primeiro intervalo (10 a 20 de janeiro)
+  describe('Real-world use cases', () => {
+    it('should correctly calculate the intersection of two date intervals', () => {
+      // Scenario: Verify the overlap of two events
+      // 1. Create the first interval (January 10 to 20)
       const interval1 = DateUtils.createInterval({
         startDate: '2023-01-10',
         endDate: '2023-01-20',
       });
 
-      // 2. Criar o segundo intervalo (15 a 25 de janeiro)
+      // 2. Create the second interval (January 15 to 25)
       const interval2 = DateUtils.createInterval({
         startDate: '2023-01-15',
         endDate: '2023-01-25',
       });
 
-      // 3. Calcular a interseção dos intervalos
+      // 3. Calculate the intersection of the intervals
       const intersection = interval1.intersection(interval2);
 
-      // 4. Calcular a duração da interseção
+      // 4. Calculate the duration of the intersection
       const duration = intersection
         ? DateUtils.diffBetween({
             startDate: intersection.start || DateTime.fromISO('2023-01-15'),
@@ -120,18 +120,18 @@ describe('DateUtils - Testes de Integração', () => {
           })
         : Duration.fromObject({ days: 0 });
 
-      // Verificações
+      // Assertions
       expect(intersection?.start?.toISODate()).toBe('2023-01-15');
       expect(intersection?.end?.toISODate()).toBe('2023-01-20');
       expect(duration.days).toBe(5);
     });
 
-    it.skip('deve formatar corretamente datas para diferentes regiões', () => {
-      // Cenário: Formatar a mesma data para diferentes regiões
-      // 1. Criar uma data específica
+    it.skip('should correctly format dates for different regions', () => {
+      // Scenario: Format the same date for different regions
+      // 1. Create a specific date
       const date = DateTime.fromISO('2023-04-15T14:30:00Z');
 
-      // 2. Converter para diferentes timezones
+      // 2. Convert to different timezones
       const dateNY = DateUtils.toTimeZone({
         date,
         timeZone: 'America/New_York',
@@ -145,35 +145,35 @@ describe('DateUtils - Testes de Integração', () => {
         timeZone: 'Europe/Paris',
       });
 
-      // Verificações
+      // Assertions
       expect(dateNY.toLocaleString(DateTime.DATETIME_FULL)).toContain('EDT');
       expect(dateTokyo.toLocaleString(DateTime.DATETIME_FULL)).toContain('JST');
       expect(dateParis.toLocaleString(DateTime.DATETIME_FULL)).toContain(
         'CEST',
       );
 
-      // Todas representam o mesmo instante
+      // All represent the same instant
       expect(dateNY.toUTC().toISO()).toBe(date.toISO());
       expect(dateTokyo.toUTC().toISO()).toBe(date.toISO());
       expect(dateParis.toUTC().toISO()).toBe(date.toISO());
     });
 
-    it('deve calcular corretamente datas de vencimento', () => {
-      // Cenário: Calcular datas de vencimento para faturas
-      // 1. Data de emissão da fatura
+    it('should correctly calculate due dates', () => {
+      // Scenario: Calculate due dates for invoices
+      // 1. Invoice issue date
       const issueDate = DateTime.fromISO('2023-03-15');
 
-      // 2. Calcular data de vencimento (30 dias)
+      // 2. Calculate due date (30 days)
       const dueDate = DateUtils.addTime({
         date: issueDate,
         timeToAdd: { days: 30 },
       });
 
-      // 3. Verificar se está atrasada (comparando com uma data futura)
-      const checkDate = DateTime.fromISO('2023-04-20'); // 5 dias após o vencimento
+      // 3. Check if it is overdue (comparing with a future date)
+      const checkDate = DateTime.fromISO('2023-04-20'); // 5 days after the due date
       const isOverdue = checkDate > dueDate;
 
-      // 4. Calcular juros (1% ao dia de atraso)
+      // 4. Calculate interest (1% per day overdue)
       let lateFee = 0;
       if (isOverdue) {
         const daysLate = DateUtils.diffBetween({
@@ -181,45 +181,45 @@ describe('DateUtils - Testes de Integração', () => {
           endDate: checkDate,
           units: ['days'],
         }).days;
-        lateFee = daysLate * 0.01; // 1% ao dia
+        lateFee = daysLate * 0.01; // 1% per day
       }
 
-      // Verificações
+      // Assertions
       expect(dueDate.toISODate()).toBe('2023-04-14');
       expect(isOverdue).toBe(true);
-      expect(lateFee).toBe(0.06); // 6 dias * 1%
+      expect(lateFee).toBe(0.06); // 6 days * 1%
     });
   });
 
-  describe('Manipulação de fusos horários', () => {
-    it.skip('deve lidar corretamente com mudanças de horário de verão', () => {
-      // Cenário: Lidar com mudança de horário de verão nos EUA (segundo domingo de março)
-      // 1. Data antes da mudança de horário de verão
+  describe('Time zone handling', () => {
+    it.skip('should correctly handle daylight saving time changes', () => {
+      // Scenario: Handle the daylight saving time change in the US (second Sunday of March)
+      // 1. Date before the daylight saving time change
       const beforeDST = DateTime.fromISO('2023-03-11T12:00:00', {
         zone: 'America/New_York',
       });
 
-      // 2. Data depois da mudança de horário de verão
+      // 2. Date after the daylight saving time change
       const afterDST = DateTime.fromISO('2023-03-12T12:00:00', {
         zone: 'America/New_York',
       });
 
-      // 3. Adicionar 24 horas à data antes da mudança
+      // 3. Add 24 hours to the date before the change
       const add24h = DateUtils.addTime({
         date: beforeDST,
         timeToAdd: { hours: 24 },
       });
 
-      // Verificações
-      expect(beforeDST.offset).not.toBe(afterDST.offset); // Offset diferente devido ao horário de verão
-      expect(add24h.day).toBe(12); // Mesmo dia
-      expect(add24h.hour).toBe(12); // Mesma hora
-      expect(add24h.offset).toBe(afterDST.offset); // Mesmo offset após a mudança
+      // Assertions
+      expect(beforeDST.offset).not.toBe(afterDST.offset); // Different offset due to daylight saving time
+      expect(add24h.day).toBe(12); // Same day
+      expect(add24h.hour).toBe(12); // Same hour
+      expect(add24h.offset).toBe(afterDST.offset); // Same offset after the change
     });
 
-    it('deve calcular corretamente durações que atravessam mudanças de horário', () => {
-      // Cenário: Calcular duração que atravessa mudança de horário de verão
-      // 1. Criar intervalo que atravessa a mudança de horário
+    it('should correctly calculate durations that cross time changes', () => {
+      // Scenario: Calculate a duration that crosses a daylight saving time change
+      // 1. Create an interval that crosses the time change
       const startDate = DateTime.fromISO('2023-03-11T12:00:00', {
         zone: 'America/New_York',
       });
@@ -227,15 +227,15 @@ describe('DateUtils - Testes de Integração', () => {
         zone: 'America/New_York',
       });
 
-      // 2. Calcular a duração em horas
+      // 2. Calculate the duration in hours
       const duration = DateUtils.diffBetween({
         startDate,
         endDate,
         units: ['hours'],
       });
 
-      // Verificações
-      expect(duration.hours).toBe(23); // 23 horas reais devido à mudança de horário
+      // Assertions
+      expect(duration.hours).toBe(23); // 23 actual hours due to the time change
     });
   });
 });

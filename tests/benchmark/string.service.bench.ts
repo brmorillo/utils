@@ -1,20 +1,20 @@
 import { StringUtils } from '../../src/services/string.service';
 
 /**
- * Testes de benchmark para a classe StringUtils.
- * Estes testes verificam o desempenho da classe em operações de alta frequência.
+ * Benchmark tests for the StringUtils class.
+ * These tests verify the class performance in high-frequency operations.
  */
-describe('StringUtils - Testes de Benchmark', () => {
-  // Função auxiliar para medir o tempo de execução
+describe('StringUtils - Benchmark Tests', () => {
+  // Helper function to measure execution time
   const measureExecutionTime = (fn: () => void): number => {
     const start = process.hrtime.bigint();
     fn();
     const end = process.hrtime.bigint();
-    return Number(end - start) / 1_000_000; // Converte para milissegundos
+    return Number(end - start) / 1_000_000; // Convert to milliseconds
   };
 
   describe('capitalizeFirstLetter', () => {
-    it('deve processar 1.000.000 de strings em tempo razoável', () => {
+    it('should process 1,000,000 strings in a reasonable time', () => {
       const input = 'hello world';
       const count = 1000000;
 
@@ -25,17 +25,17 @@ describe('StringUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para capitalizar ${count} strings: ${executionTime.toFixed(2)}ms`,
+        `Time to capitalize ${count} strings: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.001ms
+      // The average time per operation should be less than 0.001ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.001);
     });
   });
 
   describe('reverse', () => {
-    it('deve processar 1.000.000 de strings em tempo razoável', () => {
+    it('should process 1,000,000 strings in a reasonable time', () => {
       const input = 'hello world';
       const count = 1000000;
 
@@ -46,16 +46,16 @@ describe('StringUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para reverter ${count} strings: ${executionTime.toFixed(2)}ms`,
+        `Time to reverse ${count} strings: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.001ms
+      // The average time per operation should be less than 0.001ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.001);
     });
 
-    it('deve processar 10.000 strings longas em tempo razoável', () => {
-      // Cria uma string longa de 10.000 caracteres
+    it('should process 10,000 long strings in a reasonable time', () => {
+      // Create a long string of 10,000 characters
       const input = 'a'.repeat(10000);
       const count = 10000;
 
@@ -66,17 +66,17 @@ describe('StringUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para reverter ${count} strings longas: ${executionTime.toFixed(2)}ms`,
+        `Time to reverse ${count} long strings: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 1ms
+      // The average time per operation should be less than 1ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(1);
     });
   });
 
   describe('isValidPalindrome', () => {
-    it('deve processar 1.000.000 de verificações de palíndromo em tempo razoável', () => {
+    it('should process 1,000,000 palindrome checks in a reasonable time', () => {
       const input = 'racecar';
       const count = 1000000;
 
@@ -87,15 +87,15 @@ describe('StringUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para verificar ${count} palíndromos: ${executionTime.toFixed(2)}ms`,
+        `Time to check ${count} palindromes: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.002ms
+      // The average time per operation should be less than 0.002ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.002);
     });
 
-    it('deve processar 10.000 verificações de palíndromo com strings complexas em tempo razoável', () => {
+    it('should process 10,000 palindrome checks with complex strings in a reasonable time', () => {
       const input = 'A man, a plan, a canal: Panama';
       const count = 10000;
 
@@ -106,17 +106,17 @@ describe('StringUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para verificar ${count} palíndromos complexos: ${executionTime.toFixed(2)}ms`,
+        `Time to check ${count} complex palindromes: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.1ms
+      // The average time per operation should be less than 0.1ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.1);
     });
   });
 
   describe('truncate', () => {
-    it('deve processar 1.000.000 de truncamentos em tempo razoável', () => {
+    it('should process 1,000,000 truncations in a reasonable time', () => {
       const input = 'This is a long string that needs to be truncated';
       const maxLength = 20;
       const count = 1000000;
@@ -128,17 +128,17 @@ describe('StringUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para truncar ${count} strings: ${executionTime.toFixed(2)}ms`,
+        `Time to truncate ${count} strings: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.001ms
+      // The average time per operation should be less than 0.001ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.001);
     });
   });
 
   describe('toKebabCase', () => {
-    it('deve processar 100.000 conversões para kebab-case em tempo razoável', () => {
+    it('should process 100,000 conversions to kebab-case in a reasonable time', () => {
       const input = 'ThisIsACamelCaseStringThatNeedsToBeConverted';
       const count = 100000;
 
@@ -149,17 +149,17 @@ describe('StringUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para converter ${count} strings para kebab-case: ${executionTime.toFixed(2)}ms`,
+        `Time to convert ${count} strings to kebab-case: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.01ms
+      // The average time per operation should be less than 0.01ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.01);
     });
   });
 
   describe('toSnakeCase', () => {
-    it('deve processar 100.000 conversões para snake_case em tempo razoável', () => {
+    it('should process 100,000 conversions to snake_case in a reasonable time', () => {
       const input = 'ThisIsACamelCaseStringThatNeedsToBeConverted';
       const count = 100000;
 
@@ -170,17 +170,17 @@ describe('StringUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para converter ${count} strings para snake_case: ${executionTime.toFixed(2)}ms`,
+        `Time to convert ${count} strings to snake_case: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.01ms
+      // The average time per operation should be less than 0.01ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.01);
     });
   });
 
   describe('toCamelCase', () => {
-    it('deve processar 100.000 conversões para camelCase em tempo razoável', () => {
+    it('should process 100,000 conversions to camelCase in a reasonable time', () => {
       const input = 'this-is-a-kebab-case-string-that-needs-to-be-converted';
       const count = 100000;
 
@@ -191,17 +191,17 @@ describe('StringUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para converter ${count} strings para camelCase: ${executionTime.toFixed(2)}ms`,
+        `Time to convert ${count} strings to camelCase: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.01ms
+      // The average time per operation should be less than 0.01ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.01);
     });
   });
 
   describe('toTitleCase', () => {
-    it('deve processar 100.000 conversões para title case em tempo razoável', () => {
+    it('should process 100,000 conversions to title case in a reasonable time', () => {
       const input = 'this is a string that needs to be converted to title case';
       const count = 100000;
 
@@ -212,17 +212,17 @@ describe('StringUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para converter ${count} strings para title case: ${executionTime.toFixed(2)}ms`,
+        `Time to convert ${count} strings to title case: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.01ms
+      // The average time per operation should be less than 0.01ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.01);
     });
   });
 
   describe('countOccurrences', () => {
-    it('deve processar 100.000 contagens de ocorrências em tempo razoável', () => {
+    it('should process 100,000 occurrence counts in a reasonable time', () => {
       const input =
         'This is a string with multiple occurrences of the word string. String appears multiple times in this string.';
       const substring = 'string';
@@ -235,16 +235,16 @@ describe('StringUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para contar ${count} ocorrências: ${executionTime.toFixed(2)}ms`,
+        `Time to count ${count} occurrences: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.01ms
+      // The average time per operation should be less than 0.01ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.01);
     });
 
-    it('deve processar 10.000 contagens de ocorrências em strings longas em tempo razoável', () => {
-      // Cria uma string longa com muitas ocorrências
+    it('should process 10,000 occurrence counts on long strings in a reasonable time', () => {
+      // Create a long string with many occurrences
       const input = 'target'.repeat(1000);
       const substring = 'target';
       const count = 10000;
@@ -256,17 +256,17 @@ describe('StringUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para contar ${count} ocorrências em strings longas: ${executionTime.toFixed(2)}ms`,
+        `Time to count ${count} occurrences on long strings: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 1ms
+      // The average time per operation should be less than 1ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(1);
     });
   });
 
   describe('replaceAll', () => {
-    it('deve processar 100.000 substituições em tempo razoável', () => {
+    it('should process 100,000 replacements in a reasonable time', () => {
       const input =
         'This is a string with multiple occurrences of the word string. String appears multiple times in this string.';
       const substring = 'string';
@@ -280,17 +280,17 @@ describe('StringUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para realizar ${count} substituições: ${executionTime.toFixed(2)}ms`,
+        `Time to perform ${count} replacements: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.01ms
+      // The average time per operation should be less than 0.01ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.01);
     });
   });
 
   describe('replaceOccurrences', () => {
-    it('deve processar 100.000 substituições de ocorrências em tempo razoável', () => {
+    it('should process 100,000 occurrence replacements in a reasonable time', () => {
       const input =
         'This is a string with multiple occurrences of the word string. String appears multiple times in this string.';
       const substring = 'string';
@@ -310,17 +310,17 @@ describe('StringUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para realizar ${count} substituições de ocorrências: ${executionTime.toFixed(2)}ms`,
+        `Time to perform ${count} occurrence replacements: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.01ms
+      // The average time per operation should be less than 0.01ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.01);
     });
   });
 
   describe('replacePlaceholders', () => {
-    it('deve processar 100.000 substituições de placeholders em tempo razoável', () => {
+    it('should process 100,000 placeholder replacements in a reasonable time', () => {
       const template =
         'Hello, {name}! You have {count} new messages. Your last login was on {date}.';
       const replacements = { name: 'John', count: '5', date: '2023-06-15' };
@@ -333,16 +333,16 @@ describe('StringUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para realizar ${count} substituições de placeholders: ${executionTime.toFixed(2)}ms`,
+        `Time to perform ${count} placeholder replacements: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 0.01ms
+      // The average time per operation should be less than 0.01ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.01);
     });
 
-    it('deve processar 10.000 substituições de placeholders em templates longos em tempo razoável', () => {
-      // Cria um template longo com muitos placeholders
+    it('should process 10,000 placeholder replacements on long templates in a reasonable time', () => {
+      // Create a long template with many placeholders
       let template = '';
       const replacements: Record<string, string> = {};
 
@@ -361,23 +361,23 @@ describe('StringUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para realizar ${count} substituições de placeholders em templates longos: ${executionTime.toFixed(2)}ms`,
+        `Time to perform ${count} placeholder replacements on long templates: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação deve ser menor que 1ms
+      // The average time per operation should be less than 1ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(1);
     });
   });
 
-  describe('Operações combinadas', () => {
-    it('deve processar 10.000 operações combinadas em tempo razoável', () => {
+  describe('Combined operations', () => {
+    it('should process 10,000 combined operations in a reasonable time', () => {
       const input = 'This is a test string for benchmark testing';
       const count = 10000;
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          // Sequência de operações
+          // Sequence of operations
           const kebabCase = StringUtils.toKebabCase({ input });
           const reversed = StringUtils.reverse({ input: kebabCase });
           const isValidPalindrome = StringUtils.isValidPalindrome({
@@ -392,10 +392,10 @@ describe('StringUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para realizar ${count} operações combinadas: ${executionTime.toFixed(2)}ms`,
+        `Time to perform ${count} combined operations: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por operação combinada deve ser menor que 0.1ms
+      // The average time per combined operation should be less than 0.1ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.1);
     });

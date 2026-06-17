@@ -2,80 +2,80 @@ import * as crypto from 'crypto';
 import { CryptUtils } from '../../src/services/crypt.service';
 
 /**
- * Testes de integração para a classe CryptUtils.
- * Estes testes verificam o comportamento da classe em cenários mais complexos
- * e com interações entre diferentes métodos.
+ * Integration tests for the CryptUtils class.
+ * These tests verify the behavior of the class in more complex scenarios
+ * and with interactions between different methods.
  */
-describe('CryptUtils - Testes de Integração', () => {
-  describe('Fluxo completo de criptografia AES', () => {
-    it('deve criptografar, descriptografar e manter a integridade dos dados', () => {
+describe('CryptUtils - Integration Tests', () => {
+  describe('Complete AES encryption flow', () => {
+    it('should encrypt, decrypt and maintain data integrity', () => {
       const secretKey = '12345678901234567890123456789012'; // 32 bytes
       const originalData = {
         id: 1,
-        nome: 'Teste de Integração',
-        detalhes: {
-          tipo: 'confidencial',
-          nivel: 3,
+        name: 'Teste de Integração',
+        details: {
+          type: 'confidencial',
+          level: 3,
           tags: ['seguro', 'criptografado'],
         },
       };
 
-      // Gerar IV
+      // Generate IV
       const iv = CryptUtils.generateIV();
 
-      // Criptografar dados
+      // Encrypt data
       const { encryptedData } = CryptUtils.aesEncrypt(
         originalData,
         secretKey,
         iv,
       );
 
-      // Descriptografar dados
+      // Decrypt data
       const decryptedData = CryptUtils.aesDecrypt(encryptedData, secretKey, iv);
 
-      // Verificar se os dados foram preservados corretamente
+      // Verify that the data was preserved correctly
       expect(decryptedData).toEqual(originalData);
     });
   });
 
-  describe('Assinatura e verificação com diferentes algoritmos', () => {
+  describe('Signing and verification with different algorithms', () => {
     const testData = 'Dados para teste de assinatura e verificação';
 
-    it('deve assinar com RSA e verificar corretamente', () => {
-      // Gerar par de chaves RSA
+    it('should sign with RSA and verify correctly', () => {
+      // Generate RSA key pair
       const { publicKey, privateKey } = CryptUtils.rsaGenerateKeyPair(1024);
 
-      // Assinar dados
+      // Sign data
       const signature = CryptUtils.rsaSign(testData, privateKey);
 
-      // Verificar assinatura
+      // Verify signature
       const isValid = CryptUtils.rsaVerify(testData, signature, publicKey);
 
       expect(isValid).toBe(true);
     });
 
-    it('deve assinar com ECC e verificar corretamente', () => {
-      // Gerar par de chaves ECC
+    it('should sign with ECC and verify correctly', () => {
+      // Generate ECC key pair
       const { publicKey, privateKey } = CryptUtils.eccGenerateKeyPair();
 
-      // Assinar dados
+      // Sign data
       const signature = CryptUtils.eccSign(testData, privateKey);
 
-      // Verificar assinatura
+      // Verify signature
       const isValid = CryptUtils.eccVerify(testData, signature, publicKey);
 
       expect(isValid).toBe(true);
     });
 
-    it('deve detectar assinatura inválida entre algoritmos diferentes', () => {
-      // Gerar pares de chaves
+    it('should detect an invalid signature between different algorithms', () => {
+      // Generate key pairs
       const rsaKeys = CryptUtils.rsaGenerateKeyPair(1024);
       const eccKeys = CryptUtils.eccGenerateKeyPair();
 
-      // Assinar com RSA
+      // Sign with RSA
       const rsaSignature = CryptUtils.rsaSign(testData, rsaKeys.privateKey);
 
-      // Tentar verificar assinatura RSA com chave ECC (deve falhar)
+      // Try to verify an RSA signature with an ECC key (should fail)
       const isValid = CryptUtils.eccVerify(
         testData,
         rsaSignature,
@@ -86,16 +86,16 @@ describe('CryptUtils - Testes de Integração', () => {
     });
   });
 
-  describe('Criptografia em camadas', () => {
-    it.skip('deve aplicar múltiplas camadas de criptografia e descriptografar corretamente', () => {
+  describe('Layered encryption', () => {
+    it.skip('should apply multiple layers of encryption and decrypt correctly', () => {
       const originalData =
         'Dados sensíveis para múltiplas camadas de criptografia';
 
-      // Camada 1: RC4
+      // Layer 1: RC4
       const rc4Key = 'chave-rc4-secreta';
       const rc4Encrypted = CryptUtils.rc4Encrypt(originalData, rc4Key);
 
-      // Camada 2: AES
+      // Layer 2: AES
       const aesKey = '12345678901234567890123456789012';
       const aesIV = CryptUtils.generateIV();
       const { encryptedData: aesEncrypted } = CryptUtils.aesEncrypt(
@@ -104,48 +104,48 @@ describe('CryptUtils - Testes de Integração', () => {
         aesIV,
       );
 
-      // Camada 3: RSA
+      // Layer 3: RSA
       const { publicKey, privateKey } = CryptUtils.rsaGenerateKeyPair(1024);
       const finalEncrypted = CryptUtils.rsaEncrypt(aesEncrypted, publicKey);
 
-      // Descriptografar na ordem inversa
-      // Camada 3: RSA
+      // Decrypt in reverse order
+      // Layer 3: RSA
       const rsaDecrypted = CryptUtils.rsaDecrypt(finalEncrypted, privateKey);
 
-      // Camada 2: AES
+      // Layer 2: AES
       const aesDecrypted = CryptUtils.aesDecrypt(rsaDecrypted, aesKey, aesIV);
 
-      // Camada 1: RC4
+      // Layer 1: RC4
       const finalDecrypted = CryptUtils.rc4Decrypt(
         String(aesDecrypted),
         rc4Key,
       );
 
-      // Verificar se os dados originais foram recuperados
+      // Verify that the original data was recovered
       expect(finalDecrypted).toBe(originalData);
     });
   });
 
-  describe('Compatibilidade entre diferentes algoritmos', () => {
-    it.skip('deve criptografar com diferentes algoritmos e comparar resultados', () => {
+  describe('Compatibility between different algorithms', () => {
+    it.skip('should encrypt with different algorithms and compare results', () => {
       const testData = 'Dados para teste de compatibilidade';
       const key32 = '12345678901234567890123456789012'; // 32 bytes
       const iv16 = '1234567890123456'; // 16 bytes
 
-      // Criptografar com AES
+      // Encrypt with AES
       const { encryptedData: aesEncrypted } = CryptUtils.aesEncrypt(
         testData,
         key32,
         iv16,
       );
 
-      // Criptografar com RC4
+      // Encrypt with RC4
       const rc4Encrypted = CryptUtils.rc4Encrypt(testData, key32);
 
-      // Verificar que as saídas são diferentes (algoritmos diferentes)
+      // Verify that the outputs are different (different algorithms)
       expect(aesEncrypted).not.toBe(rc4Encrypted);
 
-      // Descriptografar e verificar que ambos recuperam os dados originais
+      // Decrypt and verify that both recover the original data
       const aesDecrypted = CryptUtils.aesDecrypt(aesEncrypted, key32, iv16);
       const rc4Decrypted = CryptUtils.rc4Decrypt(rc4Encrypted, key32);
 

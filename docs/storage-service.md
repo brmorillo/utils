@@ -252,4 +252,3 @@ console.log('Author:', metadata.author);
 console.log('Department:', metadata.department);
 ```
 
-For more detailed examples and advanced usage, see the [complete StorageService documentation](./storage-service-detailed.md).

@@ -1,14 +1,14 @@
 import { ArrayUtils } from '../../src/services/array.service';
 
 /**
- * Testes de integração para a classe ArrayUtils.
- * Estes testes verificam o comportamento da classe em cenários mais complexos
- * e com interações entre diferentes métodos.
+ * Integration tests for the ArrayUtils class.
+ * These tests verify the behavior of the class in more complex scenarios
+ * and with interactions between different methods.
  */
-describe('ArrayUtils - Testes de Integração', () => {
-  describe('Fluxo de processamento de dados', () => {
-    it('deve processar um conjunto de dados com múltiplas operações', () => {
-      // Arrange - Dados iniciais
+describe('ArrayUtils - Integration Tests', () => {
+  describe('Data processing flow', () => {
+    it('should process a dataset with multiple operations', () => {
+      // Arrange - Initial data
       const initialData = [
         { id: 1, category: 'fruit', name: 'apple', tags: ['red', 'sweet'] },
         {
@@ -27,54 +27,54 @@ describe('ArrayUtils - Testes de Integração', () => {
         },
       ];
 
-      // Act - Fluxo de processamento completo
+      // Act - Complete processing flow
 
-      // 1. Remover duplicatas baseadas no nome
+      // 1. Remove duplicates based on name
       const uniqueByName = ArrayUtils.removeDuplicates({
         array: initialData,
         keyFn: item => item.name,
       });
 
-      // 2. Agrupar por categoria
+      // 2. Group by category
       const groupedByCategory = ArrayUtils.groupBy({
         array: uniqueByName,
         keyFn: item => item.category,
       });
 
-      // 3. Ordenar frutas por nome
+      // 3. Sort fruits by name
       const sortedFruits = ArrayUtils.sort({
         array: groupedByCategory.fruit,
         orderBy: { name: 'asc' },
       });
 
-      // 4. Encontrar item com tag específica
+      // 4. Find item with a specific tag
       const itemWithSweetTag = ArrayUtils.findSubset({
         array: sortedFruits,
         subset: { tags: ['sweet'] },
       });
 
       // Assert
-      // Verificar se removeu duplicatas corretamente
-      expect(uniqueByName).toHaveLength(4); // apple aparece apenas uma vez
+      // Verify that duplicates were removed correctly
+      expect(uniqueByName).toHaveLength(4); // apple appears only once
 
-      // Verificar se agrupou corretamente
+      // Verify that grouping was done correctly
       expect(Object.keys(groupedByCategory)).toEqual(['fruit', 'vegetable']);
       expect(groupedByCategory.fruit).toHaveLength(2);
       expect(groupedByCategory.vegetable).toHaveLength(2);
 
-      // Verificar se ordenou corretamente
+      // Verify that sorting was done correctly
       expect(sortedFruits[0].name).toBe('apple');
       expect(sortedFruits[1].name).toBe('banana');
 
-      // Verificar se encontrou o item com a tag correta
+      // Verify that the item with the correct tag was found
       expect(itemWithSweetTag).not.toBeNull();
       expect(itemWithSweetTag?.tags).toContain('sweet');
     });
   });
 
-  describe('Transformação de estruturas de dados', () => {
-    it('deve transformar uma estrutura de dados aninhada em uma estrutura plana', () => {
-      // Arrange - Estrutura aninhada
+  describe('Data structure transformation', () => {
+    it('should transform a nested data structure into a flat structure', () => {
+      // Arrange - Nested structure
       const nestedData = [
         {
           department: 'Engineering',
@@ -93,17 +93,17 @@ describe('ArrayUtils - Testes de Integração', () => {
       ];
 
       // Act
-      // 1. Extrair todos os funcionários em um array plano
+      // 1. Extract all employees into a flat array
       const allEmployees = nestedData.map(dept => dept.employees);
       const flattenedEmployees = ArrayUtils.flatten({ array: allEmployees });
 
-      // 2. Ordenar por ID
+      // 2. Sort by ID
       const sortedEmployees = ArrayUtils.sort({
         array: flattenedEmployees,
         orderBy: { id: 'asc' },
       });
 
-      // 3. Encontrar funcionário específico
+      // 3. Find a specific employee
       const foundEmployee = ArrayUtils.findSubset({
         array: sortedEmployees,
         subset: { name: 'Charlie' },
@@ -117,37 +117,37 @@ describe('ArrayUtils - Testes de Integração', () => {
     });
   });
 
-  describe('Operações com conjuntos', () => {
-    it('deve realizar operações de conjunto (união, interseção, diferença)', () => {
+  describe('Set operations', () => {
+    it('should perform set operations (union, intersection, difference)', () => {
       // Arrange
       const set1 = [1, 2, 3, 4, 5];
       const set2 = [4, 5, 6, 7, 8];
       const set3 = [1, 3, 5, 7, 9];
 
       // Act
-      // 1. Interseção de set1 e set2
+      // 1. Intersection of set1 and set2
       const intersection12 = ArrayUtils.intersect({
         array1: set1,
         array2: set2,
       });
 
-      // 2. Interseção de set2 e set3
+      // 2. Intersection of set2 and set3
       const intersection23 = ArrayUtils.intersect({
         array1: set2,
         array2: set3,
       });
 
-      // 3. Interseção de todas as interseções (elementos comuns a todos os conjuntos)
+      // 3. Intersection of all intersections (elements common to all sets)
       const commonElements = ArrayUtils.intersect({
         array1: intersection12,
         array2: intersection23,
       });
 
-      // 4. União de todos os conjuntos (sem duplicatas)
+      // 4. Union of all sets (without duplicates)
       const allElements = [...set1, ...set2, ...set3];
       const union = ArrayUtils.removeDuplicates({ array: allElements });
 
-      // 5. Ordenar a união
+      // 5. Sort the union
       const sortedUnion = ArrayUtils.sort({
         array: union,
         orderBy: 'asc',
@@ -161,8 +161,8 @@ describe('ArrayUtils - Testes de Integração', () => {
     });
   });
 
-  describe('Manipulação de dados complexos', () => {
-    it('deve processar e transformar dados complexos', () => {
+  describe('Complex data manipulation', () => {
+    it('should process and transform complex data', () => {
       // Arrange
       const users = [
         { id: 1, name: 'Alice', roles: ['admin', 'user'], active: true },
@@ -172,10 +172,10 @@ describe('ArrayUtils - Testes de Integração', () => {
       ];
 
       // Act
-      // 1. Filtrar apenas usuários ativos
+      // 1. Filter only active users
       const activeUsers = users.filter(user => user.active);
 
-      // 2. Agrupar por papel
+      // 2. Group by role
       const usersByRole: Record<string, typeof users> = {};
       activeUsers.forEach(user => {
         user.roles.forEach(role => {
@@ -186,7 +186,7 @@ describe('ArrayUtils - Testes de Integração', () => {
         });
       });
 
-      // 3. Remover duplicatas em cada grupo
+      // 3. Remove duplicates in each group
       Object.keys(usersByRole).forEach(role => {
         usersByRole[role] = ArrayUtils.removeDuplicates({
           array: usersByRole[role],
@@ -194,11 +194,11 @@ describe('ArrayUtils - Testes de Integração', () => {
         });
       });
 
-      // 4. Encontrar usuários com papel específico
+      // 4. Find users with a specific role
       const admins = usersByRole['admin'] || [];
       const editors = usersByRole['editor'] || [];
 
-      // 5. Verificar interseção entre admins e editors
+      // 5. Verify intersection between admins and editors
       const adminEditors = ArrayUtils.intersect({
         array1: admins,
         array2: editors,
@@ -209,7 +209,7 @@ describe('ArrayUtils - Testes de Integração', () => {
       expect(usersByRole['user']).toHaveLength(3);
       expect(usersByRole['admin']).toHaveLength(1);
       expect(usersByRole['editor']).toHaveLength(1);
-      expect(adminEditors).toHaveLength(0); // Nenhum usuário é admin e editor
+      expect(adminEditors).toHaveLength(0); // No user is both admin and editor
       expect(usersByRole['admin'][0].name).toBe('Alice');
       expect(usersByRole['editor'][0].name).toBe('Charlie');
     });

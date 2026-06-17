@@ -51,6 +51,7 @@ export class S3StorageProvider implements IStorageProvider {
     } catch (error) {
       throw new Error(
         'AWS SDK is not installed. Please install @aws-sdk/client-s3 and @aws-sdk/lib-storage to use S3StorageProvider.',
+        { cause: error },
       );
     }
   }
@@ -91,6 +92,7 @@ export class S3StorageProvider implements IStorageProvider {
     } catch (error) {
       throw new Error(
         `Failed to upload file to S3: ${error instanceof Error ? error.message : String(error)}`,
+        { cause: error },
       );
     }
   }
@@ -119,6 +121,7 @@ export class S3StorageProvider implements IStorageProvider {
     } catch (error) {
       throw new Error(
         `Failed to download file from S3: ${error instanceof Error ? error.message : String(error)}`,
+        { cause: error },
       );
     }
   }
@@ -143,6 +146,7 @@ export class S3StorageProvider implements IStorageProvider {
       }
       throw new Error(
         `Failed to check if file exists in S3: ${error instanceof Error ? error.message : String(error)}`,
+        { cause: error },
       );
     }
   }
@@ -163,6 +167,7 @@ export class S3StorageProvider implements IStorageProvider {
     } catch (error) {
       throw new Error(
         `Failed to delete file from S3: ${error instanceof Error ? error.message : String(error)}`,
+        { cause: error },
       );
     }
   }
@@ -199,6 +204,7 @@ export class S3StorageProvider implements IStorageProvider {
     } catch (error) {
       throw new Error(
         `Failed to list files in S3: ${error instanceof Error ? error.message : String(error)}`,
+        { cause: error },
       );
     }
   }
@@ -227,6 +233,7 @@ export class S3StorageProvider implements IStorageProvider {
     } catch (error) {
       throw new Error(
         `Failed to get file metadata from S3: ${error instanceof Error ? error.message : String(error)}`,
+        { cause: error },
       );
     }
   }

@@ -1,20 +1,20 @@
 import { CuidUtils } from '../../src/services/cuid.service';
 
 /**
- * Testes de benchmark para a classe CuidUtils.
- * Estes testes verificam o desempenho da classe em operações de alta frequência.
+ * Benchmark tests for the CuidUtils class.
+ * These tests check the class performance in high-frequency operations.
  */
-describe('CuidUtils - Testes de Benchmark', () => {
-  // Função auxiliar para medir o tempo de execução
+describe('CuidUtils - Benchmark Tests', () => {
+  // Helper function to measure execution time
   const measureExecutionTime = (fn: () => void): number => {
     const start = process.hrtime.bigint();
     fn();
     const end = process.hrtime.bigint();
-    return Number(end - start) / 1_000_000; // Converte para milissegundos
+    return Number(end - start) / 1_000_000; // Convert to milliseconds
   };
 
   describe('generate', () => {
-    it('deve gerar 100.000 CUIDs em tempo razoável', () => {
+    it('should generate 100,000 CUIDs in a reasonable time', () => {
       const count = 100000;
       const cuids: string[] = [];
       const executionTime = measureExecutionTime(() => {
@@ -23,17 +23,17 @@ describe('CuidUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para gerar ${count} CUIDs: ${executionTime.toFixed(2)}ms`,
+        `Time to generate ${count} CUIDs: ${executionTime.toFixed(2)}ms`,
       );
-      // Verifica se temos CUIDs únicos
+      // Check whether we have unique CUIDs
       const uniqueCuids = new Set(cuids);
       expect(uniqueCuids.size).toBe(count);
-      // O tempo médio por CUID deve ser menor que 0.5ms (valor realista)
+      // The average time per CUID should be less than 0.5ms (realistic value)
       const avgTimePerCuid = executionTime / count;
       expect(avgTimePerCuid).toBeLessThan(0.5);
     });
 
-    it('deve gerar CUIDs com comprimentos personalizados', () => {
+    it('should generate CUIDs with custom lengths', () => {
       const count = 10000;
       const lengths = [10, 20, 30];
       const results: Record<number, number> = {};
@@ -46,22 +46,22 @@ describe('CuidUtils - Testes de Benchmark', () => {
         });
         results[length] = executionTime;
         console.log(
-          `Tempo para gerar ${count} CUIDs de comprimento ${length}: ${executionTime.toFixed(
+          `Time to generate ${count} CUIDs of length ${length}: ${executionTime.toFixed(
             2,
           )}ms`,
         );
       }
 
-      // Verifica se o tempo de execução aumenta com o comprimento
-      // (pode não ser sempre verdade devido a otimizações, mas é uma verificação razoável)
+      // Check whether the execution time increases with the length
+      // (may not always be true due to optimizations, but it is a reasonable check)
       expect(results[30]).toBeGreaterThanOrEqual(results[10] * 0.8);
     });
   });
 
   describe('isValidCuid', () => {
-    it('deve validar 100.000 CUIDs válidos em tempo razoável', () => {
+    it('should validate 100,000 valid CUIDs in a reasonable time', () => {
       const count = 100000;
-      // Gera um CUID para validar repetidamente
+      // Generate a CUID to validate repeatedly
       const validId = CuidUtils.generate();
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
@@ -69,18 +69,18 @@ describe('CuidUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para validar ${count} CUIDs válidos: ${executionTime.toFixed(
+        `Time to validate ${count} valid CUIDs: ${executionTime.toFixed(
           2,
         )}ms`,
       );
-      // O tempo médio por validação deve ser menor que 0.005ms
+      // The average time per validation should be less than 0.005ms
       const avgTimePerValidation = executionTime / count;
       expect(avgTimePerValidation).toBeLessThan(0.005);
     });
 
-    it('deve validar 100.000 strings inválidas em tempo razoável', () => {
+    it('should validate 100,000 invalid strings in a reasonable time', () => {
       const count = 100000;
-      // String inválida para validar repetidamente
+      // Invalid string to validate repeatedly
       const invalidId = 'not-a-cuid';
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
@@ -88,29 +88,29 @@ describe('CuidUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para validar ${count} strings inválidas: ${executionTime.toFixed(
+        `Time to validate ${count} invalid strings: ${executionTime.toFixed(
           2,
         )}ms`,
       );
-      // O tempo médio por validação deve ser menor que 0.005ms
+      // The average time per validation should be less than 0.005ms
       const avgTimePerValidation = executionTime / count;
       expect(avgTimePerValidation).toBeLessThan(0.005);
     });
   });
 
-  describe('Comparação de desempenho', () => {
-    it('deve comparar o desempenho de geração e validação', () => {
+  describe('Performance comparison', () => {
+    it('should compare generation and validation performance', () => {
       const count = 10000;
       const ids: string[] = [];
 
-      // Mede o tempo para gerar CUIDs
+      // Measure the time to generate CUIDs
       const generateTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           ids.push(CuidUtils.generate());
         }
       });
 
-      // Mede o tempo para validar CUIDs
+      // Measure the time to validate CUIDs
       const validateTime = measureExecutionTime(() => {
         for (const id of ids) {
           CuidUtils.isValidCuid({ id });
@@ -118,18 +118,18 @@ describe('CuidUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para gerar ${count} CUIDs: ${generateTime.toFixed(2)}ms`,
+        `Time to generate ${count} CUIDs: ${generateTime.toFixed(2)}ms`,
       );
       console.log(
-        `Tempo para validar ${count} CUIDs: ${validateTime.toFixed(2)}ms`,
+        `Time to validate ${count} CUIDs: ${validateTime.toFixed(2)}ms`,
       );
       console.log(
-        `Proporção validação/geração: ${(validateTime / generateTime).toFixed(
+        `Validation/generation ratio: ${(validateTime / generateTime).toFixed(
           2,
         )}`,
       );
 
-      // A validação geralmente deve ser mais rápida que a geração
+      // Validation should generally be faster than generation
       expect(validateTime).toBeLessThan(generateTime * 2);
     });
   });

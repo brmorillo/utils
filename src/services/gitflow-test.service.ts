@@ -11,7 +11,7 @@ export class GitFlowTestUtils {
    * @example
    * GitFlowTestUtils.getGitFlowStatus({
    *   includeVersion: true
-   * }); // { status: 'active', version: '12.0.0', automation: true }
+   * }); // { status: 'active', version: '13.0.0', automation: true }
    */
   public static getGitFlowStatus({
     includeVersion = false,
@@ -41,7 +41,7 @@ export class GitFlowTestUtils {
       // In a real scenario, this would read from package.json
       return {
         ...status,
-        version: '12.0.0',
+        version: '13.0.0',
       };
     }
 

@@ -17,6 +17,7 @@ export class AxiosClient implements IHttpClient {
     } catch (error) {
       throw new Error(
         'Axios is not installed. Please install axios to use AxiosClient.',
+        { cause: error },
       );
     }
   }

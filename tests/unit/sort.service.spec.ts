@@ -1,11 +1,11 @@
 import { SortUtils } from '../../src/services/sort.service';
 
 /**
- * Testes unitários para a classe SortUtils.
- * Estes testes verificam o comportamento de cada método individualmente.
+ * Unit tests for the SortUtils class.
+ * These tests verify the behavior of each method individually.
  */
-describe('SortUtils - Testes Unitários', () => {
-  // Arrays de teste
+describe('SortUtils - Unit Tests', () => {
+  // Test arrays
   const unsortedArray = [5, 3, 8, 4, 2];
   const sortedArray = [2, 3, 4, 5, 8];
   const emptyArray: number[] = [];
@@ -18,298 +18,298 @@ describe('SortUtils - Testes Unitários', () => {
   const sortedMixedArray = [-4, -3, 0, 2, 5, 8];
 
   describe('bubbleSort', () => {
-    it('deve ordenar um array não ordenado', () => {
+    it('should sort an unsorted array', () => {
       expect(SortUtils.bubbleSort(unsortedArray)).toEqual(sortedArray);
     });
 
-    it('deve manter um array já ordenado', () => {
+    it('should keep an already sorted array', () => {
       expect(SortUtils.bubbleSort(sortedArray)).toEqual(sortedArray);
     });
 
-    it('deve lidar com um array vazio', () => {
+    it('should handle an empty array', () => {
       expect(SortUtils.bubbleSort(emptyArray)).toEqual([]);
     });
 
-    it('deve lidar com um array de um único elemento', () => {
+    it('should handle a single-element array', () => {
       expect(SortUtils.bubbleSort(singleElementArray)).toEqual(
         singleElementArray,
       );
     });
 
-    it('deve ordenar um array com elementos duplicados', () => {
+    it('should sort an array with duplicate elements', () => {
       expect(SortUtils.bubbleSort(duplicatesArray)).toEqual(
         sortedDuplicatesArray,
       );
     });
 
-    it('deve ordenar um array com números negativos', () => {
+    it('should sort an array with negative numbers', () => {
       expect(SortUtils.bubbleSort(negativeArray)).toEqual(sortedNegativeArray);
     });
 
-    it('deve ordenar um array com números mistos', () => {
+    it('should sort an array with mixed numbers', () => {
       expect(SortUtils.bubbleSort(mixedArray)).toEqual(sortedMixedArray);
     });
 
-    it('deve lançar erro para entrada não-array', () => {
+    it('should throw an error for non-array input', () => {
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         SortUtils.bubbleSort(123);
       }).toThrow('Input must be an array');
     });
   });
 
   describe('mergeSort', () => {
-    it('deve ordenar um array não ordenado', () => {
+    it('should sort an unsorted array', () => {
       expect(SortUtils.mergeSort(unsortedArray)).toEqual(sortedArray);
     });
 
-    it('deve manter um array já ordenado', () => {
+    it('should keep an already sorted array', () => {
       expect(SortUtils.mergeSort(sortedArray)).toEqual(sortedArray);
     });
 
-    it('deve lidar com um array vazio', () => {
+    it('should handle an empty array', () => {
       expect(SortUtils.mergeSort(emptyArray)).toEqual([]);
     });
 
-    it('deve lidar com um array de um único elemento', () => {
+    it('should handle a single-element array', () => {
       expect(SortUtils.mergeSort(singleElementArray)).toEqual(
         singleElementArray,
       );
     });
 
-    it('deve ordenar um array com elementos duplicados', () => {
+    it('should sort an array with duplicate elements', () => {
       expect(SortUtils.mergeSort(duplicatesArray)).toEqual(
         sortedDuplicatesArray,
       );
     });
 
-    it('deve ordenar um array com números negativos', () => {
+    it('should sort an array with negative numbers', () => {
       expect(SortUtils.mergeSort(negativeArray)).toEqual(sortedNegativeArray);
     });
 
-    it('deve ordenar um array com números mistos', () => {
+    it('should sort an array with mixed numbers', () => {
       expect(SortUtils.mergeSort(mixedArray)).toEqual(sortedMixedArray);
     });
 
-    it('deve lançar erro para entrada não-array', () => {
+    it('should throw an error for non-array input', () => {
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         SortUtils.mergeSort(123);
       }).toThrow('Input must be an array');
     });
   });
 
   describe('quickSort', () => {
-    it('deve ordenar um array não ordenado', () => {
+    it('should sort an unsorted array', () => {
       expect(SortUtils.quickSort(unsortedArray)).toEqual(sortedArray);
     });
 
-    it('deve manter um array já ordenado', () => {
+    it('should keep an already sorted array', () => {
       expect(SortUtils.quickSort(sortedArray)).toEqual(sortedArray);
     });
 
-    it('deve lidar com um array vazio', () => {
+    it('should handle an empty array', () => {
       expect(SortUtils.quickSort(emptyArray)).toEqual([]);
     });
 
-    it('deve lidar com um array de um único elemento', () => {
+    it('should handle a single-element array', () => {
       expect(SortUtils.quickSort(singleElementArray)).toEqual(
         singleElementArray,
       );
     });
 
-    it('deve ordenar um array com elementos duplicados', () => {
+    it('should sort an array with duplicate elements', () => {
       expect(SortUtils.quickSort(duplicatesArray)).toEqual(
         sortedDuplicatesArray,
       );
     });
 
-    it('deve ordenar um array com números negativos', () => {
+    it('should sort an array with negative numbers', () => {
       expect(SortUtils.quickSort(negativeArray)).toEqual(sortedNegativeArray);
     });
 
-    it('deve ordenar um array com números mistos', () => {
+    it('should sort an array with mixed numbers', () => {
       expect(SortUtils.quickSort(mixedArray)).toEqual(sortedMixedArray);
     });
 
-    it('deve lançar erro para entrada não-array', () => {
+    it('should throw an error for non-array input', () => {
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         SortUtils.quickSort(123);
       }).toThrow('Input must be an array');
     });
   });
 
   describe('heapSort', () => {
-    it('deve ordenar um array não ordenado', () => {
+    it('should sort an unsorted array', () => {
       expect(SortUtils.heapSort(unsortedArray)).toEqual(sortedArray);
     });
 
-    it('deve manter um array já ordenado', () => {
+    it('should keep an already sorted array', () => {
       expect(SortUtils.heapSort(sortedArray)).toEqual(sortedArray);
     });
 
-    it('deve lidar com um array vazio', () => {
+    it('should handle an empty array', () => {
       expect(SortUtils.heapSort(emptyArray)).toEqual([]);
     });
 
-    it('deve lidar com um array de um único elemento', () => {
+    it('should handle a single-element array', () => {
       expect(SortUtils.heapSort(singleElementArray)).toEqual(
         singleElementArray,
       );
     });
 
-    it('deve ordenar um array com elementos duplicados', () => {
+    it('should sort an array with duplicate elements', () => {
       expect(SortUtils.heapSort(duplicatesArray)).toEqual(
         sortedDuplicatesArray,
       );
     });
 
-    it('deve ordenar um array com números negativos', () => {
+    it('should sort an array with negative numbers', () => {
       expect(SortUtils.heapSort(negativeArray)).toEqual(sortedNegativeArray);
     });
 
-    it('deve ordenar um array com números mistos', () => {
+    it('should sort an array with mixed numbers', () => {
       expect(SortUtils.heapSort(mixedArray)).toEqual(sortedMixedArray);
     });
 
-    it('deve lançar erro para entrada não-array', () => {
+    it('should throw an error for non-array input', () => {
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         SortUtils.heapSort(123);
       }).toThrow('Input must be an array');
     });
   });
 
   describe('selectionSort', () => {
-    it('deve ordenar um array não ordenado', () => {
+    it('should sort an unsorted array', () => {
       expect(SortUtils.selectionSort(unsortedArray)).toEqual(sortedArray);
     });
 
-    it('deve manter um array já ordenado', () => {
+    it('should keep an already sorted array', () => {
       expect(SortUtils.selectionSort(sortedArray)).toEqual(sortedArray);
     });
 
-    it('deve lidar com um array vazio', () => {
+    it('should handle an empty array', () => {
       expect(SortUtils.selectionSort(emptyArray)).toEqual([]);
     });
 
-    it('deve lidar com um array de um único elemento', () => {
+    it('should handle a single-element array', () => {
       expect(SortUtils.selectionSort(singleElementArray)).toEqual(
         singleElementArray,
       );
     });
 
-    it('deve ordenar um array com elementos duplicados', () => {
+    it('should sort an array with duplicate elements', () => {
       expect(SortUtils.selectionSort(duplicatesArray)).toEqual(
         sortedDuplicatesArray,
       );
     });
 
-    it('deve ordenar um array com números negativos', () => {
+    it('should sort an array with negative numbers', () => {
       expect(SortUtils.selectionSort(negativeArray)).toEqual(
         sortedNegativeArray,
       );
     });
 
-    it('deve ordenar um array com números mistos', () => {
+    it('should sort an array with mixed numbers', () => {
       expect(SortUtils.selectionSort(mixedArray)).toEqual(sortedMixedArray);
     });
 
-    it('deve lançar erro para entrada não-array', () => {
+    it('should throw an error for non-array input', () => {
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         SortUtils.selectionSort(123);
       }).toThrow('Input must be an array');
     });
   });
 
   describe('insertionSort', () => {
-    it('deve ordenar um array não ordenado', () => {
+    it('should sort an unsorted array', () => {
       expect(SortUtils.insertionSort(unsortedArray)).toEqual(sortedArray);
     });
 
-    it('deve manter um array já ordenado', () => {
+    it('should keep an already sorted array', () => {
       expect(SortUtils.insertionSort(sortedArray)).toEqual(sortedArray);
     });
 
-    it('deve lidar com um array vazio', () => {
+    it('should handle an empty array', () => {
       expect(SortUtils.insertionSort(emptyArray)).toEqual([]);
     });
 
-    it('deve lidar com um array de um único elemento', () => {
+    it('should handle a single-element array', () => {
       expect(SortUtils.insertionSort(singleElementArray)).toEqual(
         singleElementArray,
       );
     });
 
-    it('deve ordenar um array com elementos duplicados', () => {
+    it('should sort an array with duplicate elements', () => {
       expect(SortUtils.insertionSort(duplicatesArray)).toEqual(
         sortedDuplicatesArray,
       );
     });
 
-    it('deve ordenar um array com números negativos', () => {
+    it('should sort an array with negative numbers', () => {
       expect(SortUtils.insertionSort(negativeArray)).toEqual(
         sortedNegativeArray,
       );
     });
 
-    it('deve ordenar um array com números mistos', () => {
+    it('should sort an array with mixed numbers', () => {
       expect(SortUtils.insertionSort(mixedArray)).toEqual(sortedMixedArray);
     });
 
-    it('deve lançar erro para entrada não-array', () => {
+    it('should throw an error for non-array input', () => {
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         SortUtils.insertionSort(123);
       }).toThrow('Input must be an array');
     });
   });
 
   describe('shellSort', () => {
-    it('deve ordenar um array não ordenado', () => {
+    it('should sort an unsorted array', () => {
       expect(SortUtils.shellSort(unsortedArray)).toEqual(sortedArray);
     });
 
-    it('deve manter um array já ordenado', () => {
+    it('should keep an already sorted array', () => {
       expect(SortUtils.shellSort(sortedArray)).toEqual(sortedArray);
     });
 
-    it('deve lidar com um array vazio', () => {
+    it('should handle an empty array', () => {
       expect(SortUtils.shellSort(emptyArray)).toEqual([]);
     });
 
-    it('deve lidar com um array de um único elemento', () => {
+    it('should handle a single-element array', () => {
       expect(SortUtils.shellSort(singleElementArray)).toEqual(
         singleElementArray,
       );
     });
 
-    it('deve ordenar um array com elementos duplicados', () => {
+    it('should sort an array with duplicate elements', () => {
       expect(SortUtils.shellSort(duplicatesArray)).toEqual(
         sortedDuplicatesArray,
       );
     });
 
-    it('deve ordenar um array com números negativos', () => {
+    it('should sort an array with negative numbers', () => {
       expect(SortUtils.shellSort(negativeArray)).toEqual(sortedNegativeArray);
     });
 
-    it('deve ordenar um array com números mistos', () => {
+    it('should sort an array with mixed numbers', () => {
       expect(SortUtils.shellSort(mixedArray)).toEqual(sortedMixedArray);
     });
 
-    it('deve lançar erro para entrada não-array', () => {
+    it('should throw an error for non-array input', () => {
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         SortUtils.shellSort(123);
       }).toThrow('Input must be an array');
     });
   });
 
   describe('countingSort', () => {
-    it('deve ordenar um array de números não negativos', () => {
+    it('should sort an array of non-negative numbers', () => {
       const unsortedPositive = [5, 3, 8, 4, 2];
       const sortedPositive = [2, 3, 4, 5, 8];
       expect(SortUtils.countingSort(unsortedPositive, 8)).toEqual(
@@ -317,15 +317,15 @@ describe('SortUtils - Testes Unitários', () => {
       );
     });
 
-    it('deve lidar com um array vazio', () => {
+    it('should handle an empty array', () => {
       expect(SortUtils.countingSort([], 0)).toEqual([]);
     });
 
-    it('deve lidar com um array de um único elemento', () => {
+    it('should handle a single-element array', () => {
       expect(SortUtils.countingSort([42], 42)).toEqual([42]);
     });
 
-    it('deve ordenar um array com elementos duplicados', () => {
+    it('should sort an array with duplicate elements', () => {
       const unsortedDuplicates = [3, 1, 4, 1, 5, 9, 2, 6, 5];
       const sortedDuplicates = [1, 1, 2, 3, 4, 5, 5, 6, 9];
       expect(SortUtils.countingSort(unsortedDuplicates, 9)).toEqual(
@@ -333,77 +333,77 @@ describe('SortUtils - Testes Unitários', () => {
       );
     });
 
-    it('deve lançar erro para array com números negativos', () => {
+    it('should throw an error for an array with negative numbers', () => {
       expect(() => {
         SortUtils.countingSort([-5, 3, 8], 8);
       }).toThrow('Counting Sort only supports non-negative integers');
     });
 
-    it('deve lançar erro para maxValue negativo', () => {
+    it('should throw an error for a negative maxValue', () => {
       expect(() => {
         SortUtils.countingSort([5, 3, 8], -1);
       }).toThrow('Maximum value must be a non-negative integer');
     });
 
-    it('deve lançar erro para entrada não-array', () => {
+    it('should throw an error for non-array input', () => {
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         SortUtils.countingSort(123, 10);
       }).toThrow('Input must be an array');
     });
   });
 
   describe('radixSort', () => {
-    it('deve ordenar um array de números não negativos', () => {
+    it('should sort an array of non-negative numbers', () => {
       const unsortedPositive = [170, 45, 75, 90, 802, 24, 2, 66];
       const sortedPositive = [2, 24, 45, 66, 75, 90, 170, 802];
       expect(SortUtils.radixSort(unsortedPositive)).toEqual(sortedPositive);
     });
 
-    it('deve lidar com um array vazio', () => {
+    it('should handle an empty array', () => {
       expect(SortUtils.radixSort([])).toEqual([]);
     });
 
-    it('deve lidar com um array de um único elemento', () => {
+    it('should handle a single-element array', () => {
       expect(SortUtils.radixSort([42])).toEqual([42]);
     });
 
-    it('deve ordenar um array com elementos duplicados', () => {
+    it('should sort an array with duplicate elements', () => {
       const unsortedDuplicates = [53, 11, 44, 11, 55, 99, 22, 66, 55];
       const sortedDuplicates = [11, 11, 22, 44, 53, 55, 55, 66, 99];
       expect(SortUtils.radixSort(unsortedDuplicates)).toEqual(sortedDuplicates);
     });
 
-    it('deve lançar erro para array com números negativos', () => {
+    it('should throw an error for an array with negative numbers', () => {
       expect(() => {
         SortUtils.radixSort([-5, 3, 8]);
       }).toThrow('Radix Sort only supports non-negative integers');
     });
 
-    it('deve lançar erro para entrada não-array', () => {
+    it('should throw an error for non-array input', () => {
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         SortUtils.radixSort(123);
       }).toThrow('Input must be an array');
     });
   });
 
   describe('bucketSort', () => {
-    it('deve ordenar um array de números', () => {
+    it('should sort an array of numbers', () => {
       const unsorted = [0.42, 0.32, 0.33, 0.52, 0.37, 0.47, 0.51];
       const sorted = [0.32, 0.33, 0.37, 0.42, 0.47, 0.51, 0.52];
       expect(SortUtils.bucketSort(unsorted)).toEqual(sorted);
     });
 
-    it('deve lidar com um array vazio', () => {
+    it('should handle an empty array', () => {
       expect(SortUtils.bucketSort([])).toEqual([]);
     });
 
-    it('deve lidar com um array de um único elemento', () => {
+    it('should handle a single-element array', () => {
       expect(SortUtils.bucketSort([42])).toEqual([42]);
     });
 
-    it('deve ordenar um array com elementos duplicados', () => {
+    it('should sort an array with duplicate elements', () => {
       const unsortedDuplicates = [0.5, 0.3, 0.4, 0.3, 0.5];
       const sortedDuplicates = [0.3, 0.3, 0.4, 0.5, 0.5];
       expect(SortUtils.bucketSort(unsortedDuplicates)).toEqual(
@@ -411,7 +411,7 @@ describe('SortUtils - Testes Unitários', () => {
       );
     });
 
-    it('deve ordenar com tamanho de bucket personalizado', () => {
+    it('should sort with a custom bucket size', () => {
       const unsorted = [0.42, 0.32, 0.33, 0.52, 0.37, 0.47, 0.51];
       const sorted = [0.32, 0.33, 0.37, 0.42, 0.47, 0.51, 0.52];
       expect(SortUtils.bucketSort(unsorted, 3)).toEqual(sorted);
@@ -419,99 +419,99 @@ describe('SortUtils - Testes Unitários', () => {
   });
 
   describe('timSort', () => {
-    it('deve ordenar um array não ordenado', () => {
+    it('should sort an unsorted array', () => {
       expect(SortUtils.timSort(unsortedArray)).toEqual(sortedArray);
     });
 
-    it('deve manter um array já ordenado', () => {
+    it('should keep an already sorted array', () => {
       expect(SortUtils.timSort(sortedArray)).toEqual(sortedArray);
     });
 
-    it('deve lidar com um array vazio', () => {
+    it('should handle an empty array', () => {
       expect(SortUtils.timSort(emptyArray)).toEqual([]);
     });
 
-    it('deve lidar com um array de um único elemento', () => {
+    it('should handle a single-element array', () => {
       expect(SortUtils.timSort(singleElementArray)).toEqual(singleElementArray);
     });
 
-    it('deve ordenar um array com elementos duplicados', () => {
+    it('should sort an array with duplicate elements', () => {
       expect(SortUtils.timSort(duplicatesArray)).toEqual(sortedDuplicatesArray);
     });
 
-    it('deve ordenar um array com números negativos', () => {
+    it('should sort an array with negative numbers', () => {
       expect(SortUtils.timSort(negativeArray)).toEqual(sortedNegativeArray);
     });
 
-    it('deve ordenar um array com números mistos', () => {
+    it('should sort an array with mixed numbers', () => {
       expect(SortUtils.timSort(mixedArray)).toEqual(sortedMixedArray);
     });
   });
 
-  // Testes para algoritmos menos comuns
+  // Tests for less common algorithms
   describe('gnomeSort', () => {
-    it('deve ordenar um array não ordenado', () => {
+    it('should sort an unsorted array', () => {
       expect(SortUtils.gnomeSort(unsortedArray)).toEqual(sortedArray);
     });
 
-    it('deve lançar erro para entrada não-array', () => {
+    it('should throw an error for non-array input', () => {
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         SortUtils.gnomeSort(123);
       }).toThrow('Input must be an array');
     });
   });
 
   describe('combSort', () => {
-    it('deve ordenar um array não ordenado', () => {
+    it('should sort an unsorted array', () => {
       expect(SortUtils.combSort(unsortedArray)).toEqual(sortedArray);
     });
 
-    it('deve lançar erro para entrada não-array', () => {
+    it('should throw an error for non-array input', () => {
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         SortUtils.combSort(123);
       }).toThrow('Input must be an array');
     });
   });
 
   describe('cocktailShakerSort', () => {
-    it('deve ordenar um array não ordenado', () => {
+    it('should sort an unsorted array', () => {
       expect(SortUtils.cocktailShakerSort(unsortedArray)).toEqual(sortedArray);
     });
 
-    it('deve lançar erro para entrada não-array', () => {
+    it('should throw an error for non-array input', () => {
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         SortUtils.cocktailShakerSort(123);
       }).toThrow('Input must be an array');
     });
   });
 
   describe('pancakeSort', () => {
-    it('deve ordenar um array não ordenado', () => {
+    it('should sort an unsorted array', () => {
       expect(SortUtils.pancakeSort(unsortedArray)).toEqual(sortedArray);
     });
 
-    it('deve lançar erro para entrada não-array', () => {
+    it('should throw an error for non-array input', () => {
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         SortUtils.pancakeSort(123);
       }).toThrow('Input must be an array');
     });
   });
 
   describe('bitonicSort', () => {
-    it('deve ordenar um array não ordenado', () => {
-      // Bitonic sort funciona melhor com arrays de tamanho 2^n
+    it('should sort an unsorted array', () => {
+      // Bitonic sort works best with arrays of size 2^n
       const unsortedBitonic = [5, 3, 8, 4, 2, 9, 1, 7];
       const sortedBitonic = [1, 2, 3, 4, 5, 7, 8, 9];
       expect(SortUtils.bitonicSort(unsortedBitonic)).toEqual(sortedBitonic);
     });
 
-    it('deve lançar erro para entrada não-array', () => {
+    it('should throw an error for non-array input', () => {
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         SortUtils.bitonicSort(123);
       }).toThrow('Input must be an array');
     });

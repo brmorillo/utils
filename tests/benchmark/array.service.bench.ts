@@ -1,187 +1,187 @@
 import { ArrayUtils } from '../../src/services/array.service';
 /**
- * Testes de benchmark para a classe ArrayUtils.
- * Estes testes verificam o desempenho da classe em operações de alta frequência.
+ * Benchmark tests for the ArrayUtils class.
+ * These tests check the class performance in high-frequency operations.
  */
-describe('ArrayUtils - Testes de Benchmark', () => {
-  // Função auxiliar para medir o tempo de execução
+describe('ArrayUtils - Benchmark Tests', () => {
+  // Helper function to measure execution time
   const measureExecutionTime = (fn: () => void): number => {
     const start = process.hrtime.bigint();
     fn();
     const end = process.hrtime.bigint();
-    return Number(end - start) / 1_000_000; // Converte para milissegundos
+    return Number(end - start) / 1_000_000; // Convert to milliseconds
   };
 
   describe('removeDuplicates', () => {
-    it('deve processar 100.000 itens em tempo razoável', () => {
-      // Arrange - Criar um array grande com muitas duplicatas
+    it('should process 100,000 items in a reasonable time', () => {
+      // Arrange - Create a large array with many duplicates
       const size = 100000;
-      const array = Array.from({ length: size }, (_, i) => i % 1000); // Muitas duplicatas
-      // Act - Medir o tempo para remover duplicatas
+      const array = Array.from({ length: size }, (_, i) => i % 1000); // Many duplicates
+      // Act - Measure the time to remove duplicates
       const executionTime = measureExecutionTime(() => {
         ArrayUtils.removeDuplicates({ array });
       });
-      // Log do tempo de execução
+      // Log the execution time
       console.log(
-        `Tempo para remover duplicatas de ${size} itens: ${executionTime.toFixed(2)}ms`,
+        `Time to remove duplicates from ${size} items: ${executionTime.toFixed(2)}ms`,
       );
-      // Assert - Verificar se o tempo médio por item é razoável
+      // Assert - Check whether the average time per item is reasonable
       const avgTimePerItem = executionTime / size;
-      expect(avgTimePerItem).toBeLessThan(0.001); // Menos de 0.001ms por item (1 microssegundo)
+      expect(avgTimePerItem).toBeLessThan(0.001); // Less than 0.001ms per item (1 microsecond)
     });
-    it('deve processar objetos com função de chave em tempo razoável', () => {
-      // Arrange - Criar um array de objetos
+    it('should process objects with a key function in a reasonable time', () => {
+      // Arrange - Create an array of objects
       const size = 10000;
       const array = Array.from({ length: size }, (_, i) => ({
-        id: i % 1000, // Muitas duplicatas
+        id: i % 1000, // Many duplicates
         value: `value-${i}`,
       }));
-      // Act - Medir o tempo para remover duplicatas com função de chave
+      // Act - Measure the time to remove duplicates with a key function
       const executionTime = measureExecutionTime(() => {
         ArrayUtils.removeDuplicates({
           array,
           keyFn: item => item.id,
         });
       });
-      // Log do tempo de execução
+      // Log the execution time
       console.log(
-        `Tempo para remover duplicatas de ${size} objetos com keyFn: ${executionTime.toFixed(2)}ms`,
+        `Time to remove duplicates from ${size} objects with keyFn: ${executionTime.toFixed(2)}ms`,
       );
-      // Assert - Verificar se o tempo médio por item é razoável
+      // Assert - Check whether the average time per item is reasonable
       const avgTimePerItem = executionTime / size;
-      expect(avgTimePerItem).toBeLessThan(0.01); // Menos de 0.01ms por item
+      expect(avgTimePerItem).toBeLessThan(0.01); // Less than 0.01ms per item
     });
   });
 
   describe('intersect', () => {
-    it('deve encontrar a interseção de arrays grandes em tempo razoável', () => {
-      // Arrange - Criar dois arrays grandes com alguma sobreposição
+    it('should find the intersection of large arrays in a reasonable time', () => {
+      // Arrange - Create two large arrays with some overlap
       const size = 100000;
       const array1 = Array.from({ length: size }, (_, i) => i);
       const array2 = Array.from({ length: size }, (_, i) => i + size / 2);
-      // Act - Medir o tempo para encontrar a interseção
+      // Act - Measure the time to find the intersection
       const executionTime = measureExecutionTime(() => {
         ArrayUtils.intersect({ array1, array2 });
       });
-      // Log do tempo de execução
+      // Log the execution time
       console.log(
-        `Tempo para encontrar interseção de dois arrays de ${size} itens: ${executionTime.toFixed(
+        `Time to find the intersection of two arrays of ${size} items: ${executionTime.toFixed(
           2,
         )}ms`,
       );
-      // Assert - Verificar se o tempo médio por item é razoável
+      // Assert - Check whether the average time per item is reasonable
       const avgTimePerItem = executionTime / size;
-      expect(avgTimePerItem).toBeLessThan(0.01); // Menos de 0.01ms por item
+      expect(avgTimePerItem).toBeLessThan(0.01); // Less than 0.01ms per item
     });
   });
 
   describe('flatten', () => {
-    it('deve achatar um array grande aninhado em tempo razoável', () => {
-      // Arrange - Criar um array aninhado grande
+    it('should flatten a large nested array in a reasonable time', () => {
+      // Arrange - Create a large nested array
       const size = 10000;
       const nestedArrays = Array.from({ length: size }, (_, i) => [
         i,
         [i + 1, i + 2],
       ]);
-      // Act - Medir o tempo para achatar o array
+      // Act - Measure the time to flatten the array
       const executionTime = measureExecutionTime(() => {
         ArrayUtils.flatten({ array: nestedArrays });
       });
-      // Log do tempo de execução
+      // Log the execution time
       console.log(
-        `Tempo para achatar um array aninhado de ${size} itens: ${executionTime.toFixed(
+        `Time to flatten a nested array of ${size} items: ${executionTime.toFixed(
           2,
         )}ms`,
       );
-      // Assert - Verificar se o tempo médio por item é razoável
+      // Assert - Check whether the average time per item is reasonable
       const avgTimePerItem = executionTime / size;
-      expect(avgTimePerItem).toBeLessThan(0.01); // Menos de 0.01ms por item
+      expect(avgTimePerItem).toBeLessThan(0.01); // Less than 0.01ms per item
     });
   });
 
   describe('groupBy', () => {
-    it('deve agrupar um array grande em tempo razoável', () => {
-      // Arrange - Criar um array de objetos
+    it('should group a large array in a reasonable time', () => {
+      // Arrange - Create an array of objects
       const size = 100000;
       const array = Array.from({ length: size }, (_, i) => ({
         id: i,
         category: `category-${i % 10}`,
         value: i,
       }));
-      // Act - Medir o tempo para agrupar por categoria
+      // Act - Measure the time to group by category
       const executionTime = measureExecutionTime(() => {
         ArrayUtils.groupBy({
           array,
           keyFn: item => item.category,
         });
       });
-      // Log do tempo de execução
+      // Log the execution time
       console.log(
-        `Tempo para agrupar um array de ${size} itens: ${executionTime.toFixed(
+        `Time to group an array of ${size} items: ${executionTime.toFixed(
           2,
         )}ms`,
       );
-      // Assert - Verificar se o tempo médio por item é razoável
+      // Assert - Check whether the average time per item is reasonable
       const avgTimePerItem = executionTime / size;
-      expect(avgTimePerItem).toBeLessThan(0.01); // Menos de 0.01ms por item
+      expect(avgTimePerItem).toBeLessThan(0.01); // Less than 0.01ms per item
     });
   });
 
   describe('shuffle', () => {
-    it('deve embaralhar um array grande em tempo razoável', () => {
-      // Arrange - Criar um array grande
+    it('should shuffle a large array in a reasonable time', () => {
+      // Arrange - Create a large array
       const size = 100000;
       const array = Array.from({ length: size }, (_, i) => i);
-      // Act - Medir o tempo para embaralhar o array
+      // Act - Measure the time to shuffle the array
       const executionTime = measureExecutionTime(() => {
         ArrayUtils.shuffle({ array });
       });
-      // Log do tempo de execução
+      // Log the execution time
       console.log(
-        `Tempo para embaralhar um array de ${size} itens: ${executionTime.toFixed(
+        `Time to shuffle an array of ${size} items: ${executionTime.toFixed(
           2,
         )}ms`,
       );
-      // Assert - Verificar se o tempo médio por item é razoável
+      // Assert - Check whether the average time per item is reasonable
       const avgTimePerItem = executionTime / size;
-      expect(avgTimePerItem).toBeLessThan(0.001); // Menos de 0.001ms por item
+      expect(avgTimePerItem).toBeLessThan(0.001); // Less than 0.001ms per item
     });
   });
 
   describe('sort', () => {
-    it('deve ordenar um array grande em tempo razoável', () => {
-      // Arrange - Criar um array grande
+    it('should sort a large array in a reasonable time', () => {
+      // Arrange - Create a large array
       const size = 10000;
       const array = Array.from({ length: size }, () =>
         Math.floor(Math.random() * size),
       );
-      // Act - Medir o tempo para ordenar o array
+      // Act - Measure the time to sort the array
       const executionTime = measureExecutionTime(() => {
         ArrayUtils.sort({
           array,
           orderBy: 'asc',
         });
       });
-      // Log do tempo de execução
+      // Log the execution time
       console.log(
-        `Tempo para ordenar um array de ${size} itens: ${executionTime.toFixed(
+        `Time to sort an array of ${size} items: ${executionTime.toFixed(
           2,
         )}ms`,
       );
-      // Assert - Verificar se o tempo médio por item é razoável
+      // Assert - Check whether the average time per item is reasonable
       const avgTimePerItem = executionTime / size;
-      expect(avgTimePerItem).toBeLessThan(0.01); // Menos de 0.01ms por item
+      expect(avgTimePerItem).toBeLessThan(0.01); // Less than 0.01ms per item
     });
 
-    it('deve ordenar um array de objetos por múltiplas propriedades em tempo razoável', () => {
-      // Arrange - Criar um array de objetos
+    it('should sort an array of objects by multiple properties in a reasonable time', () => {
+      // Arrange - Create an array of objects
       const size = 10000;
       const array = Array.from({ length: size }, (_, i) => ({
         id: i,
         name: `name-${Math.floor(Math.random() * 100)}`,
         value: Math.floor(Math.random() * 1000),
       }));
-      // Act - Medir o tempo para ordenar o array por múltiplas propriedades
+      // Act - Measure the time to sort the array by multiple properties
       const executionTime = measureExecutionTime(() => {
         ArrayUtils.sort({
           array,
@@ -191,21 +191,21 @@ describe('ArrayUtils - Testes de Benchmark', () => {
           },
         });
       });
-      // Log do tempo de execução
+      // Log the execution time
       console.log(
-        `Tempo para ordenar um array de ${size} objetos por múltiplas propriedades: ${executionTime.toFixed(
+        `Time to sort an array of ${size} objects by multiple properties: ${executionTime.toFixed(
           2,
         )}ms`,
       );
-      // Assert - Verificar se o tempo médio por item é razoável
+      // Assert - Check whether the average time per item is reasonable
       const avgTimePerItem = executionTime / size;
-      expect(avgTimePerItem).toBeLessThan(0.1); // Menos de 0.1ms por item
+      expect(avgTimePerItem).toBeLessThan(0.1); // Less than 0.1ms per item
     });
   });
 
   describe('findSubset', () => {
-    it('deve encontrar um subconjunto em um array grande em tempo razoável', () => {
-      // Arrange - Criar um array grande de objetos
+    it('should find a subset in a large array in a reasonable time', () => {
+      // Arrange - Create a large array of objects
       const size = 100000;
       const array = Array.from({ length: size }, (_, i) => ({
         id: i,
@@ -213,44 +213,44 @@ describe('ArrayUtils - Testes de Benchmark', () => {
         category: `category-${i % 10}`,
         active: i % 2 === 0,
       }));
-      // Subset a ser encontrado
+      // Subset to be found
       const subset = {
         category: 'category-5',
         active: true,
       };
-      // Act - Medir o tempo para encontrar o subconjunto
+      // Act - Measure the time to find the subset
       const executionTime = measureExecutionTime(() => {
-        array.filter(item => 
+        array.filter(item =>
           item.category === subset.category && item.active === subset.active
         );
       });
-      // Log do tempo de execução
+      // Log the execution time
       console.log(
-        `Tempo para encontrar um subconjunto em um array de ${size} itens: ${executionTime.toFixed(
+        `Time to find a subset in an array of ${size} items: ${executionTime.toFixed(
           2,
         )}ms`,
       );
-      // Assert - Verificar se o tempo médio por item é razoável
+      // Assert - Check whether the average time per item is reasonable
       const avgTimePerItem = executionTime / size;
-      expect(avgTimePerItem).toBeLessThan(0.01); // Menos de 0.01ms por item
+      expect(avgTimePerItem).toBeLessThan(0.01); // Less than 0.01ms per item
     });
   });
 
   describe('isSubset', () => {
-    it('deve verificar se um objeto é subconjunto de outro em tempo razoável', () => {
-      // Arrange - Criar um objeto grande
+    it('should check whether an object is a subset of another in a reasonable time', () => {
+      // Arrange - Create a large object
       const superset = {
         id: 1,
         name: 'Item',
         values: [1, 2, 3],
         nested: { a: 1, b: 2, c: { d: 3, e: 4 } },
       };
-      // Subset a ser verificado
+      // Subset to be checked
       const subset = {
         name: 'Item',
         nested: { a: 1, b: 2, c: { d: 3 } },
       };
-      // Act - Medir o tempo para verificar se é subconjunto
+      // Act - Measure the time to check whether it is a subset
       const count = 100000;
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
@@ -262,15 +262,15 @@ describe('ArrayUtils - Testes de Benchmark', () => {
           });
         }
       });
-      // Log do tempo de execução
+      // Log the execution time
       console.log(
-        `Tempo para verificar se é subconjunto ${count} vezes: ${executionTime.toFixed(
+        `Time to check whether it is a subset ${count} times: ${executionTime.toFixed(
           2,
         )}ms`,
       );
-      // Assert - Verificar se o tempo médio por verificação é razoável
+      // Assert - Check whether the average time per check is reasonable
       const avgTimePerCheck = executionTime / count;
-      expect(avgTimePerCheck).toBeLessThan(0.01); // Menos de 0.01ms por verificação
+      expect(avgTimePerCheck).toBeLessThan(0.01); // Less than 0.01ms per check
     });
   });
 });

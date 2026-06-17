@@ -1,20 +1,20 @@
 import { DateUtils } from '../../src/services/date.service';
 import { DateTime } from 'luxon';
 /**
- * Testes de benchmark para a classe DateUtils.
- * Estes testes verificam o desempenho da classe em operações de alta frequência.
+ * Benchmark tests for the DateUtils class.
+ * These tests verify the class's performance in high-frequency operations.
  */
-describe('DateUtils - Testes de Benchmark', () => {
-  // Função auxiliar para medir o tempo de execução
+describe('DateUtils - Benchmark Tests', () => {
+  // Helper function to measure execution time
   const measureExecutionTime = (fn: () => void): number => {
     const start = process.hrtime.bigint();
     fn();
     const end = process.hrtime.bigint();
-    return Number(end - start) / 1_000_000; // Converte para milissegundos
+    return Number(end - start) / 1_000_000; // Convert to milliseconds
   };
 
-  describe('Obtenção de data atual em massa', () => {
-    it('deve obter 10.000 datas atuais em tempo razoável', () => {
+  describe('Getting current date in bulk', () => {
+    it('should get 10,000 current dates in a reasonable time', () => {
       const count = 10000;
       const dates: DateTime[] = [];
       const executionTime = measureExecutionTime(() => {
@@ -23,13 +23,13 @@ describe('DateUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para obter ${count} datas atuais: ${executionTime.toFixed(2)}ms`,
+        `Time to get ${count} current dates: ${executionTime.toFixed(2)}ms`,
       );
-      // O tempo médio por operação deve ser menor que 0.1ms
+      // The average time per operation should be less than 0.1ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.1);
     });
-    it('deve obter 10.000 datas UTC em tempo razoável', () => {
+    it('should get 10,000 UTC dates in a reasonable time', () => {
       const count = 10000;
       const dates: DateTime[] = [];
       const executionTime = measureExecutionTime(() => {
@@ -38,16 +38,16 @@ describe('DateUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para obter ${count} datas UTC: ${executionTime.toFixed(2)}ms`,
+        `Time to get ${count} UTC dates: ${executionTime.toFixed(2)}ms`,
       );
-      // O tempo médio por operação deve ser menor que 0.1ms
+      // The average time per operation should be less than 0.1ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.1);
     });
   });
 
-  describe('Criação de intervalos em massa', () => {
-    it('deve criar 10.000 intervalos em tempo razoável', () => {
+  describe('Creating intervals in bulk', () => {
+    it('should create 10,000 intervals in a reasonable time', () => {
       const count = 10000;
       const startDate = '2023-01-01';
       const endDate = '2023-12-31';
@@ -60,16 +60,16 @@ describe('DateUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para criar ${count} intervalos: ${executionTime.toFixed(2)}ms`,
+        `Time to create ${count} intervals: ${executionTime.toFixed(2)}ms`,
       );
-      // O tempo médio por operação deve ser menor que 0.1ms
+      // The average time per operation should be less than 0.1ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.1);
     });
   });
 
-  describe('Adição de tempo em massa', () => {
-    it('deve adicionar tempo a 10.000 datas em tempo razoável', () => {
+  describe('Adding time in bulk', () => {
+    it('should add time to 10,000 dates in a reasonable time', () => {
       const count = 10000;
       const date = '2023-01-01';
       const timeToAdd = { days: 5 };
@@ -80,18 +80,18 @@ describe('DateUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para adicionar tempo a ${count} datas: ${executionTime.toFixed(
+        `Time to add time to ${count} dates: ${executionTime.toFixed(
           2,
         )}ms`,
       );
-      // O tempo médio por operação deve ser menor que 0.1ms
+      // The average time per operation should be less than 0.1ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.1);
     });
   });
 
-  describe('Cálculo de diferença entre datas em massa', () => {
-    it('deve calcular a diferença entre 10.000 pares de datas em tempo razoável', () => {
+  describe('Calculating difference between dates in bulk', () => {
+    it('should calculate the difference between 10,000 pairs of dates in a reasonable time', () => {
       const count = 10000;
       const startDate = '2023-01-01';
       const endDate = '2023-12-31';
@@ -105,18 +105,18 @@ describe('DateUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para calcular diferença entre ${count} pares de datas: ${executionTime.toFixed(
+        `Time to calculate difference between ${count} pairs of dates: ${executionTime.toFixed(
           2,
         )}ms`,
       );
-      // O tempo médio por operação deve ser menor que 0.1ms
+      // The average time per operation should be less than 0.1ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.1);
     });
   });
 
-  describe('Conversão de timezone em massa', () => {
-    it('deve converter 10.000 datas para UTC em tempo razoável', () => {
+  describe('Timezone conversion in bulk', () => {
+    it('should convert 10,000 dates to UTC in a reasonable time', () => {
       const count = 10000;
       const date = DateTime.local();
       const results = [];
@@ -126,16 +126,16 @@ describe('DateUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para converter ${count} datas para UTC: ${executionTime.toFixed(
+        `Time to convert ${count} dates to UTC: ${executionTime.toFixed(
           2,
         )}ms`,
       );
-      // O tempo médio por operação deve ser menor que 0.1ms
+      // The average time per operation should be less than 0.1ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.1);
     });
 
-    it('deve converter 10.000 datas para um timezone específico em tempo razoável', () => {
+    it('should convert 10,000 dates to a specific timezone in a reasonable time', () => {
       const count = 10000;
       const date = DateTime.utc();
       const timeZone = 'America/New_York';
@@ -146,29 +146,29 @@ describe('DateUtils - Testes de Benchmark', () => {
         }
       });
       console.log(
-        `Tempo para converter ${count} datas para ${timeZone}: ${executionTime.toFixed(
+        `Time to convert ${count} dates to ${timeZone}: ${executionTime.toFixed(
           2,
         )}ms`,
       );
-      // O tempo médio por operação deve ser menor que 0.1ms
+      // The average time per operation should be less than 0.1ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.1);
     });
   });
 
-  describe('Comparação de desempenho entre operações', () => {
-    it('deve comparar o desempenho de diferentes operações de data', () => {
+  describe('Performance comparison between operations', () => {
+    it('should compare the performance of different date operations', () => {
       const count = 1000;
       const results: Record<string, number> = {};
 
-      // Teste now
+      // Test now
       results.now = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           DateUtils.now();
         }
       });
 
-      // Teste createInterval
+      // Test createInterval
       const start = '2023-01-01';
       const end = '2023-12-31';
       results.createInterval = measureExecutionTime(() => {
@@ -177,7 +177,7 @@ describe('DateUtils - Testes de Benchmark', () => {
         }
       });
 
-      // Teste addTime
+      // Test addTime
       results.addTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           DateUtils.addTime({
@@ -187,7 +187,7 @@ describe('DateUtils - Testes de Benchmark', () => {
         }
       });
 
-      // Teste diffBetween
+      // Test diffBetween
       const units = ['days'] as const;
       results.diffBetween = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
@@ -199,17 +199,17 @@ describe('DateUtils - Testes de Benchmark', () => {
         }
       });
 
-      // Exibe os resultados
-      console.log('Comparação de desempenho para diferentes operações de data:');
+      // Display the results
+      console.log('Performance comparison for different date operations:');
       Object.entries(results).forEach(([operation, time]) => {
         console.log(
           `${operation}: ${time.toFixed(2)}ms (${(time / count).toFixed(
             3,
-          )}ms por operação)`,
+          )}ms per operation)`,
         );
       });
 
-      // Não fazemos asserções específicas aqui, pois o objetivo é apenas coletar dados para análise
+      // We don't make specific assertions here, as the goal is just to collect data for analysis
     });
   });
 });

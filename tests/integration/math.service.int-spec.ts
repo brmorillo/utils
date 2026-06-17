@@ -1,159 +1,159 @@
 import { MathUtils } from '../../src/services/math.service';
 
 /**
- * Testes de integração para a classe MathUtils.
- * Estes testes verificam o comportamento da classe em cenários mais complexos
- * e com interações entre diferentes métodos.
+ * Integration tests for the MathUtils class.
+ * These tests verify the class's behavior in more complex scenarios
+ * and with interactions between different methods.
  */
-describe('MathUtils - Testes de Integração', () => {
-  describe('Cálculos financeiros', () => {
-    it('deve calcular e arredondar porcentagens corretamente', () => {
-      // Simula um cálculo de desconto
-      const precoOriginal = 199.99;
-      const precoComDesconto = 149.99;
+describe('MathUtils - Integration Tests', () => {
+  describe('Financial calculations', () => {
+    it('should calculate and round percentages correctly', () => {
+      // Simulates a discount calculation
+      const originalPrice = 199.99;
+      const discountedPrice = 149.99;
 
-      // Calcula a porcentagem de desconto
-      const porcentagemDesconto = MathUtils.percentage({
-        total: precoOriginal,
-        part: precoOriginal - precoComDesconto,
+      // Calculates the discount percentage
+      const discountPercentage = MathUtils.percentage({
+        total: originalPrice,
+        part: originalPrice - discountedPrice,
       });
 
-      // Arredonda para 2 casas decimais
-      const porcentagemArredondada = MathUtils.roundToDecimals({
-        value: porcentagemDesconto,
+      // Rounds to 2 decimal places
+      const roundedPercentage = MathUtils.roundToDecimals({
+        value: discountPercentage,
         decimals: 2,
       });
 
-      // Verifica se o resultado está correto (25% de desconto)
-      expect(porcentagemArredondada).toBeCloseTo(25.0);
+      // Verifies that the result is correct (25% discount)
+      expect(roundedPercentage).toBeCloseTo(25.0);
     });
   });
 
-  describe('Cálculos estatísticos', () => {
-    it('deve calcular média e desvio dentro de limites', () => {
-      // Simula uma série de medições
-      const medicoes = [10.2, 9.8, 10.4, 10.1, 9.9, 10.3, 10.0];
+  describe('Statistical calculations', () => {
+    it('should calculate mean and deviation within bounds', () => {
+      // Simulates a series of measurements
+      const measurements = [10.2, 9.8, 10.4, 10.1, 9.9, 10.3, 10.0];
 
-      // Calcula a média
-      const soma = medicoes.reduce((acc, val) => acc + val, 0);
-      const media = soma / medicoes.length;
+      // Calculates the mean
+      const sum = measurements.reduce((acc, val) => acc + val, 0);
+      const mean = sum / measurements.length;
 
-      // Arredonda a média
-      const mediaArredondada = MathUtils.roundToDecimals({
-        value: media,
+      // Rounds the mean
+      const roundedMean = MathUtils.roundToDecimals({
+        value: mean,
         decimals: 2,
       });
 
-      // Calcula o desvio máximo
-      const desvioMaximo = Math.max(...medicoes.map(m => Math.abs(m - media)));
+      // Calculates the maximum deviation
+      const maxDeviation = Math.max(...measurements.map(m => Math.abs(m - mean)));
 
-      // Limita o desvio a um valor máximo aceitável
-      const desvioLimitado = MathUtils.clamp({
-        value: desvioMaximo,
+      // Clamps the deviation to a maximum acceptable value
+      const clampedDeviation = MathUtils.clamp({
+        value: maxDeviation,
         min: 0,
         max: 0.5,
       });
 
-      // Verifica os resultados
-      expect(mediaArredondada).toBe(10.1);
-      expect(desvioLimitado).toBeLessThanOrEqual(0.5);
+      // Verifies the results
+      expect(roundedMean).toBe(10.1);
+      expect(clampedDeviation).toBeLessThanOrEqual(0.5);
     });
   });
 
-  describe('Operações com frações', () => {
-    it('deve simplificar frações usando MDC', () => {
-      // Simula uma fração
-      const numerador = 24;
-      const denominador = 36;
+  describe('Operations with fractions', () => {
+    it('should simplify fractions using GCD', () => {
+      // Simulates a fraction
+      const numerator = 24;
+      const denominator = 36;
 
-      // Calcula o MDC para simplificar a fração
-      const divisorComum = MathUtils.gcd({
-        a: numerador,
-        b: denominador,
+      // Calculates the GCD to simplify the fraction
+      const commonDivisor = MathUtils.gcd({
+        a: numerator,
+        b: denominator,
       });
 
-      // Simplifica a fração
-      const numeradorSimplificado = numerador / divisorComum;
-      const denominadorSimplificado = denominador / divisorComum;
+      // Simplifies the fraction
+      const simplifiedNumerator = numerator / commonDivisor;
+      const simplifiedDenominator = denominator / commonDivisor;
 
-      // Verifica se a fração foi simplificada corretamente (24/36 = 2/3)
-      expect(numeradorSimplificado).toBe(2);
-      expect(denominadorSimplificado).toBe(3);
+      // Verifies that the fraction was simplified correctly (24/36 = 2/3)
+      expect(simplifiedNumerator).toBe(2);
+      expect(simplifiedDenominator).toBe(3);
     });
 
-    it('deve calcular o denominador comum usando MMC', () => {
-      // Simula duas frações
-      const fracao1 = { numerador: 1, denominador: 4 };
-      const fracao2 = { numerador: 2, denominador: 6 };
+    it('should calculate the common denominator using LCM', () => {
+      // Simulates two fractions
+      const fraction1 = { numerator: 1, denominator: 4 };
+      const fraction2 = { numerator: 2, denominator: 6 };
 
-      // Calcula o MMC dos denominadores
-      const denominadorComum = MathUtils.lcm({
-        a: fracao1.denominador,
-        b: fracao2.denominador,
+      // Calculates the LCM of the denominators
+      const commonDenominator = MathUtils.lcm({
+        a: fraction1.denominator,
+        b: fraction2.denominator,
       });
 
-      // Ajusta os numeradores para o denominador comum
-      const numerador1Ajustado =
-        fracao1.numerador * (denominadorComum / fracao1.denominador);
-      const numerador2Ajustado =
-        fracao2.numerador * (denominadorComum / fracao2.denominador);
+      // Adjusts the numerators to the common denominator
+      const adjustedNumerator1 =
+        fraction1.numerator * (commonDenominator / fraction1.denominator);
+      const adjustedNumerator2 =
+        fraction2.numerator * (commonDenominator / fraction2.denominator);
 
-      // Soma as frações
-      const numeradorSoma = numerador1Ajustado + numerador2Ajustado;
+      // Adds the fractions
+      const numeratorSum = adjustedNumerator1 + adjustedNumerator2;
 
-      // Verifica se o resultado está correto (1/4 + 2/6 = 3/12 + 4/12 = 7/12)
-      expect(denominadorComum).toBe(12);
-      expect(numerador1Ajustado).toBe(3);
-      expect(numerador2Ajustado).toBe(4);
-      expect(numeradorSoma).toBe(7);
+      // Verifies that the result is correct (1/4 + 2/6 = 3/12 + 4/12 = 7/12)
+      expect(commonDenominator).toBe(12);
+      expect(adjustedNumerator1).toBe(3);
+      expect(adjustedNumerator2).toBe(4);
+      expect(numeratorSum).toBe(7);
     });
   });
 
-  describe('Geração de números aleatórios com restrições', () => {
-    it('deve gerar e limitar números aleatórios', () => {
-      // Gera 10 números aleatórios e verifica se estão dentro dos limites
+  describe('Random number generation with constraints', () => {
+    it('should generate and clamp random numbers', () => {
+      // Generates 10 random numbers and verifies they are within bounds
       for (let i = 0; i < 10; i++) {
-        // Gera um número aleatório entre -100 e 100
-        const numeroAleatorio = MathUtils.randomInRange({
+        // Generates a random number between -100 and 100
+        const randomNumber = MathUtils.randomInRange({
           min: -100,
           max: 100,
         });
 
-        // Limita o número ao intervalo [-50, 50]
-        const numeroLimitado = MathUtils.clamp({
-          value: numeroAleatorio,
+        // Clamps the number to the range [-50, 50]
+        const clampedNumber = MathUtils.clamp({
+          value: randomNumber,
           min: -50,
           max: 50,
         });
 
-        // Verifica se o número limitado está dentro do intervalo
-        expect(numeroLimitado).toBeGreaterThanOrEqual(-50);
-        expect(numeroLimitado).toBeLessThanOrEqual(50);
+        // Verifies that the clamped number is within the range
+        expect(clampedNumber).toBeGreaterThanOrEqual(-50);
+        expect(clampedNumber).toBeLessThanOrEqual(50);
       }
     });
   });
 
-  describe('Verificação de propriedades matemáticas', () => {
-    it('deve verificar se números são primos e calcular o MDC', () => {
-      // Testa se o MDC de dois números primos é 1
-      const primos = [11, 13, 17, 19, 23, 29, 31];
+  describe('Verification of mathematical properties', () => {
+    it('should verify whether numbers are prime and calculate the GCD', () => {
+      // Tests whether the GCD of two prime numbers is 1
+      const primes = [11, 13, 17, 19, 23, 29, 31];
 
-      for (let i = 0; i < primos.length; i++) {
-        for (let j = i + 1; j < primos.length; j++) {
-          const primo1 = primos[i];
-          const primo2 = primos[j];
+      for (let i = 0; i < primes.length; i++) {
+        for (let j = i + 1; j < primes.length; j++) {
+          const prime1 = primes[i];
+          const prime2 = primes[j];
 
-          // Verifica se ambos são primos
-          const isPrimo1 = MathUtils.isValidPrime({ value: primo1 });
-          const isPrimo2 = MathUtils.isValidPrime({ value: primo2 });
+          // Verifies that both are prime
+          const isPrime1 = MathUtils.isValidPrime({ value: prime1 });
+          const isPrime2 = MathUtils.isValidPrime({ value: prime2 });
 
-          // Calcula o MDC
-          const mdc = MathUtils.gcd({ a: primo1, b: primo2 });
+          // Calculates the GCD
+          const gcd = MathUtils.gcd({ a: prime1, b: prime2 });
 
-          // Verifica os resultados
-          expect(isPrimo1).toBe(true);
-          expect(isPrimo2).toBe(true);
-          expect(mdc).toBe(1); // MDC de dois primos distintos é sempre 1
+          // Verifies the results
+          expect(isPrime1).toBe(true);
+          expect(isPrime2).toBe(true);
+          expect(gcd).toBe(1); // The GCD of two distinct primes is always 1
         }
       }
     });

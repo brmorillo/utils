@@ -292,4 +292,3 @@ const shuffled = ArrayUtils.shuffle({ array: range });
 console.log('Shuffled:', shuffled); // Random order
 ```
 
-For more detailed examples and advanced usage, see the [complete ArrayUtils documentation](./array-utils-detailed.md).

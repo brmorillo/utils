@@ -1,20 +1,20 @@
 import { Queue, Stack, MultiQueue } from '../../src/services/queue.service';
 
 /**
- * Testes de benchmark para as estruturas de dados de fila.
- * Estes testes verificam o desempenho das classes em operações de alta frequência.
+ * Benchmark tests for the queue data structures.
+ * These tests verify the performance of the classes in high-frequency operations.
  */
-describe('Queue Service - Testes de Benchmark', () => {
-  // Função auxiliar para medir o tempo de execução
+describe('Queue Service - Benchmark Tests', () => {
+  // Helper function to measure execution time
   const measureExecutionTime = (fn: () => void): number => {
     const start = process.hrtime.bigint();
     fn();
     const end = process.hrtime.bigint();
-    return Number(end - start) / 1_000_000; // Converte para milissegundos
+    return Number(end - start) / 1_000_000; // Convert to milliseconds
   };
 
-  describe('Queue - Operações em massa', () => {
-    it('deve processar 1.000.000 de operações de enqueue em tempo razoável', () => {
+  describe('Queue - Bulk operations', () => {
+    it('should process 1,000,000 enqueue operations in a reasonable time', () => {
       const queue = new Queue<number>();
       const count = 1000000;
       
@@ -25,20 +25,20 @@ describe('Queue Service - Testes de Benchmark', () => {
       });
       
       console.log(
-        `Tempo para enfileirar ${count} itens: ${executionTime.toFixed(2)}ms`,
+        `Time to enqueue ${count} items: ${executionTime.toFixed(2)}ms`,
       );
-      
-      // O tempo médio por operação deve ser menor que 0.001ms
+
+      // The average time per operation should be less than 0.001ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.001);
       expect(queue.size()).toBe(count);
     });
 
-    it('deve processar 100.000 operações de dequeue em tempo razoável', () => {
+    it('should process 100,000 dequeue operations in a reasonable time', () => {
       const queue = new Queue<number>();
       const count = 100000;
-      
-      // Preenche a fila primeiro
+
+      // Fill the queue first
       for (let i = 0; i < count; i++) {
         queue.enqueue(i);
       }
@@ -50,18 +50,18 @@ describe('Queue Service - Testes de Benchmark', () => {
       });
       
       console.log(
-        `Tempo para desenfileirar ${count} itens: ${executionTime.toFixed(2)}ms`,
+        `Time to dequeue ${count} items: ${executionTime.toFixed(2)}ms`,
       );
-      
-      // O tempo médio por operação deve ser menor que 0.01ms
+
+      // The average time per operation should be less than 0.01ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.01);
       expect(queue.isEmpty()).toBe(true);
     });
   });
 
-  describe('Stack - Operações em massa', () => {
-    it('deve processar 1.000.000 de operações de push em tempo razoável', () => {
+  describe('Stack - Bulk operations', () => {
+    it('should process 1,000,000 push operations in a reasonable time', () => {
       const stack = new Stack<number>();
       const count = 1000000;
       
@@ -72,20 +72,20 @@ describe('Queue Service - Testes de Benchmark', () => {
       });
       
       console.log(
-        `Tempo para empilhar ${count} itens: ${executionTime.toFixed(2)}ms`,
+        `Time to push ${count} items: ${executionTime.toFixed(2)}ms`,
       );
-      
-      // O tempo médio por operação deve ser menor que 0.001ms
+
+      // The average time per operation should be less than 0.001ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.001);
       expect(stack.size()).toBe(count);
     });
 
-    it('deve processar 100.000 operações de pop em tempo razoável', () => {
+    it('should process 100,000 pop operations in a reasonable time', () => {
       const stack = new Stack<number>();
       const count = 100000;
-      
-      // Preenche a pilha primeiro
+
+      // Fill the stack first
       for (let i = 0; i < count; i++) {
         stack.push(i);
       }
@@ -97,18 +97,18 @@ describe('Queue Service - Testes de Benchmark', () => {
       });
       
       console.log(
-        `Tempo para desempilhar ${count} itens: ${executionTime.toFixed(2)}ms`,
+        `Time to pop ${count} items: ${executionTime.toFixed(2)}ms`,
       );
-      
-      // O tempo médio por operação deve ser menor que 0.01ms
+
+      // The average time per operation should be less than 0.01ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.01);
       expect(stack.isEmpty()).toBe(true);
     });
   });
 
-  describe('MultiQueue - Operações em massa', () => {
-    it('deve processar 500.000 operações de enqueue em múltiplos canais em tempo razoável', () => {
+  describe('MultiQueue - Bulk operations', () => {
+    it('should process 500,000 enqueue operations across multiple channels in a reasonable time', () => {
       const multiQueue = new MultiQueue<number>();
       const count = 500000;
       const channels = ['high', 'medium', 'low'];
@@ -121,24 +121,24 @@ describe('Queue Service - Testes de Benchmark', () => {
       });
       
       console.log(
-        `Tempo para enfileirar ${count} itens em ${channels.length} canais: ${executionTime.toFixed(2)}ms`,
+        `Time to enqueue ${count} items across ${channels.length} channels: ${executionTime.toFixed(2)}ms`,
       );
-      
-      // O tempo médio por operação deve ser menor que 0.002ms
+
+      // The average time per operation should be less than 0.002ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.002);
-      
-      // Verifica se os itens foram distribuídos corretamente
+
+      // Check whether the items were distributed correctly
       const totalItems = channels.reduce((sum, channel) => sum + multiQueue.size(channel), 0);
       expect(totalItems).toBe(count);
     });
 
-    it('deve processar 100.000 operações de dequeue em múltiplos canais em tempo razoável', () => {
+    it('should process 100,000 dequeue operations across multiple channels in a reasonable time', () => {
       const multiQueue = new MultiQueue<number>();
       const count = 100000;
       const channels = ['high', 'medium', 'low'];
-      
-      // Preenche a fila primeiro
+
+      // Fill the queue first
       for (let i = 0; i < count; i++) {
         const channel = channels[i % channels.length];
         multiQueue.enqueue(i, channel);
@@ -153,72 +153,72 @@ describe('Queue Service - Testes de Benchmark', () => {
       });
       
       console.log(
-        `Tempo para desenfileirar ${count} itens de ${channels.length} canais: ${executionTime.toFixed(2)}ms`,
+        `Time to dequeue ${count} items from ${channels.length} channels: ${executionTime.toFixed(2)}ms`,
       );
-      
-      // O tempo médio por operação deve ser menor que 0.01ms
+
+      // The average time per operation should be less than 0.01ms
       const avgTimePerOperation = executionTime / count;
       expect(avgTimePerOperation).toBeLessThan(0.01);
-      
-      // Verifica se todos os canais estão vazios
+
+      // Check whether all channels are empty
       for (const channel of channels) {
         expect(multiQueue.isEmpty(channel)).toBe(true);
       }
     });
   });
 
-  describe('Comparação de desempenho', () => {
-    it('deve comparar o desempenho entre diferentes estruturas de dados', () => {
+  describe('Performance comparison', () => {
+    it('should compare the performance between different data structures', () => {
       const count = 100000;
       const results: Record<string, number> = {};
-      
-      // Teste Queue enqueue
+
+      // Test Queue enqueue
       const queue = new Queue<number>();
       results.queueEnqueue = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           queue.enqueue(i);
         }
       });
-      
-      // Teste Stack push
+
+      // Test Stack push
       const stack = new Stack<number>();
       results.stackPush = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           stack.push(i);
         }
       });
-      
-      // Teste MultiQueue enqueue
+
+      // Test MultiQueue enqueue
       const multiQueue = new MultiQueue<number>();
       results.multiQueueEnqueue = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           multiQueue.enqueue(i, i % 2 === 0 ? 'even' : 'odd');
         }
       });
-      
-      // Teste Queue dequeue
+
+      // Test Queue dequeue
       results.queueDequeue = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           queue.dequeue();
         }
       });
-      
-      // Teste Stack pop
+
+      // Test Stack pop
       results.stackPop = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           stack.pop();
         }
       });
-      
-      // Exibe os resultados
-      console.log('Comparação de desempenho para diferentes estruturas:');
+
+      // Display the results
+      console.log('Performance comparison for different structures:');
       Object.entries(results).forEach(([method, time]) => {
         console.log(
-          `${method}: ${time.toFixed(2)}ms (${(time / count).toFixed(6)}ms por operação)`,
+          `${method}: ${time.toFixed(2)}ms (${(time / count).toFixed(6)}ms per operation)`,
         );
       });
-      
-      // Não fazemos asserções específicas aqui, pois o objetivo é apenas coletar dados para análise
+
+      // We don't make specific assertions here, as the goal is just to collect data for analysis
     });
   });
 });

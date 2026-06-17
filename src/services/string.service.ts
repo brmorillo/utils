@@ -67,7 +67,7 @@ export class StringUtils {
   }): string {
     if (input.length <= maxLength) return input;
 
-    // Se a string for maior que maxLength, truncar deixando espaço para '...'
+    // If the string is longer than maxLength, truncate leaving room for '...'
     if (maxLength <= 3) return '...';
 
     return input.slice(0, maxLength - 3) + '...';
@@ -91,17 +91,17 @@ export class StringUtils {
     return (
       input
         .trim()
-        // Primeiro substitui underscores e espaços por hífens
+        // First replace underscores and spaces with hyphens
         .replace(/[\s_]+/g, '-')
-        // Adiciona hífen antes de maiúsculas (apenas se precedidas por minúsculas ou números)
+        // Insert a hyphen before uppercase letters (only when preceded by a lowercase letter or digit)
         .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
-        // Converte tudo para minúsculo
+        // Lowercase everything
         .toLowerCase()
-        // Remove caracteres especiais exceto hífens
+        // Remove special characters except hyphens
         .replace(/[^a-z0-9-]/g, '')
-        // Múltiplos hífens para um só
+        // Collapse multiple hyphens into one
         .replace(/-+/g, '-')
-        // Remove hífens do início e fim
+        // Trim leading and trailing hyphens
         .replace(/^-|-$/g, '')
     );
   }
@@ -124,17 +124,17 @@ export class StringUtils {
     return (
       input
         .trim()
-        // Primeiro substitui hífens e espaços por underscores
+        // First replace hyphens and spaces with underscores
         .replace(/[\s-]+/g, '_')
-        // Adiciona underscore antes de maiúsculas (apenas se precedidas por minúsculas ou números)
+        // Insert an underscore before uppercase letters (only when preceded by a lowercase letter or digit)
         .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
-        // Converte tudo para minúsculo
+        // Lowercase everything
         .toLowerCase()
-        // Remove caracteres especiais exceto underscores
+        // Remove special characters except underscores
         .replace(/[^a-z0-9_]/g, '')
-        // Múltiplos underscores para um só
+        // Collapse multiple underscores into one
         .replace(/_+/g, '_')
-        // Remove underscores do início e fim
+        // Trim leading and trailing underscores
         .replace(/^_|_$/g, '')
     );
   }
@@ -154,7 +154,7 @@ export class StringUtils {
    * }); // "snakeCaseString"
    */
   public static toCamelCase({ input }: { input: string }): string {
-    // Se já está em camelCase (contém maiúsculas e não contém separadores), retorna como está
+    // If it is already camelCase (has uppercase letters and no separators), return as-is
     if (/^[a-z]+([A-Z][a-z]*)*$/.test(input)) {
       return input;
     }
@@ -207,7 +207,9 @@ export class StringUtils {
     substring: string;
   }): number {
     if (!substring) return 0;
-    return (input.match(new RegExp(substring, 'g')) || []).length;
+    return (
+      input.match(new RegExp(StringUtils.escapeRegExp(substring), 'g')) || []
+    ).length;
   }
 
   /**
@@ -234,11 +236,6 @@ export class StringUtils {
     replacement: string;
   }): string {
     if (!substring) return input;
-
-    // For the specific test case with empty substring
-    if (substring === '' && input === 'hello') {
-      return 'hello';
-    }
 
     return input.split(substring).join(replacement);
   }
@@ -270,14 +267,29 @@ export class StringUtils {
     replacement: string;
     occurrences: number;
   }): string {
+    if (!substring) return input;
+
     let count = 0;
-    return input.replace(new RegExp(substring, 'g'), match => {
-      if (count < occurrences) {
-        count++;
-        return replacement;
-      }
-      return match;
-    });
+    return input.replace(
+      new RegExp(StringUtils.escapeRegExp(substring), 'g'),
+      match => {
+        if (count < occurrences) {
+          count++;
+          return replacement;
+        }
+        return match;
+      },
+    );
+  }
+
+  /**
+   * Escapes characters that have special meaning in a regular expression so the
+   * value can be used as a literal pattern.
+   * @param {string} value - The string to escape.
+   * @returns {string} The escaped string.
+   */
+  private static escapeRegExp(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
   /**

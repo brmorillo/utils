@@ -1,20 +1,20 @@
 import { RequestUtils } from '../../src/services/request.service';
 
 /**
- * Testes de benchmark para a classe RequestUtils.
- * Estes testes verificam o desempenho da classe em operações de alta frequência.
+ * Benchmark tests for the RequestUtils class.
+ * These tests verify the performance of the class in high-frequency operations.
  */
-describe('RequestUtils - Testes de Benchmark', () => {
-  // Função auxiliar para medir o tempo de execução
+describe('RequestUtils - Benchmark Tests', () => {
+  // Helper function to measure execution time
   const measureExecutionTime = (fn: () => void): number => {
     const start = process.hrtime.bigint();
     fn();
     const end = process.hrtime.bigint();
-    return Number(end - start) / 1_000_000; // Converte para milissegundos
+    return Number(end - start) / 1_000_000; // Convert to milliseconds
   };
 
   describe('extractRequestData', () => {
-    it('deve processar 10.000 requisições simples em tempo razoável', () => {
+    it('should process 10,000 simple requests in a reasonable time', () => {
       const mockRequest = {
         headers: {
           'user-agent':
@@ -33,15 +33,15 @@ describe('RequestUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para processar ${count} requisições simples: ${executionTime.toFixed(2)}ms`,
+        `Time to process ${count} simple requests: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por extração deve ser menor que 0.5ms
+      // The average time per extraction should be less than 0.5ms
       const avgTimePerExtraction = executionTime / count;
       expect(avgTimePerExtraction).toBeLessThan(0.5);
     });
 
-    it('deve processar 1.000 requisições complexas em tempo razoável', () => {
+    it('should process 1,000 complex requests in a reasonable time', () => {
       const mockRequest = {
         headers: {
           'user-agent':
@@ -81,15 +81,15 @@ describe('RequestUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para processar ${count} requisições complexas: ${executionTime.toFixed(2)}ms`,
+        `Time to process ${count} complex requests: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por extração deve ser menor que 1ms
+      // The average time per extraction should be less than 1ms
       const avgTimePerExtraction = executionTime / count;
       expect(avgTimePerExtraction).toBeLessThan(1);
     });
 
-    it('deve processar 10.000 requisições com diferentes user-agents em tempo razoável', () => {
+    it('should process 10,000 requests with different user-agents in a reasonable time', () => {
       const userAgents = [
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15',
@@ -120,20 +120,20 @@ describe('RequestUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para processar ${count} requisições com diferentes user-agents: ${executionTime.toFixed(2)}ms`,
+        `Time to process ${count} requests with different user-agents: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por extração deve ser menor que 0.5ms
+      // The average time per extraction should be less than 0.5ms
       const avgTimePerExtraction = executionTime / count;
       expect(avgTimePerExtraction).toBeLessThan(0.5);
     });
 
-    it('deve processar 1.000 requisições com diferentes IPs e proxies em tempo razoável', () => {
+    it('should process 1,000 requests with different IPs and proxies in a reasonable time', () => {
       const count = 1000;
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          // Gera IPs diferentes para cada iteração
+          // Generate different IPs for each iteration
           const ip1 = `192.168.${i % 256}.${i % 100}`;
           const ip2 = `10.0.${i % 256}.${i % 100}`;
           const ip3 = `172.16.${i % 256}.${i % 100}`;
@@ -154,15 +154,15 @@ describe('RequestUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para processar ${count} requisições com diferentes IPs e proxies: ${executionTime.toFixed(2)}ms`,
+        `Time to process ${count} requests with different IPs and proxies: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por extração deve ser menor que 1ms
+      // The average time per extraction should be less than 1ms
       const avgTimePerExtraction = executionTime / count;
       expect(avgTimePerExtraction).toBeLessThan(1);
     });
 
-    it('deve processar 10.000 requisições sem user-agent em tempo razoável', () => {
+    it('should process 10,000 requests without user-agent in a reasonable time', () => {
       const count = 10000;
 
       const executionTime = measureExecutionTime(() => {
@@ -179,10 +179,10 @@ describe('RequestUtils - Testes de Benchmark', () => {
       });
 
       console.log(
-        `Tempo para processar ${count} requisições sem user-agent: ${executionTime.toFixed(2)}ms`,
+        `Time to process ${count} requests without user-agent: ${executionTime.toFixed(2)}ms`,
       );
 
-      // O tempo médio por extração deve ser menor que 0.1ms
+      // The average time per extraction should be less than 0.1ms
       const avgTimePerExtraction = executionTime / count;
       expect(avgTimePerExtraction).toBeLessThan(0.1);
     });

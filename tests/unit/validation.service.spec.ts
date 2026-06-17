@@ -1,12 +1,12 @@
 import { ValidationUtils } from '../../src/services/validation.service';
 
 /**
- * Testes unitários para a classe ValidationUtils.
- * Estes testes verificam o comportamento de cada método individualmente.
+ * Unit tests for the ValidationUtils class.
+ * These tests verify the behavior of each method individually.
  */
-describe('ValidationUtils - Testes Unitários', () => {
+describe('ValidationUtils - Unit Tests', () => {
   describe('isValidEmail', () => {
-    it('deve validar emails corretos', () => {
+    it('should validate correct emails', () => {
       const validEmails = [
         'test@example.com',
         'user.name@example.com',
@@ -23,7 +23,7 @@ describe('ValidationUtils - Testes Unitários', () => {
       });
     });
 
-    it('deve rejeitar emails inválidos', () => {
+    it('should reject invalid emails', () => {
       const invalidEmails = [
         'test',
         'test@',
@@ -36,15 +36,15 @@ describe('ValidationUtils - Testes Unitários', () => {
         'test@example.com@example.com',
         'test@example,com',
         'test user@example.com',
-        'test\u007F@example.com', // caractere de controle
+        'test\u007F@example.com', // control character
       ];
 
-      // Teste cada email individualmente para depuração
+      // Test each email individually for debugging
       for (const email of invalidEmails) {
         const result = ValidationUtils.isValidEmail({ email });
         if (result !== false) {
           console.log(
-            `Email que deveria ser inválido mas foi aceito: ${email}`,
+            `Email that should be invalid but was accepted: ${email}`,
           );
         }
         expect(result).toBe(false);
@@ -53,7 +53,7 @@ describe('ValidationUtils - Testes Unitários', () => {
   });
 
   describe('isValidURL', () => {
-    it('deve validar URLs corretas', () => {
+    it('should validate correct URLs', () => {
       const validURLs = [
         'https://example.com',
         'http://example.com',
@@ -73,7 +73,7 @@ describe('ValidationUtils - Testes Unitários', () => {
       });
     });
 
-    it('deve rejeitar URLs inválidas', () => {
+    it('should reject invalid URLs', () => {
       const invalidURLs = [
         'example.com',
         'ftp://example.com',
@@ -88,12 +88,12 @@ describe('ValidationUtils - Testes Unitários', () => {
         '',
       ];
 
-      // Teste cada URL individualmente para depuração
+      // Test each URL individually for debugging
       for (const inputUrl of invalidURLs) {
         const result = ValidationUtils.isValidURL({ inputUrl });
         if (result !== false) {
           console.log(
-            `URL que deveria ser inválida mas foi aceita: ${inputUrl}`,
+            `URL that should be invalid but was accepted: ${inputUrl}`,
           );
         }
         expect(result).toBe(false);
@@ -102,7 +102,7 @@ describe('ValidationUtils - Testes Unitários', () => {
   });
 
   describe('isValidPhoneNumber', () => {
-    it('deve validar números de telefone corretos', () => {
+    it('should validate correct phone numbers', () => {
       const validPhoneNumbers = [
         '+1234567890',
         '+551155556666',
@@ -119,7 +119,7 @@ describe('ValidationUtils - Testes Unitários', () => {
       });
     });
 
-    it('deve rejeitar números de telefone inválidos', () => {
+    it('should reject invalid phone numbers', () => {
       const invalidPhoneNumbers = [
         '+12345',
         '12345',
@@ -129,7 +129,7 @@ describe('ValidationUtils - Testes Unitários', () => {
         '',
         '+0234567890',
         '0234567890',
-        '+1234567890123456', // muito longo
+        '+1234567890123456', // too long
       ];
 
       invalidPhoneNumbers.forEach(phoneNumber => {
@@ -139,7 +139,7 @@ describe('ValidationUtils - Testes Unitários', () => {
   });
 
   describe('isNumber', () => {
-    it('deve validar valores numéricos', () => {
+    it('should validate numeric values', () => {
       const validNumbers = [
         123,
         -123,
@@ -160,7 +160,7 @@ describe('ValidationUtils - Testes Unitários', () => {
       });
     });
 
-    it('deve rejeitar valores não numéricos', () => {
+    it('should reject non-numeric values', () => {
       const invalidNumbers = [
         'abc',
         '123abc',
@@ -184,7 +184,7 @@ describe('ValidationUtils - Testes Unitários', () => {
   });
 
   describe('isValidHexColor', () => {
-    it('deve validar códigos de cores hexadecimais corretos', () => {
+    it('should validate correct hexadecimal color codes', () => {
       const validHexColors = [
         '#000000',
         '#FFFFFF',
@@ -206,7 +206,7 @@ describe('ValidationUtils - Testes Unitários', () => {
       });
     });
 
-    it('deve rejeitar códigos de cores hexadecimais inválidos', () => {
+    it('should reject invalid hexadecimal color codes', () => {
       const invalidHexColors = [
         '000000',
         'FFFFFF',
@@ -232,7 +232,7 @@ describe('ValidationUtils - Testes Unitários', () => {
   });
 
   describe('hasMinLength', () => {
-    it('deve validar strings com comprimento mínimo', () => {
+    it('should validate strings with the minimum length', () => {
       const testCases = [
         { input: 'hello', minLength: 5, expected: true },
         { input: 'hello', minLength: 4, expected: true },
@@ -249,7 +249,7 @@ describe('ValidationUtils - Testes Unitários', () => {
       });
     });
 
-    it('deve rejeitar strings com comprimento menor que o mínimo', () => {
+    it('should reject strings shorter than the minimum length', () => {
       const testCases = [
         { input: 'hello', minLength: 6, expected: false },
         { input: '', minLength: 1, expected: false },
@@ -266,7 +266,7 @@ describe('ValidationUtils - Testes Unitários', () => {
   });
 
   describe('hasMaxLength', () => {
-    it('deve validar strings com comprimento máximo', () => {
+    it('should validate strings with the maximum length', () => {
       const testCases = [
         { input: 'hello', maxLength: 5, expected: true },
         { input: 'hello', maxLength: 6, expected: true },
@@ -283,7 +283,7 @@ describe('ValidationUtils - Testes Unitários', () => {
       });
     });
 
-    it('deve rejeitar strings com comprimento maior que o máximo', () => {
+    it('should reject strings longer than the maximum length', () => {
       const testCases = [
         { input: 'hello', maxLength: 4, expected: false },
         { input: 'hello', maxLength: 0, expected: false },
@@ -300,7 +300,7 @@ describe('ValidationUtils - Testes Unitários', () => {
   });
 
   describe('isValidJSON', () => {
-    it('deve validar strings JSON corretas', () => {
+    it('should validate correct JSON strings', () => {
       const validJSONs = [
         '{}',
         '[]',
@@ -324,7 +324,7 @@ describe('ValidationUtils - Testes Unitários', () => {
       });
     });
 
-    it('deve rejeitar strings JSON inválidas', () => {
+    it('should reject invalid JSON strings', () => {
       const invalidJSONs = [
         '{key: "value"}',
         "{'key': 'value'}",

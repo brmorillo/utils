@@ -4,26 +4,26 @@ import {
 } from '../../src/services/snowflake.service';
 
 /**
- * Testes unitários para a classe SnowflakeUtils.
- * Estes testes verificam o comportamento básico de cada método.
+ * Unit tests for the SnowflakeUtils class.
+ * These tests verify the basic behavior of each method.
  */
 describe('SnowflakeUtils', () => {
   const testEpoch = new Date('2023-01-01T00:00:00.000Z');
 
   describe('generate', () => {
-    it('deve gerar um ID Snowflake válido com parâmetros padrão', () => {
+    it('should generate a valid Snowflake ID with default parameters', () => {
       const id = SnowflakeUtils.generate({});
       expect(typeof id).toBe('bigint');
       expect(id > 0n).toBe(true);
     });
 
-    it('deve gerar um ID Snowflake válido com epoch personalizado', () => {
+    it('should generate a valid Snowflake ID with a custom epoch', () => {
       const id = SnowflakeUtils.generate({ epoch: testEpoch });
       expect(typeof id).toBe('bigint');
       expect(id > 0n).toBe(true);
     });
 
-    it('deve lançar erro para epoch inválido', () => {
+    it('should throw an error for an invalid epoch', () => {
       expect(() => {
         SnowflakeUtils.generate({ epoch: new Date('invalid-date') });
       }).toThrow('Invalid epoch');
@@ -31,7 +31,7 @@ describe('SnowflakeUtils', () => {
   });
 
   describe('decode', () => {
-    it('deve decodificar um ID Snowflake em seus componentes', () => {
+    it('should decode a Snowflake ID into its components', () => {
       const id = SnowflakeUtils.generate({ epoch: testEpoch });
       const components = SnowflakeUtils.decode({
         snowflakeId: id,
@@ -44,16 +44,16 @@ describe('SnowflakeUtils', () => {
       expect(components).toHaveProperty('increment');
     });
 
-    it('deve lançar erro para ID Snowflake inválido', () => {
+    it('should throw an error for an invalid Snowflake ID', () => {
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         SnowflakeUtils.decode({ snowflakeId: 'invalid' });
       }).toThrow('Invalid Snowflake ID');
     });
   });
 
   describe('getTimestamp', () => {
-    it('deve extrair o timestamp de um ID Snowflake', () => {
+    it('should extract the timestamp from a Snowflake ID', () => {
       const now = new Date();
       const id = SnowflakeUtils.generate({ epoch: testEpoch });
       const timestamp = SnowflakeUtils.getTimestamp({
@@ -62,14 +62,14 @@ describe('SnowflakeUtils', () => {
       });
 
       expect(timestamp).toBeInstanceOf(Date);
-      // O timestamp deve estar próximo ao momento atual
+      // The timestamp should be close to the current moment
       const diff = Math.abs(timestamp.getTime() - now.getTime());
-      expect(diff).toBeLessThan(5000); // Dentro de 5 segundos
+      expect(diff).toBeLessThan(5000); // Within 5 seconds
     });
   });
 
   describe('isValidSnowflake', () => {
-    it('deve retornar true para ID Snowflake válido', () => {
+    it('should return true for a valid Snowflake ID', () => {
       const id = SnowflakeUtils.generate({});
       const isValid = SnowflakeUtils.isValidSnowflake({
         snowflakeId: id.toString(),
@@ -77,7 +77,7 @@ describe('SnowflakeUtils', () => {
       expect(isValid).toBe(true);
     });
 
-    it('deve retornar false para ID Snowflake com caracteres não numéricos', () => {
+    it('should return false for a Snowflake ID with non-numeric characters', () => {
       expect(
         SnowflakeUtils.isValidSnowflake({
           snowflakeId: '123abc456',
@@ -87,16 +87,16 @@ describe('SnowflakeUtils', () => {
   });
 
   describe('compare', () => {
-    it('deve comparar corretamente dois IDs Snowflake', () => {
-      // Gera dois IDs com um pequeno atraso para garantir timestamps diferentes
+    it('should correctly compare two Snowflake IDs', () => {
+      // Generates two IDs with a small delay to ensure different timestamps
       const id1 = SnowflakeUtils.generate({});
 
-      // Forçamos um pequeno atraso para garantir que id2 seja maior que id1
+      // We force a small delay to ensure id2 is greater than id1
       setTimeout(() => {}, 100);
       const id2 = SnowflakeUtils.generate({});
 
-      // Como os IDs são gerados muito rapidamente, pode ser que sejam iguais
-      // Vamos verificar apenas se a comparação é consistente
+      // Since the IDs are generated very quickly, they may be equal
+      // We will only check that the comparison is consistent
       const comparison = SnowflakeUtils.compare({ first: id2, second: id1 });
       if (comparison === 1) {
         expect(SnowflakeUtils.compare({ first: id1, second: id2 })).toBe(-1);
@@ -104,13 +104,13 @@ describe('SnowflakeUtils', () => {
         expect(SnowflakeUtils.compare({ first: id1, second: id2 })).toBe(0);
       }
 
-      // Este teste sempre deve passar
+      // This test should always pass
       expect(SnowflakeUtils.compare({ first: id1, second: id1 })).toBe(0);
     });
   });
 
   describe('fromTimestamp', () => {
-    it('deve criar um ID Snowflake a partir de um timestamp', () => {
+    it('should create a Snowflake ID from a timestamp', () => {
       const timestamp = new Date('2023-06-15T12:30:45.000Z');
       const id = SnowflakeUtils.fromTimestamp({
         timestamp,
@@ -119,18 +119,18 @@ describe('SnowflakeUtils', () => {
 
       expect(typeof id).toBe('bigint');
 
-      // Extrai o timestamp e verifica se está próximo ao original
+      // Extracts the timestamp and checks that it is close to the original
       const extractedTimestamp = SnowflakeUtils.getTimestamp({
         snowflakeId: id,
         epoch: testEpoch,
       });
 
-      // Compara os timestamps (pode haver pequenas diferenças devido à precisão)
+      // Compares the timestamps (there may be small differences due to precision)
       const diff = Math.abs(extractedTimestamp.getTime() - timestamp.getTime());
-      expect(diff).toBeLessThan(5); // Deve ser muito próximo
+      expect(diff).toBeLessThan(5); // Should be very close
     });
 
-    it('deve lançar erro para timestamp inválido', () => {
+    it('should throw an error for an invalid timestamp', () => {
       expect(() => {
         SnowflakeUtils.fromTimestamp({
           timestamp: new Date('invalid-date'),
@@ -140,7 +140,7 @@ describe('SnowflakeUtils', () => {
   });
 
   describe('convert', () => {
-    it('deve converter um ID Snowflake de bigint para string', () => {
+    it('should convert a Snowflake ID from bigint to string', () => {
       const id = SnowflakeUtils.generate({ epoch: testEpoch });
       const stringId = SnowflakeUtils.convert({
         snowflakeId: id,
@@ -151,7 +151,7 @@ describe('SnowflakeUtils', () => {
       expect(stringId).toBe(id.toString());
     });
 
-    it('deve converter um ID Snowflake de string para bigint', () => {
+    it('should convert a Snowflake ID from string to bigint', () => {
       const originalId = SnowflakeUtils.generate({ epoch: testEpoch });
       const stringId = originalId.toString();
 
@@ -164,8 +164,8 @@ describe('SnowflakeUtils', () => {
       expect(bigintId).toBe(originalId);
     });
 
-    it('deve converter um ID Snowflake de bigint para number', () => {
-      // Criamos um ID pequeno o suficiente para ser representado como number
+    it('should convert a Snowflake ID from bigint to number', () => {
+      // We create an ID small enough to be represented as a number
       const smallId = 123456789n;
 
       const numberId = SnowflakeUtils.convert({
@@ -177,8 +177,8 @@ describe('SnowflakeUtils', () => {
       expect(numberId).toBe(123456789);
     });
 
-    it('deve lançar erro ao converter um ID Snowflake muito grande para number', () => {
-      // ID típico de Snowflake é muito grande para number
+    it('should throw an error when converting a Snowflake ID that is too large for a number', () => {
+      // A typical Snowflake ID is too large for a number
       const largeId = SnowflakeUtils.generate({ epoch: testEpoch });
 
       expect(() => {
@@ -189,9 +189,9 @@ describe('SnowflakeUtils', () => {
       }).toThrow('too large');
     });
 
-    it('deve lançar erro para ID Snowflake inválido', () => {
+    it('should throw an error for an invalid Snowflake ID', () => {
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         SnowflakeUtils.convert({
           snowflakeId: 'not-a-number',
           toFormat: 'bigint',
@@ -199,7 +199,7 @@ describe('SnowflakeUtils', () => {
       }).toThrow('Invalid Snowflake ID');
     });
 
-    // Removendo os testes que estão causando problemas
-    // Estes testes seriam melhor implementados em testes de integração
+    // Removing the tests that are causing problems
+    // These tests would be better implemented as integration tests
   });
 });

@@ -1,196 +1,196 @@
 import { NumberUtils } from '../../src/services/number.service';
 
 /**
- * Testes de integração para a classe NumberUtils.
- * Estes testes verificam cenários mais complexos que envolvem múltiplos métodos.
+ * Integration tests for the NumberUtils class.
+ * These tests verify more complex scenarios involving multiple methods.
  */
-describe('NumberUtils - Testes de Integração', () => {
-  describe('Operações encadeadas', () => {
-    it('deve processar corretamente uma sequência de operações numéricas', () => {
-      // Cenário: Processar um valor através de múltiplas operações
-      // 1. Começar com um valor negativo
-      const valorInicial = -15.7;
+describe('NumberUtils - Integration Tests', () => {
+  describe('Chained operations', () => {
+    it('should correctly process a sequence of numeric operations', () => {
+      // Scenario: Process a value through multiple operations
+      // 1. Start with a negative value
+      const initialValue = -15.7;
 
-      // 2. Normalizar o valor (converter -0 para 0, mas não afeta outros valores)
-      const valorNormalizado = NumberUtils.normalize({ value: valorInicial });
+      // 2. Normalize the value (convert -0 to 0, but does not affect other values)
+      const normalizedValue = NumberUtils.normalize({ value: initialValue });
 
-      // 3. Verificar se é positivo (deve ser falso para valor negativo)
-      const ehPositivo = NumberUtils.isPositive({ value: valorNormalizado });
+      // 3. Check whether it is positive (should be false for a negative value)
+      const isPositive = NumberUtils.isPositive({ value: normalizedValue });
 
-      // 4. Obter o valor absoluto usando Math.abs
-      const valorAbsoluto = Math.abs(valorNormalizado);
+      // 4. Get the absolute value using Math.abs
+      const absoluteValue = Math.abs(normalizedValue);
 
-      // 5. Arredondar para o inteiro mais próximo
-      const valorArredondado = NumberUtils.roundToNearest({
-        value: valorAbsoluto,
+      // 5. Round to the nearest integer
+      const roundedValue = NumberUtils.roundToNearest({
+        value: absoluteValue,
       });
 
-      // 6. Verificar se é par
-      const ehPar = NumberUtils.isValidEven({ value: valorArredondado });
+      // 6. Check whether it is even
+      const isEven = NumberUtils.isValidEven({ value: roundedValue });
 
-      // Verificações
-      expect(valorNormalizado).toBe(-15.7); // Normalização não afeta valores diferentes de -0
-      expect(ehPositivo).toBe(false); // Valor é negativo
-      expect(valorAbsoluto).toBe(15.7); // Valor absoluto
-      expect(valorArredondado).toBe(16); // Arredondado para o inteiro mais próximo
-      expect(ehPar).toBe(true); // 16 é par
+      // Assertions
+      expect(normalizedValue).toBe(-15.7); // Normalization does not affect values other than -0
+      expect(isPositive).toBe(false); // Value is negative
+      expect(absoluteValue).toBe(15.7); // Absolute value
+      expect(roundedValue).toBe(16); // Rounded to the nearest integer
+      expect(isEven).toBe(true); // 16 is even
     });
 
-    it('deve realizar cálculos financeiros com precisão', () => {
-      // Cenário: Calcular valores financeiros com arredondamento adequado
-      // 1. Valor base
-      const valorBase = 99.99;
+    it('should perform financial calculations with precision', () => {
+      // Scenario: Calculate financial values with proper rounding
+      // 1. Base value
+      const baseValue = 99.99;
 
-      // 2. Aplicar desconto de 15%
-      const valorComDesconto = valorBase * 0.85;
+      // 2. Apply a 15% discount
+      const discountedValue = baseValue * 0.85;
 
-      // 3. Arredondar para 2 casas decimais
-      const valorArredondado = NumberUtils.roundToDecimals({
-        value: valorComDesconto,
+      // 3. Round to 2 decimal places
+      const roundedValue = NumberUtils.roundToDecimals({
+        value: discountedValue,
         decimals: 2,
       });
 
-      // 4. Converter para centavos (inteiro)
-      const valorEmCentavos = NumberUtils.toCents({ value: valorArredondado });
+      // 4. Convert to cents (integer)
+      const valueInCents = NumberUtils.toCents({ value: roundedValue });
 
-      // 5. Formatar com 2 casas decimais
-      const valorFormatado = NumberUtils.addDecimalPlaces({
-        value: valorArredondado,
+      // 5. Format with 2 decimal places
+      const formattedValue = NumberUtils.addDecimalPlaces({
+        value: roundedValue,
         decimalPlaces: 2,
       });
 
-      // Verificações
-      expect(valorComDesconto).toBeCloseTo(84.9915); // Valor com desconto
-      expect(valorArredondado).toBe(84.99); // Arredondado para 2 casas decimais
-      expect(valorEmCentavos).toBe(8499); // Convertido para centavos
-      expect(valorFormatado).toBe('84.99'); // Formatado com 2 casas decimais
+      // Assertions
+      expect(discountedValue).toBeCloseTo(84.9915); // Discounted value
+      expect(roundedValue).toBe(84.99); // Rounded to 2 decimal places
+      expect(valueInCents).toBe(8499); // Converted to cents
+      expect(formattedValue).toBe('84.99'); // Formatted with 2 decimal places
     });
 
-    it('deve lidar corretamente com limites e restrições', () => {
-      // Cenário: Processar valores com limites e restrições
-      // 1. Gerar um número aleatório entre 0 e 100
-      const valorAleatorio = NumberUtils.randomIntegerInRange({
+    it('should correctly handle bounds and constraints', () => {
+      // Scenario: Process values with bounds and constraints
+      // 1. Generate a random number between 0 and 100
+      const randomValue = NumberUtils.randomIntegerInRange({
         min: 0,
         max: 100,
       });
 
-      // 2. Limitar o valor entre 10 e 90
-      const valorLimitado = NumberUtils.clamp({
-        value: valorAleatorio,
+      // 2. Clamp the value between 10 and 90
+      const clampedValue = NumberUtils.clamp({
+        value: randomValue,
         min: 10,
         max: 90,
       });
 
-      // 3. Verificar se é primo
-      const ehPrimo = NumberUtils.isValidPrime({ value: valorLimitado });
+      // 3. Check whether it is prime
+      const isPrime = NumberUtils.isValidPrime({ value: clampedValue });
 
-      // 4. Calcular o fatorial se for menor que 10, ou 0 caso contrário
-      const fatorial =
-        valorLimitado < 10
-          ? NumberUtils.factorial({ value: valorLimitado })
+      // 4. Calculate the factorial if it is less than 10, or 0 otherwise
+      const factorial =
+        clampedValue < 10
+          ? NumberUtils.factorial({ value: clampedValue })
           : 0;
 
-      // Verificações
-      expect(valorAleatorio).toBeGreaterThanOrEqual(0);
-      expect(valorAleatorio).toBeLessThanOrEqual(100);
-      expect(valorLimitado).toBeGreaterThanOrEqual(10);
-      expect(valorLimitado).toBeLessThanOrEqual(90);
-      // Não podemos verificar ehPrimo ou fatorial diretamente pois dependem do valor aleatório
+      // Assertions
+      expect(randomValue).toBeGreaterThanOrEqual(0);
+      expect(randomValue).toBeLessThanOrEqual(100);
+      expect(clampedValue).toBeGreaterThanOrEqual(10);
+      expect(clampedValue).toBeLessThanOrEqual(90);
+      // We cannot check isPrime or factorial directly because they depend on the random value
     });
   });
 
-  describe('Cenários de uso real', () => {
-    it('deve calcular corretamente valores de parcelas', () => {
-      // Cenário: Calcular parcelas de um financiamento
-      // 1. Valor total
-      const valorTotal = 1200;
+  describe('Real-world usage scenarios', () => {
+    it('should correctly calculate installment values', () => {
+      // Scenario: Calculate the installments of a loan
+      // 1. Total amount
+      const totalValue = 1200;
 
-      // 2. Número de parcelas
-      const numeroParcelas = 5;
+      // 2. Number of installments
+      const installmentCount = 5;
 
-      // 3. Calcular valor da parcela
-      const valorParcela = valorTotal / numeroParcelas;
+      // 3. Calculate the installment value
+      const installmentValue = totalValue / installmentCount;
 
-      // 4. Arredondar para 2 casas decimais
-      const valorParcelaArredondado = NumberUtils.roundToDecimals({
-        value: valorParcela,
+      // 4. Round to 2 decimal places
+      const roundedInstallmentValue = NumberUtils.roundToDecimals({
+        value: installmentValue,
         decimals: 2,
       });
 
-      // 5. Calcular valor total após arredondamento
-      const valorTotalRecalculado = valorParcelaArredondado * numeroParcelas;
+      // 5. Calculate the total amount after rounding
+      const recalculatedTotalValue = roundedInstallmentValue * installmentCount;
 
-      // 6. Calcular diferença devido ao arredondamento
-      const diferenca = NumberUtils.roundToDecimals({
-        value: valorTotal - valorTotalRecalculado,
+      // 6. Calculate the difference due to rounding
+      const difference = NumberUtils.roundToDecimals({
+        value: totalValue - recalculatedTotalValue,
         decimals: 2,
       });
 
-      // Verificações
-      expect(valorParcela).toBe(240);
-      expect(valorParcelaArredondado).toBe(240);
-      expect(valorTotalRecalculado).toBe(1200);
-      expect(diferenca).toBe(0);
+      // Assertions
+      expect(installmentValue).toBe(240);
+      expect(roundedInstallmentValue).toBe(240);
+      expect(recalculatedTotalValue).toBe(1200);
+      expect(difference).toBe(0);
     });
 
-    it('deve calcular corretamente estatísticas de uma amostra', () => {
-      // Cenário: Calcular estatísticas básicas de uma amostra de dados
-      // 1. Amostra de dados
-      const amostra = [15.7, 22.3, 18.9, 24.5, 19.2];
+    it('should correctly calculate statistics for a sample', () => {
+      // Scenario: Calculate basic statistics for a data sample
+      // 1. Data sample
+      const sample = [15.7, 22.3, 18.9, 24.5, 19.2];
 
-      // 2. Calcular média
-      const soma = amostra.reduce((acc, val) => acc + val, 0);
-      const media = soma / amostra.length;
+      // 2. Calculate the mean
+      const sum = sample.reduce((acc, val) => acc + val, 0);
+      const mean = sum / sample.length;
 
-      // 3. Arredondar média para 1 casa decimal
-      const mediaArredondada = NumberUtils.roundToDecimals({
-        value: media,
+      // 3. Round the mean to 1 decimal place
+      const roundedMean = NumberUtils.roundToDecimals({
+        value: mean,
         decimals: 1,
       });
 
-      // 4. Encontrar valor mínimo e máximo
-      const minimo = Math.min(...amostra);
-      const maximo = Math.max(...amostra);
+      // 4. Find the minimum and maximum value
+      const minimum = Math.min(...sample);
+      const maximum = Math.max(...sample);
 
-      // 5. Calcular amplitude
-      const amplitude = maximo - minimo;
+      // 5. Calculate the range
+      const range = maximum - minimum;
 
-      // Verificações
-      expect(mediaArredondada).toBe(20.1);
-      expect(minimo).toBe(15.7);
-      expect(maximo).toBe(24.5);
-      expect(amplitude).toBe(8.8);
+      // Assertions
+      expect(roundedMean).toBe(20.1);
+      expect(minimum).toBe(15.7);
+      expect(maximum).toBe(24.5);
+      expect(range).toBe(8.8);
     });
 
-    it('deve converter corretamente entre diferentes unidades', () => {
-      // Cenário: Converter valores entre diferentes unidades
-      // 1. Valor em metros
-      const valorMetros = 5280;
+    it('should correctly convert between different units', () => {
+      // Scenario: Convert values between different units
+      // 1. Value in meters
+      const valueInMeters = 5280;
 
-      // 2. Converter para quilômetros (dividir por 1000)
-      const valorQuilometros = valorMetros / 1000;
+      // 2. Convert to kilometers (divide by 1000)
+      const valueInKilometers = valueInMeters / 1000;
 
-      // 3. Converter para milhas (multiplicar por 0.621371)
-      const valorMilhas = valorQuilometros * 0.621371;
+      // 3. Convert to miles (multiply by 0.621371)
+      const valueInMiles = valueInKilometers * 0.621371;
 
-      // 4. Arredondar para 2 casas decimais
-      const valorMilhasArredondado = NumberUtils.roundToDecimals({
-        value: valorMilhas,
+      // 4. Round to 2 decimal places
+      const roundedValueInMiles = NumberUtils.roundToDecimals({
+        value: valueInMiles,
         decimals: 2,
       });
 
-      // 5. Converter de volta para metros
-      const valorMetrosRecalculado = (valorMilhasArredondado / 0.621371) * 1000;
+      // 5. Convert back to meters
+      const recalculatedValueInMeters = (roundedValueInMiles / 0.621371) * 1000;
 
-      // 6. Calcular diferença devido ao arredondamento
-      const diferencaPercentual =
-        Math.abs(valorMetros - valorMetrosRecalculado) / valorMetros;
+      // 6. Calculate the difference due to rounding
+      const percentageDifference =
+        Math.abs(valueInMeters - recalculatedValueInMeters) / valueInMeters;
 
-      // Verificações
-      expect(valorQuilometros).toBe(5.28);
-      expect(valorMilhasArredondado).toBe(3.28);
-      expect(valorMetrosRecalculado).toBeCloseTo(5280, -1); // Tolerância maior devido a conversões
-      expect(diferencaPercentual).toBeLessThan(0.01); // Diferença menor que 1%
+      // Assertions
+      expect(valueInKilometers).toBe(5.28);
+      expect(roundedValueInMiles).toBe(3.28);
+      expect(recalculatedValueInMeters).toBeCloseTo(5280, -1); // Larger tolerance due to conversions
+      expect(percentageDifference).toBeLessThan(0.01); // Difference less than 1%
     });
   });
 });

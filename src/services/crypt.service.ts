@@ -63,7 +63,9 @@ export class CryptUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to encrypt data using AES: ${errorMessage}`);
+      throw new Error(`Failed to encrypt data using AES: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -109,7 +111,9 @@ export class CryptUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to decrypt data using AES: ${errorMessage}`);
+      throw new Error(`Failed to decrypt data using AES: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -149,7 +153,10 @@ export class CryptUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to encrypt data using ChaCha20: ${errorMessage}`);
+      throw new Error(
+        `Failed to encrypt data using ChaCha20: ${errorMessage}`,
+        { cause: error },
+      );
     }
   }
 
@@ -189,7 +196,10 @@ export class CryptUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to decrypt data using ChaCha20: ${errorMessage}`);
+      throw new Error(
+        `Failed to decrypt data using ChaCha20: ${errorMessage}`,
+        { cause: error },
+      );
     }
   }
 
@@ -199,7 +209,7 @@ export class CryptUtils {
    * @returns An object containing the public and private keys in PEM format.
    * @throws {Error} If key generation fails.
    * @example
-   * const { publicKey, privateKey } = HashUtils.generateRSAKeyPair(2048);
+   * const { publicKey, privateKey } = CryptUtils.rsaGenerateKeyPair(2048);
    * console.log(publicKey, privateKey);
    */
   public static rsaGenerateKeyPair(modulusLength = 2048): {
@@ -216,7 +226,9 @@ export class CryptUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to generate RSA key pair: ${errorMessage}`);
+      throw new Error(`Failed to generate RSA key pair: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -227,7 +239,7 @@ export class CryptUtils {
    * @returns The encrypted data in Base64 format.
    * @throws {Error} If encryption fails.
    * @example
-   * const encrypted = HashUtils.rsaEncrypt('Hello, World!', publicKey);
+   * const encrypted = CryptUtils.rsaEncrypt('Hello, World!', publicKey);
    * console.log(encrypted);
    */
   public static rsaEncrypt(data: string, publicKey: string): string {
@@ -247,7 +259,9 @@ export class CryptUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to encrypt data using RSA: ${errorMessage}`);
+      throw new Error(`Failed to encrypt data using RSA: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -258,7 +272,7 @@ export class CryptUtils {
    * @returns The decrypted string.
    * @throws {Error} If decryption fails.
    * @example
-   * const decrypted = HashUtils.rsaDecrypt(encryptedData, privateKey);
+   * const decrypted = CryptUtils.rsaDecrypt(encryptedData, privateKey);
    * console.log(decrypted);
    */
   public static rsaDecrypt(encryptedData: string, privateKey: string): string {
@@ -280,7 +294,9 @@ export class CryptUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to decrypt data using RSA: ${errorMessage}`);
+      throw new Error(`Failed to decrypt data using RSA: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -291,7 +307,7 @@ export class CryptUtils {
    * @returns The signature in Base64 format.
    * @throws {Error} If signing fails.
    * @example
-   * const signature = HashUtils.rsaSign('My data', privateKey);
+   * const signature = CryptUtils.rsaSign('My data', privateKey);
    * console.log(signature);
    */
   public static rsaSign(data: string, privateKey: string): string {
@@ -310,7 +326,9 @@ export class CryptUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to sign data using RSA: ${errorMessage}`);
+      throw new Error(`Failed to sign data using RSA: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -322,7 +340,7 @@ export class CryptUtils {
    * @returns `true` if the signature is valid, otherwise `false`.
    * @throws {Error} If verification fails.
    * @example
-   * const isValid = HashUtils.rsaVerify('My data', signature, publicKey);
+   * const isValid = CryptUtils.rsaVerify('My data', signature, publicKey);
    * console.log(isValid); // true or false
    */
   public static rsaVerify(
@@ -348,7 +366,9 @@ export class CryptUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to verify signature using RSA: ${errorMessage}`);
+      throw new Error(`Failed to verify signature using RSA: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -375,7 +395,9 @@ export class CryptUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to generate ECC key pair: ${errorMessage}`);
+      throw new Error(`Failed to generate ECC key pair: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -405,7 +427,9 @@ export class CryptUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to sign data using ECC: ${errorMessage}`);
+      throw new Error(`Failed to sign data using ECC: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -443,7 +467,9 @@ export class CryptUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to verify signature using ECC: ${errorMessage}`);
+      throw new Error(`Failed to verify signature using ECC: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -481,7 +507,9 @@ export class CryptUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to encrypt data using RC4: ${errorMessage}`);
+      throw new Error(`Failed to encrypt data using RC4: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -521,7 +549,9 @@ export class CryptUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to decrypt data using RC4: ${errorMessage}`);
+      throw new Error(`Failed to decrypt data using RC4: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 }

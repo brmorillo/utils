@@ -266,7 +266,10 @@ export class SnowflakeUtils {
         bigintValue =
           typeof snowflakeId === 'bigint' ? snowflakeId : BigInt(snowflakeId);
       } catch (e) {
-        throw new Error('Invalid Snowflake ID: cannot be converted to BigInt.');
+        throw new Error(
+          'Invalid Snowflake ID: cannot be converted to BigInt.',
+          { cause: e },
+        );
       }
 
       // Convert to the desired format
@@ -295,7 +298,7 @@ export class SnowflakeUtils {
       if (error instanceof Error) {
         throw error;
       }
-      throw new Error('Invalid Snowflake ID');
+      throw new Error('Invalid Snowflake ID', { cause: error });
     }
   }
 }

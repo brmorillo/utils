@@ -215,4 +215,3 @@ async function fetchData() {
 }
 ```
 
-For more detailed examples and advanced usage, see the [complete HttpService documentation](./http-service-detailed.md).

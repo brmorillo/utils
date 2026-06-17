@@ -1,13 +1,13 @@
 import { ArrayUtils } from '../../src/services/array.service';
 
 /**
- * Testes unitários para a classe ArrayUtils.
- * Estes testes verificam o comportamento de cada método individualmente.
+ * Unit tests for the ArrayUtils class.
+ * These tests verify the behavior of each method individually.
  */
 describe('ArrayUtils', () => {
-  // Testes para o método removeDuplicates
+  // Tests for the removeDuplicates method
   describe('removeDuplicates', () => {
-    it('deve remover valores duplicados de um array de números', () => {
+    it('should remove duplicate values from an array of numbers', () => {
       // Arrange
       const array = [1, 2, 2, 3, 4, 4, 5];
 
@@ -18,7 +18,7 @@ describe('ArrayUtils', () => {
       expect(result).toEqual([1, 2, 3, 4, 5]);
     });
 
-    it('deve remover valores duplicados de um array de strings', () => {
+    it('should remove duplicate values from an array of strings', () => {
       // Arrange
       const array = ['a', 'b', 'b', 'c', 'a'];
 
@@ -29,7 +29,7 @@ describe('ArrayUtils', () => {
       expect(result).toEqual(['a', 'b', 'c']);
     });
 
-    it('deve remover duplicados usando uma função de chave personalizada', () => {
+    it('should remove duplicates using a custom key function', () => {
       // Arrange
       const array = [
         { id: 1, name: 'John' },
@@ -49,7 +49,7 @@ describe('ArrayUtils', () => {
       expect(result[1].id).toBe(2);
     });
 
-    it('deve retornar um array vazio quando o input é um array vazio', () => {
+    it('should return an empty array when the input is an empty array', () => {
       // Arrange
       const array: number[] = [];
 
@@ -60,18 +60,18 @@ describe('ArrayUtils', () => {
       expect(result).toEqual([]);
     });
 
-    it('deve lançar erro quando o input não é um array', () => {
+    it('should throw an error when the input is not an array', () => {
       // Arrange & Act & Assert
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         ArrayUtils.removeDuplicates({ array: 'not an array' });
       }).toThrow('Input must be an array');
     });
   });
 
-  // Testes para o método intersect
+  // Tests for the intersect method
   describe('intersect', () => {
-    it('deve encontrar a interseção entre dois arrays de números', () => {
+    it('should find the intersection between two arrays of numbers', () => {
       // Arrange
       const array1 = [1, 2, 3, 4];
       const array2 = [3, 4, 5, 6];
@@ -83,7 +83,7 @@ describe('ArrayUtils', () => {
       expect(result).toEqual([3, 4]);
     });
 
-    it('deve encontrar a interseção entre dois arrays de strings', () => {
+    it('should find the intersection between two arrays of strings', () => {
       // Arrange
       const array1 = ['a', 'b', 'c'];
       const array2 = ['b', 'c', 'd'];
@@ -95,7 +95,7 @@ describe('ArrayUtils', () => {
       expect(result).toEqual(['b', 'c']);
     });
 
-    it('deve retornar um array vazio quando não há interseção', () => {
+    it('should return an empty array when there is no intersection', () => {
       // Arrange
       const array1 = [1, 2, 3];
       const array2 = [4, 5, 6];
@@ -107,26 +107,26 @@ describe('ArrayUtils', () => {
       expect(result).toEqual([]);
     });
 
-    it('deve lançar erro quando o primeiro input não é um array', () => {
+    it('should throw an error when the first input is not an array', () => {
       // Arrange & Act & Assert
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         ArrayUtils.intersect({ array1: 'not an array', array2: [1, 2, 3] });
       }).toThrow('Both inputs must be arrays');
     });
 
-    it('deve lançar erro quando o segundo input não é um array', () => {
+    it('should throw an error when the second input is not an array', () => {
       // Arrange & Act & Assert
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         ArrayUtils.intersect({ array1: [1, 2, 3], array2: 'not an array' });
       }).toThrow('Both inputs must be arrays');
     });
   });
 
-  // Testes para o método flatten
+  // Tests for the flatten method
   describe('flatten', () => {
-    it('deve achatar um array multidimensional', () => {
+    it('should flatten a multidimensional array', () => {
       // Arrange
       const array = [1, [2, [3, 4]], 5];
 
@@ -137,7 +137,7 @@ describe('ArrayUtils', () => {
       expect(result).toEqual([1, 2, 3, 4, 5]);
     });
 
-    it('deve retornar o mesmo array quando já está achatado', () => {
+    it('should return the same array when it is already flattened', () => {
       // Arrange
       const array = [1, 2, 3, 4, 5];
 
@@ -148,7 +148,7 @@ describe('ArrayUtils', () => {
       expect(result).toEqual([1, 2, 3, 4, 5]);
     });
 
-    it('deve lidar com arrays vazios', () => {
+    it('should handle empty arrays', () => {
       // Arrange
       const array = [1, [], 2, [], 3];
 
@@ -159,18 +159,18 @@ describe('ArrayUtils', () => {
       expect(result).toEqual([1, 2, 3]);
     });
 
-    it('deve lançar erro quando o input não é um array', () => {
+    it('should throw an error when the input is not an array', () => {
       // Arrange & Act & Assert
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         ArrayUtils.flatten({ array: 'not an array' });
       }).toThrow('Input must be an array');
     });
   });
 
-  // Testes para o método groupBy
+  // Tests for the groupBy method
   describe('groupBy', () => {
-    it('deve agrupar objetos por uma propriedade', () => {
+    it('should group objects by a property', () => {
       // Arrange
       const array = [
         { type: 'fruit', name: 'apple' },
@@ -193,7 +193,7 @@ describe('ArrayUtils', () => {
       expect(result.vegetable[0].name).toBe('carrot');
     });
 
-    it('deve agrupar números por paridade', () => {
+    it('should group numbers by parity', () => {
       // Arrange
       const array = [1, 2, 3, 4, 5];
 
@@ -209,18 +209,18 @@ describe('ArrayUtils', () => {
       expect(result.even).toEqual([2, 4]);
     });
 
-    it('deve lançar erro quando o input não é um array', () => {
+    it('should throw an error when the input is not an array', () => {
       // Arrange & Act & Assert
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         ArrayUtils.groupBy({ array: 'not an array', keyFn: item => item });
       }).toThrow('Input must be an array');
     });
   });
 
-  // Testes para o método shuffle
+  // Tests for the shuffle method
   describe('shuffle', () => {
-    it('deve embaralhar um array mantendo os mesmos elementos', () => {
+    it('should shuffle an array while keeping the same elements', () => {
       // Arrange
       const array = [1, 2, 3, 4, 5];
 
@@ -228,28 +228,28 @@ describe('ArrayUtils', () => {
       const result = ArrayUtils.shuffle({ array });
 
       // Assert
-      // Verifica se o resultado tem o mesmo tamanho
+      // Check that the result has the same length
       expect(result).toHaveLength(array.length);
 
-      // Verifica se todos os elementos originais estão presentes
+      // Check that all original elements are present
       array.forEach(item => {
         expect(result).toContain(item);
       });
 
-      // Verifica se o array foi realmente embaralhado (pode falhar raramente)
-      // Como o embaralhamento é aleatório, há uma pequena chance de obter a mesma ordem
+      // Check that the array was actually shuffled (may rarely fail)
+      // Since shuffling is random, there is a small chance of getting the same order
       const isSameOrder = array.every((item, index) => result[index] === item);
 
-      // Se o array for muito pequeno, pode acontecer de ficar na mesma ordem
-      // então só verificamos se o array tem tamanho suficiente
+      // If the array is very small, it may end up in the same order
+      // so we only check when the array is large enough
       if (array.length > 3) {
-        // É improvável (mas possível) que o array embaralhado seja idêntico ao original
-        // Esta verificação pode falhar ocasionalmente, mas é útil para detectar problemas
+        // It is unlikely (but possible) that the shuffled array is identical to the original
+        // This check may fail occasionally, but it is useful for detecting problems
         expect(isSameOrder).toBe(false);
       }
     });
 
-    it('deve retornar uma cópia do array e não modificar o original', () => {
+    it('should return a copy of the array and not modify the original', () => {
       // Arrange
       const array = [1, 2, 3, 4, 5];
       const originalArray = [...array];
@@ -262,18 +262,18 @@ describe('ArrayUtils', () => {
       expect(result).not.toBe(array);
     });
 
-    it('deve lançar erro quando o input não é um array', () => {
+    it('should throw an error when the input is not an array', () => {
       // Arrange & Act & Assert
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         ArrayUtils.shuffle({ array: 'not an array' });
       }).toThrow('Input must be an array');
     });
   });
 
-  // Testes para o método sort
+  // Tests for the sort method
   describe('sort', () => {
-    it('deve ordenar um array de números em ordem ascendente', () => {
+    it('should sort an array of numbers in ascending order', () => {
       // Arrange
       const array = [5, 3, 1, 4, 2];
 
@@ -284,7 +284,7 @@ describe('ArrayUtils', () => {
       expect(result).toEqual([1, 2, 3, 4, 5]);
     });
 
-    it('deve ordenar um array de números em ordem descendente', () => {
+    it('should sort an array of numbers in descending order', () => {
       // Arrange
       const array = [5, 3, 1, 4, 2];
 
@@ -295,7 +295,7 @@ describe('ArrayUtils', () => {
       expect(result).toEqual([5, 4, 3, 2, 1]);
     });
 
-    it('deve ordenar um array de objetos por uma propriedade', () => {
+    it('should sort an array of objects by a property', () => {
       // Arrange
       const array = [
         { name: 'John', age: 30 },
@@ -312,7 +312,7 @@ describe('ArrayUtils', () => {
       expect(result[2].age).toBe(40);
     });
 
-    it('deve ordenar um array de objetos por múltiplas propriedades', () => {
+    it('should sort an array of objects by multiple properties', () => {
       // Arrange
       const array = [
         { name: 'John', age: 30, city: 'New York' },
@@ -332,33 +332,33 @@ describe('ArrayUtils', () => {
       expect(result[2].name).toBe('John');
     });
 
-    it('deve lançar erro quando o input não é um array', () => {
+    it('should throw an error when the input is not an array', () => {
       // Arrange & Act & Assert
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         ArrayUtils.sort({ array: 'not an array', orderBy: 'asc' });
       }).toThrow('Input must be a non-empty array');
     });
 
-    it('deve lançar erro quando o array está vazio', () => {
+    it('should throw an error when the array is empty', () => {
       // Arrange & Act & Assert
       expect(() => {
         ArrayUtils.sort({ array: [], orderBy: 'asc' });
       }).toThrow('Input must be a non-empty array');
     });
 
-    it('deve lançar erro quando o formato de orderBy é inválido', () => {
+    it('should throw an error when the orderBy format is invalid', () => {
       // Arrange & Act & Assert
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         ArrayUtils.sort({ array: [1, 2, 3], orderBy: 'invalid' });
       }).toThrow("Invalid 'orderBy' format");
     });
   });
 
-  // Testes para o método findSubset
+  // Tests for the findSubset method
   describe('findSubset', () => {
-    it('deve encontrar o primeiro objeto que corresponde ao subconjunto', () => {
+    it('should find the first object that matches the subset', () => {
       // Arrange
       const array = [
         { id: 1, name: 'John', age: 30 },
@@ -379,7 +379,7 @@ describe('ArrayUtils', () => {
       expect(result?.age).toBe(30);
     });
 
-    it('deve encontrar correspondência com múltiplas propriedades', () => {
+    it('should find a match with multiple properties', () => {
       // Arrange
       const array = [
         { id: 1, name: 'John', age: 30 },
@@ -398,7 +398,7 @@ describe('ArrayUtils', () => {
       expect(result?.id).toBe(3);
     });
 
-    it('deve retornar null quando não encontra correspondência', () => {
+    it('should return null when no match is found', () => {
       // Arrange
       const array = [
         { id: 1, name: 'John', age: 30 },
@@ -415,7 +415,7 @@ describe('ArrayUtils', () => {
       expect(result).toBeNull();
     });
 
-    it('deve corresponder arrays dentro de objetos', () => {
+    it('should match arrays inside objects', () => {
       // Arrange
       const array = [
         { id: 1, tags: ['javascript', 'typescript'] },
@@ -434,9 +434,9 @@ describe('ArrayUtils', () => {
     });
   });
 
-  // Testes para o método isSubset
+  // Tests for the isSubset method
   describe('isSubset', () => {
-    it('deve verificar se um objeto contém um subconjunto', () => {
+    it('should check whether an object contains a subset', () => {
       // Arrange
       const superset = { id: 1, name: 'John', age: 30, city: 'New York' };
       const subset = { name: 'John', age: 30 };
@@ -448,7 +448,7 @@ describe('ArrayUtils', () => {
       expect(result).toBe(true);
     });
 
-    it('deve retornar false quando o subconjunto não está contido', () => {
+    it('should return false when the subset is not contained', () => {
       // Arrange
       const superset = { id: 1, name: 'John', age: 30 };
       const subset = { name: 'John', city: 'New York' };
@@ -460,7 +460,7 @@ describe('ArrayUtils', () => {
       expect(result).toBe(false);
     });
 
-    it('deve verificar arrays dentro de objetos', () => {
+    it('should check arrays inside objects', () => {
       // Arrange
       const superset = { id: 1, tags: ['javascript', 'typescript', 'react'] };
       const subset = { tags: ['javascript', 'typescript'] };
@@ -472,7 +472,7 @@ describe('ArrayUtils', () => {
       expect(result).toBe(true);
     });
 
-    it('deve retornar false quando um array não contém todos os elementos', () => {
+    it('should return false when an array does not contain all elements', () => {
       // Arrange
       const superset = { id: 1, tags: ['javascript', 'react'] };
       const subset = { tags: ['javascript', 'typescript'] };

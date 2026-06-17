@@ -2,22 +2,22 @@ import { ObjectUtils } from '../../src/services/object.service';
 
 describe('ObjectUtils', () => {
   describe('findValue', () => {
-    it('deve encontrar um valor em um objeto por caminho', () => {
+    it('should find a value in an object by path', () => {
       const obj = { a: { b: { c: 42 } } };
       expect(ObjectUtils.findValue({ obj, path: 'a.b.c' })).toBe(42);
     });
 
-    it('deve retornar undefined para caminhos inexistentes', () => {
+    it('should return undefined for non-existent paths', () => {
       const obj = { a: { b: { c: 42 } } };
       expect(ObjectUtils.findValue({ obj, path: 'a.b.d' })).toBeUndefined();
     });
 
-    it('deve funcionar com arrays', () => {
+    it('should work with arrays', () => {
       const obj = { a: { b: [1, 2, { c: 42 }] } };
       expect(ObjectUtils.findValue({ obj, path: 'a.b.2.c' })).toBe(42);
     });
 
-    it('deve respeitar o delimitador personalizado', () => {
+    it('should respect the custom delimiter', () => {
       const obj = { a: { b: { c: 42 } } };
       expect(
         ObjectUtils.findValue({ obj, path: 'a/b/c', delimiter: '/' }),
@@ -26,14 +26,14 @@ describe('ObjectUtils', () => {
   });
 
   describe('deepClone', () => {
-    it('deve clonar objetos simples', () => {
+    it('should clone simple objects', () => {
       const obj = { a: 1, b: 2, c: 3 };
       const clone = ObjectUtils.deepClone({ obj });
       expect(clone).toEqual(obj);
       expect(clone).not.toBe(obj);
     });
 
-    it('deve clonar objetos aninhados', () => {
+    it('should clone nested objects', () => {
       const obj = { a: { b: { c: 42 } } };
       const clone = ObjectUtils.deepClone({ obj });
       expect(clone).toEqual(obj);
@@ -41,14 +41,14 @@ describe('ObjectUtils', () => {
       expect(clone.a.b).not.toBe(obj.a.b);
     });
 
-    it('deve clonar arrays', () => {
+    it('should clone arrays', () => {
       const obj = { a: [1, 2, 3] };
       const clone = ObjectUtils.deepClone({ obj });
       expect(clone).toEqual(obj);
       expect(clone.a).not.toBe(obj.a);
     });
 
-    it('deve clonar datas', () => {
+    it('should clone dates', () => {
       const date = new Date();
       const obj = { a: date };
       const clone = ObjectUtils.deepClone({ obj });
@@ -56,7 +56,7 @@ describe('ObjectUtils', () => {
       expect(clone.a).not.toBe(date);
     });
 
-    it('deve clonar expressões regulares', () => {
+    it('should clone regular expressions', () => {
       const regex = /test/g;
       const obj = { a: regex };
       const clone = ObjectUtils.deepClone({ obj });
@@ -64,7 +64,7 @@ describe('ObjectUtils', () => {
       expect(clone.a).not.toBe(regex);
     });
 
-    it('deve clonar Map', () => {
+    it('should clone Map', () => {
       const map = new Map([
         ['a', 1],
         ['b', 2],
@@ -77,7 +77,7 @@ describe('ObjectUtils', () => {
       expect(clone.a.get('b')).toBe(2);
     });
 
-    it('deve clonar Set', () => {
+    it('should clone Set', () => {
       const set = new Set([1, 2, 3]);
       const obj = { a: set };
       const clone = ObjectUtils.deepClone({ obj });
@@ -88,7 +88,7 @@ describe('ObjectUtils', () => {
       expect(clone.a.has(3)).toBe(true);
     });
 
-    it('deve lidar com valores primitivos', () => {
+    it('should handle primitive values', () => {
       expect(ObjectUtils.deepClone({ obj: 42 })).toBe(42);
       expect(ObjectUtils.deepClone({ obj: 'test' })).toBe('test');
       expect(ObjectUtils.deepClone({ obj: true })).toBe(true);
@@ -98,42 +98,42 @@ describe('ObjectUtils', () => {
   });
 
   describe('deepMerge', () => {
-    it('deve mesclar objetos simples', () => {
+    it('should merge simple objects', () => {
       const target = { a: 1, b: 2 };
       const source = { b: 3, c: 4 };
       const result = ObjectUtils.deepMerge({ target, source });
       expect(result).toEqual({ a: 1, b: 3, c: 4 });
     });
 
-    it('deve mesclar objetos aninhados', () => {
+    it('should merge nested objects', () => {
       const target = { a: { b: 1, c: 2 } };
       const source = { a: { c: 3, d: 4 } };
       const result = ObjectUtils.deepMerge({ target, source });
       expect(result).toEqual({ a: { b: 1, c: 3, d: 4 } });
     });
 
-    it('deve substituir arrays', () => {
+    it('should replace arrays', () => {
       const target = { a: [1, 2] };
       const source = { a: [3, 4] };
       const result = ObjectUtils.deepMerge({ target, source });
       expect(result).toEqual({ a: [3, 4] });
     });
 
-    it('deve adicionar novas propriedades', () => {
+    it('should add new properties', () => {
       const target = { a: 1 };
       const source = { b: 2 };
       const result = ObjectUtils.deepMerge({ target, source });
       expect(result).toEqual({ a: 1, b: 2 });
     });
 
-    it('deve lidar com objetos vazios', () => {
+    it('should handle empty objects', () => {
       const target = {};
       const source = { a: 1 };
       const result = ObjectUtils.deepMerge({ target, source });
       expect(result).toEqual({ a: 1 });
     });
 
-    it('deve preservar o objeto original', () => {
+    it('should preserve the original object', () => {
       const target = { a: 1 };
       const source = { b: 2 };
       const result = ObjectUtils.deepMerge({ target, source });
@@ -143,19 +143,19 @@ describe('ObjectUtils', () => {
   });
 
   describe('pick', () => {
-    it('deve selecionar propriedades específicas', () => {
+    it('should pick specific properties', () => {
       const obj = { a: 1, b: 2, c: 3, d: 4 };
       const result = ObjectUtils.pick({ obj, keys: ['a', 'c'] });
       expect(result).toEqual({ a: 1, c: 3 });
     });
 
-    it('deve ignorar propriedades inexistentes', () => {
+    it('should ignore non-existent properties', () => {
       const obj = { a: 1, b: 2 };
       const result = ObjectUtils.pick({ obj, keys: ['a', 'c'] as any });
       expect(result).toEqual({ a: 1 });
     });
 
-    it('deve retornar um objeto vazio se nenhuma propriedade for encontrada', () => {
+    it('should return an empty object if no property is found', () => {
       const obj = { a: 1, b: 2 };
       const result = ObjectUtils.pick({ obj, keys: ['c', 'd'] as any });
       expect(result).toEqual({});
@@ -163,19 +163,19 @@ describe('ObjectUtils', () => {
   });
 
   describe('omit', () => {
-    it('deve omitir propriedades específicas', () => {
+    it('should omit specific properties', () => {
       const obj = { a: 1, b: 2, c: 3, d: 4 };
       const result = ObjectUtils.omit({ obj, keys: ['b', 'd'] });
       expect(result).toEqual({ a: 1, c: 3 });
     });
 
-    it('deve ignorar propriedades inexistentes', () => {
+    it('should ignore non-existent properties', () => {
       const obj = { a: 1, b: 2 };
       const result = ObjectUtils.omit({ obj, keys: ['b', 'c'] as any });
       expect(result).toEqual({ a: 1 });
     });
 
-    it('deve retornar uma cópia do objeto se nenhuma propriedade for omitida', () => {
+    it('should return a copy of the object if no property is omitted', () => {
       const obj = { a: 1, b: 2 };
       const result = ObjectUtils.omit({ obj, keys: ['c', 'd'] as any });
       expect(result).toEqual({ a: 1, b: 2 });
@@ -183,7 +183,7 @@ describe('ObjectUtils', () => {
   });
 
   describe('flattenObject', () => {
-    it('deve achatar um objeto aninhado', () => {
+    it('should flatten a nested object', () => {
       const obj = { a: 1, b: { c: 2, d: { e: 3 } } };
       const result = ObjectUtils.flattenObject({ obj });
       expect(result).toEqual({
@@ -193,7 +193,7 @@ describe('ObjectUtils', () => {
       });
     });
 
-    it('deve usar o prefixo fornecido', () => {
+    it('should use the provided prefix', () => {
       const obj = { a: 1, b: { c: 2 } };
       const result = ObjectUtils.flattenObject({ obj, prefix: 'prefix' });
       expect(result).toEqual({
@@ -202,7 +202,7 @@ describe('ObjectUtils', () => {
       });
     });
 
-    it('deve usar o delimitador fornecido', () => {
+    it('should use the provided delimiter', () => {
       const obj = { a: 1, b: { c: 2 } };
       const result = ObjectUtils.flattenObject({ obj, delimiter: '/' });
       expect(result).toEqual({
@@ -211,13 +211,13 @@ describe('ObjectUtils', () => {
       });
     });
 
-    it('deve preservar arrays', () => {
+    it('should preserve arrays', () => {
       const obj = { a: [1, 2, 3] };
       const result = ObjectUtils.flattenObject({ obj });
       expect(result).toEqual({ a: [1, 2, 3] });
     });
 
-    it('deve preservar objetos vazios', () => {
+    it('should preserve empty objects', () => {
       const obj = { a: {}, b: 1 };
       const result = ObjectUtils.flattenObject({ obj });
       expect(result).toEqual({ a: {}, b: 1 });
@@ -225,13 +225,13 @@ describe('ObjectUtils', () => {
   });
 
   describe('unflattenObject', () => {
-    it('deve desachatar um objeto', () => {
+    it('should unflatten an object', () => {
       const obj = {};
       ObjectUtils.unflattenObject({ obj, path: 'a.b.c', value: 42 });
       expect(obj).toEqual({ a: { b: { c: 42 } } });
     });
 
-    it('deve usar o delimitador fornecido', () => {
+    it('should use the provided delimiter', () => {
       const obj = {};
       ObjectUtils.unflattenObject({
         obj,
@@ -242,13 +242,13 @@ describe('ObjectUtils', () => {
       expect(obj).toEqual({ a: { b: { c: 42 } } });
     });
 
-    it('deve sobrescrever valores existentes', () => {
+    it('should overwrite existing values', () => {
       const obj = { a: { b: { c: 1 } } };
       ObjectUtils.unflattenObject({ obj, path: 'a.b.c', value: 42 });
       expect(obj).toEqual({ a: { b: { c: 42 } } });
     });
 
-    it('deve criar objetos intermediários', () => {
+    it('should create intermediate objects', () => {
       const obj = { a: { d: 1 } };
       ObjectUtils.unflattenObject({ obj, path: 'a.b.c', value: 42 });
       expect(obj).toEqual({ a: { d: 1, b: { c: 42 } } });
@@ -256,20 +256,20 @@ describe('ObjectUtils', () => {
   });
 
   describe('invert', () => {
-    it('deve inverter chaves e valores', () => {
+    it('should invert keys and values', () => {
       const obj = { a: '1', b: '2', c: '3' };
       const result = ObjectUtils.invert({ obj });
       expect(result).toEqual({ '1': 'a', '2': 'b', '3': 'c' });
     });
 
-    it('deve lidar com valores duplicados', () => {
+    it('should handle duplicate values', () => {
       const obj = { a: '1', b: '1', c: '2' };
       const result = ObjectUtils.invert({ obj });
-      // O último valor sobrescreve os anteriores
+      // The last value overwrites the previous ones
       expect(result).toEqual({ '1': 'b', '2': 'c' });
     });
 
-    it('deve converter valores não-string para string', () => {
+    it('should convert non-string values to string', () => {
       const obj = { a: 1, b: 2, c: 3 };
       const result = ObjectUtils.invert({ obj });
       expect(result).toEqual({ '1': 'a', '2': 'b', '3': 'c' });
@@ -277,20 +277,20 @@ describe('ObjectUtils', () => {
   });
 
   describe('deepFreeze', () => {
-    it('deve congelar um objeto', () => {
+    it('should freeze an object', () => {
       const obj = { a: 1, b: 2 };
       const frozen = ObjectUtils.deepFreeze({ obj });
       expect(Object.isFrozen(frozen)).toBe(true);
     });
 
-    it('deve congelar objetos aninhados', () => {
+    it('should freeze nested objects', () => {
       const obj = { a: { b: { c: 42 } } };
       const frozen = ObjectUtils.deepFreeze({ obj });
       expect(Object.isFrozen(frozen.a)).toBe(true);
       expect(Object.isFrozen(frozen.a.b)).toBe(true);
     });
 
-    it('deve lidar com valores primitivos', () => {
+    it('should handle primitive values', () => {
       expect(ObjectUtils.deepFreeze({ obj: 42 })).toBe(42);
       expect(ObjectUtils.deepFreeze({ obj: 'test' })).toBe('test');
       expect(ObjectUtils.deepFreeze({ obj: null })).toBe(null);
@@ -298,17 +298,17 @@ describe('ObjectUtils', () => {
   });
 
   describe('isEmpty', () => {
-    it('deve identificar objetos vazios', () => {
+    it('should identify empty objects', () => {
       expect(ObjectUtils.isEmpty({ obj: {} })).toBe(true);
     });
 
-    it('deve identificar objetos não vazios', () => {
+    it('should identify non-empty objects', () => {
       expect(ObjectUtils.isEmpty({ obj: { a: 1 } })).toBe(false);
     });
   });
 
   describe('compare', () => {
-    it('deve comparar objetos simples', () => {
+    it('should compare simple objects', () => {
       const obj1 = { a: 1 };
       const obj2 = { a: 1 };
       expect(ObjectUtils.compare({ obj1, obj2 })).toBe(true);
@@ -318,7 +318,7 @@ describe('ObjectUtils', () => {
       expect(ObjectUtils.compare({ obj1: obj3, obj2: obj4 })).toBe(false);
     });
 
-    it('deve comparar objetos aninhados', () => {
+    it('should compare nested objects', () => {
       const obj1 = { a: { b: 1 } };
       const obj2 = { a: { b: 1 } };
       expect(ObjectUtils.compare({ obj1, obj2 })).toBe(true);
@@ -328,7 +328,7 @@ describe('ObjectUtils', () => {
       expect(ObjectUtils.compare({ obj1: obj3, obj2: obj4 })).toBe(false);
     });
 
-    it('deve comparar arrays', () => {
+    it('should compare arrays', () => {
       const obj1 = { a: [1, 2, 3] };
       const obj2 = { a: [1, 2, 3] };
       expect(ObjectUtils.compare({ obj1, obj2 })).toBe(true);
@@ -340,32 +340,32 @@ describe('ObjectUtils', () => {
   });
 
   describe('hasCircularReference', () => {
-    it('deve detectar referências circulares', () => {
+    it('should detect circular references', () => {
       const obj: any = { a: 1 };
       obj.self = obj;
       expect(ObjectUtils.hasCircularReference({ obj })).toBe(true);
     });
 
-    it('deve detectar referências circulares aninhadas', () => {
+    it('should detect nested circular references', () => {
       const obj: any = { a: { b: { c: {} } } };
       obj.a.b.c.d = obj;
       expect(ObjectUtils.hasCircularReference({ obj })).toBe(true);
     });
 
-    it('não deve detectar referências não circulares', () => {
+    it('should not detect non-circular references', () => {
       const obj = { a: { b: { c: 42 } } };
       expect(ObjectUtils.hasCircularReference({ obj })).toBe(false);
     });
   });
 
   describe('removeUndefined', () => {
-    it('deve remover propriedades undefined', () => {
+    it('should remove undefined properties', () => {
       const obj = { a: 1, b: undefined, c: 3 };
       const result = ObjectUtils.removeUndefined({ obj });
       expect(result).toEqual({ a: 1, c: 3 });
     });
 
-    it('deve preservar valores null', () => {
+    it('should preserve null values', () => {
       const obj = { a: 1, b: null, c: 3 };
       const result = ObjectUtils.removeUndefined({ obj });
       expect(result).toEqual({ a: 1, b: null, c: 3 });
@@ -373,13 +373,13 @@ describe('ObjectUtils', () => {
   });
 
   describe('removeNull', () => {
-    it('deve remover propriedades null', () => {
+    it('should remove null properties', () => {
       const obj = { a: 1, b: null, c: 3 };
       const result = ObjectUtils.removeNull({ obj });
       expect(result).toEqual({ a: 1, c: 3 });
     });
 
-    it('deve preservar valores undefined', () => {
+    it('should preserve undefined values', () => {
       const obj = { a: 1, b: undefined, c: 3 };
       const result = ObjectUtils.removeNull({ obj });
       expect(result).toEqual({ a: 1, b: undefined, c: 3 });
@@ -387,7 +387,7 @@ describe('ObjectUtils', () => {
   });
 
   describe('diff', () => {
-    it('deve encontrar diferenças entre objetos', () => {
+    it('should find differences between objects', () => {
       const obj1 = { a: 1, b: 2, c: 3 };
       const obj2 = { a: 1, b: 3, c: 4 };
       const result = ObjectUtils.diff({ obj1, obj2 });
@@ -397,7 +397,7 @@ describe('ObjectUtils', () => {
       });
     });
 
-    it('deve encontrar diferenças em objetos aninhados', () => {
+    it('should find differences in nested objects', () => {
       const obj1 = { a: { b: 1 } };
       const obj2 = { a: { b: 2 } };
       const result = ObjectUtils.diff({ obj1, obj2 });
@@ -408,7 +408,7 @@ describe('ObjectUtils', () => {
   });
 
   describe('groupBy', () => {
-    it('deve agrupar valores por chave', () => {
+    it('should group values by key', () => {
       const obj = {
         user1: { id: 'user1', role: 'admin' },
         user2: { id: 'user2', role: 'user' },
@@ -426,7 +426,7 @@ describe('ObjectUtils', () => {
   });
 
   describe('compressObject e decompressObject', () => {
-    it('deve comprimir e descomprimir um objeto', () => {
+    it('should compress and decompress an object', () => {
       const obj = { a: 1, b: 2, c: { d: 3 } };
       const compressed = ObjectUtils.compressObject({ json: obj });
       const decompressed = ObjectUtils.decompressObject({
@@ -437,7 +437,7 @@ describe('ObjectUtils', () => {
   });
 
   describe('compressObjectToBase64 e decompressBase64ToObject', () => {
-    it('deve comprimir e descomprimir um objeto em base64', () => {
+    it('should compress and decompress an object to base64', () => {
       const obj = { a: 1, b: 2, c: { d: 3 } };
       const compressed = ObjectUtils.compressObjectToBase64({ json: obj });
       const decompressed = ObjectUtils.decompressBase64ToObject({
@@ -446,7 +446,7 @@ describe('ObjectUtils', () => {
       expect(decompressed).toEqual(obj);
     });
 
-    it('deve comprimir e descomprimir um objeto em base64 URL-safe', () => {
+    it('should compress and decompress an object to URL-safe base64', () => {
       const obj = { a: 1, b: 2, c: { d: 3 } };
       const compressed = ObjectUtils.compressObjectToBase64({
         json: obj,
@@ -461,7 +461,7 @@ describe('ObjectUtils', () => {
   });
 
   describe('findSubsetObjects', () => {
-    it('deve encontrar objetos que correspondem a um subconjunto', () => {
+    it('should find objects that match a subset', () => {
       const array = [
         { id: 1, name: 'John', age: 30 },
         { id: 2, name: 'Jane', age: 25 },
@@ -477,7 +477,7 @@ describe('ObjectUtils', () => {
       ]);
     });
 
-    it('deve retornar um array vazio se nenhum objeto corresponder', () => {
+    it('should return an empty array if no object matches', () => {
       const array = [
         { id: 1, name: 'John', age: 30 },
         { id: 2, name: 'Jane', age: 25 },
@@ -491,19 +491,19 @@ describe('ObjectUtils', () => {
   });
 
   describe('isSubsetObject', () => {
-    it('deve verificar se um objeto é subconjunto de outro', () => {
+    it('should check whether an object is a subset of another', () => {
       const superset = { a: 1, b: 2, c: { d: 3, e: 4 } };
       const subset = { a: 1, c: { d: 3, e: 4 } };
       expect(ObjectUtils.isSubsetObject({ superset, subset })).toBe(true);
     });
 
-    it('deve retornar false se o objeto não for um subconjunto', () => {
+    it('should return false if the object is not a subset', () => {
       const superset = { a: 1, b: 2, c: { d: 3, e: 4 } };
       const subset = { a: 1, c: { d: 4, e: 4 } };
       expect(ObjectUtils.isSubsetObject({ superset, subset })).toBe(false);
     });
 
-    it('deve retornar false se uma propriedade não existir no superset', () => {
+    it('should return false if a property does not exist in the superset', () => {
       const superset = { a: 1, b: 2 };
       const subset = { a: 1, c: 3 };
       expect(ObjectUtils.isSubsetObject({ superset, subset })).toBe(false);

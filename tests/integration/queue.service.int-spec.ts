@@ -6,13 +6,13 @@ import {
 } from '../../src/services/queue.service';
 
 /**
- * Testes de integração para o serviço de filas.
- * Estes testes verificam o comportamento das estruturas de dados em cenários de uso real.
+ * Integration tests for the queue service.
+ * These tests verify the behavior of the data structures in real-world usage scenarios.
  */
-describe('Queue Service - Testes de Integração', () => {
-  describe('Cenário: Sistema de mensagens', () => {
-    it('deve processar mensagens na ordem correta usando uma fila', () => {
-      // Cenário: Um sistema de mensagens que processa mensagens na ordem de chegada
+describe('Queue Service - Integration Tests', () => {
+  describe('Scenario: Messaging system', () => {
+    it('should process messages in the correct order using a queue', () => {
+      // Scenario: A messaging system that processes messages in arrival order
       const messageQueue = new Queue<{
         id: number;
         text: string;
@@ -20,12 +20,12 @@ describe('Queue Service - Testes de Integração', () => {
       }>();
       const processedMessages: number[] = [];
 
-      // Adiciona mensagens à fila
+      // Adds messages to the queue
       messageQueue.enqueue({ id: 1, text: 'Primeira mensagem', priority: 3 });
       messageQueue.enqueue({ id: 2, text: 'Segunda mensagem', priority: 1 });
       messageQueue.enqueue({ id: 3, text: 'Terceira mensagem', priority: 2 });
 
-      // Processa as mensagens na ordem FIFO
+      // Processes the messages in FIFO order
       while (!messageQueue.isEmpty()) {
         const message = messageQueue.dequeue();
         if (message) {
@@ -33,16 +33,16 @@ describe('Queue Service - Testes de Integração', () => {
         }
       }
 
-      // Verifica se as mensagens foram processadas na ordem correta (FIFO)
+      // Verifies that the messages were processed in the correct order (FIFO)
       expect(processedMessages).toEqual([1, 2, 3]);
     });
 
-    it('deve processar mensagens por prioridade usando uma fila múltipla', () => {
-      // Cenário: Um sistema de mensagens que processa mensagens por prioridade
+    it('should process messages by priority using a multi-queue', () => {
+      // Scenario: A messaging system that processes messages by priority
       const priorityQueue = new MultiQueue<{ id: number; text: string }>();
       const processedMessages: number[] = [];
 
-      // Adiciona mensagens com diferentes prioridades
+      // Adds messages with different priorities
       priorityQueue.enqueue(
         { id: 1, text: 'Mensagem de baixa prioridade' },
         'low',
@@ -60,7 +60,7 @@ describe('Queue Service - Testes de Integração', () => {
         'high',
       );
 
-      // Processa primeiro as mensagens de alta prioridade
+      // Processes the high-priority messages first
       while (!priorityQueue.isEmpty('high')) {
         const message = priorityQueue.dequeue('high');
         if (message) {
@@ -68,7 +68,7 @@ describe('Queue Service - Testes de Integração', () => {
         }
       }
 
-      // Depois processa as mensagens de média prioridade
+      // Then processes the medium-priority messages
       while (!priorityQueue.isEmpty('medium')) {
         const message = priorityQueue.dequeue('medium');
         if (message) {
@@ -76,7 +76,7 @@ describe('Queue Service - Testes de Integração', () => {
         }
       }
 
-      // Por último, processa as mensagens de baixa prioridade
+      // Finally, processes the low-priority messages
       while (!priorityQueue.isEmpty('low')) {
         const message = priorityQueue.dequeue('low');
         if (message) {
@@ -84,29 +84,29 @@ describe('Queue Service - Testes de Integração', () => {
         }
       }
 
-      // Verifica se as mensagens foram processadas na ordem de prioridade correta
+      // Verifies that the messages were processed in the correct priority order
       expect(processedMessages).toEqual([2, 4, 3, 1]);
     });
   });
 
-  describe('Cenário: Histórico de navegação', () => {
-    it('deve gerenciar o histórico de navegação usando uma pilha', () => {
-      // Cenário: Um histórico de navegação de um navegador web
+  describe('Scenario: Navigation history', () => {
+    it('should manage navigation history using a stack', () => {
+      // Scenario: A web browser's navigation history
       const navigationHistory = new Stack<string>();
       const forwardHistory = new Stack<string>();
       let currentPage = 'home.html';
 
-      // Função para navegar para uma nova página
+      // Function to navigate to a new page
       const navigateTo = (page: string) => {
         navigationHistory.push(currentPage);
         currentPage = page;
-        // Limpa o histórico para frente ao navegar para uma nova página
+        // Clears the forward history when navigating to a new page
         while (!forwardHistory.isEmpty()) {
           forwardHistory.pop();
         }
       };
 
-      // Função para voltar à página anterior
+      // Function to go back to the previous page
       const goBack = (): string | undefined => {
         if (navigationHistory.isEmpty()) {
           return undefined;
@@ -116,7 +116,7 @@ describe('Queue Service - Testes de Integração', () => {
         return currentPage;
       };
 
-      // Função para avançar para a próxima página
+      // Function to go forward to the next page
       const goForward = (): string | undefined => {
         if (forwardHistory.isEmpty()) {
           return undefined;
@@ -126,49 +126,49 @@ describe('Queue Service - Testes de Integração', () => {
         return currentPage;
       };
 
-      // Simula a navegação
+      // Simulates the navigation
       navigateTo('about.html');
       navigateTo('products.html');
       navigateTo('contact.html');
 
-      // Verifica a página atual
+      // Verifies the current page
       expect(currentPage).toBe('contact.html');
 
-      // Volta duas páginas
+      // Goes back two pages
       goBack();
       goBack();
 
-      // Verifica a página atual
+      // Verifies the current page
       expect(currentPage).toBe('about.html');
 
-      // Avança uma página
+      // Goes forward one page
       goForward();
 
-      // Verifica a página atual
+      // Verifies the current page
       expect(currentPage).toBe('products.html');
 
-      // Navega para uma nova página, o que deve limpar o histórico para frente
+      // Navigates to a new page, which should clear the forward history
       navigateTo('blog.html');
 
-      // Tenta avançar, o que deve falhar porque o histórico para frente foi limpo
+      // Tries to go forward, which should fail because the forward history was cleared
       const result = goForward();
       expect(result).toBeUndefined();
 
-      // Verifica a página atual
+      // Verifies the current page
       expect(currentPage).toBe('blog.html');
     });
   });
 
-  describe('Cenário: Sistema de tarefas', () => {
-    it('deve gerenciar tarefas com diferentes prioridades', () => {
-      // Cenário: Um sistema de gerenciamento de tarefas com diferentes prioridades
+  describe('Scenario: Task system', () => {
+    it('should manage tasks with different priorities', () => {
+      // Scenario: A task management system with different priorities
       const taskSystem = QueueUtils.createMultiQueue<{
         id: number;
         description: string;
         assignee: string;
       }>();
 
-      // Adiciona tarefas com diferentes prioridades
+      // Adds tasks with different priorities
       taskSystem.enqueue(
         { id: 1, description: 'Corrigir bug crítico', assignee: 'Alice' },
         'critical',
@@ -194,12 +194,12 @@ describe('Queue Service - Testes de Integração', () => {
         'critical',
       );
 
-      // Verifica o número de tarefas por prioridade
+      // Verifies the number of tasks per priority
       expect(taskSystem.size('critical')).toBe(2);
       expect(taskSystem.size('normal')).toBe(1);
       expect(taskSystem.size('low')).toBe(1);
 
-      // Processa as tarefas críticas primeiro
+      // Processes the critical tasks first
       const criticalTasks = [];
       while (!taskSystem.isEmpty('critical')) {
         const task = taskSystem.dequeue('critical');
@@ -208,7 +208,7 @@ describe('Queue Service - Testes de Integração', () => {
         }
       }
 
-      // Verifica se as tarefas críticas foram processadas na ordem correta
+      // Verifies that the critical tasks were processed in the correct order
       expect(criticalTasks).toEqual([1, 4]);
       expect(taskSystem.isEmpty('critical')).toBe(true);
       expect(taskSystem.isEmpty('normal')).toBe(false);
@@ -216,9 +216,9 @@ describe('Queue Service - Testes de Integração', () => {
     });
   });
 
-  describe('Cenário: Desfazer/Refazer operações', () => {
-    it.skip('deve gerenciar operações de desfazer/refazer usando pilhas', () => {
-      // Cenário: Um editor de texto com funcionalidades de desfazer/refazer
+  describe('Scenario: Undo/Redo operations', () => {
+    it.skip('should manage undo/redo operations using stacks', () => {
+      // Scenario: A text editor with undo/redo functionality
       const undoStack = QueueUtils.createStack<{
         action: string;
         data: string;
@@ -230,13 +230,13 @@ describe('Queue Service - Testes de Integração', () => {
 
       let currentText = '';
 
-      // Função para executar uma ação
+      // Function to execute an action
       const executeAction = (action: string, data: string) => {
         undoStack.push({ action, data });
-        // Limpa a pilha de refazer ao executar uma nova ação
+        // Clears the redo stack when executing a new action
         redoStack.clear();
 
-        // Simula a execução da ação
+        // Simulates executing the action
         if (action === 'add') {
           currentText += data;
         } else if (action === 'delete') {
@@ -247,7 +247,7 @@ describe('Queue Service - Testes de Integração', () => {
         }
       };
 
-      // Função para desfazer a última ação
+      // Function to undo the last action
       const undo = () => {
         if (undoStack.isEmpty()) {
           return false;
@@ -260,7 +260,7 @@ describe('Queue Service - Testes de Integração', () => {
 
         redoStack.push(lastAction);
 
-        // Simula a reversão da ação
+        // Simulates reverting the action
         if (lastAction.action === 'add') {
           currentText = currentText.substring(
             0,
@@ -273,7 +273,7 @@ describe('Queue Service - Testes de Integração', () => {
         return true;
       };
 
-      // Função para refazer a última ação desfeita
+      // Function to redo the last undone action
       const redo = () => {
         if (redoStack.isEmpty()) {
           return false;
@@ -286,7 +286,7 @@ describe('Queue Service - Testes de Integração', () => {
 
         undoStack.push(nextAction);
 
-        // Simula a re-execução da ação
+        // Simulates re-executing the action
         if (nextAction.action === 'add') {
           currentText += nextAction.data;
         } else if (nextAction.action === 'delete') {
@@ -299,39 +299,39 @@ describe('Queue Service - Testes de Integração', () => {
         return true;
       };
 
-      // Executa algumas ações
+      // Executes some actions
       executeAction('add', 'Hello');
       executeAction('add', ' ');
       executeAction('add', 'World');
       expect(currentText).toBe('Hello World');
 
-      // Desfaz a última ação
+      // Undoes the last action
       undo();
       expect(currentText).toBe('Hello ');
 
-      // Desfaz outra ação
+      // Undoes another action
       undo();
       expect(currentText).toBe('Hello');
 
-      // Refaz uma ação
+      // Redoes an action
       redo();
       expect(currentText).toBe('Hello ');
 
-      // Executa uma nova ação, o que deve limpar a pilha de refazer
+      // Executes a new action, which should clear the redo stack
       executeAction('add', 'Universe');
       expect(currentText).toBe('Hello Universe');
 
-      // Tenta refazer, o que deve falhar porque a pilha de refazer foi limpa
+      // Tries to redo, which should fail because the redo stack was cleared
       const redoResult = redo();
       expect(redoResult).toBe(false);
       expect(currentText).toBe('Hello Universe');
 
-      // Desfaz duas ações
+      // Undoes two actions
       undo();
       undo();
       expect(currentText).toBe('');
 
-      // Verifica o estado das pilhas
+      // Verifies the state of the stacks
       expect(undoStack.isEmpty()).toBe(false);
       expect(redoStack.isEmpty()).toBe(false);
     });

@@ -1,16 +1,16 @@
 import { SortUtils } from '../../src/services/sort.service';
 
 /**
- * Testes de integração para a classe SortUtils.
- * Estes testes verificam cenários mais complexos que envolvem múltiplos métodos.
+ * Integration tests for the SortUtils class.
+ * These tests verify more complex scenarios involving multiple methods.
  */
-describe('SortUtils - Testes de Integração', () => {
-  describe('Comparação entre algoritmos', () => {
-    it('deve produzir o mesmo resultado com diferentes algoritmos', () => {
+describe('SortUtils - Integration Tests', () => {
+  describe('Comparison between algorithms', () => {
+    it('should produce the same result with different algorithms', () => {
       const unsortedArray = [38, 27, 43, 3, 9, 82, 10];
       const expectedSorted = [3, 9, 10, 27, 38, 43, 82];
 
-      // Algoritmos de comparação
+      // Comparison-based algorithms
       const bubbleSorted = SortUtils.bubbleSort(unsortedArray);
       const mergeSorted = SortUtils.mergeSort(unsortedArray);
       const quickSorted = SortUtils.quickSort(unsortedArray);
@@ -20,7 +20,7 @@ describe('SortUtils - Testes de Integração', () => {
       const shellSorted = SortUtils.shellSort(unsortedArray);
       const timSorted = SortUtils.timSort(unsortedArray);
 
-      // Verificações
+      // Assertions
       expect(bubbleSorted).toEqual(expectedSorted);
       expect(mergeSorted).toEqual(expectedSorted);
       expect(quickSorted).toEqual(expectedSorted);
@@ -30,7 +30,7 @@ describe('SortUtils - Testes de Integração', () => {
       expect(shellSorted).toEqual(expectedSorted);
       expect(timSorted).toEqual(expectedSorted);
 
-      // Algoritmos não-comparativos (apenas para números não-negativos)
+      // Non-comparison-based algorithms (only for non-negative numbers)
       const positiveArray = [38, 27, 43, 3, 9, 82, 10];
       const countingSorted = SortUtils.countingSort(positiveArray, 82);
       const radixSorted = SortUtils.radixSort(positiveArray);
@@ -39,8 +39,8 @@ describe('SortUtils - Testes de Integração', () => {
       expect(radixSorted).toEqual(expectedSorted);
     });
 
-    it.skip('deve manter a estabilidade em algoritmos estáveis', () => {
-      // Cria um array de objetos para testar estabilidade
+    it.skip('should maintain stability in stable algorithms', () => {
+      // Create an array of objects to test stability
       const unsortedObjects = [
         { key: 3, value: 'a' },
         { key: 1, value: 'b' },
@@ -49,22 +49,22 @@ describe('SortUtils - Testes de Integração', () => {
         { key: 3, value: 'e' },
       ];
 
-      // Função para ordenar por chave
+      // Function to sort by key
       const sortByKey = <T extends { key: number }>(
         arr: T[],
         algorithm: (array: T[]) => T[],
       ): T[] => {
-        // Cria uma função de comparação personalizada
+        // Create a custom comparison function
         const compare = (a: T, b: T): number => a.key - b.key;
 
-        // Substitui temporariamente o operador de comparação
+        // Temporarily replace the comparison operator
         const gtSymbol = Symbol.for('>') as unknown as keyof Array<T>;
         const ltSymbol = Symbol.for('<') as unknown as keyof Array<T>;
 
         const originalGT = Array.prototype[gtSymbol] as any;
         const originalLT = Array.prototype[ltSymbol] as any;
 
-        // Definindo explicitamente os tipos para evitar erros
+        // Explicitly defining the types to avoid errors
         type CompareFunction = (this: any, other: any) => boolean;
 
         (Array.prototype[gtSymbol] as CompareFunction) = function (
@@ -84,13 +84,13 @@ describe('SortUtils - Testes de Integração', () => {
         try {
           return algorithm(arr);
         } finally {
-          // Restaura os operadores originais
+          // Restore the original operators
           (Array.prototype[gtSymbol] as any) = originalGT;
           (Array.prototype[ltSymbol] as any) = originalLT;
         }
       };
 
-      // Testa algoritmos estáveis
+      // Test stable algorithms
       const mergeSorted = sortByKey(unsortedObjects, SortUtils.mergeSort);
       const bubbleSorted = sortByKey(unsortedObjects, SortUtils.bubbleSort);
       const insertionSorted = sortByKey(
@@ -98,9 +98,9 @@ describe('SortUtils - Testes de Integração', () => {
         SortUtils.insertionSort,
       );
 
-      // Verifica se a ordem relativa dos elementos com a mesma chave é preservada
-      expect(mergeSorted[1].value).toBe('b'); // Primeiro elemento com chave 1
-      expect(mergeSorted[2].value).toBe('d'); // Segundo elemento com chave 1
+      // Verify that the relative order of elements with the same key is preserved
+      expect(mergeSorted[1].value).toBe('b'); // First element with key 1
+      expect(mergeSorted[2].value).toBe('d'); // Second element with key 1
 
       expect(bubbleSorted[1].value).toBe('b');
       expect(bubbleSorted[2].value).toBe('d');
@@ -110,8 +110,8 @@ describe('SortUtils - Testes de Integração', () => {
     });
   });
 
-  describe('Cenários de uso real', () => {
-    it('deve ordenar um conjunto de dados de estudantes por nota', () => {
+  describe('Real-world usage scenarios', () => {
+    it('should sort a dataset of students by grade', () => {
       const students = [
         { name: 'Alice', grade: 85 },
         { name: 'Bob', grade: 92 },
@@ -120,18 +120,18 @@ describe('SortUtils - Testes de Integração', () => {
         { name: 'Evan', grade: 88 },
       ];
 
-      // Extrai as notas para ordenação
+      // Extract the grades for sorting
       const grades = students.map(student => student.grade);
 
-      // Ordena as notas
+      // Sort the grades
       const sortedGrades = SortUtils.quickSort(grades);
 
-      // Reordena os estudantes com base nas notas ordenadas
+      // Reorder the students based on the sorted grades
       const sortedStudents = sortedGrades.map(grade =>
         students.find(student => student.grade === grade),
       );
 
-      // Verificações
+      // Assertions
       expect(sortedStudents[0]?.name).toBe('Charlie');
       expect(sortedStudents[1]?.name).toBe('Alice');
       expect(sortedStudents[2]?.name).toBe('Evan');
@@ -139,7 +139,7 @@ describe('SortUtils - Testes de Integração', () => {
       expect(sortedStudents[4]?.name).toBe('Diana');
     });
 
-    it('deve ordenar um conjunto de dados de produtos por preço', () => {
+    it('should sort a dataset of products by price', () => {
       const products = [
         { id: 1, name: 'Laptop', price: 1200 },
         { id: 2, name: 'Phone', price: 800 },
@@ -148,18 +148,18 @@ describe('SortUtils - Testes de Integração', () => {
         { id: 5, name: 'Headphones', price: 150 },
       ];
 
-      // Extrai os preços para ordenação
+      // Extract the prices for sorting
       const prices = products.map(product => product.price);
 
-      // Ordena os preços (do mais barato ao mais caro)
+      // Sort the prices (cheapest to most expensive)
       const sortedPrices = SortUtils.mergeSort(prices);
 
-      // Reordena os produtos com base nos preços ordenados
+      // Reorder the products based on the sorted prices
       const sortedProducts = sortedPrices.map(price =>
         products.find(product => product.price === price),
       );
 
-      // Verificações
+      // Assertions
       expect(sortedProducts[0]?.name).toBe('Headphones');
       expect(sortedProducts[1]?.name).toBe('Smartwatch');
       expect(sortedProducts[2]?.name).toBe('Tablet');
@@ -167,7 +167,7 @@ describe('SortUtils - Testes de Integração', () => {
       expect(sortedProducts[4]?.name).toBe('Laptop');
     });
 
-    it('deve ordenar um conjunto de datas', () => {
+    it('should sort a set of dates', () => {
       const dates = [
         new Date('2023-05-15'),
         new Date('2022-12-31'),
@@ -176,18 +176,18 @@ describe('SortUtils - Testes de Integração', () => {
         new Date('2023-03-10'),
       ];
 
-      // Converte datas para timestamps para ordenação
+      // Convert dates to timestamps for sorting
       const timestamps = dates.map(date => date.getTime());
 
-      // Ordena os timestamps
+      // Sort the timestamps
       const sortedTimestamps = SortUtils.heapSort(timestamps);
 
-      // Converte timestamps ordenados de volta para datas
+      // Convert sorted timestamps back to dates
       const sortedDates = sortedTimestamps.map(
         timestamp => new Date(timestamp),
       );
 
-      // Verificações
+      // Assertions
       expect(sortedDates[0].toISOString().split('T')[0]).toBe('2022-06-30');
       expect(sortedDates[1].toISOString().split('T')[0]).toBe('2022-12-31');
       expect(sortedDates[2].toISOString().split('T')[0]).toBe('2023-01-01');
@@ -196,70 +196,70 @@ describe('SortUtils - Testes de Integração', () => {
     });
   });
 
-  describe('Combinação de algoritmos', () => {
-    it('deve usar algoritmos diferentes com base no tamanho do array', () => {
-      // Função que escolhe o algoritmo com base no tamanho do array
+  describe('Combination of algorithms', () => {
+    it('should use different algorithms based on the array size', () => {
+      // Function that chooses the algorithm based on the array size
       const smartSort = <T>(array: T[]): T[] => {
         if (array.length <= 10) {
-          // Para arrays pequenos, insertion sort é eficiente
+          // For small arrays, insertion sort is efficient
           return SortUtils.insertionSort(array);
         } else if (array.length <= 1000) {
-          // Para arrays médios, quick sort é uma boa escolha
+          // For medium arrays, quick sort is a good choice
           return SortUtils.quickSort(array);
         } else {
-          // Para arrays grandes, merge sort garante desempenho consistente
+          // For large arrays, merge sort guarantees consistent performance
           return SortUtils.mergeSort(array);
         }
       };
 
-      // Testa com arrays de diferentes tamanhos
+      // Test with arrays of different sizes
       const smallArray = [5, 3, 8, 4, 2];
       const mediumArray = Array.from({ length: 100 }, () =>
         Math.floor(Math.random() * 1000),
       );
 
-      // Ordena os arrays
+      // Sort the arrays
       const sortedSmall = smartSort(smallArray);
       const sortedMedium = smartSort(mediumArray);
 
-      // Verifica se os arrays foram ordenados corretamente
+      // Verify that the arrays were sorted correctly
       expect(sortedSmall).toEqual(SortUtils.insertionSort(smallArray));
       expect(sortedMedium).toEqual(SortUtils.quickSort(mediumArray));
     });
 
-    it('deve usar algoritmos diferentes com base no tipo de dados', () => {
-      // Arrays de diferentes tipos
+    it('should use different algorithms based on the data type', () => {
+      // Arrays of different types
       const integerArray = [38, 27, 43, 3, 9, 82, 10];
       const floatArray = [0.42, 0.32, 0.33, 0.52, 0.37, 0.47, 0.51];
 
-      // Função que escolhe o algoritmo com base no tipo de dados
+      // Function that chooses the algorithm based on the data type
       const typeBasedSort = (array: number[]): number[] => {
-        // Verifica se todos os elementos são inteiros não-negativos
+        // Check whether all elements are non-negative integers
         const allNonNegativeIntegers = array.every(
           num => Number.isInteger(num) && num >= 0,
         );
 
-        // Verifica se todos os elementos são entre 0 e 1
+        // Check whether all elements are between 0 and 1
         const allBetweenZeroAndOne = array.every(num => num >= 0 && num <= 1);
 
         if (allNonNegativeIntegers) {
-          // Para inteiros não-negativos, counting sort é eficiente
+          // For non-negative integers, counting sort is efficient
           const max = Math.max(...array);
           return SortUtils.countingSort(array, max);
         } else if (allBetweenZeroAndOne) {
-          // Para números entre 0 e 1, bucket sort é uma boa escolha
+          // For numbers between 0 and 1, bucket sort is a good choice
           return SortUtils.bucketSort(array);
         } else {
-          // Para outros casos, merge sort é seguro
+          // For other cases, merge sort is safe
           return SortUtils.mergeSort(array);
         }
       };
 
-      // Ordena os arrays
+      // Sort the arrays
       const sortedIntegers = typeBasedSort(integerArray);
       const sortedFloats = typeBasedSort(floatArray);
 
-      // Verifica se os arrays foram ordenados corretamente
+      // Verify that the arrays were sorted correctly
       expect(sortedIntegers).toEqual([3, 9, 10, 27, 38, 43, 82]);
       expect(sortedFloats).toEqual([0.32, 0.33, 0.37, 0.42, 0.47, 0.51, 0.52]);
     });

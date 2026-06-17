@@ -2,17 +2,17 @@ import * as crypto from 'crypto';
 import { CryptUtils } from '../../src/services/crypt.service';
 
 /**
- * Testes unitários para a classe CryptUtils.
+ * Unit tests for the CryptUtils class.
  */
 describe('CryptUtils', () => {
   describe('generateIV', () => {
-    it('deve gerar um IV de 16 bytes (32 caracteres hexadecimais)', () => {
+    it('should generate a 16-byte IV (32 hexadecimal characters)', () => {
       const iv = CryptUtils.generateIV();
       expect(iv).toHaveLength(32);
       expect(/^[0-9a-f]{32}$/.test(iv)).toBe(true);
     });
 
-    it('deve gerar IVs diferentes em chamadas consecutivas', () => {
+    it('should generate different IVs on consecutive calls', () => {
       const iv1 = CryptUtils.generateIV();
       const iv2 = CryptUtils.generateIV();
       expect(iv1).not.toBe(iv2);
@@ -21,10 +21,10 @@ describe('CryptUtils', () => {
 
   describe('aesEncrypt e aesDecrypt', () => {
     const secretKey = '12345678901234567890123456789012'; // 32 bytes
-    const testData = 'Teste de criptografia AES';
-    const testObject = { nome: 'Teste', valor: 123 };
+    const testData = 'AES encryption test';
+    const testObject = { name: 'Test', value: 123 };
 
-    it('deve criptografar e descriptografar uma string corretamente', () => {
+    it('should encrypt and decrypt a string correctly', () => {
       const { encryptedData, iv } = CryptUtils.aesEncrypt(testData, secretKey);
       expect(encryptedData).toBeTruthy();
       expect(iv).toHaveLength(32);
@@ -33,7 +33,7 @@ describe('CryptUtils', () => {
       expect(decrypted).toBe(testData);
     });
 
-    it('deve criptografar e descriptografar um objeto JSON corretamente', () => {
+    it('should encrypt and decrypt a JSON object correctly', () => {
       const { encryptedData, iv } = CryptUtils.aesEncrypt(
         testObject,
         secretKey,
@@ -45,7 +45,7 @@ describe('CryptUtils', () => {
       expect(decrypted).toEqual(testObject);
     });
 
-    it('deve usar o IV fornecido quando especificado', () => {
+    it('should use the provided IV when specified', () => {
       const customIV = '1234567890abcdef1234567890abcdef';
       const { encryptedData, iv } = CryptUtils.aesEncrypt(
         testData,
@@ -58,45 +58,45 @@ describe('CryptUtils', () => {
       expect(decrypted).toBe(testData);
     });
 
-    it('deve lançar erro para chave secreta inválida na criptografia', () => {
+    it('should throw an error for an invalid secret key during encryption', () => {
       expect(() => {
-        CryptUtils.aesEncrypt(testData, 'chave-curta');
+        CryptUtils.aesEncrypt(testData, 'short-key');
       }).toThrow('Invalid secretKey');
     });
 
-    it('deve lançar erro para chave secreta inválida na descriptografia', () => {
+    it('should throw an error for an invalid secret key during decryption', () => {
       const { encryptedData, iv } = CryptUtils.aesEncrypt(testData, secretKey);
       expect(() => {
-        CryptUtils.aesDecrypt(encryptedData, 'chave-curta', iv);
+        CryptUtils.aesDecrypt(encryptedData, 'short-key', iv);
       }).toThrow('Invalid secretKey');
     });
 
-    it('deve lançar erro para IV inválido na descriptografia', () => {
+    it('should throw an error for an invalid IV during decryption', () => {
       const { encryptedData } = CryptUtils.aesEncrypt(testData, secretKey);
       expect(() => {
         CryptUtils.aesDecrypt(encryptedData, secretKey, 'iv-invalido');
       }).toThrow('Invalid IV');
     });
 
-    it('deve lançar erro para dados inválidos na criptografia', () => {
+    it('should throw an error for invalid data during encryption', () => {
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         CryptUtils.aesEncrypt(123, secretKey);
       }).toThrow('Invalid input');
     });
   });
 
-  // Pulando testes de ChaCha20 que não são suportados em todas as versões do Node.js
+  // Skipping ChaCha20 tests that are not supported in all Node.js versions
   describe.skip('chacha20Encrypt e chacha20Decrypt', () => {
     const key = Buffer.from('12345678901234567890123456789012'); // 32 bytes
     const nonce = Buffer.from('123456789012'); // 12 bytes
-    const testData = 'Teste de criptografia ChaCha20';
+    const testData = 'ChaCha20 encryption test';
 
-    it('deve criptografar e descriptografar uma string corretamente', () => {
-      // Verificar se o algoritmo é suportado antes de executar o teste
+    it('should encrypt and decrypt a string correctly', () => {
+      // Check whether the algorithm is supported before running the test
       if (!CryptUtils['isAlgorithmSupported']('chacha20')) {
         console.log(
-          'ChaCha20 não é suportado nesta versão do Node.js. Pulando teste.',
+          'ChaCha20 is not supported in this version of Node.js. Skipping test.',
         );
         return;
       }
@@ -108,26 +108,26 @@ describe('CryptUtils', () => {
       expect(decrypted).toBe(testData);
     });
 
-    it('deve lançar erro para chave inválida na criptografia', () => {
-      // Verificar se o algoritmo é suportado antes de executar o teste
+    it('should throw an error for an invalid key during encryption', () => {
+      // Check whether the algorithm is supported before running the test
       if (!CryptUtils['isAlgorithmSupported']('chacha20')) {
         console.log(
-          'ChaCha20 não é suportado nesta versão do Node.js. Pulando teste.',
+          'ChaCha20 is not supported in this version of Node.js. Skipping test.',
         );
         return;
       }
 
-      const invalidKey = Buffer.from('chave-curta');
+      const invalidKey = Buffer.from('short-key');
       expect(() => {
         CryptUtils.chacha20Encrypt(testData, invalidKey, nonce);
       }).toThrow('Invalid key');
     });
 
-    it('deve lançar erro para nonce inválido na criptografia', () => {
-      // Verificar se o algoritmo é suportado antes de executar o teste
+    it('should throw an error for an invalid nonce during encryption', () => {
+      // Check whether the algorithm is supported before running the test
       if (!CryptUtils['isAlgorithmSupported']('chacha20')) {
         console.log(
-          'ChaCha20 não é suportado nesta versão do Node.js. Pulando teste.',
+          'ChaCha20 is not supported in this version of Node.js. Skipping test.',
         );
         return;
       }
@@ -140,15 +140,15 @@ describe('CryptUtils', () => {
   });
 
   describe('rsaGenerateKeyPair, rsaEncrypt e rsaDecrypt', () => {
-    it('deve gerar um par de chaves RSA válido', () => {
+    it('should generate a valid RSA key pair', () => {
       const { publicKey, privateKey } = CryptUtils.rsaGenerateKeyPair(1024);
       expect(publicKey).toContain('BEGIN RSA PUBLIC KEY');
       expect(privateKey).toContain('BEGIN RSA PRIVATE KEY');
     });
 
-    it('deve criptografar e descriptografar uma string corretamente com RSA', () => {
+    it('should encrypt and decrypt a string correctly with RSA', () => {
       const { publicKey, privateKey } = CryptUtils.rsaGenerateKeyPair(1024);
-      const testData = 'Teste de criptografia RSA';
+      const testData = 'RSA encryption test';
 
       const encrypted = CryptUtils.rsaEncrypt(testData, publicKey);
       expect(encrypted).toBeTruthy();
@@ -157,21 +157,21 @@ describe('CryptUtils', () => {
       expect(decrypted).toBe(testData);
     });
 
-    it('deve lançar erro para dados inválidos na criptografia RSA', () => {
+    it('should throw an error for invalid data during RSA encryption', () => {
       const { publicKey } = CryptUtils.rsaGenerateKeyPair(1024);
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         CryptUtils.rsaEncrypt(null, publicKey);
       }).toThrow('Invalid input');
     });
 
-    it('deve lançar erro para chave pública inválida na criptografia RSA', () => {
+    it('should throw an error for an invalid public key during RSA encryption', () => {
       expect(() => {
-        CryptUtils.rsaEncrypt('teste', 'chave-invalida');
+        CryptUtils.rsaEncrypt('test', 'invalid-key');
       }).toThrow();
     });
 
-    it('deve lançar erro para dados criptografados inválidos na descriptografia RSA', () => {
+    it('should throw an error for invalid encrypted data during RSA decryption', () => {
       const { privateKey } = CryptUtils.rsaGenerateKeyPair(1024);
       expect(() => {
         CryptUtils.rsaDecrypt('dados-invalidos', privateKey);
@@ -180,7 +180,7 @@ describe('CryptUtils', () => {
   });
 
   describe('rsaSign e rsaVerify', () => {
-    it('deve assinar e verificar uma string corretamente com RSA', () => {
+    it('should sign and verify a string correctly with RSA', () => {
       const { publicKey, privateKey } = CryptUtils.rsaGenerateKeyPair(1024);
       const testData = 'Dados para assinar com RSA';
 
@@ -191,7 +191,7 @@ describe('CryptUtils', () => {
       expect(isValid).toBe(true);
     });
 
-    it('deve retornar false para assinatura inválida', () => {
+    it('should return false for an invalid signature', () => {
       const { publicKey } = CryptUtils.rsaGenerateKeyPair(1024);
       const testData = 'Dados para assinar com RSA';
       const fakeSignature = 'assinatura-falsa';
@@ -200,29 +200,29 @@ describe('CryptUtils', () => {
       expect(isValid).toBe(false);
     });
 
-    it('deve lançar erro para dados inválidos na assinatura RSA', () => {
+    it('should throw an error for invalid data during RSA signing', () => {
       const { privateKey } = CryptUtils.rsaGenerateKeyPair(1024);
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         CryptUtils.rsaSign(null, privateKey);
       }).toThrow('Invalid input');
     });
 
-    it('deve lançar erro para chave privada inválida na assinatura RSA', () => {
+    it('should throw an error for an invalid private key during RSA signing', () => {
       expect(() => {
-        CryptUtils.rsaSign('teste', 'chave-invalida');
+        CryptUtils.rsaSign('test', 'invalid-key');
       }).toThrow();
     });
   });
 
   describe('eccGenerateKeyPair, eccSign e eccVerify', () => {
-    it('deve gerar um par de chaves ECC válido', () => {
+    it('should generate a valid ECC key pair', () => {
       const { publicKey, privateKey } = CryptUtils.eccGenerateKeyPair();
       expect(publicKey).toContain('BEGIN PUBLIC KEY');
       expect(privateKey).toContain('BEGIN PRIVATE KEY');
     });
 
-    it('deve assinar e verificar uma string corretamente com ECC', () => {
+    it('should sign and verify a string correctly with ECC', () => {
       const { publicKey, privateKey } = CryptUtils.eccGenerateKeyPair();
       const testData = 'Dados para assinar com ECC';
 
@@ -233,7 +233,7 @@ describe('CryptUtils', () => {
       expect(isValid).toBe(true);
     });
 
-    it('deve retornar false para assinatura ECC inválida', () => {
+    it('should return false for an invalid ECC signature', () => {
       const { publicKey } = CryptUtils.eccGenerateKeyPair();
       const testData = 'Dados para assinar com ECC';
       const fakeSignature = 'assinatura-falsa';
@@ -243,16 +243,16 @@ describe('CryptUtils', () => {
     });
   });
 
-  // Pulando testes de RC4 que não são suportados em todas as versões do Node.js
+  // Skipping RC4 tests that are not supported in all Node.js versions
   describe.skip('rc4Encrypt e rc4Decrypt', () => {
-    const key = 'chave-secreta-rc4';
-    const testData = 'Teste de criptografia RC4';
+    const key = 'rc4-secret-key';
+    const testData = 'RC4 encryption test';
 
-    it('deve criptografar e descriptografar uma string corretamente com RC4', () => {
-      // Verificar se o algoritmo é suportado antes de executar o teste
+    it('should encrypt and decrypt a string correctly with RC4', () => {
+      // Check whether the algorithm is supported before running the test
       if (!CryptUtils['isAlgorithmSupported']('rc4')) {
         console.log(
-          'RC4 não é suportado nesta versão do Node.js. Pulando teste.',
+          'RC4 is not supported in this version of Node.js. Skipping test.',
         );
         return;
       }
@@ -264,32 +264,32 @@ describe('CryptUtils', () => {
       expect(decrypted).toBe(testData);
     });
 
-    it('deve lançar erro para dados inválidos na criptografia RC4', () => {
-      // Verificar se o algoritmo é suportado antes de executar o teste
+    it('should throw an error for invalid data during RC4 encryption', () => {
+      // Check whether the algorithm is supported before running the test
       if (!CryptUtils['isAlgorithmSupported']('rc4')) {
         console.log(
-          'RC4 não é suportado nesta versão do Node.js. Pulando teste.',
+          'RC4 is not supported in this version of Node.js. Skipping test.',
         );
         return;
       }
 
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         CryptUtils.rc4Encrypt(null, key);
       }).toThrow('Invalid input');
     });
 
-    it('deve lançar erro para chave inválida na criptografia RC4', () => {
-      // Verificar se o algoritmo é suportado antes de executar o teste
+    it('should throw an error for an invalid key during RC4 encryption', () => {
+      // Check whether the algorithm is supported before running the test
       if (!CryptUtils['isAlgorithmSupported']('rc4')) {
         console.log(
-          'RC4 não é suportado nesta versão do Node.js. Pulando teste.',
+          'RC4 is not supported in this version of Node.js. Skipping test.',
         );
         return;
       }
 
       expect(() => {
-        // @ts-ignore - Testando propositalmente com valor inválido
+        // @ts-ignore - Intentionally testing with invalid value
         CryptUtils.rc4Encrypt(testData, null);
       }).toThrow('Invalid key');
     });

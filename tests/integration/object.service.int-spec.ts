@@ -1,14 +1,14 @@
 import { ObjectUtils } from '../../src/services/object.service';
 
 /**
- * Testes de integração para a classe ObjectUtils.
- * Estes testes verificam cenários mais complexos que envolvem múltiplos métodos.
+ * Integration tests for the ObjectUtils class.
+ * These tests verify more complex scenarios involving multiple methods.
  */
-describe('ObjectUtils - Testes de Integração', () => {
-  describe('Operações encadeadas', () => {
-    it('deve processar corretamente uma sequência de operações em objetos', () => {
-      // Cenário: Processar configurações de usuário
-      // 1. Configuração inicial do usuário
+describe('ObjectUtils - Integration Tests', () => {
+  describe('Chained operations', () => {
+    it('should correctly process a sequence of operations on objects', () => {
+      // Scenario: Process user settings
+      // 1. Initial user configuration
       const userConfig = {
         theme: 'dark',
         fontSize: 14,
@@ -23,36 +23,36 @@ describe('ObjectUtils - Testes de Integração', () => {
         },
       };
 
-      // 1. Simular armazenamento comprimido
+      // 1. Simulate compressed storage
       const compressed = ObjectUtils.compressObjectToBase64({
         json: userConfig,
         urlSafe: true,
       });
 
-      // 2. Simular recuperação do armazenamento
+      // 2. Simulate retrieval from storage
       const decompressed = ObjectUtils.decompressBase64ToObject({
         base64String: compressed,
       });
 
-      // 3. Extrair apenas as configurações de layout
+      // 3. Extract only the layout settings
       const layoutConfig = ObjectUtils.pick({
         obj: decompressed as any,
         keys: ['layout'],
       });
 
-      // 4. Modificar as configurações de layout
+      // 4. Modify the layout settings
       const newLayout = ObjectUtils.deepMerge({
         target: layoutConfig,
         source: { layout: { toolbar: 'bottom' } },
       });
 
-      // 5. Mesclar de volta com a configuração completa
+      // 5. Merge back with the full configuration
       const updatedConfig = ObjectUtils.deepMerge({
         target: decompressed as any,
         source: newLayout,
       });
 
-      // Verificações
+      // Assertions
       expect(updatedConfig).toEqual({
         theme: 'dark',
         fontSize: 14,
@@ -68,8 +68,8 @@ describe('ObjectUtils - Testes de Integração', () => {
       });
     });
 
-    it('deve processar dados de formulário com validação e normalização', () => {
-      // Cenário: Processar dados de formulário do usuário
+    it('should process form data with validation and normalization', () => {
+      // Scenario: Process user form data
       const formData = {
         name: 'John Doe',
         email: 'john.doe@example.com',
@@ -85,18 +85,18 @@ describe('ObjectUtils - Testes de Integração', () => {
         },
       };
 
-      // 1. Extrair apenas os dados pessoais
+      // 1. Extract only the personal data
       const personalData = ObjectUtils.pick({
         obj: formData,
         keys: ['name', 'email', 'age'],
       });
 
-      // 2. Achatar as preferências para processamento
+      // 2. Flatten the preferences for processing
       const flatPreferences = ObjectUtils.flattenObject({
         obj: { preferences: formData.preferences },
       });
 
-      // 3. Normalizar as preferências para valores booleanos
+      // 3. Normalize the preferences to boolean values
       const normalizedPreferences = {
         'preferences.newsletter':
           flatPreferences['preferences.newsletter'] === 'yes',
@@ -104,7 +104,7 @@ describe('ObjectUtils - Testes de Integração', () => {
           flatPreferences['preferences.marketing'] === 'yes',
       };
 
-      // 4. Desachatar as preferências normalizadas
+      // 4. Unflatten the normalized preferences
       const processedPreferences = {};
       Object.keys(normalizedPreferences).forEach(key => {
         ObjectUtils.unflattenObject({
@@ -115,7 +115,7 @@ describe('ObjectUtils - Testes de Integração', () => {
         });
       });
 
-      // 5. Mesclar tudo em um objeto final processado
+      // 5. Merge everything into a final processed object
       const processedFormData = ObjectUtils.deepMerge({
         target: {
           ...personalData,
@@ -125,7 +125,7 @@ describe('ObjectUtils - Testes de Integração', () => {
         source: processedPreferences,
       });
 
-      // Verificações
+      // Assertions
       expect(processedFormData).toEqual({
         name: 'John Doe',
         email: 'john.doe@example.com',
@@ -143,9 +143,9 @@ describe('ObjectUtils - Testes de Integração', () => {
     });
   });
 
-  describe('Operações encadeadas', () => {
-    it('deve suportar operações encadeadas de transformação de objetos', () => {
-      // Objeto inicial
+  describe('Chained operations', () => {
+    it('should support chained object transformation operations', () => {
+      // Initial object
       const data = {
         products: [
           { id: 1, name: 'Product A', price: 10.99, category: 'electronics' },
@@ -159,16 +159,16 @@ describe('ObjectUtils - Testes de Integração', () => {
         },
       };
 
-      // 1. Clone o objeto para não modificar o original
+      // 1. Clone the object to avoid modifying the original
       const cloned = ObjectUtils.deepClone({ obj: data });
 
-      // 2. Extraia apenas os produtos
+      // 2. Extract only the products
       const productsOnly = ObjectUtils.pick({
         obj: cloned,
         keys: ['products'],
       });
 
-      // 3. Agrupe os produtos por categoria
+      // 3. Group the products by category
       const productsByCategory = ObjectUtils.groupBy({
         obj: productsOnly.products.reduce(
           (acc, product) => {
@@ -180,7 +180,7 @@ describe('ObjectUtils - Testes de Integração', () => {
         callback: product => product.category,
       });
 
-      // 4. Crie um objeto com estatísticas por categoria
+      // 4. Create an object with statistics by category
       const categoryStats = {} as Record<string, any>;
       Object.keys(productsByCategory).forEach(category => {
         const productIds = productsByCategory[category];
@@ -206,13 +206,13 @@ describe('ObjectUtils - Testes de Integração', () => {
         });
       });
 
-      // 5. Mescle as estatísticas com os filtros originais
+      // 5. Merge the statistics with the original filters
       const result = ObjectUtils.deepMerge({
         target: { filters: data.filters },
         source: categoryStats,
       });
 
-      // Verificações
+      // Assertions
       expect(result.stats.electronics.count).toBe(2);
       expect(result.stats.books.count).toBe(1);
       expect(result.filters.categories).toEqual(['electronics', 'books']);
@@ -220,8 +220,8 @@ describe('ObjectUtils - Testes de Integração', () => {
       expect(result.stats.electronics.avgPrice).toBeCloseTo(8.49);
     });
 
-    it('deve processar transformações complexas de objetos', () => {
-      // Objeto inicial: dados de uma loja online
+    it('should process complex object transformations', () => {
+      // Initial object: data for an online store
       const storeData = {
         inventory: {
           electronics: {
@@ -256,12 +256,12 @@ describe('ObjectUtils - Testes de Integração', () => {
         },
       };
 
-      // 1. Achatar o inventário para facilitar o processamento
+      // 1. Flatten the inventory to make processing easier
       const flatInventory = ObjectUtils.flattenObject({
         obj: storeData.inventory,
       });
 
-      // 2. Criar um mapa de todos os produtos
+      // 2. Create a map of all products
       const allProducts = [] as any[];
       Object.keys(flatInventory).forEach(key => {
         if (Array.isArray(flatInventory[key])) {
@@ -269,13 +269,13 @@ describe('ObjectUtils - Testes de Integração', () => {
         }
       });
 
-      // 3. Calcular o valor total do inventário
+      // 3. Calculate the total inventory value
       const totalInventoryValue = allProducts.reduce(
         (sum, product) => sum + product.price * product.stock,
         0,
       );
 
-      // 4. Agrupar produtos por faixa de preço
+      // 4. Group products by price range
       const productsByPriceRange = allProducts.reduce(
         (acc, product) => {
           let range;
@@ -290,7 +290,7 @@ describe('ObjectUtils - Testes de Integração', () => {
         {} as Record<string, any[]>,
       );
 
-      // 5. Criar um relatório
+      // 5. Create a report
       const report = {
         totalProducts: allProducts.length,
         totalInventoryValue,
@@ -302,15 +302,15 @@ describe('ObjectUtils - Testes de Integração', () => {
         lowStockProducts: allProducts.filter(p => p.stock < 10).map(p => p.id),
       };
 
-      // 6. Comprimir o relatório para armazenamento
+      // 6. Compress the report for storage
       const compressedReport = ObjectUtils.compressObject({ json: report });
 
-      // 7. Descomprimir para verificação
+      // 7. Decompress for verification
       const decompressedReport = ObjectUtils.decompressObject({
         jsonString: compressedReport,
       });
 
-      // Verificações
+      // Assertions
       expect(decompressedReport).toEqual(report);
       expect(report.totalProducts).toBe(7);
       expect(report.lowStockProducts).toContain('p2');

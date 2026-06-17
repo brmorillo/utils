@@ -34,7 +34,9 @@ export class HashUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to hash value using bcrypt: ${errorMessage}`);
+      throw new Error(`Failed to hash value using bcrypt: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -66,7 +68,10 @@ export class HashUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to compare values using bcrypt: ${errorMessage}`);
+      throw new Error(
+        `Failed to compare values using bcrypt: ${errorMessage}`,
+        { cause: error },
+      );
     }
   }
 
@@ -89,12 +94,14 @@ export class HashUtils {
     }
 
     try {
-      return bcrypt.hashSync(Math.random().toString(), length);
+      const randomSeed = crypto.randomBytes(16).toString('hex');
+      return bcrypt.hashSync(randomSeed, length);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
       throw new Error(
         `Failed to generate random string using bcrypt: ${errorMessage}`,
+        { cause: error },
       );
     }
   }
@@ -121,7 +128,9 @@ export class HashUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to hash value using SHA-256: ${errorMessage}`);
+      throw new Error(`Failed to hash value using SHA-256: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -150,6 +159,7 @@ export class HashUtils {
         error instanceof Error ? error.message : String(error);
       throw new Error(
         `Failed to hash JSON object using SHA-256: ${errorMessage}`,
+        { cause: error },
       );
     }
   }
@@ -181,6 +191,7 @@ export class HashUtils {
         error instanceof Error ? error.message : String(error);
       throw new Error(
         `Failed to generate random token using SHA-256: ${errorMessage}`,
+        { cause: error },
       );
     }
   }
@@ -207,7 +218,9 @@ export class HashUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to hash value using SHA-512: ${errorMessage}`);
+      throw new Error(`Failed to hash value using SHA-512: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -236,6 +249,7 @@ export class HashUtils {
         error instanceof Error ? error.message : String(error);
       throw new Error(
         `Failed to hash JSON object using SHA-512: ${errorMessage}`,
+        { cause: error },
       );
     }
   }
@@ -271,6 +285,7 @@ export class HashUtils {
         error instanceof Error ? error.message : String(error);
       throw new Error(
         `Failed to generate random token using SHA-512: ${errorMessage}`,
+        { cause: error },
       );
     }
   }

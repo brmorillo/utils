@@ -3,7 +3,7 @@
 [![npm version](https://badge.fury.io/js/@brmorillo%2Futils.svg)](https://badge.fury.io/js/@brmorillo%2Futils)
 [![CI/CD Pipeline](https://github.com/brmorillo/utils/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/brmorillo/utils/actions)
 [![codecov](https://codecov.io/gh/brmorillo/utils/branch/main/graph/badge.svg)](https://codecov.io/gh/brmorillo/utils)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue.svg)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Downloads](https://img.shields.io/npm/dm/@brmorillo/utils.svg)](https://www.npmjs.com/package/@brmorillo/utils)
 
@@ -302,11 +302,11 @@ For detailed documentation and examples for each utility, visit our [documentati
 ### Quick Links
 
 - [📊 Array Utils](./docs/array-utils.md) - Array manipulation and processing
-- [🔒 Security Utils](./docs/) - Cryptography, hashing, and JWT
-- [🌐 HTTP Utils](./docs/http-service.md) - HTTP client and request utilities
+- [🔒 Security Utils](./docs/crypt-utils.md) - Cryptography, hashing ([hash](./docs/hash-utils.md)), and [JWT](./docs/jwt-utils.md)
+- [🌐 HTTP Utils](./docs/http-service.md) - HTTP client and [request](./docs/request-utils.md) utilities
 - [📁 Storage Utils](./docs/storage-service.md) - File storage abstraction
 - [📝 Logging](./docs/log-service.md) - Structured logging
-- [⚡ Performance](./docs/) - Benchmarking and optimization
+- [⚡ Performance](./docs/benchmark-utils.md) - Benchmarking and optimization
 
 ## 🛠️ Development
 

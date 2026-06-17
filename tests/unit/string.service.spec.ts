@@ -1,98 +1,92 @@
 import { StringUtils } from '../../src/services/string.service';
 
 /**
- * Testes unitários para a clas    it('deve truncar exatamente no comprimento máximo', () => {
-      const result = StringUtils.truncate({
-        input: '1234567890123',
-        maxLength: 10,
-      });
-      expect(result).toBe('1234567...');
-    });ngUtils.
- * Estes testes verificam o comportamento de cada método individualmente.
+ * Unit tests for the StringUtils class.
+ * These tests verify the behavior of each method individually.
  */
-describe('StringUtils - Testes Unitários', () => {
+describe('StringUtils - Unit Tests', () => {
   describe('capitalizeFirstLetter', () => {
-    it('deve capitalizar a primeira letra de uma string', () => {
+    it('should capitalize the first letter of a string', () => {
       const result = StringUtils.capitalizeFirstLetter({ input: 'hello' });
       expect(result).toBe('Hello');
     });
 
-    it('deve converter o restante da string para minúsculas', () => {
+    it('should convert the rest of the string to lowercase', () => {
       const result = StringUtils.capitalizeFirstLetter({ input: 'hELLO' });
       expect(result).toBe('Hello');
     });
 
-    it('deve lidar com strings vazias', () => {
+    it('should handle empty strings', () => {
       const result = StringUtils.capitalizeFirstLetter({ input: '' });
       expect(result).toBe('');
     });
 
-    it('deve lidar com strings de um único caractere', () => {
+    it('should handle single-character strings', () => {
       const result = StringUtils.capitalizeFirstLetter({ input: 'a' });
       expect(result).toBe('A');
     });
   });
 
   describe('reverse', () => {
-    it('deve inverter uma string', () => {
+    it('should reverse a string', () => {
       const result = StringUtils.reverse({ input: 'hello' });
       expect(result).toBe('olleh');
     });
 
-    it('deve lidar com strings vazias', () => {
+    it('should handle empty strings', () => {
       const result = StringUtils.reverse({ input: '' });
       expect(result).toBe('');
     });
 
-    it('deve lidar com strings de um único caractere', () => {
+    it('should handle single-character strings', () => {
       const result = StringUtils.reverse({ input: 'a' });
       expect(result).toBe('a');
     });
 
-    it('deve lidar com strings com espaços', () => {
+    it('should handle strings with spaces', () => {
       const result = StringUtils.reverse({ input: 'hello world' });
       expect(result).toBe('dlrow olleh');
     });
   });
 
   describe('isValidPalindrome', () => {
-    it('deve identificar um palíndromo simples', () => {
+    it('should identify a simple palindrome', () => {
       const result = StringUtils.isValidPalindrome({ input: 'racecar' });
       expect(result).toBe(true);
     });
 
-    it('deve identificar uma string que não é palíndromo', () => {
+    it('should identify a string that is not a palindrome', () => {
       const result = StringUtils.isValidPalindrome({ input: 'hello' });
       expect(result).toBe(false);
     });
 
-    it('deve ignorar espaços e pontuação', () => {
+    it('should ignore spaces and punctuation', () => {
       const result = StringUtils.isValidPalindrome({
         input: 'A man, a plan, a canal: Panama',
       });
       expect(result).toBe(true);
     });
 
-    it('deve ignorar maiúsculas e minúsculas', () => {
+    it('should ignore uppercase and lowercase', () => {
       const result = StringUtils.isValidPalindrome({
         input: 'Able was I ere I saw Elba',
       });
       expect(result).toBe(true);
     });
 
-    it('deve lidar com strings vazias', () => {
+    it('should handle empty strings', () => {
       const result = StringUtils.isValidPalindrome({ input: '' });
       expect(result).toBe(true);
     });
 
-    it('deve lidar com strings de um único caractere', () => {
+    it('should handle single-character strings', () => {
       const result = StringUtils.isValidPalindrome({ input: 'a' });
       expect(result).toBe(true);
     });
   });
 
   describe('truncate', () => {
-    it('deve truncar uma string longa', () => {
+    it('should truncate a long string', () => {
       const result = StringUtils.truncate({
         input: 'This is a long string',
         maxLength: 10,
@@ -100,7 +94,7 @@ describe('StringUtils - Testes Unitários', () => {
       expect(result).toBe('This is...');
     });
 
-    it('não deve truncar uma string curta', () => {
+    it('should not truncate a short string', () => {
       const result = StringUtils.truncate({
         input: 'Short',
         maxLength: 10,
@@ -108,7 +102,7 @@ describe('StringUtils - Testes Unitários', () => {
       expect(result).toBe('Short');
     });
 
-    it('deve truncar exatamente no comprimento máximo', () => {
+    it('should truncate exactly at the maximum length', () => {
       const result = StringUtils.truncate({
         input: '1234567890abcdef',
         maxLength: 10,
@@ -116,7 +110,7 @@ describe('StringUtils - Testes Unitários', () => {
       expect(result).toBe('1234567...');
     });
 
-    it('deve remover espaços em branco no final antes de adicionar reticências', () => {
+    it('should remove trailing whitespace before adding the ellipsis', () => {
       const result = StringUtils.truncate({
         input: 'Hello world ',
         maxLength: 7,
@@ -126,120 +120,120 @@ describe('StringUtils - Testes Unitários', () => {
   });
 
   describe('toKebabCase', () => {
-    it('deve converter uma string com espaços para kebab-case', () => {
+    it('should convert a string with spaces to kebab-case', () => {
       const result = StringUtils.toKebabCase({ input: 'Hello World' });
       expect(result).toBe('hello-world');
     });
 
-    it('deve converter uma string camelCase para kebab-case', () => {
+    it('should convert a camelCase string to kebab-case', () => {
       const result = StringUtils.toKebabCase({ input: 'camelCaseString' });
       expect(result).toBe('camel-case-string');
     });
 
-    it('deve lidar com múltiplos espaços', () => {
+    it('should handle multiple spaces', () => {
       const result = StringUtils.toKebabCase({ input: 'Hello  World  Test' });
       expect(result).toBe('hello-world-test');
     });
 
-    it('deve lidar com strings já em kebab-case', () => {
+    it('should handle strings already in kebab-case', () => {
       const result = StringUtils.toKebabCase({ input: 'already-kebab-case' });
       expect(result).toBe('already-kebab-case');
     });
 
-    it('deve lidar com strings vazias', () => {
+    it('should handle empty strings', () => {
       const result = StringUtils.toKebabCase({ input: '' });
       expect(result).toBe('');
     });
   });
 
   describe('toSnakeCase', () => {
-    it('deve converter uma string com espaços para snake_case', () => {
+    it('should convert a string with spaces to snake_case', () => {
       const result = StringUtils.toSnakeCase({ input: 'Hello World' });
       expect(result).toBe('hello_world');
     });
 
-    it('deve converter uma string camelCase para snake_case', () => {
+    it('should convert a camelCase string to snake_case', () => {
       const result = StringUtils.toSnakeCase({ input: 'camelCaseString' });
       expect(result).toBe('camel_case_string');
     });
 
-    it('deve lidar com múltiplos espaços', () => {
+    it('should handle multiple spaces', () => {
       const result = StringUtils.toSnakeCase({ input: 'Hello  World  Test' });
       expect(result).toBe('hello_world_test');
     });
 
-    it('deve lidar com strings já em snake_case', () => {
+    it('should handle strings already in snake_case', () => {
       const result = StringUtils.toSnakeCase({ input: 'already_snake_case' });
       expect(result).toBe('already_snake_case');
     });
 
-    it('deve lidar com strings vazias', () => {
+    it('should handle empty strings', () => {
       const result = StringUtils.toSnakeCase({ input: '' });
       expect(result).toBe('');
     });
   });
 
   describe('toCamelCase', () => {
-    it('deve converter uma string com espaços para camelCase', () => {
+    it('should convert a string with spaces to camelCase', () => {
       const result = StringUtils.toCamelCase({ input: 'Hello World' });
       expect(result).toBe('helloWorld');
     });
 
-    it('deve converter uma string snake_case para camelCase', () => {
+    it('should convert a snake_case string to camelCase', () => {
       const result = StringUtils.toCamelCase({ input: 'snake_case_string' });
       expect(result).toBe('snakeCaseString');
     });
 
-    it('deve converter uma string kebab-case para camelCase', () => {
+    it('should convert a kebab-case string to camelCase', () => {
       const result = StringUtils.toCamelCase({ input: 'kebab-case-string' });
       expect(result).toBe('kebabCaseString');
     });
 
-    it('deve lidar com múltiplos separadores', () => {
+    it('should handle multiple separators', () => {
       const result = StringUtils.toCamelCase({ input: 'hello__world--test' });
       expect(result).toBe('helloWorldTest');
     });
 
-    it('deve lidar com strings já em camelCase', () => {
+    it('should handle strings already in camelCase', () => {
       const result = StringUtils.toCamelCase({ input: 'alreadyCamelCase' });
       expect(result).toBe('alreadyCamelCase');
     });
 
-    it('deve lidar com strings vazias', () => {
+    it('should handle empty strings', () => {
       const result = StringUtils.toCamelCase({ input: '' });
       expect(result).toBe('');
     });
   });
 
   describe('toTitleCase', () => {
-    it('deve converter uma string para title case', () => {
+    it('should convert a string to title case', () => {
       const result = StringUtils.toTitleCase({ input: 'hello world' });
       expect(result).toBe('Hello World');
     });
 
-    it('deve converter uma string toda em maiúsculas para title case', () => {
+    it('should convert an all-uppercase string to title case', () => {
       const result = StringUtils.toTitleCase({ input: 'HELLO WORLD' });
       expect(result).toBe('Hello World');
     });
 
-    it('deve converter uma string toda em minúsculas para title case', () => {
+    it('should convert an all-lowercase string to title case', () => {
       const result = StringUtils.toTitleCase({ input: 'hello world' });
       expect(result).toBe('Hello World');
     });
 
-    it('deve lidar com múltiplos espaços', () => {
+    it('should handle multiple spaces', () => {
       const result = StringUtils.toTitleCase({ input: 'hello  world  test' });
       expect(result).toBe('Hello  World  Test');
     });
 
-    it('deve lidar com strings vazias', () => {
+    it('should handle empty strings', () => {
       const result = StringUtils.toTitleCase({ input: '' });
       expect(result).toBe('');
     });
   });
 
   describe('countOccurrences', () => {
-    it('deve contar ocorrências de uma substring', () => {
+    it('should count occurrences of a substring', () => {
       const result = StringUtils.countOccurrences({
         input: 'hello world hello',
         substring: 'hello',
@@ -247,7 +241,7 @@ describe('StringUtils - Testes Unitários', () => {
       expect(result).toBe(2);
     });
 
-    it('deve retornar 0 quando a substring não existe', () => {
+    it('should return 0 when the substring does not exist', () => {
       const result = StringUtils.countOccurrences({
         input: 'hello world',
         substring: 'xyz',
@@ -255,7 +249,7 @@ describe('StringUtils - Testes Unitários', () => {
       expect(result).toBe(0);
     });
 
-    it('deve contar ocorrências sobrepostas', () => {
+    it('should count overlapping occurrences', () => {
       const result = StringUtils.countOccurrences({
         input: 'abababa',
         substring: 'aba',
@@ -263,7 +257,7 @@ describe('StringUtils - Testes Unitários', () => {
       expect(result).toBe(2);
     });
 
-    it('deve lidar com strings vazias', () => {
+    it('should handle empty strings', () => {
       const result = StringUtils.countOccurrences({
         input: '',
         substring: 'hello',
@@ -271,7 +265,7 @@ describe('StringUtils - Testes Unitários', () => {
       expect(result).toBe(0);
     });
 
-    it('deve lidar com substrings vazias', () => {
+    it('should handle empty substrings', () => {
       const result = StringUtils.countOccurrences({
         input: 'hello',
         substring: '',
@@ -281,7 +275,7 @@ describe('StringUtils - Testes Unitários', () => {
   });
 
   describe('replaceAll', () => {
-    it('deve substituir todas as ocorrências de uma substring', () => {
+    it('should replace all occurrences of a substring', () => {
       const result = StringUtils.replaceAll({
         input: 'hello world hello',
         substring: 'hello',
@@ -290,7 +284,7 @@ describe('StringUtils - Testes Unitários', () => {
       expect(result).toBe('hi world hi');
     });
 
-    it('deve retornar a string original quando a substring não existe', () => {
+    it('should return the original string when the substring does not exist', () => {
       const result = StringUtils.replaceAll({
         input: 'hello world',
         substring: 'xyz',
@@ -299,7 +293,7 @@ describe('StringUtils - Testes Unitários', () => {
       expect(result).toBe('hello world');
     });
 
-    it('deve lidar com strings vazias', () => {
+    it('should handle empty strings', () => {
       const result = StringUtils.replaceAll({
         input: '',
         substring: 'hello',
@@ -308,7 +302,7 @@ describe('StringUtils - Testes Unitários', () => {
       expect(result).toBe('');
     });
 
-    it('deve lidar com substrings vazias', () => {
+    it('should handle empty substrings', () => {
       const result = StringUtils.replaceAll({
         input: 'hello',
         substring: '',
@@ -319,7 +313,7 @@ describe('StringUtils - Testes Unitários', () => {
   });
 
   describe('replaceOccurrences', () => {
-    it('deve substituir o número especificado de ocorrências', () => {
+    it('should replace the specified number of occurrences', () => {
       const result = StringUtils.replaceOccurrences({
         input: 'hello world hello world hello',
         substring: 'hello',
@@ -329,7 +323,7 @@ describe('StringUtils - Testes Unitários', () => {
       expect(result).toBe('hi world hi world hello');
     });
 
-    it('deve substituir todas as ocorrências quando o número é maior que o total', () => {
+    it('should replace all occurrences when the number is greater than the total', () => {
       const result = StringUtils.replaceOccurrences({
         input: 'hello world hello',
         substring: 'hello',
@@ -339,7 +333,7 @@ describe('StringUtils - Testes Unitários', () => {
       expect(result).toBe('hi world hi');
     });
 
-    it('deve retornar a string original quando a ocorrência é 0', () => {
+    it('should return the original string when the occurrence count is 0', () => {
       const result = StringUtils.replaceOccurrences({
         input: 'hello world hello',
         substring: 'hello',
@@ -349,7 +343,7 @@ describe('StringUtils - Testes Unitários', () => {
       expect(result).toBe('hello world hello');
     });
 
-    it('deve retornar a string original quando a substring não existe', () => {
+    it('should return the original string when the substring does not exist', () => {
       const result = StringUtils.replaceOccurrences({
         input: 'hello world',
         substring: 'xyz',
@@ -361,7 +355,7 @@ describe('StringUtils - Testes Unitários', () => {
   });
 
   describe('replacePlaceholders', () => {
-    it('deve substituir placeholders em um template', () => {
+    it('should replace placeholders in a template', () => {
       const result = StringUtils.replacePlaceholders({
         template: 'Hello, {name}! You have {count} new messages.',
         replacements: { name: 'John', count: '5' },
@@ -369,7 +363,7 @@ describe('StringUtils - Testes Unitários', () => {
       expect(result).toBe('Hello, John! You have 5 new messages.');
     });
 
-    it('deve manter placeholders não encontrados no mapa de substituições', () => {
+    it('should keep placeholders not found in the replacements map', () => {
       const result = StringUtils.replacePlaceholders({
         template: 'Hello, {name}! You have {count} new messages.',
         replacements: { name: 'John' },
@@ -377,7 +371,7 @@ describe('StringUtils - Testes Unitários', () => {
       expect(result).toBe('Hello, John! You have {count} new messages.');
     });
 
-    it('deve lidar com templates sem placeholders', () => {
+    it('should handle templates without placeholders', () => {
       const result = StringUtils.replacePlaceholders({
         template: 'Hello, world!',
         replacements: { name: 'John', count: '5' },
@@ -385,7 +379,7 @@ describe('StringUtils - Testes Unitários', () => {
       expect(result).toBe('Hello, world!');
     });
 
-    it('deve lidar com templates vazios', () => {
+    it('should handle empty templates', () => {
       const result = StringUtils.replacePlaceholders({
         template: '',
         replacements: { name: 'John', count: '5' },
@@ -393,7 +387,7 @@ describe('StringUtils - Testes Unitários', () => {
       expect(result).toBe('');
     });
 
-    it('deve lidar com mapa de substituições vazio', () => {
+    it('should handle an empty replacements map', () => {
       const result = StringUtils.replacePlaceholders({
         template: 'Hello, {name}!',
         replacements: {},

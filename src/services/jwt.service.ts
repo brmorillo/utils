@@ -42,7 +42,9 @@ export class JWTUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to generate JWT token: ${errorMessage}`);
+      throw new Error(`Failed to generate JWT token: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -86,7 +88,9 @@ export class JWTUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to verify JWT token: ${errorMessage}`);
+      throw new Error(`Failed to verify JWT token: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -130,7 +134,9 @@ export class JWTUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to decode JWT token: ${errorMessage}`);
+      throw new Error(`Failed to decode JWT token: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -183,7 +189,9 @@ export class JWTUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to refresh JWT token: ${errorMessage}`);
+      throw new Error(`Failed to refresh JWT token: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -216,7 +224,9 @@ export class JWTUtils {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to check JWT token expiration: ${errorMessage}`);
+      throw new Error(`Failed to check JWT token expiration: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -252,6 +262,7 @@ export class JWTUtils {
         error instanceof Error ? error.message : String(error);
       throw new Error(
         `Failed to get JWT token expiration time: ${errorMessage}`,
+        { cause: error },
       );
     }
   }

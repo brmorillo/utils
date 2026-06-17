@@ -2,11 +2,11 @@ import { NumberUtils } from '../../src/services/number.service';
 
 describe('NumberUtils', () => {
   describe('normalize', () => {
-    it('deve converter -0 para 0', () => {
+    it('should convert -0 to 0', () => {
       expect(NumberUtils.normalize({ value: -0 })).toBe(0);
     });
 
-    it('deve manter outros números inalterados', () => {
+    it('should keep other numbers unchanged', () => {
       expect(NumberUtils.normalize({ value: 5 })).toBe(5);
       expect(NumberUtils.normalize({ value: -5 })).toBe(-5);
       expect(NumberUtils.normalize({ value: 0 })).toBe(0);
@@ -14,13 +14,13 @@ describe('NumberUtils', () => {
   });
 
   describe('roundDown', () => {
-    it('deve arredondar números para baixo', () => {
+    it('should round numbers down', () => {
       expect(NumberUtils.roundDown({ value: 4.7 })).toBe(4);
       expect(NumberUtils.roundDown({ value: 4.2 })).toBe(4);
       expect(NumberUtils.roundDown({ value: 4.0 })).toBe(4);
     });
 
-    it('deve arredondar números negativos para baixo', () => {
+    it('should round negative numbers down', () => {
       expect(NumberUtils.roundDown({ value: -4.7 })).toBe(-5);
       expect(NumberUtils.roundDown({ value: -4.2 })).toBe(-5);
       expect(NumberUtils.roundDown({ value: -4.0 })).toBe(-4);
@@ -28,30 +28,30 @@ describe('NumberUtils', () => {
   });
 
   describe('isPositive', () => {
-    it('deve identificar números positivos', () => {
+    it('should identify positive numbers', () => {
       expect(NumberUtils.isPositive({ value: 5 })).toBe(true);
       expect(NumberUtils.isPositive({ value: 0.1 })).toBe(true);
     });
 
-    it('deve identificar números não positivos', () => {
+    it('should identify non-positive numbers', () => {
       expect(NumberUtils.isPositive({ value: 0 })).toBe(false);
       expect(NumberUtils.isPositive({ value: -5 })).toBe(false);
     });
 
-    it('deve lidar com zero positivo e negativo', () => {
+    it('should handle positive and negative zero', () => {
       expect(NumberUtils.isPositive({ value: 0 })).toBe(false);
       expect(NumberUtils.isPositive({ value: -0 })).toBe(false);
     });
   });
 
   describe('roundUp', () => {
-    it('deve arredondar números para cima', () => {
+    it('should round numbers up', () => {
       expect(NumberUtils.roundUp({ value: 4.3 })).toBe(5);
       expect(NumberUtils.roundUp({ value: 4.7 })).toBe(5);
       expect(NumberUtils.roundUp({ value: 4.0 })).toBe(4);
     });
 
-    it('deve arredondar números negativos para cima', () => {
+    it('should round negative numbers up', () => {
       expect(NumberUtils.roundUp({ value: -4.3 })).toBe(-4);
       expect(NumberUtils.roundUp({ value: -4.7 })).toBe(-4);
       expect(NumberUtils.roundUp({ value: -4.0 })).toBe(-4);
@@ -59,13 +59,13 @@ describe('NumberUtils', () => {
   });
 
   describe('roundToNearest', () => {
-    it('deve arredondar números para o inteiro mais próximo', () => {
+    it('should round numbers to the nearest integer', () => {
       expect(NumberUtils.roundToNearest({ value: 4.4 })).toBe(4);
       expect(NumberUtils.roundToNearest({ value: 4.5 })).toBe(5);
       expect(NumberUtils.roundToNearest({ value: 4.6 })).toBe(5);
     });
 
-    it('deve arredondar números negativos para o inteiro mais próximo', () => {
+    it('should round negative numbers to the nearest integer', () => {
       expect(NumberUtils.roundToNearest({ value: -4.4 })).toBe(-4);
       expect(NumberUtils.roundToNearest({ value: -4.5 })).toBe(-4);
       expect(NumberUtils.roundToNearest({ value: -4.6 })).toBe(-5);
@@ -73,7 +73,7 @@ describe('NumberUtils', () => {
   });
 
   describe('roundToDecimals', () => {
-    it('deve arredondar para o número especificado de casas decimais', () => {
+    it('should round to the specified number of decimal places', () => {
       expect(NumberUtils.roundToDecimals({ value: 3.14159, decimals: 2 })).toBe(
         3.14,
       );
@@ -82,11 +82,11 @@ describe('NumberUtils', () => {
       );
     });
 
-    it('deve usar 2 casas decimais por padrão', () => {
+    it('should use 2 decimal places by default', () => {
       expect(NumberUtils.roundToDecimals({ value: 3.14159 })).toBe(3.14);
     });
 
-    it('deve lidar com números negativos', () => {
+    it('should handle negative numbers', () => {
       expect(NumberUtils.roundToDecimals({ value: -3.14159, decimals: 2 })).toBe(
         -3.14,
       );
@@ -94,25 +94,25 @@ describe('NumberUtils', () => {
   });
 
   describe('toCents', () => {
-    it('deve converter números para centavos', () => {
+    it('should convert numbers to cents', () => {
       expect(NumberUtils.toCents({ value: 10.56 })).toBe(1056);
       expect(NumberUtils.toCents({ value: 0.99 })).toBe(99);
       expect(NumberUtils.toCents({ value: 0.01 })).toBe(1);
     });
 
-    it('deve lidar com números sem casas decimais', () => {
+    it('should handle numbers without decimal places', () => {
       expect(NumberUtils.toCents({ value: 10 })).toBe(1000);
       expect(NumberUtils.toCents({ value: 0 })).toBe(0);
     });
 
-    it('deve arredondar para o centavo mais próximo', () => {
+    it('should round to the nearest cent', () => {
       expect(NumberUtils.toCents({ value: 10.567 })).toBe(1057);
       expect(NumberUtils.toCents({ value: 10.562 })).toBe(1056);
     });
   });
 
   describe('addDecimalPlaces', () => {
-    it('deve adicionar casas decimais a um número', () => {
+    it('should add decimal places to a number', () => {
       expect(NumberUtils.addDecimalPlaces({ value: 10, decimalPlaces: 2 })).toBe(
         '10.00',
       );
@@ -121,13 +121,13 @@ describe('NumberUtils', () => {
       );
     });
 
-    it('deve lidar com números negativos', () => {
+    it('should handle negative numbers', () => {
       expect(
         NumberUtils.addDecimalPlaces({ value: -10, decimalPlaces: 2 }),
       ).toBe('-10.00');
     });
 
-    it('deve lançar erro para valores inválidos', () => {
+    it('should throw an error for invalid values', () => {
       expect(() =>
         NumberUtils.addDecimalPlaces({ value: NaN, decimalPlaces: 2 }),
       ).toThrow();
@@ -138,23 +138,23 @@ describe('NumberUtils', () => {
   });
 
   describe('removeDecimalPlaces', () => {
-    it('deve remover todas as casas decimais', () => {
+    it('should remove all decimal places', () => {
       expect(NumberUtils.removeDecimalPlaces({ value: 10.56 })).toBe(10);
       expect(NumberUtils.removeDecimalPlaces({ value: 10.99 })).toBe(10);
     });
 
-    it('deve lidar com números negativos', () => {
+    it('should handle negative numbers', () => {
       expect(NumberUtils.removeDecimalPlaces({ value: -10.56 })).toBe(-10);
     });
 
-    it('deve manter números sem casas decimais inalterados', () => {
+    it('should keep numbers without decimal places unchanged', () => {
       expect(NumberUtils.removeDecimalPlaces({ value: 10 })).toBe(10);
       expect(NumberUtils.removeDecimalPlaces({ value: -10 })).toBe(-10);
     });
   });
 
   describe('randomIntegerInRange', () => {
-    it('deve gerar números dentro do intervalo especificado', () => {
+    it('should generate numbers within the specified range', () => {
       const min = 1;
       const max = 10;
       for (let i = 0; i < 100; i++) {
@@ -165,7 +165,7 @@ describe('NumberUtils', () => {
       }
     });
 
-    it('deve lançar erro se min for maior que max', () => {
+    it('should throw an error if min is greater than max', () => {
       expect(() =>
         NumberUtils.randomIntegerInRange({ min: 10, max: 1 }),
       ).toThrow();
@@ -173,7 +173,7 @@ describe('NumberUtils', () => {
   });
 
   describe('randomFloatInRange', () => {
-    it('deve gerar números dentro do intervalo especificado', () => {
+    it('should generate numbers within the specified range', () => {
       const min = 1;
       const max = 10;
       for (let i = 0; i < 100; i++) {
@@ -183,7 +183,7 @@ describe('NumberUtils', () => {
       }
     });
 
-    it('deve respeitar o número de casas decimais', () => {
+    it('should respect the number of decimal places', () => {
       const result = NumberUtils.randomFloatInRange({
         min: 1,
         max: 10,
@@ -192,7 +192,7 @@ describe('NumberUtils', () => {
       expect(result.toString()).toMatch(/^\d+\.\d{1,3}$/);
     });
 
-    it('deve lançar erro se min for maior que max', () => {
+    it('should throw an error if min is greater than max', () => {
       expect(() =>
         NumberUtils.randomFloatInRange({ min: 10, max: 1 }),
       ).toThrow();
@@ -200,26 +200,26 @@ describe('NumberUtils', () => {
   });
 
   describe('factorial', () => {
-    it('deve calcular o fatorial corretamente', () => {
+    it('should calculate the factorial correctly', () => {
       expect(NumberUtils.factorial({ value: 0 })).toBe(1);
       expect(NumberUtils.factorial({ value: 1 })).toBe(1);
       expect(NumberUtils.factorial({ value: 5 })).toBe(120);
     });
 
-    it('deve retornar 0 para números negativos', () => {
+    it('should return 0 for negative numbers', () => {
       expect(NumberUtils.factorial({ value: -1 })).toBe(0);
       expect(NumberUtils.factorial({ value: -5 })).toBe(0);
     });
   });
 
   describe('clamp', () => {
-    it('deve limitar números dentro do intervalo', () => {
+    it('should clamp numbers within the range', () => {
       expect(NumberUtils.clamp({ value: 15, min: 0, max: 10 })).toBe(10);
       expect(NumberUtils.clamp({ value: -5, min: 0, max: 10 })).toBe(0);
       expect(NumberUtils.clamp({ value: 5, min: 0, max: 10 })).toBe(5);
     });
 
-    it('deve trocar min e max se min for maior que max', () => {
+    it('should swap min and max if min is greater than max', () => {
       expect(NumberUtils.clamp({ value: 5, min: 10, max: 0 })).toBe(5);
       expect(NumberUtils.clamp({ value: 15, min: 10, max: 0 })).toBe(10);
       expect(NumberUtils.clamp({ value: -5, min: 10, max: 0 })).toBe(0);
@@ -227,7 +227,7 @@ describe('NumberUtils', () => {
   });
 
   describe('isValidPrime', () => {
-    it('deve identificar números primos', () => {
+    it('should identify prime numbers', () => {
       expect(NumberUtils.isValidPrime({ value: 2 })).toBe(true);
       expect(NumberUtils.isValidPrime({ value: 3 })).toBe(true);
       expect(NumberUtils.isValidPrime({ value: 5 })).toBe(true);
@@ -235,7 +235,7 @@ describe('NumberUtils', () => {
       expect(NumberUtils.isValidPrime({ value: 11 })).toBe(true);
     });
 
-    it('deve identificar números não primos', () => {
+    it('should identify non-prime numbers', () => {
       expect(NumberUtils.isValidPrime({ value: 1 })).toBe(false);
       expect(NumberUtils.isValidPrime({ value: 4 })).toBe(false);
       expect(NumberUtils.isValidPrime({ value: 6 })).toBe(false);
@@ -243,7 +243,7 @@ describe('NumberUtils', () => {
       expect(NumberUtils.isValidPrime({ value: 9 })).toBe(false);
     });
 
-    it('deve identificar números negativos como não primos', () => {
+    it('should identify negative numbers as non-prime', () => {
       expect(NumberUtils.isValidPrime({ value: -2 })).toBe(false);
       expect(NumberUtils.isValidPrime({ value: -3 })).toBe(false);
       expect(NumberUtils.isValidPrime({ value: -5 })).toBe(false);
@@ -251,14 +251,14 @@ describe('NumberUtils', () => {
   });
 
   describe('isValidEven', () => {
-    it('deve identificar números pares', () => {
+    it('should identify even numbers', () => {
       expect(NumberUtils.isValidEven({ value: 2 })).toBe(true);
       expect(NumberUtils.isValidEven({ value: 4 })).toBe(true);
       expect(NumberUtils.isValidEven({ value: 0 })).toBe(true);
       expect(NumberUtils.isValidEven({ value: -2 })).toBe(true);
     });
 
-    it('deve identificar números ímpares', () => {
+    it('should identify odd numbers', () => {
       expect(NumberUtils.isValidEven({ value: 1 })).toBe(false);
       expect(NumberUtils.isValidEven({ value: 3 })).toBe(false);
       expect(NumberUtils.isValidEven({ value: -1 })).toBe(false);
@@ -267,14 +267,14 @@ describe('NumberUtils', () => {
   });
 
   describe('isValidOdd', () => {
-    it('deve identificar números ímpares', () => {
+    it('should identify odd numbers', () => {
       expect(NumberUtils.isValidOdd({ value: 1 })).toBe(true);
       expect(NumberUtils.isValidOdd({ value: 3 })).toBe(true);
       expect(NumberUtils.isValidOdd({ value: -1 })).toBe(true);
       expect(NumberUtils.isValidOdd({ value: -3 })).toBe(true);
     });
 
-    it('deve identificar números pares', () => {
+    it('should identify even numbers', () => {
       expect(NumberUtils.isValidOdd({ value: 2 })).toBe(false);
       expect(NumberUtils.isValidOdd({ value: 4 })).toBe(false);
       expect(NumberUtils.isValidOdd({ value: 0 })).toBe(false);

@@ -29,7 +29,9 @@ export class FileUtils {
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to read file ${filePath}: ${errorMessage}`);
+      throw new Error(`Failed to read file ${filePath}: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -46,7 +48,9 @@ export class FileUtils {
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to read file ${filePath}: ${errorMessage}`);
+      throw new Error(`Failed to read file ${filePath}: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -62,7 +66,9 @@ export class FileUtils {
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to write file ${filePath}: ${errorMessage}`);
+      throw new Error(`Failed to write file ${filePath}: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -83,7 +89,9 @@ export class FileUtils {
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to write file ${filePath}: ${errorMessage}`);
+      throw new Error(`Failed to write file ${filePath}: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -99,7 +107,9 @@ export class FileUtils {
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to append to file ${filePath}: ${errorMessage}`);
+      throw new Error(`Failed to append to file ${filePath}: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -121,7 +131,10 @@ export class FileUtils {
       }
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to create directory ${dirPath}: ${errorMessage}`);
+      throw new Error(
+        `Failed to create directory ${dirPath}: ${errorMessage}`,
+        { cause: error },
+      );
     }
   }
 
@@ -164,7 +177,9 @@ export class FileUtils {
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to list files in ${dirPath}: ${errorMessage}`);
+      throw new Error(`Failed to list files in ${dirPath}: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -182,6 +197,7 @@ export class FileUtils {
         error instanceof Error ? error.message : String(error);
       throw new Error(
         `Failed to get file info for ${filePath}: ${errorMessage}`,
+        { cause: error },
       );
     }
   }
@@ -197,7 +213,9 @@ export class FileUtils {
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to delete file ${filePath}: ${errorMessage}`);
+      throw new Error(`Failed to delete file ${filePath}: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -209,11 +227,14 @@ export class FileUtils {
    */
   public static deleteDirectory(dirPath: string, recursive = false): void {
     try {
-      fs.rmdirSync(dirPath, { recursive });
+      fs.rmSync(dirPath, { recursive, force: false });
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to delete directory ${dirPath}: ${errorMessage}`);
+      throw new Error(
+        `Failed to delete directory ${dirPath}: ${errorMessage}`,
+        { cause: error },
+      );
     }
   }
 
@@ -242,6 +263,7 @@ export class FileUtils {
         error instanceof Error ? error.message : String(error);
       throw new Error(
         `Failed to recursively delete directory ${dirPath}: ${errorMessage}`,
+        { cause: error },
       );
     }
   }
@@ -289,6 +311,7 @@ export class FileUtils {
         error instanceof Error ? error.message : String(error);
       throw new Error(
         `Failed to copy file from ${sourcePath} to ${destPath}: ${errorMessage}`,
+        { cause: error },
       );
     }
   }
@@ -315,6 +338,7 @@ export class FileUtils {
           error instanceof Error ? error.message : String(error);
         throw new Error(
           `Failed to move file from ${sourcePath} to ${destPath}: ${errorMessage}`,
+          { cause: error },
         );
       }
     }
@@ -343,7 +367,9 @@ export class FileUtils {
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to read JSON file ${filePath}: ${errorMessage}`);
+      throw new Error(`Failed to read JSON file ${filePath}: ${errorMessage}`, {
+        cause: error,
+      });
     }
   }
 
@@ -367,7 +393,10 @@ export class FileUtils {
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to write JSON file ${filePath}: ${errorMessage}`);
+      throw new Error(
+        `Failed to write JSON file ${filePath}: ${errorMessage}`,
+        { cause: error },
+      );
     }
   }
 }
