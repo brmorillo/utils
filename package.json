@@ -47,7 +47,7 @@
     "typescript"
   ],
   "author": "Bruno Morillo",
-  "license": "MIT",
+  "license": "LGPL-3.0-only",
   "dependencies": {
     "@aws-sdk/client-s3": "3.1070.0",
     "@aws-sdk/lib-storage": "3.1070.0",
