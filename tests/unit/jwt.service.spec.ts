@@ -39,6 +39,21 @@ describe('JWTUtils - Unit Tests', () => {
       expect(typeof decoded.exp).toBe('number');
     });
 
+    it('should default to a 1h expiry when none is supplied', () => {
+      const token = JWTUtils.generate({ payload, secretKey });
+
+      const decoded = JWTUtils.decode({ token }) as any;
+      expect(decoded).toHaveProperty('exp');
+      expect(decoded.exp - decoded.iat).toBe(3600);
+    });
+
+    it('should pin the HS256 algorithm by default', () => {
+      const token = JWTUtils.generate({ payload, secretKey });
+
+      const decoded = JWTUtils.decode({ token, complete: true }) as any;
+      expect(decoded.header.alg).toBe('HS256');
+    });
+
     it('should throw an error for an invalid payload', () => {
       expect(() => {
         // @ts-ignore - Intentionally testing with invalid value
@@ -91,6 +106,63 @@ describe('JWTUtils - Unit Tests', () => {
           secretKey: 'wrong-secret-key',
         });
       }).toThrow();
+    });
+
+    it('should reject a token using the "none" algorithm', () => {
+      // Craft an unsigned (alg: none) token directly.
+      const header = Buffer.from(
+        JSON.stringify({ alg: 'none', typ: 'JWT' }),
+      ).toString('base64url');
+      const body = Buffer.from(JSON.stringify(payload)).toString('base64url');
+      const noneToken = `${header}.${body}.`;
+
+      expect(() => {
+        JWTUtils.verify({ token: noneToken, secretKey });
+      }).toThrow('Failed to verify JWT token');
+    });
+
+    it('should reject a token signed with an algorithm outside the allowlist', () => {
+      // Sign with HS512 but only allow HS256 (the default).
+      const hs512Token = JWTUtils.generate({
+        payload,
+        secretKey,
+        options: { algorithm: 'HS512' },
+      });
+
+      expect(() => {
+        JWTUtils.verify({ token: hs512Token, secretKey });
+      }).toThrow('Failed to verify JWT token');
+    });
+
+    it('should accept a widened algorithms allowlist', () => {
+      const hs512Token = JWTUtils.generate({
+        payload,
+        secretKey,
+        options: { algorithm: 'HS512' },
+      });
+
+      const decoded = JWTUtils.verify({
+        token: hs512Token,
+        secretKey,
+        options: { algorithms: ['HS256', 'HS512'] },
+      });
+      expect(decoded).toHaveProperty('userId', '123');
+    });
+
+    it('should never honor "none" even when explicitly requested', () => {
+      const header = Buffer.from(
+        JSON.stringify({ alg: 'none', typ: 'JWT' }),
+      ).toString('base64url');
+      const body = Buffer.from(JSON.stringify(payload)).toString('base64url');
+      const noneToken = `${header}.${body}.`;
+
+      expect(() => {
+        JWTUtils.verify({
+          token: noneToken,
+          secretKey,
+          options: { algorithms: ['none' as any] },
+        });
+      }).toThrow('Failed to verify JWT token');
     });
   });
 
@@ -191,6 +263,7 @@ describe('JWTUtils - Unit Tests', () => {
       const expiredToken = JWTUtils.generate({
         payload: { ...payload, exp: pastTime },
         secretKey,
+        options: { expiresIn: undefined },
       });
 
       // Verifies that the token is already expired
@@ -202,6 +275,7 @@ describe('JWTUtils - Unit Tests', () => {
       const token = JWTUtils.generate({
         payload,
         secretKey,
+        options: { expiresIn: undefined },
       });
 
       expect(() => {
@@ -248,6 +322,7 @@ describe('JWTUtils - Unit Tests', () => {
       const token = JWTUtils.generate({
         payload,
         secretKey,
+        options: { expiresIn: undefined },
       });
 
       expect(() => {
@@ -304,6 +379,7 @@ describe('JWTUtils - Unit Tests', () => {
         const expiredToken = JWTUtils.generate({
           payload: { ...payload, exp: pastTime },
           secretKey,
+          options: { expiresIn: undefined },
         });
         expect(() => {
           JWTUtils.verify({ token: expiredToken, secretKey });
@@ -394,6 +470,7 @@ describe('JWTUtils - Unit Tests', () => {
         const expiredToken = JWTUtils.generate({
           payload: { ...payload, exp: Math.floor(Date.now() / 1000) - 5 },
           secretKey,
+          options: { expiresIn: undefined },
         });
         expect(JWTUtils.isExpired({ token: expiredToken })).toBe(true);
       });
@@ -423,6 +500,7 @@ describe('JWTUtils - Unit Tests', () => {
         const expiredToken = JWTUtils.generate({
           payload: { ...payload, exp: Math.floor(Date.now() / 1000) - 5 },
           secretKey,
+          options: { expiresIn: undefined },
         });
         expect(JWTUtils.getExpirationTime({ token: expiredToken })).toBe(0);
       });

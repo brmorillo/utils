@@ -4,6 +4,7 @@ import {
   v5 as uuidv5,
   validate as validateUuid,
 } from 'uuid';
+import { ValidationError } from '../errors';
 
 export class UUIDUtils {
   /**
@@ -33,6 +34,7 @@ export class UUIDUtils {
    * @param {string} [params.namespace] - The namespace for UUID generation (must be a valid UUID). Defaults to the standard URL namespace so results stay deterministic.
    * @param {string} params.name - The name to hash within the namespace.
    * @returns {string} A deterministic UUID string based on the namespace and name.
+   * @throws {ValidationError} Throws a ValidationError if `name` is empty or if a provided `namespace` is not a valid UUID.
    * @example
    * UUIDUtils.uuidV5Generate({
    *   namespace: '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
@@ -50,6 +52,14 @@ export class UUIDUtils {
     namespace?: string;
     name: string;
   }): string {
+    if (!name || typeof name !== 'string') {
+      throw new ValidationError('Invalid name: must be a non-empty string.');
+    }
+
+    if (namespace !== undefined && !validateUuid(namespace)) {
+      throw new ValidationError('Invalid namespace: must be a valid UUID.');
+    }
+
     const requiredNamespace: string = namespace || uuidv5.URL;
     return uuidv5(name, requiredNamespace);
   }

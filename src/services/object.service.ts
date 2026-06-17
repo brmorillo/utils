@@ -1,4 +1,8 @@
 import * as zlib from 'zlib';
+import { ValidationError } from '../errors';
+
+// Keys that must never be written to, to avoid prototype pollution.
+const DANGEROUS_KEYS = ['__proto__', 'constructor', 'prototype'];
 
 export class ObjectUtils {
   /**
@@ -79,17 +83,25 @@ export class ObjectUtils {
 
     if (isObject(target) && isObject(source)) {
       Object.keys(source).forEach(key => {
+        // Prevent prototype pollution: never write dangerous keys.
+        if (DANGEROUS_KEYS.includes(key)) {
+          return;
+        }
+
         if (isObject(source[key])) {
-          if (!(key in target)) {
-            Object.assign(output, { [key]: source[key] });
-          } else {
+          if (isObject(output[key])) {
+            // Both sides are objects: recurse to merge them.
             output[key] = ObjectUtils.deepMerge({
-              target: target[key],
+              target: output[key],
               source: source[key],
             });
+          } else {
+            // Target is a primitive/absent: deep-clone the source object so
+            // the result does not share references with `source`.
+            output[key] = ObjectUtils.deepClone({ obj: source[key] });
           }
         } else {
-          Object.assign(output, { [key]: source[key] });
+          output[key] = source[key];
         }
       });
     }
@@ -176,6 +188,10 @@ export class ObjectUtils {
     prefix?: string;
     delimiter?: string;
   }): Record<string, any> {
+    if (obj === null || typeof obj !== 'object') {
+      throw new ValidationError('Input must be an object');
+    }
+
     return Object.keys(obj).reduce(
       (acc, key) => {
         const prefixedKey = prefix ? `${prefix}${delimiter}${key}` : key;
@@ -229,6 +245,12 @@ export class ObjectUtils {
     delimiter?: string;
   }): Record<string, any> {
     const keys = path.split(delimiter);
+
+    // Prevent prototype pollution: skip writes targeting dangerous keys.
+    if (keys.some(key => DANGEROUS_KEYS.includes(key))) {
+      return obj;
+    }
+
     let current = obj;
 
     for (let i = 0; i < keys.length - 1; i++) {
@@ -253,6 +275,9 @@ export class ObjectUtils {
    * ObjectUtils.isEmpty({ obj: { a: 1 } }); // false
    */
   public static isEmpty({ obj }: { obj: Record<string, any> }): boolean {
+    if (obj === null || typeof obj !== 'object') {
+      throw new ValidationError('Input must be an object');
+    }
     return Object.keys(obj).length === 0;
   }
 
@@ -365,6 +390,10 @@ export class ObjectUtils {
   }: {
     obj: Record<string, any>;
   }): Record<string, any> {
+    if (obj === null || typeof obj !== 'object') {
+      throw new ValidationError('Input must be an object');
+    }
+
     return Object.keys(obj).reduce(
       (result, key) => {
         if (obj[key] !== undefined) {
@@ -391,6 +420,10 @@ export class ObjectUtils {
   }: {
     obj: Record<string, any>;
   }): Record<string, any> {
+    if (obj === null || typeof obj !== 'object') {
+      throw new ValidationError('Input must be an object');
+    }
+
     return Object.keys(obj).reduce(
       (result, key) => {
         if (obj[key] !== null) {
@@ -421,6 +454,15 @@ export class ObjectUtils {
     obj1: T;
     obj2: T;
   }): Record<string, { obj1: any; obj2: any }> {
+    if (
+      obj1 === null ||
+      typeof obj1 !== 'object' ||
+      obj2 === null ||
+      typeof obj2 !== 'object'
+    ) {
+      throw new ValidationError('Both inputs must be objects');
+    }
+
     const result: Record<string, { obj1: any; obj2: any }> = {};
     const allKeys = new Set([...Object.keys(obj1), ...Object.keys(obj2)]);
 
@@ -689,6 +731,10 @@ export class ObjectUtils {
   }: {
     obj: Record<string, string | number>;
   }): Record<string, string> {
+    if (obj === null || typeof obj !== 'object') {
+      throw new ValidationError('Input must be an object');
+    }
+
     return Object.keys(obj).reduce(
       (result, key) => {
         const value = String(obj[key]);

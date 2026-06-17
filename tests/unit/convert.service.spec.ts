@@ -135,6 +135,30 @@ describe('ConvertUtils', () => {
       expect(result).toBe(42);
     });
 
+    it('should convert number to integer by truncating', () => {
+      expect(ConvertUtils.value({ value: 42.9, toType: 'integer' })).toBe(42);
+      expect(ConvertUtils.value({ value: -42.9, toType: 'integer' })).toBe(-42);
+    });
+
+    it('should return null when converting null/undefined to string', () => {
+      expect(ConvertUtils.value({ value: null, toType: 'string' })).toBeNull();
+      expect(
+        ConvertUtils.value({ value: undefined, toType: 'string' }),
+      ).toBeNull();
+    });
+
+    it('should throw when converting a value above the Roman range', () => {
+      expect(() => {
+        ConvertUtils.value({ value: 4000, toType: 'roman' });
+      }).toThrow('classic Roman numeral range');
+    });
+
+    it('should convert the maximum Roman value (3999) correctly', () => {
+      expect(ConvertUtils.value({ value: 3999, toType: 'roman' })).toBe(
+        'MMMCMXCIX',
+      );
+    });
+
     it('should convert number to string correctly', () => {
       const result = ConvertUtils.value({
         value: 42.5,

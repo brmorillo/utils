@@ -136,5 +136,32 @@ describe('ConvertUtils - Integration Tests', () => {
       expect(numberToString).toBe('1984');
       expect(stringToBigint).toBe(1984n);
     });
+
+    it('should truncate a float to integer and then render it as roman', () => {
+      // Float -> integer (truncation) -> roman, within the classic range
+      const toInteger = ConvertUtils.value({
+        value: 49.9,
+        toType: 'integer',
+      });
+      expect(toInteger).toBe(49);
+
+      const toRoman = ConvertUtils.value({
+        value: toInteger as number,
+        toType: 'roman',
+      });
+      expect(toRoman).toBe('XLIX');
+    });
+
+    it('should throw when a converted value exceeds the Roman range', () => {
+      const toInteger = ConvertUtils.value({
+        value: '4000',
+        toType: 'integer',
+      });
+      expect(toInteger).toBe(4000);
+
+      expect(() => {
+        ConvertUtils.value({ value: toInteger as number, toType: 'roman' });
+      }).toThrow('classic Roman numeral range');
+    });
   });
 });

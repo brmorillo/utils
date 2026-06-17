@@ -23,8 +23,8 @@ console.log('---');
 
 // Example 4: Check whether a number is prime
 console.log('Example 4: Check whether a number is prime');
-console.log('isValidPrime({ value: 7 }):', MathUtils.isValidPrime({ value: 7 }));
-console.log('isValidPrime({ value: 8 }):', MathUtils.isValidPrime({ value: 8 }));
+console.log('isPrime({ value: 7 }):', MathUtils.isPrime({ value: 7 }));
+console.log('isPrime({ value: 8 }):', MathUtils.isPrime({ value: 8 }));
 console.log('---');
 
 // Example 5: Convert a monetary value to cents

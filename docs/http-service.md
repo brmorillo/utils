@@ -2,6 +2,26 @@
 
 The HttpService provides a configurable HTTP client with support for multiple providers (Axios, native HTTP/HTTPS).
 
+## Response Handling (important)
+
+All HttpService methods **resolve with the response for every completed request, including non-2xx status codes**. They do **not** throw or reject based on the HTTP status code.
+
+```javascript
+const response = await http.get('/users/123');
+
+if (response.status >= 200 && response.status < 300) {
+  // success
+  console.log(response.data);
+} else {
+  // HTTP error — the promise still RESOLVED, you must check the status yourself
+  console.error('Request failed with status', response.status, response.data);
+}
+```
+
+A rejected promise only indicates a transport-level failure (the connection could not be established, or the request timed out). It does **not** indicate a 4xx/5xx response. This behavior is consistent across both the `axios` and native `http` clients.
+
+The native `http` client does not follow redirects: a 3xx response is resolved as-is (inspect `response.status` and the `location` header).
+
 ## Basic Usage
 
 ```javascript
@@ -187,6 +207,8 @@ await http.get('/users');
 
 ### Example 3: Error Handling
 
+The service resolves with the response for any completed request, so HTTP errors are detected by inspecting `response.status`. A rejected promise means the request never completed (connection failure or timeout).
+
 ```javascript
 import { Utils } from '@brmorillo/utils';
 
@@ -196,20 +218,19 @@ const http = utils.getHttpService();
 async function fetchData() {
   try {
     const response = await http.get('https://api.example.com/data');
+
+    // The promise resolves even for 4xx/5xx — check the status explicitly.
+    if (response.status >= 400) {
+      console.error('Server returned an HTTP error:', response.status);
+      console.error('Error body:', response.data);
+      throw new Error(`HTTP ${response.status}`);
+    }
+
     return response.data;
   } catch (error) {
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.error('Server error:', error.response.status);
-      console.error('Error data:', error.response.data);
-    } else if (error.request) {
-      // The request was made but no response was received
-      console.error('Network error, no response received');
-    } else {
-      // Something happened in setting up the request
-      console.error('Request error:', error.message);
-    }
+    // Reaching here means a transport-level failure (no response received):
+    // the connection could not be established, or the request timed out.
+    console.error('Request failed before a response was received:', error.message);
     throw error;
   }
 }

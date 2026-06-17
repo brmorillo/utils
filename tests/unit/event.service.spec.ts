@@ -92,6 +92,26 @@ describe('EventEmitter', () => {
 
       consoleSpy.mockRestore();
     });
+
+    it('should snapshot handlers so unsubscribing during emit is safe', () => {
+      // Arrange - the first handler removes the second one while emitting.
+      const second = jest.fn();
+      const first = jest.fn(() => {
+        emitter.off('test', second);
+      });
+      emitter.on('test', first);
+      emitter.on('test', second);
+
+      // Act & Assert - emit must not throw and the snapshot still calls both.
+      expect(() => emitter.emit('test', 'data')).not.toThrow();
+      expect(first).toHaveBeenCalledTimes(1);
+      expect(second).toHaveBeenCalledTimes(1);
+
+      // A second emit reflects the mutation: only the first handler remains.
+      emitter.emit('test', 'again');
+      expect(first).toHaveBeenCalledTimes(2);
+      expect(second).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('once', () => {

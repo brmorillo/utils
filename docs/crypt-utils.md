@@ -1,21 +1,27 @@
 # CryptUtils
 
-The CryptUtils class provides utility methods for symmetric and asymmetric cryptography, including AES, ChaCha20, RSA, ECC, and RC4, plus IV generation.
+The CryptUtils class provides utility methods for symmetric and asymmetric cryptography, including AES-256-GCM, ChaCha20-Poly1305, RSA (OAEP), and ECC, plus IV generation.
 
-> Note: Like the rest of the library, `CryptUtils` methods take a single destructured object argument (except `generateIV()`, which takes no arguments).
+> Note: Like the rest of the library, `CryptUtils` methods take a single destructured object argument (except `generateIV()` / `generateGcmIV()`, which take no arguments).
+
+## Security notes
+
+- The symmetric ciphers (`aesEncrypt`/`aesDecrypt`, `chacha20Encrypt`/`chacha20Decrypt`) are **authenticated** (AEAD). Encryption returns an `authTag` that **must** be supplied to decryption; decryption throws if the ciphertext, IV/nonce, or tag has been tampered with.
+- An IV/nonce **must be unique for every message** encrypted with the same key. Reusing an IV/nonce with GCM or Poly1305 breaks both confidentiality and authenticity. Prefer omitting `iv` (a fresh random IV is generated) over supplying a fixed value.
+- `rsaGenerateKeyPair` and `eccGenerateKeyPair` emit the **private key as an unencrypted PEM**. Treat it as a secret: never log it, and store it encrypted at rest.
 
 ## Basic Usage
 
 ```javascript
 import { CryptUtils } from '@brmorillo/utils';
 
-// AES-256-CBC encryption (secretKey must be 32 bytes)
+// AES-256-GCM authenticated encryption (secretKey must be 32 bytes)
 const secretKey = '12345678901234567890123456789012';
-const { encryptedData, iv } = CryptUtils.aesEncrypt({ data: 'Hello, World!', secretKey });
-const decrypted = CryptUtils.aesDecrypt({ encryptedData, secretKey, iv });
+const { encryptedData, iv, authTag } = CryptUtils.aesEncrypt({ data: 'Hello, World!', secretKey });
+const decrypted = CryptUtils.aesDecrypt({ encryptedData, secretKey, iv, authTag });
 console.log(decrypted); // "Hello, World!"
 
-// RSA key pair, encryption and decryption
+// RSA key pair, encryption and decryption (OAEP / SHA-256)
 const { publicKey, privateKey } = CryptUtils.rsaGenerateKeyPair({ modulusLength: 2048 });
 const cipher = CryptUtils.rsaEncrypt({ data: 'Secret', publicKey });
 console.log(CryptUtils.rsaDecrypt({ encryptedData: cipher, privateKey })); // "Secret"
@@ -25,49 +31,58 @@ console.log(CryptUtils.rsaDecrypt({ encryptedData: cipher, privateKey })); // "S
 
 ### generateIV()
 
-Generates a random 16-byte Initialization Vector (IV) as a hexadecimal string.
+Generates a random 16-byte Initialization Vector (IV) as a hexadecimal string. Kept for backwards compatibility; for AES-256-GCM use `generateGcmIV()` (or let `aesEncrypt` generate one).
 
 ```javascript
 const iv = CryptUtils.generateIV();
 console.log(iv); // 32-character hex string
 ```
 
+### generateGcmIV()
+
+Generates a random 12-byte IV as a 24-character hexadecimal string, suitable for AES-256-GCM / ChaCha20-Poly1305.
+
+```javascript
+const iv = CryptUtils.generateGcmIV();
+console.log(iv); // 24-character hex string
+```
+
 ### aesEncrypt({ data, secretKey, iv? })
 
-Encrypts a string or JSON object using AES-256-CBC. `secretKey` must be 32 bytes; if `iv` is omitted, a random IV is generated. Returns `{ encryptedData, iv }`.
+Encrypts a string or JSON object using **AES-256-GCM** (authenticated). `secretKey` must be 32 bytes (validated by byte length); if `iv` is omitted, a fresh random 12-byte IV is generated. If supplied, `iv` must be a 24-character hex string (12 bytes). Returns `{ encryptedData, iv, authTag }`. The `authTag` is required to decrypt.
 
 ```javascript
 const secretKey = '12345678901234567890123456789012';
-const { encryptedData, iv } = CryptUtils.aesEncrypt({ data: { name: 'Alice' }, secretKey });
-console.log(encryptedData, iv);
+const { encryptedData, iv, authTag } = CryptUtils.aesEncrypt({ data: { name: 'Alice' }, secretKey });
+console.log(encryptedData, iv, authTag);
 ```
 
-### aesDecrypt({ encryptedData, secretKey, iv })
+### aesDecrypt({ encryptedData, secretKey, iv, authTag })
 
-Decrypts an AES-256-CBC encrypted Base64 string. Returns a string, or a parsed object if the decrypted content is valid JSON. `secretKey` must be 32 bytes and `iv` a 16-byte hex string.
+Decrypts an AES-256-GCM encrypted Base64 string and verifies the `authTag`. Returns a string, or a parsed object if the decrypted content is valid JSON. `secretKey` must be 32 bytes, `iv` a 24-character hex string (12 bytes), and `authTag` the Base64 tag from `aesEncrypt`. Throws if the ciphertext, IV, or tag was tampered with.
 
 ```javascript
-const result = CryptUtils.aesDecrypt({ encryptedData, secretKey, iv });
+const result = CryptUtils.aesDecrypt({ encryptedData, secretKey, iv, authTag });
 console.log(result); // { name: 'Alice' }
 ```
 
 ### chacha20Encrypt({ data, key, nonce })
 
-Encrypts a string using ChaCha20. `key` must be a 32-byte Buffer and `nonce` a 12-byte Buffer. Returns Base64.
+Encrypts a string using **ChaCha20-Poly1305** (authenticated AEAD). `key` must be a 32-byte Buffer and `nonce` a 12-byte Buffer. Returns `{ encryptedData, authTag }` (both Base64). The `authTag` is required to decrypt.
 
 ```javascript
 const key = Buffer.alloc(32, 'k');
 const nonce = Buffer.alloc(12, 'n');
-const encrypted = CryptUtils.chacha20Encrypt({ data: 'Hello', key, nonce });
-console.log(encrypted);
+const { encryptedData, authTag } = CryptUtils.chacha20Encrypt({ data: 'Hello', key, nonce });
+console.log(encryptedData, authTag);
 ```
 
-### chacha20Decrypt({ encryptedData, key, nonce })
+### chacha20Decrypt({ encryptedData, key, nonce, authTag })
 
-Decrypts a Base64 ChaCha20-encrypted string. `key` must be a 32-byte Buffer and `nonce` a 12-byte Buffer.
+Decrypts a Base64 ChaCha20-Poly1305-encrypted string and verifies the `authTag`. `key` must be a 32-byte Buffer, `nonce` a 12-byte Buffer, and `authTag` the Base64 tag from `chacha20Encrypt`. Throws if the ciphertext, nonce, or tag was tampered with.
 
 ```javascript
-const decrypted = CryptUtils.chacha20Decrypt({ encryptedData: encrypted, key, nonce });
+const decrypted = CryptUtils.chacha20Decrypt({ encryptedData, key, nonce, authTag });
 console.log(decrypted); // "Hello"
 ```
 
@@ -82,7 +97,7 @@ console.log(publicKey, privateKey);
 
 ### rsaEncrypt({ data, publicKey })
 
-Encrypts a string with an RSA public key (PEM). Returns Base64.
+Encrypts a string with an RSA public key (PEM) using **OAEP padding (SHA-256)**. Returns Base64.
 
 ```javascript
 const encrypted = CryptUtils.rsaEncrypt({ data: 'Hello, World!', publicKey });
@@ -91,7 +106,7 @@ console.log(encrypted);
 
 ### rsaDecrypt({ encryptedData, privateKey })
 
-Decrypts an RSA Base64-encrypted string using the private key (PEM).
+Decrypts an RSA Base64-encrypted string using the private key (PEM) with **OAEP padding (SHA-256)**. The padding must match the one used during encryption.
 
 ```javascript
 const decrypted = CryptUtils.rsaDecrypt({ encryptedData, privateKey });
@@ -118,10 +133,10 @@ console.log(isValid); // true or false
 
 ### eccGenerateKeyPair({ curve? })
 
-Generates an ECC key pair in PEM format (`curve` defaults to `'secp256k1'`). Returns `{ publicKey, privateKey }`.
+Generates an ECC key pair in PEM format (`curve` defaults to `'prime256v1'`). Returns `{ publicKey, privateKey }`.
 
 ```javascript
-const { publicKey, privateKey } = CryptUtils.eccGenerateKeyPair({ curve: 'secp256k1' });
+const { publicKey, privateKey } = CryptUtils.eccGenerateKeyPair({ curve: 'prime256v1' });
 console.log(publicKey, privateKey);
 ```
 
@@ -141,22 +156,4 @@ Verifies an ECC signature against the original data using the public key (PEM). 
 ```javascript
 const isValid = CryptUtils.eccVerify({ data: 'My data', signature, publicKey });
 console.log(isValid); // true or false
-```
-
-### rc4Encrypt({ data, key })
-
-Encrypts a string using RC4 with a string key. Returns Base64. Throws if RC4 is not supported by the current Node.js version.
-
-```javascript
-const encrypted = CryptUtils.rc4Encrypt({ data: 'Hello, World!', key: 'mySecretKey' });
-console.log(encrypted);
-```
-
-### rc4Decrypt({ encryptedData, key })
-
-Decrypts a Base64 RC4-encrypted string using a string key. Throws if RC4 is not supported by the current Node.js version.
-
-```javascript
-const decrypted = CryptUtils.rc4Decrypt({ encryptedData, key: 'mySecretKey' });
-console.log(decrypted);
 ```

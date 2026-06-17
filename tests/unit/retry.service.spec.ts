@@ -96,6 +96,70 @@ describe('RetryUtils', () => {
     });
   });
 
+  describe('retry - maxDelay and jitter', () => {
+    it('should clamp the exponential backoff delay to maxDelay', async () => {
+      // Arrange
+      jest.useFakeTimers();
+      const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+      const fn = jest
+        .fn()
+        .mockRejectedValueOnce(new Error('fail 1'))
+        .mockResolvedValue('ok');
+
+      // Act - base delay 1000 with exponential backoff would be 1000ms on the
+      // first retry, but maxDelay caps it to 50ms.
+      const promise = RetryUtils.retry({
+        fn,
+        maxAttempts: 2,
+        delay: 1000,
+        exponentialBackoff: true,
+        maxDelay: 50,
+      });
+
+      await Promise.resolve();
+      await jest.advanceTimersByTimeAsync(50);
+      await expect(promise).resolves.toBe('ok');
+
+      // Assert - the scheduled wait must have been clamped to 50ms.
+      const waits = setTimeoutSpy.mock.calls.map(call => call[1]);
+      expect(waits).toContain(50);
+
+      setTimeoutSpy.mockRestore();
+      jest.useRealTimers();
+    });
+
+    it('should apply jitter within [0, computed delay]', async () => {
+      // Arrange - force Math.random to a known value.
+      const randomSpy = jest.spyOn(Math, 'random').mockReturnValue(0.5);
+      jest.useFakeTimers();
+      const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+      const fn = jest
+        .fn()
+        .mockRejectedValueOnce(new Error('fail 1'))
+        .mockResolvedValue('ok');
+
+      // Act - delay 100 with jitter and random 0.5 => 50ms.
+      const promise = RetryUtils.retry({
+        fn,
+        maxAttempts: 2,
+        delay: 100,
+        jitter: true,
+      });
+
+      await Promise.resolve();
+      await jest.advanceTimersByTimeAsync(50);
+      await expect(promise).resolves.toBe('ok');
+
+      // Assert
+      const waits = setTimeoutSpy.mock.calls.map(call => call[1]);
+      expect(waits).toContain(50);
+
+      setTimeoutSpy.mockRestore();
+      randomSpy.mockRestore();
+      jest.useRealTimers();
+    });
+  });
+
   describe('retryWithStrategy', () => {
     it('should return the result when the function succeeds', async () => {
       // Arrange

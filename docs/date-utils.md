@@ -2,6 +2,8 @@
 
 The DateUtils class provides a collection of utility methods for working with dates and times, built on top of [Luxon](https://moment.github.io/luxon/). Methods return Luxon objects such as `DateTime`, `Duration`, and `Interval`.
 
+All methods that accept an ISO date string validate it after parsing and throw a `ValidationError` (from `'../errors'`) when the string is not a valid date. `createInterval` additionally validates the resulting interval, and `toTimeZone` validates the target timezone.
+
 ## Basic Usage
 
 ```javascript
@@ -37,7 +39,7 @@ DateUtils.now({ utc: false }); // Current DateTime in local timezone
 
 ### createInterval({ startDate, endDate })
 
-Creates a Luxon `Interval` between two dates. Each date may be a `DateTime` or an ISO string.
+Creates a Luxon `Interval` between two dates. Each date may be a `DateTime` or an ISO string. Throws a `ValidationError` if either date is invalid or if the resulting interval is invalid (e.g. the end date is before the start date).
 
 ```javascript
 DateUtils.createInterval({
@@ -48,7 +50,7 @@ DateUtils.createInterval({
 
 ### addTime({ date, timeToAdd })
 
-Adds a duration to a date and returns the resulting `DateTime`. The duration can be a Luxon `Duration` or a plain object (e.g. `{ days: 1, hours: 5 }`). Throws if invalid duration units are provided.
+Adds a duration to a date and returns the resulting `DateTime`. The duration can be a Luxon `Duration` or a plain object of type `Partial<Record<DurationUnit, number>>` (e.g. `{ days: 1, hours: 5 }`). Throws a `ValidationError` if the date is invalid, if `timeToAdd` is `null`/not an object, or if invalid duration units are provided.
 
 ```javascript
 DateUtils.addTime({
@@ -59,7 +61,7 @@ DateUtils.addTime({
 
 ### removeTime({ date, timeToRemove })
 
-Subtracts a duration from a date and returns the resulting `DateTime`. The duration can be a Luxon `Duration` or a plain object (e.g. `{ weeks: 2 }`). Throws if invalid duration units are provided.
+Subtracts a duration from a date and returns the resulting `DateTime`. The duration can be a Luxon `Duration` or a plain object of type `Partial<Record<DurationUnit, number>>` (e.g. `{ weeks: 2 }`). Throws a `ValidationError` if the date is invalid, if `timeToRemove` is `null`/not an object, or if invalid duration units are provided.
 
 ```javascript
 DateUtils.removeTime({
@@ -92,7 +94,7 @@ DateUtils.toUTC({
 
 ### toTimeZone({ date, timeZone })
 
-Converts a date to the specified timezone and returns the resulting `DateTime`. The date may be a `DateTime` or an ISO string.
+Converts a date to the specified timezone and returns the resulting `DateTime`. The date may be a `DateTime` or an ISO string. Throws a `ValidationError` if the date is invalid or if the timezone is not a valid IANA zone (e.g. `'Mars/Phobos'`).
 
 ```javascript
 DateUtils.toTimeZone({

@@ -128,5 +128,39 @@ describe('RequestUtils - Unit Tests', () => {
       expect(result.os).toBeUndefined();
       expect(result.device).toBeUndefined();
     });
+
+    it('should normalize array-valued headers to the first entry', () => {
+      const mockRequest = {
+        headers: {
+          'user-agent': ['Mozilla/5.0', 'second-value'],
+          'x-forwarded-for': ['203.0.113.5, 10.0.0.1', '198.51.100.2'],
+          'x-real-ip': ['203.0.113.5'],
+          host: ['api.example.com'],
+        },
+      };
+
+      const result = RequestUtils.extractRequestData({ request: mockRequest });
+
+      // Should not throw (no .split on an array) and should pick the first IP.
+      expect(result.xForwardedFor).toBe('203.0.113.5');
+      expect(result.xRealIp).toBe('203.0.113.5');
+      expect(result.host).toBe('api.example.com');
+      expect(result.userAgent).toBe('Mozilla/5.0');
+    });
+
+    it('should throw a ValidationError when request is null', () => {
+      expect(() =>
+        RequestUtils.extractRequestData({ request: null as any }),
+      ).toThrow(/required/);
+    });
+
+    it('should throw a ValidationError when request is undefined', () => {
+      try {
+        RequestUtils.extractRequestData({ request: undefined as any });
+        throw new Error('expected extractRequestData to throw');
+      } catch (err) {
+        expect((err as { code?: string }).code).toBe('VALIDATION_ERROR');
+      }
+    });
   });
 });

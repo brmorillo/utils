@@ -41,3 +41,9 @@ console.log('---');
 // Example 7: Replace all occurrences of a substring
 console.log('Example 7: Replace all occurrences of a substring');
 console.log("replaceAll({ input: 'hello world hello', substring: 'hello', replacement: 'hi' }):", StringUtils.replaceAll({ input: 'hello world hello', substring: 'hello', replacement: 'hi' }));
+console.log('---');
+
+// Example 8: Check whether a string is a palindrome
+console.log('Example 8: Check whether a string is a palindrome');
+console.log("isPalindrome({ input: 'racecar' }):", StringUtils.isPalindrome({ input: 'racecar' }));
+console.log("isPalindrome({ input: 'hello' }):", StringUtils.isPalindrome({ input: 'hello' }));

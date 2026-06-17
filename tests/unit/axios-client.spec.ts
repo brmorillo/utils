@@ -5,7 +5,7 @@
  */
 const mockAxios = jest.fn();
 
-jest.mock('axios', () => mockAxios, { virtual: true });
+jest.mock('axios', () => mockAxios);
 
 import { AxiosClient } from '../../src/clients/axios-client';
 

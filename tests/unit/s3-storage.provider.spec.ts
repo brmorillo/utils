@@ -42,7 +42,6 @@ jest.mock(
       .fn()
       .mockImplementation((input: any) => new FakeCommand(input)),
   }),
-  { virtual: true },
 );
 
 jest.mock(
@@ -53,7 +52,6 @@ jest.mock(
       return { done: mockUploadDone };
     }),
   }),
-  { virtual: true },
 );
 
 import {
@@ -129,7 +127,7 @@ describe('S3StorageProvider - Unit Tests', () => {
         }),
       );
       expect(mockUploadDone).toHaveBeenCalled();
-      expect(url).toBe('https://my-bucket.s3.amazonaws.com/path/file.txt');
+      expect(url).toBe('https://my-bucket.s3.us-east-1.amazonaws.com/path/file.txt');
     });
 
     it('should pass content type and custom metadata', async () => {
@@ -198,6 +196,21 @@ describe('S3StorageProvider - Unit Tests', () => {
       await expect(provider.fileExists('f.txt')).resolves.toBe(false);
     });
 
+    it('should return false when the error name is NoSuchKey', async () => {
+      const err: any = new Error('no such key');
+      err.name = 'NoSuchKey';
+      mockSend.mockRejectedValueOnce(err);
+      await expect(provider.fileExists('f.txt')).resolves.toBe(false);
+    });
+
+    it('should return false when the $metadata http status is 404', async () => {
+      const err: any = new Error('not found');
+      err.name = 'SomeOtherName';
+      err.$metadata = { httpStatusCode: 404 };
+      mockSend.mockRejectedValueOnce(err);
+      await expect(provider.fileExists('f.txt')).resolves.toBe(false);
+    });
+
     it('should rethrow unexpected errors', async () => {
       mockSend.mockRejectedValueOnce(new Error('access denied'));
       await expect(provider.fileExists('f.txt')).rejects.toThrow(
@@ -237,6 +250,47 @@ describe('S3StorageProvider - Unit Tests', () => {
       await expect(provider.listFiles('prefix/')).resolves.toEqual([]);
     });
 
+    it('should paginate using the continuation token until exhausted', async () => {
+      mockSend
+        .mockResolvedValueOnce({
+          Contents: [{ Key: 'a.txt' }, { Key: 'b.txt' }],
+          IsTruncated: true,
+          NextContinuationToken: 'token-1',
+        })
+        .mockResolvedValueOnce({
+          Contents: [{ Key: 'c.txt' }],
+          IsTruncated: true,
+          NextContinuationToken: 'token-2',
+        })
+        .mockResolvedValueOnce({
+          Contents: [{ Key: 'd.txt' }],
+          IsTruncated: false,
+        });
+
+      await expect(provider.listFiles('prefix/')).resolves.toEqual([
+        'a.txt',
+        'b.txt',
+        'c.txt',
+        'd.txt',
+      ]);
+      expect(mockSend).toHaveBeenCalledTimes(3);
+
+      // Verify the continuation token was threaded through each page request.
+      const { ListObjectsV2Command } = require('@aws-sdk/client-s3');
+      expect(ListObjectsV2Command).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({ ContinuationToken: undefined }),
+      );
+      expect(ListObjectsV2Command).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({ ContinuationToken: 'token-1' }),
+      );
+      expect(ListObjectsV2Command).toHaveBeenNthCalledWith(
+        3,
+        expect.objectContaining({ ContinuationToken: 'token-2' }),
+      );
+    });
+
     it('should wrap list errors', async () => {
       mockSend.mockRejectedValueOnce(new Error('fail'));
       await expect(provider.listFiles('prefix/')).rejects.toThrow(
@@ -246,9 +300,29 @@ describe('S3StorageProvider - Unit Tests', () => {
   });
 
   describe('getFileUrl', () => {
-    it('should build the default S3 URL', () => {
+    it('should build a region-aware default S3 URL', () => {
       expect(provider.getFileUrl('dir/f.txt')).toBe(
-        'https://my-bucket.s3.amazonaws.com/dir/f.txt',
+        'https://my-bucket.s3.us-east-1.amazonaws.com/dir/f.txt',
+      );
+    });
+
+    it('should reflect a different region in the default URL', () => {
+      const euProvider = new S3StorageProvider({
+        ...baseOptions,
+        region: 'eu-central-1',
+      });
+      expect(euProvider.getFileUrl('dir/f.txt')).toBe(
+        'https://my-bucket.s3.eu-central-1.amazonaws.com/dir/f.txt',
+      );
+    });
+
+    it('should honor a custom endpoint when provided', () => {
+      const minio = new S3StorageProvider({
+        ...baseOptions,
+        endpoint: 'http://localhost:9000/',
+      });
+      expect(minio.getFileUrl('dir/f.txt')).toBe(
+        'http://localhost:9000/my-bucket/dir/f.txt',
       );
     });
 

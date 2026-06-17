@@ -1,4 +1,5 @@
 import { StringUtils } from '../../src/services/string.service';
+import { ValidationError } from '../../src/errors';
 
 /**
  * Unit tests for the StringUtils class.
@@ -11,9 +12,21 @@ describe('StringUtils - Unit Tests', () => {
       expect(result).toBe('Hello');
     });
 
-    it('should convert the rest of the string to lowercase', () => {
+    it('should leave the rest of the string untouched', () => {
+      const result = StringUtils.capitalizeFirstLetter({ input: 'iPhone' });
+      expect(result).toBe('IPhone');
+    });
+
+    it('should not lowercase the remainder of the string', () => {
       const result = StringUtils.capitalizeFirstLetter({ input: 'hELLO' });
-      expect(result).toBe('Hello');
+      expect(result).toBe('HELLO');
+    });
+
+    it('should throw a ValidationError for non-string input', () => {
+      expect(() =>
+        // @ts-expect-error testing invalid input
+        StringUtils.capitalizeFirstLetter({ input: null }),
+      ).toThrow(ValidationError);
     });
 
     it('should handle empty strings', () => {
@@ -49,38 +62,38 @@ describe('StringUtils - Unit Tests', () => {
     });
   });
 
-  describe('isValidPalindrome', () => {
+  describe('isPalindrome', () => {
     it('should identify a simple palindrome', () => {
-      const result = StringUtils.isValidPalindrome({ input: 'racecar' });
+      const result = StringUtils.isPalindrome({ input: 'racecar' });
       expect(result).toBe(true);
     });
 
     it('should identify a string that is not a palindrome', () => {
-      const result = StringUtils.isValidPalindrome({ input: 'hello' });
+      const result = StringUtils.isPalindrome({ input: 'hello' });
       expect(result).toBe(false);
     });
 
     it('should ignore spaces and punctuation', () => {
-      const result = StringUtils.isValidPalindrome({
+      const result = StringUtils.isPalindrome({
         input: 'A man, a plan, a canal: Panama',
       });
       expect(result).toBe(true);
     });
 
     it('should ignore uppercase and lowercase', () => {
-      const result = StringUtils.isValidPalindrome({
+      const result = StringUtils.isPalindrome({
         input: 'Able was I ere I saw Elba',
       });
       expect(result).toBe(true);
     });
 
     it('should handle empty strings', () => {
-      const result = StringUtils.isValidPalindrome({ input: '' });
+      const result = StringUtils.isPalindrome({ input: '' });
       expect(result).toBe(true);
     });
 
     it('should handle single-character strings', () => {
-      const result = StringUtils.isValidPalindrome({ input: 'a' });
+      const result = StringUtils.isPalindrome({ input: 'a' });
       expect(result).toBe(true);
     });
   });
@@ -223,6 +236,11 @@ describe('StringUtils - Unit Tests', () => {
 
     it('should convert an all-uppercase string to title case', () => {
       const result = StringUtils.toTitleCase({ input: 'HELLO WORLD' });
+      expect(result).toBe('Hello World');
+    });
+
+    it('should normalize mixed-case words to title case', () => {
+      const result = StringUtils.toTitleCase({ input: 'hELLo wORLd' });
       expect(result).toBe('Hello World');
     });
 

@@ -27,7 +27,7 @@ describe('NumberUtils - Integration Tests', () => {
       });
 
       // 6. Check whether it is even
-      const isEven = NumberUtils.isValidEven({ value: roundedValue });
+      const isEven = NumberUtils.isEven({ value: roundedValue });
 
       // Assertions
       expect(normalizedValue).toBe(-15.7); // Normalization does not affect values other than -0
@@ -83,7 +83,7 @@ describe('NumberUtils - Integration Tests', () => {
       });
 
       // 3. Check whether it is prime
-      const isPrime = MathUtils.isValidPrime({ value: clampedValue });
+      const isPrime = MathUtils.isPrime({ value: clampedValue });
 
       // 4. Calculate the factorial if it is less than 10, or 0 otherwise
       const factorial =

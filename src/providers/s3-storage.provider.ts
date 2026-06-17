@@ -25,6 +25,8 @@ export class S3StorageProvider implements IStorageProvider {
   private s3Client: any;
   private bucket: string;
   private baseUrl: string;
+  private region: string;
+  private endpoint?: string;
 
   /**
    * Creates a new S3StorageProvider instance
@@ -32,6 +34,8 @@ export class S3StorageProvider implements IStorageProvider {
   constructor(options: S3StorageOptions) {
     this.bucket = options.bucket;
     this.baseUrl = options.baseUrl || '';
+    this.region = options.region;
+    this.endpoint = options.endpoint;
 
     try {
       // Dynamic import to avoid requiring AWS SDK as a direct dependency
@@ -69,7 +73,6 @@ export class S3StorageProvider implements IStorageProvider {
   ): Promise<string> {
     try {
       const { Upload } = require('@aws-sdk/lib-storage');
-      const { PutObjectCommand } = require('@aws-sdk/client-s3');
 
       let body: Buffer | string | Readable;
 
@@ -148,7 +151,11 @@ export class S3StorageProvider implements IStorageProvider {
       await this.s3Client.send(command);
       return true;
     } catch (error: any) {
-      if (error.name === 'NotFound') {
+      if (
+        error?.name === 'NotFound' ||
+        error?.name === 'NoSuchKey' ||
+        error?.$metadata?.httpStatusCode === 404
+      ) {
         return false;
       }
       throw new StorageError(
@@ -190,28 +197,56 @@ export class S3StorageProvider implements IStorageProvider {
     if (this.baseUrl) {
       return `${this.baseUrl}/${filePath}`;
     }
-    return `https://${this.bucket}.s3.amazonaws.com/${filePath}`;
+
+    // Honor a custom endpoint (e.g. MinIO / S3-compatible) when configured.
+    if (this.endpoint) {
+      const base = this.endpoint.replace(/\/+$/, '');
+      return `${base}/${this.bucket}/${filePath}`;
+    }
+
+    // Region-aware virtual-hosted-style URL. us-east-1 historically uses the
+    // global endpoint, but the region-qualified host is valid for every region.
+    return `https://${this.bucket}.s3.${this.region}.amazonaws.com/${filePath}`;
   }
 
   /**
-   * Lists files in a prefix
+   * Lists files in a prefix.
+   *
+   * @remarks
+   * Pages through the bucket using `ContinuationToken` until the result set is
+   * exhausted (`IsTruncated === false`), so the full key set is returned rather
+   * than being silently capped at the 1000-key per-response limit.
    */
   async listFiles(prefix: string): Promise<string[]> {
     try {
       const { ListObjectsV2Command } = require('@aws-sdk/client-s3');
 
-      const command = new ListObjectsV2Command({
-        Bucket: this.bucket,
-        Prefix: prefix,
-      });
+      const keys: string[] = [];
+      let continuationToken: string | undefined;
 
-      const response = await this.s3Client.send(command);
+      do {
+        const command = new ListObjectsV2Command({
+          Bucket: this.bucket,
+          Prefix: prefix,
+          ContinuationToken: continuationToken,
+        });
 
-      if (!response.Contents) {
-        return [];
-      }
+        const response = await this.s3Client.send(command);
 
-      return response.Contents.map((item: any) => item.Key);
+        if (response.Contents) {
+          for (const item of response.Contents) {
+            if (item.Key !== undefined) {
+              keys.push(item.Key);
+            }
+          }
+        }
+
+        continuationToken = response.IsTruncated
+          ? response.NextContinuationToken
+          : undefined;
+      } while (continuationToken);
+
+      return keys;
     } catch (error) {
       throw new StorageError(
         `Failed to list files in S3: ${error instanceof Error ? error.message : String(error)}`,

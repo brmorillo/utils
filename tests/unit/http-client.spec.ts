@@ -30,6 +30,30 @@ describe('HttpClient (native)', () => {
     server = http.createServer(async (req, res) => {
       const body = await readBody(req);
 
+      // Endpoint that intentionally delays its response to trigger a client
+      // socket timeout.
+      if (req.url && req.url.startsWith('/slow')) {
+        setTimeout(() => {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ ok: true }));
+        }, 500);
+        return;
+      }
+
+      // Endpoint that echoes back the request headers it received.
+      if (req.url && req.url.startsWith('/headers')) {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(req.headers));
+        return;
+      }
+
+      // Endpoint that echoes back the raw (unparsed) request body.
+      if (req.url && req.url.startsWith('/raw')) {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ raw: body }));
+        return;
+      }
+
       // Endpoint that returns a plain-text (non-JSON) body.
       if (req.url && req.url.startsWith('/text')) {
         res.writeHead(200, { 'Content-Type': 'text/plain' });
@@ -195,6 +219,46 @@ describe('HttpClient (native)', () => {
 
       // Act / Assert
       await expect(client.get(deadUrl)).rejects.toBeDefined();
+    });
+  });
+
+  describe('timeout enforcement', () => {
+    it('should reject with an HttpError when the request times out', async () => {
+      // Act / Assert: the /slow endpoint waits longer than the timeout.
+      await expect(
+        client.get(`${baseUrl}/slow`, { timeout: 50 }),
+      ).rejects.toMatchObject({
+        name: 'HttpError',
+        code: 'REQUEST_TIMEOUT',
+        statusCode: 408,
+      });
+    });
+  });
+
+  describe('request body handling', () => {
+    it('should set Content-Type application/json for object bodies', async () => {
+      // Arrange: capture the headers the server received.
+      const response = await client.post(`${baseUrl}/headers`, { a: 1 });
+
+      // The /headers endpoint echoes back the request headers.
+      expect(response.status).toBe(200);
+      expect(response.data['content-type']).toBe('application/json');
+      expect(Number(response.data['content-length'])).toBeGreaterThan(0);
+    });
+
+    it('should send falsy-but-valid bodies such as 0', async () => {
+      // Act: a numeric 0 body must still be transmitted.
+      const response = await client.post(`${baseUrl}/raw`, 0);
+
+      // Assert: server echoes the raw body it received.
+      expect(response.status).toBe(200);
+      expect(response.data.raw).toBe('0');
+    });
+
+    it('should send an empty-string body', async () => {
+      const response = await client.post(`${baseUrl}/raw`, '');
+      expect(response.status).toBe(200);
+      expect(response.data.raw).toBe('');
     });
   });
 });

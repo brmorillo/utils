@@ -84,7 +84,11 @@ export class ValidationError extends BaseError {
     actual: any,
     details?: Record<string, any>,
   ): ValidationError {
-    const actualType = typeof actual;
+    const actualType = Array.isArray(actual)
+      ? 'array'
+      : actual === null
+        ? 'null'
+        : typeof actual;
     return new ValidationError(
       `Field '${field}' must be of type '${expected}', but got '${actualType}'`,
       field,

@@ -95,7 +95,7 @@ const union = ArrayUtils.union({ array1, array2 });
 
 ### flatten({ array })
 
-Flattens a nested array.
+Deeply flattens a nested array to a single level, to any nesting depth. The recursive `NestedArray<T>` parameter type accepts deeply-nested array literals at compile time, and the runtime implementation flattens with `push`/`reverse` (avoiding the `O(n^2)` cost of `unshift`) while preserving element order. Throws a `ValidationError` if `array` is not an array.
 
 ```javascript
 const nestedArray = [1, [2, 3], [4, [5, 6]]];
@@ -145,13 +145,16 @@ const shuffled = ArrayUtils.shuffle({ array });
 
 ### sort({ array, orderBy })
 
-Sorts an array with flexible ordering options.
+Sorts an array with flexible ordering options. `orderBy` may be `'asc'`/`'desc'` (natural comparison, supported for both primitive and object arrays) or an object mapping keys to per-key directions. The comparator is stable (returns `0` for equal elements). Sorting an empty array returns `[]`; a non-array input throws a `ValidationError`.
 
 ```javascript
 // Simple array with ascending order
 const numbers = [3, 1, 4, 2];
 const sortedAsc = ArrayUtils.sort({ array: numbers, orderBy: 'asc' });
 // [1, 2, 3, 4]
+
+// Empty array returns an empty array (no error)
+ArrayUtils.sort({ array: [], orderBy: 'asc' }); // []
 
 // Array of objects with multiple sort criteria
 const users = [

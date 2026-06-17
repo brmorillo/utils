@@ -155,7 +155,7 @@ describe('ConvertUtils - Benchmark Tests', () => {
           });
 
           // Convert number to liters (simulating a conversion between systems)
-          const literValue = numValue;
+          const literValue = numValue as number;
 
           // Convert liters to gallons
           ConvertUtils.volume({

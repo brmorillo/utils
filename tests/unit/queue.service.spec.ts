@@ -7,6 +7,7 @@ import {
   DelayQueue,
   PriorityQueue,
 } from '../../src/services/queue.service';
+import { QueueFullError, ValidationError } from '../../src/errors';
 
 describe('Queue Service', () => {
   describe('Queue', () => {
@@ -47,7 +48,7 @@ describe('Queue Service', () => {
       expect(queue.enqueue(2)).toBe(2);
       expect(queue.enqueue(3)).toBe(3);
       expect(queue.isFull()).toBe(true);
-      expect(queue.enqueue(4)).toBe(-1); // Should fail to enqueue
+      expect(() => queue.enqueue(4)).toThrow(QueueFullError); // Should throw when full
       expect(queue.size()).toBe(3);
       expect(queue.peek()).toBe(1);
     });
@@ -77,6 +78,19 @@ describe('Queue Service', () => {
     it('should report the configured maximum size', () => {
       expect(new Queue<number>([], 5).getMaxSize()).toBe(5);
       expect(new Queue<number>().getMaxSize()).toBeUndefined();
+    });
+
+    it('should treat maxSize 0 as zero capacity (always full)', () => {
+      const queue = new Queue<number>([1, 2, 3], 0);
+      expect(queue.size()).toBe(0);
+      expect(queue.isFull()).toBe(true);
+      expect(() => queue.enqueue(1)).toThrow(QueueFullError);
+    });
+
+    it('should throw ValidationError for an invalid maxSize', () => {
+      expect(() => new Queue<number>([], -1)).toThrow(ValidationError);
+      expect(() => new Queue<number>([], 1.5)).toThrow(ValidationError);
+      expect(() => new Queue<number>([], NaN)).toThrow(ValidationError);
     });
   });
 
@@ -118,7 +132,7 @@ describe('Queue Service', () => {
       expect(stack.push(2)).toBe(2);
       expect(stack.push(3)).toBe(3);
       expect(stack.isFull()).toBe(true);
-      expect(stack.push(4)).toBe(-1); // Should fail to push
+      expect(() => stack.push(4)).toThrow(QueueFullError); // Should throw when full
       expect(stack.size()).toBe(3);
       expect(stack.peek()).toBe(3);
     });
@@ -201,13 +215,13 @@ describe('Queue Service', () => {
       expect(multiQueue.enqueue(1, 'high')).toBe(1);
       expect(multiQueue.enqueue(2, 'high')).toBe(2);
       expect(multiQueue.isFull('high')).toBe(true);
-      expect(multiQueue.enqueue(3, 'high')).toBe(-1); // Should fail to enqueue
+      expect(() => multiQueue.enqueue(3, 'high')).toThrow(QueueFullError); // Should throw when full
 
       expect(multiQueue.enqueue(1, 'low')).toBe(1);
       expect(multiQueue.enqueue(2, 'low')).toBe(2);
       expect(multiQueue.enqueue(3, 'low')).toBe(3);
       expect(multiQueue.isFull('low')).toBe(true);
-      expect(multiQueue.enqueue(4, 'low')).toBe(-1); // Should fail to enqueue
+      expect(() => multiQueue.enqueue(4, 'low')).toThrow(QueueFullError); // Should throw when full
     });
 
     it('should respect default maximum size limit', () => {
@@ -216,7 +230,7 @@ describe('Queue Service', () => {
       expect(multiQueue.enqueue(1, 'any')).toBe(1);
       expect(multiQueue.enqueue(2, 'any')).toBe(2);
       expect(multiQueue.isFull('any')).toBe(true);
-      expect(multiQueue.enqueue(3, 'any')).toBe(-1); // Should fail to enqueue
+      expect(() => multiQueue.enqueue(3, 'any')).toThrow(QueueFullError); // Should throw when full
     });
 
     it('should truncate initial items if they exceed max size', () => {
@@ -289,6 +303,13 @@ describe('Queue Service', () => {
       multiQueue.enqueue(1, 'used');
       multiQueue.dequeue('used');
       expect(multiQueue.peek('used')).toBeUndefined();
+    });
+
+    it('should honor a channel maxSize of 0 as zero capacity', () => {
+      const multiQueue = new MultiQueue<number>({}, { blocked: 0 });
+      expect(multiQueue.isFull('blocked')).toBe(false); // channel not yet created
+      expect(() => multiQueue.enqueue(1, 'blocked')).toThrow(QueueFullError);
+      expect(multiQueue.size('blocked')).toBe(0);
     });
 
     it('should report a missing channel as not full', () => {
@@ -409,6 +430,14 @@ describe('Queue Service', () => {
       const buffer = new CircularBuffer<number>(3);
       expect(buffer.toArray()).toEqual([]);
     });
+
+    it('should preserve legitimate undefined values in toArray', () => {
+      const buffer = new CircularBuffer<number | undefined>(3);
+      buffer.add(1);
+      buffer.add(undefined);
+      buffer.add(3);
+      expect(buffer.toArray()).toEqual([1, undefined, 3]);
+    });
   });
 
   describe('PriorityQueue', () => {
@@ -444,7 +473,7 @@ describe('Queue Service', () => {
       priorityQueue.enqueue('task 1', 5);
       priorityQueue.enqueue('task 2', 3);
       expect(priorityQueue.isFull()).toBe(true);
-      expect(priorityQueue.enqueue('task 3', 1)).toBe(-1); // Should fail to enqueue
+      expect(() => priorityQueue.enqueue('task 3', 1)).toThrow(QueueFullError); // Should throw when full
 
       expect(priorityQueue.size()).toBe(2);
       expect(priorityQueue.peek()).toBe('task 2'); // Lower priority number = higher priority
@@ -573,7 +602,7 @@ describe('Queue Service', () => {
       delayQueue.enqueue('task 1', 1000);
       delayQueue.enqueue('task 2', 500);
       expect(delayQueue.isFull()).toBe(true);
-      expect(delayQueue.enqueue('task 3', 250)).toBe(-1); // Should fail to enqueue
+      expect(() => delayQueue.enqueue('task 3', 250)).toThrow(QueueFullError); // Should throw when full
 
       expect(delayQueue.size()).toBe(2);
     });
@@ -621,7 +650,7 @@ describe('Queue Service', () => {
       queue.enqueue(1);
       queue.enqueue(2);
       queue.enqueue(3);
-      expect(queue.enqueue(4)).toBe(-1); // Should fail to enqueue
+      expect(() => queue.enqueue(4)).toThrow(QueueFullError); // Should throw when full
     });
 
     it('should create a stack using the utility method', () => {
@@ -636,7 +665,7 @@ describe('Queue Service', () => {
       const stack = QueueUtils.createStack<string>({ maxSize: 2 });
       stack.push('a');
       stack.push('b');
-      expect(stack.push('c')).toBe(-1); // Should fail to push
+      expect(() => stack.push('c')).toThrow(QueueFullError); // Should throw when full
     });
 
     it('should create a multi-queue using the utility method', () => {
@@ -664,14 +693,14 @@ describe('Queue Service', () => {
 
       multiQueue.enqueue(1, 'high');
       multiQueue.enqueue(2, 'high');
-      expect(multiQueue.enqueue(3, 'high')).toBe(-1); // Should fail to enqueue
+      expect(() => multiQueue.enqueue(3, 'high')).toThrow(QueueFullError); // Should throw when full
 
       multiQueue.enqueue(1, 'medium'); // Should use default max size
       multiQueue.enqueue(2, 'medium');
       multiQueue.enqueue(3, 'medium');
       multiQueue.enqueue(4, 'medium');
       multiQueue.enqueue(5, 'medium');
-      expect(multiQueue.enqueue(6, 'medium')).toBe(-1); // Should fail to enqueue
+      expect(() => multiQueue.enqueue(6, 'medium')).toThrow(QueueFullError); // Should throw when full
     });
 
     it('should create a circular buffer using the utility method', () => {

@@ -535,17 +535,25 @@ export class FileUtils {
    * Reads a JSON file and parses its contents.
    * @param {object} params - The parameters for the method.
    * @param {string} params.filePath - Path to the JSON file.
-   * @returns The parsed JSON object.
+   * @typeParam T - The expected shape of the parsed JSON. Defaults to `unknown`;
+   *   the value is not validated at runtime, so callers asserting a `T` are
+   *   responsible for ensuring the file matches.
+   * @returns The parsed JSON object, typed as `T`.
    * @throws {StorageError} If the file cannot be read or parsed.
    * @example
    * ```typescript
-   * const config = FileUtils.readJsonFile({ filePath: './config.json' });
+   * interface Config { debug: boolean }
+   * const config = FileUtils.readJsonFile<Config>({ filePath: './config.json' });
    * ```
    */
-  public static readJsonFile({ filePath }: { filePath: string }): any {
+  public static readJsonFile<T = unknown>({
+    filePath,
+  }: {
+    filePath: string;
+  }): T {
     try {
       const data = FileUtils.readFile({ filePath });
-      return JSON.parse(data);
+      return JSON.parse(data) as T;
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
@@ -562,7 +570,7 @@ export class FileUtils {
    * Writes a JSON object to a file.
    * @param {object} params - The parameters for the method.
    * @param {string} params.filePath - Path to the JSON file.
-   * @param {any} params.data - The JSON object to write.
+   * @param {unknown} params.data - The JSON-serializable value to write.
    * @param {boolean} [params.pretty=false] - Whether to format the JSON with indentation.
    * @throws {StorageError} If the file cannot be written.
    * @example
@@ -576,7 +584,7 @@ export class FileUtils {
     pretty = false,
   }: {
     filePath: string;
-    data: any;
+    data: unknown;
     pretty?: boolean;
   }): void {
     try {

@@ -20,10 +20,11 @@ console.log(kebab); // "hello-world"
 
 ### capitalizeFirstLetter({ input })
 
-Capitalizes the first letter of a string and lowercases the rest.
+Capitalizes the first letter of a string. Only the first character is upper-cased; the rest of the string is left untouched. Throws a `ValidationError` if `input` is not a string.
 
 ```javascript
-StringUtils.capitalizeFirstLetter({ input: 'hello' }); // "Hello"
+StringUtils.capitalizeFirstLetter({ input: 'hello' });  // "Hello"
+StringUtils.capitalizeFirstLetter({ input: 'iPhone' }); // "IPhone"
 ```
 
 ### reverse({ input })
@@ -34,13 +35,13 @@ Reverses a string.
 StringUtils.reverse({ input: 'hello' }); // "olleh"
 ```
 
-### isValidPalindrome({ input })
+### isPalindrome({ input })
 
 Checks if a string is a palindrome (ignoring non-alphanumeric characters and case).
 
 ```javascript
-StringUtils.isValidPalindrome({ input: 'racecar' }); // true
-StringUtils.isValidPalindrome({ input: 'hello' });   // false
+StringUtils.isPalindrome({ input: 'racecar' }); // true
+StringUtils.isPalindrome({ input: 'hello' });   // false
 ```
 
 ### truncate({ input, maxLength })

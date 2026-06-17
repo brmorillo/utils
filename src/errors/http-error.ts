@@ -82,6 +82,66 @@ export class HttpError extends BaseError {
   }
 
   /**
+   * Creates a Conflict (409) error
+   * @param message Error message
+   * @param details Additional error details
+   */
+  public static conflict(
+    message: string = 'Conflict',
+    details?: Record<string, any>,
+  ): HttpError {
+    return new HttpError(message, 409, 'CONFLICT', details);
+  }
+
+  /**
+   * Creates an Unprocessable Entity (422) error
+   * @param message Error message
+   * @param details Additional error details
+   */
+  public static unprocessableEntity(
+    message: string = 'Unprocessable Entity',
+    details?: Record<string, any>,
+  ): HttpError {
+    return new HttpError(message, 422, 'UNPROCESSABLE_ENTITY', details);
+  }
+
+  /**
+   * Creates a Too Many Requests (429) error
+   * @param message Error message
+   * @param details Additional error details
+   */
+  public static tooManyRequests(
+    message: string = 'Too Many Requests',
+    details?: Record<string, any>,
+  ): HttpError {
+    return new HttpError(message, 429, 'TOO_MANY_REQUESTS', details);
+  }
+
+  /**
+   * Creates a Bad Gateway (502) error
+   * @param message Error message
+   * @param details Additional error details
+   */
+  public static badGateway(
+    message: string = 'Bad Gateway',
+    details?: Record<string, any>,
+  ): HttpError {
+    return new HttpError(message, 502, 'BAD_GATEWAY', details);
+  }
+
+  /**
+   * Creates a Service Unavailable (503) error
+   * @param message Error message
+   * @param details Additional error details
+   */
+  public static serviceUnavailable(
+    message: string = 'Service Unavailable',
+    details?: Record<string, any>,
+  ): HttpError {
+    return new HttpError(message, 503, 'SERVICE_UNAVAILABLE', details);
+  }
+
+  /**
    * Creates a Server Error (500) error
    * @param message Error message
    * @param details Additional error details

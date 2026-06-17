@@ -237,5 +237,24 @@ describe('DateUtils - Integration Tests', () => {
       // Assertions
       expect(duration.hours).toBe(23); // 23 actual hours due to the time change
     });
+
+    it('should throw when converting to an invalid timezone in a chain', () => {
+      const utcDate = DateUtils.now({ utc: true });
+      expect(() => {
+        DateUtils.toTimeZone({ date: utcDate, timeZone: 'Mars/Phobos' });
+      }).toThrow('Invalid timezone');
+    });
+  });
+
+  describe('Invalid input handling', () => {
+    it('should throw a ValidationError when given an invalid ISO date string', () => {
+      expect(() => {
+        DateUtils.diffBetween({
+          startDate: 'totally-invalid',
+          endDate: '2023-01-01',
+          units: ['days'],
+        });
+      }).toThrow('Invalid date');
+    });
   });
 });

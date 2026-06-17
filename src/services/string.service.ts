@@ -1,16 +1,48 @@
+import { ValidationError } from '../errors';
+
 export class StringUtils {
   /**
+   * Validates that the provided value is a string.
+   * @param {object} params - The parameters for the method.
+   * @param {unknown} params.value - The value to validate.
+   * @param {string} params.field - The name of the field being validated.
+   * @throws {ValidationError} If the value is `null`, `undefined`, or not a string.
+   */
+  private static assertString(
+    value: unknown,
+    field: string,
+  ): asserts value is string {
+    if (typeof value !== 'string') {
+      throw new ValidationError(
+        `Field '${field}' must be a string`,
+        field,
+        'string',
+        value,
+      );
+    }
+  }
+
+  /**
    * Capitalizes the first letter of a string.
+   *
+   * Only the first character is upper-cased; the remainder of the string is
+   * left untouched (e.g. `'iPhone'` becomes `'IPhone'`).
    * @param {object} params - The parameters for the method.
    * @param {string} params.input - The string to capitalize.
    * @returns {string} The string with the first letter capitalized.
+   * @throws {ValidationError} If `input` is not a string.
    * @example
    * StringUtils.capitalizeFirstLetter({
    *   input: 'hello'
    * }); // "Hello"
+   *
+   * StringUtils.capitalizeFirstLetter({
+   *   input: 'iPhone'
+   * }); // "IPhone"
    */
   public static capitalizeFirstLetter({ input }: { input: string }): string {
-    return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
+    StringUtils.assertString(input, 'input');
+    return input.charAt(0).toUpperCase() + input.slice(1);
   }
 
   /**
@@ -18,12 +50,14 @@ export class StringUtils {
    * @param {object} params - The parameters for the method.
    * @param {string} params.input - The string to reverse.
    * @returns {string} The reversed string.
+   * @throws {ValidationError} If `input` is not a string.
    * @example
    * StringUtils.reverse({
    *   input: 'hello'
    * }); // "olleh"
    */
   public static reverse({ input }: { input: string }): string {
+    StringUtils.assertString(input, 'input');
     return input.split('').reverse().join('');
   }
 
@@ -32,16 +66,18 @@ export class StringUtils {
    * @param {object} params - The parameters for the method.
    * @param {string} params.input - The string to check.
    * @returns {boolean} `true` if the string is a palindrome, otherwise `false`.
+   * @throws {ValidationError} If `input` is not a string.
    * @example
-   * StringUtils.isValidPalindrome({
+   * StringUtils.isPalindrome({
    *   input: 'racecar'
    * }); // true
    *
-   * StringUtils.isValidPalindrome({
+   * StringUtils.isPalindrome({
    *   input: 'hello'
    * }); // false
    */
-  public static isValidPalindrome({ input }: { input: string }): boolean {
+  public static isPalindrome({ input }: { input: string }): boolean {
+    StringUtils.assertString(input, 'input');
     const cleaned = input.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
     return cleaned === StringUtils.reverse({ input: cleaned });
   }
@@ -65,6 +101,7 @@ export class StringUtils {
     input: string;
     maxLength: number;
   }): string {
+    StringUtils.assertString(input, 'input');
     if (input.length <= maxLength) return input;
 
     // If the string is longer than maxLength, truncate leaving room for '...'
@@ -88,6 +125,7 @@ export class StringUtils {
    * }); // "camel-case-string"
    */
   public static toKebabCase({ input }: { input: string }): string {
+    StringUtils.assertString(input, 'input');
     return (
       input
         .trim()
@@ -121,6 +159,7 @@ export class StringUtils {
    * }); // "camel_case_string"
    */
   public static toSnakeCase({ input }: { input: string }): string {
+    StringUtils.assertString(input, 'input');
     return (
       input
         .trim()
@@ -154,6 +193,7 @@ export class StringUtils {
    * }); // "snakeCaseString"
    */
   public static toCamelCase({ input }: { input: string }): string {
+    StringUtils.assertString(input, 'input');
     // If it is already camelCase (has uppercase letters and no separators), return as-is
     if (/^[a-z]+([A-Z][a-z]*)*$/.test(input)) {
       return input;
@@ -175,10 +215,15 @@ export class StringUtils {
    * }); // "Hello World"
    */
   public static toTitleCase({ input }: { input: string }): string {
+    StringUtils.assertString(input, 'input');
     return input
       .toLowerCase()
       .split(' ')
-      .map(word => StringUtils.capitalizeFirstLetter({ input: word }))
+      .map(word =>
+        // `capitalizeFirstLetter` no longer lowercases the remainder of the
+        // word, so lowercase each word first to guarantee Title Case output.
+        StringUtils.capitalizeFirstLetter({ input: word.toLowerCase() }),
+      )
       .join(' ');
   }
 
@@ -206,6 +251,8 @@ export class StringUtils {
     input: string;
     substring: string;
   }): number {
+    StringUtils.assertString(input, 'input');
+    StringUtils.assertString(substring, 'substring');
     if (!substring) return 0;
     return (
       input.match(new RegExp(StringUtils.escapeRegExp(substring), 'g')) || []
@@ -235,6 +282,9 @@ export class StringUtils {
     substring: string;
     replacement: string;
   }): string {
+    StringUtils.assertString(input, 'input');
+    StringUtils.assertString(substring, 'substring');
+    StringUtils.assertString(replacement, 'replacement');
     if (!substring) return input;
 
     return input.split(substring).join(replacement);
@@ -267,6 +317,9 @@ export class StringUtils {
     replacement: string;
     occurrences: number;
   }): string {
+    StringUtils.assertString(input, 'input');
+    StringUtils.assertString(substring, 'substring');
+    StringUtils.assertString(replacement, 'replacement');
     if (!substring) return input;
 
     let count = 0;
@@ -311,6 +364,15 @@ export class StringUtils {
     template: string;
     replacements: Record<string, string>;
   }): string {
+    StringUtils.assertString(template, 'template');
+    if (replacements === null || typeof replacements !== 'object') {
+      throw new ValidationError(
+        `Field 'replacements' must be an object`,
+        'replacements',
+        'object',
+        replacements,
+      );
+    }
     return template.replace(/\{([^}]+)\}/g, (match, key) => {
       return replacements[key] ?? match;
     });

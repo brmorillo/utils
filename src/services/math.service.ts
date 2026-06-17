@@ -81,7 +81,8 @@ export class MathUtils {
    * @param {object} params - The parameters for the method.
    * @param {number} params.a - The first number.
    * @param {number} params.b - The second number.
-   * @returns {number} The greatest common divisor of the two numbers.
+   * @returns {number} The (non-negative) greatest common divisor of the two numbers.
+   * @throws {ValidationError} If `a` or `b` is not a finite integer.
    * @example
    * MathUtils.gcd({
    *   a: 24,
@@ -89,7 +90,20 @@ export class MathUtils {
    * }); // 12
    */
   public static gcd({ a, b }: { a: number; b: number }): number {
-    return b === 0 ? a : MathUtils.gcd({ a: b, b: a % b });
+    if (!Number.isInteger(a) || !Number.isInteger(b)) {
+      throw new ValidationError(
+        'gcd requires finite integer arguments',
+        'a,b',
+        'integer',
+        { a, b },
+      );
+    }
+    let x = Math.abs(a);
+    let y = Math.abs(b);
+    while (y !== 0) {
+      [x, y] = [y, x % y];
+    }
+    return x;
   }
 
   /**
@@ -97,19 +111,30 @@ export class MathUtils {
    * @param {object} params - The parameters for the method.
    * @param {number} params.a - The first number.
    * @param {number} params.b - The second number.
-   * @returns {number} The least common multiple of the two numbers.
+   * @returns {number} The (non-negative) least common multiple of the two numbers.
+   * @throws {ValidationError} If `a` or `b` is not a finite integer.
    * @example
    * MathUtils.lcm({
    *   a: 4,
    *   b: 6
    * }); // 12
+   *
+   * MathUtils.lcm({ a: 0, b: 0 }); // 0
    */
   public static lcm({ a, b }: { a: number; b: number }): number {
-    return (a * b) / MathUtils.gcd({ a, b });
+    if (a === 0 || b === 0) {
+      // gcd guards integer-ness; call it so non-integer zero-args still throw.
+      MathUtils.gcd({ a, b });
+      return 0;
+    }
+    return Math.abs(a * b) / MathUtils.gcd({ a, b });
   }
 
   /**
    * Clamps a number within a specified range.
+   *
+   * Consistent with {@link NumberUtils.clamp}: if `min` is greater than `max`
+   * the two bounds are automatically swapped so the range is always valid.
    * @param {object} params - The parameters for the method.
    * @param {number} params.value - The number to clamp.
    * @param {number} params.min - The minimum value.
@@ -121,6 +146,8 @@ export class MathUtils {
    *   min: 0,
    *   max: 5
    * }); // 5
+   * // Bounds are auto-swapped when min > max:
+   * MathUtils.clamp({ value: 3, min: 5, max: 0 }); // 3
    */
   public static clamp({
     value,
@@ -131,6 +158,9 @@ export class MathUtils {
     min: number;
     max: number;
   }): number {
+    if (min > max) {
+      [min, max] = [max, min];
+    }
     return Math.min(Math.max(value, min), max);
   }
 
@@ -139,18 +169,28 @@ export class MathUtils {
    * @param {object} params - The parameters for the method.
    * @param {number} params.value - The number to check.
    * @returns {boolean} `true` if the number is prime, otherwise `false`.
+   * @throws {ValidationError} If `value` is not a finite integer.
    * @example
-   * MathUtils.isValidPrime({
+   * MathUtils.isPrime({
    *   value: 7
    * }); // true
    *
-   * MathUtils.isValidPrime({
+   * MathUtils.isPrime({
    *   value: 4
    * }); // false
    */
-  public static isValidPrime({ value }: { value: number }): boolean {
+  public static isPrime({ value }: { value: number }): boolean {
+    if (!Number.isInteger(value)) {
+      throw new ValidationError(
+        `Field 'value' must be a finite integer`,
+        'value',
+        'integer',
+        value,
+      );
+    }
     if (value <= 1) return false;
-    for (let i = 2; i <= Math.sqrt(value); i++) {
+    const limit = Math.sqrt(value);
+    for (let i = 2; i <= limit; i++) {
       if (value % i === 0) return false;
     }
     return true;

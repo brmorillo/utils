@@ -1,5 +1,11 @@
 import { ValidationError } from '../errors';
 
+/**
+ * Recursively nested array type. Accepts values of type `T` nested in arrays
+ * to any depth, so deeply-nested literals type-check against `flatten`.
+ */
+export type NestedArray<T> = Array<T | NestedArray<T>>;
+
 export class ArrayUtils {
   /**
    * Removes duplicate values from an array.
@@ -68,32 +74,35 @@ export class ArrayUtils {
 
   /**
    * Flattens a multi-dimensional array into a single-dimensional array.
+   * Supports arbitrarily deep nesting at both compile time and runtime.
    * @param {object} params - The parameters for the method.
-   * @param {(T | T[])[]} params.array - Multi-dimensional array.
+   * @param {NestedArray<T>} params.array - Multi-dimensional array.
    * @returns {T[]} Flattened array.
    * @example
    * ArrayUtils.flatten({
    *   array: [1, [2, [3, 4]], 5]
    * }); // [1, 2, 3, 4, 5]
    */
-  public static flatten<T>({ array }: { array: (T | T[])[] }): T[] {
+  public static flatten<T>({ array }: { array: NestedArray<T> }): T[] {
     if (!Array.isArray(array)) {
       throw new ValidationError('Input must be an array');
     }
 
+    // Iterative deep-flatten using push + reverse to avoid the O(n^2)
+    // cost of unshift while still preserving the original element order.
     const result: T[] = [];
-    const stack = [...array];
+    const stack: any[] = [...array];
 
     while (stack.length) {
       const value = stack.pop();
       if (Array.isArray(value)) {
         stack.push(...value);
       } else {
-        result.unshift(value as T);
+        result.push(value as T);
       }
     }
 
-    return result;
+    return result.reverse();
   }
 
   /**
@@ -172,6 +181,13 @@ export class ArrayUtils {
    *   array: [{ name: 'John', age: 30 }, { name: 'Jane', age: 25 }],
    *   orderBy: { age: 'asc' }
    * }); // [{ name: 'Jane', age: 25 }, { name: 'John', age: 30 }]
+   *
+   * // Arrays of objects also support a plain 'asc' | 'desc' direction, which
+   * // sorts by the natural comparison of the elements.
+   * ArrayUtils.sort({
+   *   array: [{ v: 3 }, { v: 1 }, { v: 2 }],
+   *   orderBy: 'asc'
+   * });
    */
   public static sort<T>({
     array,
@@ -180,19 +196,27 @@ export class ArrayUtils {
     array: T[];
     orderBy: 'asc' | 'desc' | Record<string, 'asc' | 'desc'>;
   }): T[] {
-    if (!Array.isArray(array) || array.length === 0) {
-      throw new ValidationError('Input must be a non-empty array');
+    if (!Array.isArray(array)) {
+      throw new ValidationError('Input must be an array');
     }
 
-    const isPrimitive = typeof array[0] !== 'object';
-
-    if (isPrimitive && (orderBy === 'asc' || orderBy === 'desc')) {
-      return [...array].sort((a, b) =>
-        orderBy === 'asc' ? (a > b ? 1 : -1) : a < b ? 1 : -1,
-      );
+    // Sorting an empty array is a no-op rather than an error.
+    if (array.length === 0) {
+      return [];
     }
 
-    if (typeof orderBy === 'object') {
+    if (orderBy === 'asc' || orderBy === 'desc') {
+      // Natural comparison, used for both primitives and objects. Returns 0
+      // for equal elements so the underlying stable sort preserves order.
+      return [...array].sort((a, b) => {
+        if (a === b) return 0;
+        if ((a as any) > (b as any)) return orderBy === 'asc' ? 1 : -1;
+        if ((a as any) < (b as any)) return orderBy === 'asc' ? -1 : 1;
+        return 0;
+      });
+    }
+
+    if (typeof orderBy === 'object' && orderBy !== null) {
       const keys = Object.keys(orderBy);
 
       return [...array].sort((a, b) => {
@@ -235,6 +259,10 @@ export class ArrayUtils {
     array: T[];
     subset: Partial<T>;
   }): T | null {
+    if (!Array.isArray(array)) {
+      throw new ValidationError('Input must be an array');
+    }
+
     return (
       array.find(item =>
         Object.entries(subset).every(([key, value]) => {
@@ -270,6 +298,15 @@ export class ArrayUtils {
     superset: T;
     subset: Partial<T>;
   }): boolean {
+    if (
+      superset === null ||
+      typeof superset !== 'object' ||
+      subset === null ||
+      typeof subset !== 'object'
+    ) {
+      throw new ValidationError('Both inputs must be objects');
+    }
+
     return Object.entries(subset).every(([key, value]) => {
       if (value === undefined) return true;
       if (Array.isArray(value)) {

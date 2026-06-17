@@ -24,7 +24,11 @@ console.log(valid); // true
 
 ### generate({ epoch, workerId, processId })
 
-Generates a Snowflake ID. All parameters are optional: `epoch` defaults to `2025-01-01T00:00:00.000Z`, `workerId` defaults to `0n`, and `processId` defaults to `0n`. Throws if the epoch is not a valid `Date`.
+Generates a Snowflake ID. All parameters are optional: `epoch` defaults to `2025-01-01T00:00:00.000Z`, `workerId` defaults to `0n`, and `processId` defaults to `0n`. Throws a `ValidationError` if the epoch is not a valid `Date`.
+
+A persistent `Snowflake` instance is maintained per epoch, so its internal increment counter advances across calls. This guarantees that two `generate` calls in the same millisecond return distinct IDs instead of colliding.
+
+> Note: Snowflake IDs are epoch-relative. The same `epoch` you generate with must be supplied to `decode`/`getTimestamp` to recover the correct timestamp.
 
 ```javascript
 // Default parameters
@@ -40,19 +44,23 @@ const customId = SnowflakeUtils.generate({
 
 ### decode({ snowflakeId, epoch })
 
-Deconstructs a Snowflake ID into its components (`timestamp`, `workerId`, `processId`, `increment`). The `epoch` parameter is optional and defaults to the default epoch. Throws if the Snowflake ID or epoch is invalid.
+Deconstructs a Snowflake ID into its components (`timestamp`, `workerId`, `processId`, `increment`, `epoch`). The `epoch` parameter is optional and defaults to the default epoch. Throws a `ValidationError` if the Snowflake ID or epoch is invalid.
+
+The ID must be an all-digit value (`/^\d+$/`). Inputs such as `'1e3'`, `'10.5'`, or `'Infinity'` throw a `ValidationError`.
+
+> Important: pass the same `epoch` used at generation; decoding with a different epoch yields an incorrect timestamp.
 
 ```javascript
 const components = SnowflakeUtils.decode({
   snowflakeId: '1322717493961297921',
 });
 console.log(components);
-// { timestamp: 1234567890n, workerId: 1n, processId: 0n, increment: 42n }
+// { timestamp: 1234567890n, workerId: 1n, processId: 0n, increment: 42n, epoch: 1735689600000n }
 ```
 
 ### getTimestamp({ snowflakeId, epoch })
 
-Extracts the creation timestamp from a Snowflake ID as a `Date` object. The `epoch` parameter is optional and defaults to the default epoch.
+Extracts the creation timestamp from a Snowflake ID as a `Date` object. The `epoch` parameter is optional and defaults to the default epoch. You must pass the same `epoch` used at generation, otherwise the recovered timestamp will be wrong.
 
 ```javascript
 const timestamp = SnowflakeUtils.getTimestamp({
@@ -95,7 +103,9 @@ console.log(id.toString());
 
 ### convert({ snowflakeId, toFormat })
 
-Converts a Snowflake ID to a different format. `toFormat` must be one of `'bigint'`, `'string'`, or `'number'`. Throws if the ID is invalid, the format is unsupported, or the value is too large to be safely represented as a number.
+Converts a Snowflake ID to a different format. `toFormat` must be one of `'bigint'`, `'string'`, or `'number'`. Throws a `ValidationError` if the ID is invalid, the format is unsupported, or the value is too large to be safely represented as a number.
+
+> Warning: the `'number'` format is unusable for real Snowflake IDs. A typical Snowflake exceeds `Number.MAX_SAFE_INTEGER`, so converting it to a JavaScript `number` would lose precision; the method throws instead of returning a corrupted value. `'number'` is kept only for small/synthetic IDs. Prefer `'bigint'` or `'string'`.
 
 ```javascript
 // Convert to string

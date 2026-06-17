@@ -46,6 +46,8 @@ Generates a deterministic UUID (version 5) by hashing a `name` within a `namespa
 
 The `namespace` parameter is optional. When omitted, it defaults to the standard URL namespace (`uuid.URL`, which is `6ba7b811-9dad-11d1-80b4-00c04fd430c8`). This means calling the method with only a `name` is still fully deterministic: the same name always yields the same UUID.
 
+Throws a `ValidationError` if `name` is empty or if a provided `namespace` is not a valid UUID.
+
 ```javascript
 // Deterministic with an explicit namespace
 const a = UUIDUtils.uuidV5Generate({

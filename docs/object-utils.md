@@ -33,7 +33,7 @@ console.log(clone.b.c); // 2 (not affected by the change to original)
 
 ### deepMerge({ target, source })
 
-Deeply merges two objects.
+Deeply merges two objects. When a key holds an object on both sides, the objects are merged recursively. When the source holds an object but the target holds a primitive or lacks the key, the source object is deep-cloned into the result, so the merged output never shares references with `source`. Dangerous keys (`__proto__`, `constructor`, `prototype`) are skipped to prevent prototype pollution.
 
 ```javascript
 const target = { a: 1, b: { c: 2 } };
@@ -64,7 +64,7 @@ console.log(omitted); // { a: 1, c: 3 }
 
 ### flattenObject({ obj, prefix, delimiter })
 
-Flattens a nested object into a single-level object with delimited keys. `prefix` defaults to `''` and `delimiter` defaults to `'.'`.
+Flattens a nested object into a single-level object with delimited keys. `prefix` defaults to `''` and `delimiter` defaults to `'.'`. Throws a `ValidationError` if `obj` is not an object (e.g. `null`/`undefined`).
 
 ```javascript
 const obj = { a: 1, b: { c: 2, d: { e: 3 } } };
@@ -74,7 +74,7 @@ console.log(flattened); // { 'a': 1, 'b.c': 2, 'b.d.e': 3 }
 
 ### unflattenObject({ obj, path, value, delimiter })
 
-Sets a value at a delimited path on an object, creating intermediate objects as needed. `delimiter` defaults to `'.'`.
+Sets a value at a delimited path on an object, creating intermediate objects as needed. `delimiter` defaults to `'.'`. Paths containing dangerous keys (`__proto__`, `constructor`, `prototype`) are ignored to prevent prototype pollution.
 
 ```javascript
 const obj = {};
@@ -84,7 +84,7 @@ console.log(obj); // { a: { b: { c: 42 } } }
 
 ### isEmpty({ obj })
 
-Checks if an object has no own enumerable keys.
+Checks if an object has no own enumerable keys. Throws a `ValidationError` if `obj` is not an object.
 
 ```javascript
 ObjectUtils.isEmpty({ obj: {} }); // true
@@ -112,7 +112,7 @@ ObjectUtils.hasCircularReference({ obj }); // true
 
 ### removeUndefined({ obj })
 
-Returns a new object without properties whose value is `undefined`.
+Returns a new object without properties whose value is `undefined`. Throws a `ValidationError` if `obj` is not an object.
 
 ```javascript
 const obj = { a: 1, b: undefined, c: 3 };
@@ -122,7 +122,7 @@ console.log(cleaned); // { a: 1, c: 3 }
 
 ### removeNull({ obj })
 
-Returns a new object without properties whose value is `null`.
+Returns a new object without properties whose value is `null`. Throws a `ValidationError` if `obj` is not an object.
 
 ```javascript
 const obj = { a: 1, b: null, c: 3 };
@@ -132,7 +132,7 @@ console.log(cleaned); // { a: 1, c: 3 }
 
 ### diff({ obj1, obj2 })
 
-Finds the differences between two objects.
+Finds the differences between two objects. Throws a `ValidationError` if either input is not an object.
 
 ```javascript
 const obj1 = { a: 1, b: 2, c: 3 };
@@ -234,7 +234,7 @@ console.log(value); // 42
 
 ### invert({ obj })
 
-Inverts an object's keys and values.
+Inverts an object's keys and values. Throws a `ValidationError` if `obj` is not an object.
 
 ```javascript
 const obj = { a: 1, b: 2, c: 3 };

@@ -1,4 +1,5 @@
 import { CacheUtils } from '../../src/services/cache.service';
+import { ValidationError } from '../../src/errors';
 
 /**
  * Unit tests for the CacheUtils class.
@@ -379,17 +380,36 @@ describe('CacheUtils', () => {
       expect(cache.keys()).toEqual(['a', 'b', 'c']);
     });
 
-    it('should move an updated key to the end of the insertion order', () => {
+    it('should keep an updated key in its original insertion order (true FIFO)', () => {
       // Arrange
       const cache = CacheUtils.createFIFOCache();
       cache.set('a', 1);
       cache.set('b', 2);
 
-      // Act
+      // Act - updating an existing key must NOT reset its position
       cache.set('a', 99);
 
       // Assert
-      expect(cache.keys()).toEqual(['b', 'a']);
+      expect(cache.keys()).toEqual(['a', 'b']);
+      expect(cache.get('a')).toBe(99);
+    });
+
+    it('should evict the original-oldest key even after it was updated', () => {
+      // Arrange
+      const cache = CacheUtils.createFIFOCache({ maxSize: 2 });
+      cache.set('a', 1);
+      cache.set('b', 2);
+
+      // Updating 'a' keeps it first in line for eviction.
+      cache.set('a', 99);
+
+      // Act - adding 'c' should evict 'a' (the oldest inserted)
+      cache.set('c', 3);
+
+      // Assert
+      expect(cache.has('a')).toBe(false);
+      expect(cache.has('b')).toBe(true);
+      expect(cache.has('c')).toBe(true);
     });
 
     it('should expire items after their TTL', () => {
@@ -514,6 +534,50 @@ describe('CacheUtils', () => {
         // Assert
         expect(cache.has('key1')).toBe(false);
         expect(cache.keys()).toEqual([]);
+      } finally {
+        Date.now = originalDateNow;
+      }
+    });
+  });
+
+  // Validation guards for invalid ttl / maxSize across all factories.
+  describe('option validation', () => {
+    it.each([
+      ['createCache', (o: any) => CacheUtils.createCache(o)],
+      ['createLFUCache', (o: any) => CacheUtils.createLFUCache(o)],
+      ['createFIFOCache', (o: any) => CacheUtils.createFIFOCache(o)],
+    ])('%s should reject a negative ttl', (_name, factory) => {
+      expect(() => factory({ ttl: -1 })).toThrow(ValidationError);
+    });
+
+    it.each([
+      ['createCache', (o: any) => CacheUtils.createCache(o)],
+      ['createLFUCache', (o: any) => CacheUtils.createLFUCache(o)],
+      ['createFIFOCache', (o: any) => CacheUtils.createFIFOCache(o)],
+    ])('%s should reject a negative maxSize', (_name, factory) => {
+      expect(() => factory({ maxSize: -5 })).toThrow(ValidationError);
+    });
+
+    it.each([
+      ['createCache', (o: any) => CacheUtils.createCache(o)],
+      ['createLFUCache', (o: any) => CacheUtils.createLFUCache(o)],
+      ['createFIFOCache', (o: any) => CacheUtils.createFIFOCache(o)],
+    ])('%s should reject a NaN ttl', (_name, factory) => {
+      expect(() => factory({ ttl: NaN })).toThrow(ValidationError);
+    });
+  });
+
+  // A TTL of 0 means "no expiry" consistently across factories.
+  describe('ttl of 0 means no expiry', () => {
+    it('createCache should not expire items when ttl is 0', () => {
+      const cache = CacheUtils.createCache({ ttl: 0 });
+      const originalDateNow = Date.now;
+      let mockTime = 1000;
+      Date.now = jest.fn(() => mockTime);
+      try {
+        cache.set('key1', 'value1');
+        mockTime = 10_000_000;
+        expect(cache.get('key1')).toBe('value1');
       } finally {
         Date.now = originalDateNow;
       }

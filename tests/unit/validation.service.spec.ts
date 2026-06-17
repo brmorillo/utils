@@ -66,6 +66,9 @@ describe('ValidationUtils - Unit Tests', () => {
         'https://example.com:8080',
         'http://192.168.1.1',
         'https://example.com/path#fragment',
+        // `..` in the path/query must NOT cause rejection (host scoped check)
+        'https://example.com/path/../resource',
+        'https://example.com/path?redirect=../home',
       ];
 
       validURLs.forEach(inputUrl => {
@@ -409,10 +412,11 @@ describe('ValidationUtils - Unit Tests', () => {
       expect(ValidationUtils.isValidURL({ inputUrl: 42 as any })).toBe(false);
     });
 
-    it('should reject URLs containing spaces or double dots', () => {
+    it('should reject URLs containing spaces or an empty host label', () => {
       expect(
         ValidationUtils.isValidURL({ inputUrl: 'https://exa mple.com' }),
       ).toBe(false);
+      // `..` in the HOST produces an empty label and is rejected
       expect(
         ValidationUtils.isValidURL({ inputUrl: 'https://example..com' }),
       ).toBe(false);
@@ -466,6 +470,23 @@ describe('ValidationUtils - Unit Tests', () => {
     it('should reject Infinity values', () => {
       expect(ValidationUtils.isNumber({ value: Infinity })).toBe(false);
       expect(ValidationUtils.isNumber({ value: -Infinity })).toBe(false);
+    });
+
+    it('should reject whitespace-only strings', () => {
+      expect(ValidationUtils.isNumber({ value: '   ' })).toBe(false);
+      expect(ValidationUtils.isNumber({ value: '\t' })).toBe(false);
+    });
+
+    it('should reject non-decimal numeric strings', () => {
+      expect(ValidationUtils.isNumber({ value: '0x1F' })).toBe(false);
+      expect(ValidationUtils.isNumber({ value: '0b101' })).toBe(false);
+      expect(ValidationUtils.isNumber({ value: '0o17' })).toBe(false);
+    });
+
+    it('should reject non-string, non-number objects', () => {
+      expect(ValidationUtils.isNumber({ value: {} })).toBe(false);
+      expect(ValidationUtils.isNumber({ value: [] })).toBe(false);
+      expect(ValidationUtils.isNumber({ value: NaN })).toBe(false);
     });
   });
 

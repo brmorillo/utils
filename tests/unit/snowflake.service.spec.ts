@@ -28,6 +28,22 @@ describe('SnowflakeUtils', () => {
         SnowflakeUtils.generate({ epoch: new Date('invalid-date') });
       }).toThrow('Invalid epoch');
     });
+
+    it('should generate distinct IDs for two calls in the same millisecond', () => {
+      // The persistent Snowflake instance advances its increment counter, so
+      // even back-to-back calls within the same millisecond must differ.
+      const ids = new Set<string>();
+      for (let i = 0; i < 50; i++) {
+        ids.add(SnowflakeUtils.generate({ epoch: testEpoch }).toString());
+      }
+      expect(ids.size).toBe(50);
+    });
+
+    it('should generate two consecutive IDs that are not identical', () => {
+      const id1 = SnowflakeUtils.generate({ epoch: testEpoch });
+      const id2 = SnowflakeUtils.generate({ epoch: testEpoch });
+      expect(id1).not.toBe(id2);
+    });
   });
 
   describe('decode', () => {
@@ -42,6 +58,7 @@ describe('SnowflakeUtils', () => {
       expect(components).toHaveProperty('workerId');
       expect(components).toHaveProperty('processId');
       expect(components).toHaveProperty('increment');
+      expect(components).toHaveProperty('epoch');
     });
 
     it('should throw an error for an invalid Snowflake ID', () => {
@@ -49,6 +66,16 @@ describe('SnowflakeUtils', () => {
         // @ts-ignore - Intentionally testing with invalid value
         SnowflakeUtils.decode({ snowflakeId: 'invalid' });
       }).toThrow('Invalid Snowflake ID');
+    });
+
+    it('should throw a ValidationError for numeric-but-non-digit strings', () => {
+      // Strict /^\d+$/ guard: these are accepted by Number() but are not valid
+      // snowflakes and must throw a ValidationError rather than a raw error.
+      for (const bad of ['1e3', '10.5', 'Infinity', '-5', '0x10']) {
+        expect(() => {
+          SnowflakeUtils.decode({ snowflakeId: bad });
+        }).toThrow('Invalid Snowflake ID');
+      }
     });
   });
 

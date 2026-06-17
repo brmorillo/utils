@@ -44,36 +44,40 @@ MathUtils.randomInRange({ min: 1, max: 10 }); // e.g., 5.432 (varies)
 
 ### gcd({ a, b })
 
-Finds the greatest common divisor (GCD) of two numbers.
+Finds the greatest common divisor (GCD) of two integers. Uses `Math.abs`, so the result is always non-negative. Throws a `ValidationError` if either argument is not a finite integer.
 
 ```javascript
 MathUtils.gcd({ a: 24, b: 36 }); // 12
+MathUtils.gcd({ a: -24, b: 36 }); // 12
 ```
 
 ### lcm({ a, b })
 
-Finds the least common multiple (LCM) of two numbers.
+Finds the least common multiple (LCM) of two integers. Returns `0` if either argument is `0` (so `lcm(0, 0) === 0`), and uses `Math.abs` so the result is always non-negative. Throws a `ValidationError` if either argument is not a finite integer.
 
 ```javascript
-MathUtils.lcm({ a: 4, b: 6 }); // 12
+MathUtils.lcm({ a: 4, b: 6 });  // 12
+MathUtils.lcm({ a: 0, b: 0 });  // 0
 ```
 
 ### clamp({ value, min, max })
 
-Clamps a number within a specified range.
+Clamps a number within a specified range. If `min` is greater than `max`, the bounds are automatically swapped (consistent with `NumberUtils.clamp`).
 
 ```javascript
 MathUtils.clamp({ value: 10, min: 0, max: 5 }); // 5
+MathUtils.clamp({ value: 3, min: 5, max: 0 });  // 3 (bounds auto-swapped)
 ```
 
-### isValidPrime({ value })
+### isPrime({ value })
 
 Checks if a number is prime. This is the canonical primality check for the
-library; `NumberUtils` does not expose a duplicate.
+library; `NumberUtils` does not expose a duplicate. Throws a `ValidationError`
+if `value` is not a finite integer.
 
 ```javascript
-MathUtils.isValidPrime({ value: 7 }); // true
-MathUtils.isValidPrime({ value: 4 }); // false
+MathUtils.isPrime({ value: 7 }); // true
+MathUtils.isPrime({ value: 4 }); // false
 ```
 
 ## Examples

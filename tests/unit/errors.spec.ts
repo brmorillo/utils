@@ -53,7 +53,7 @@ describe('Errors', () => {
       expect(error).toBeInstanceOf(BaseError);
     });
 
-    it('should serialize to a plain object via toJSON', () => {
+    it('should serialize to a plain object via toJSON WITHOUT the stack by default', () => {
       // Arrange
       const error = new BaseError('Serialize me', 'SER_CODE', 500, { a: 1 });
 
@@ -67,8 +67,19 @@ describe('Errors', () => {
         code: 'SER_CODE',
         statusCode: 500,
         details: { a: 1 },
-        stack: error.stack,
       });
+      expect(json).not.toHaveProperty('stack');
+    });
+
+    it('should include the stack only when includeStack is true', () => {
+      // Arrange
+      const error = new BaseError('Serialize me', 'SER_CODE', 500, { a: 1 });
+
+      // Act
+      const json = error.toJSON({ includeStack: true });
+
+      // Assert
+      expect(json).toHaveProperty('stack', error.stack);
     });
   });
 
@@ -157,6 +168,65 @@ describe('Errors', () => {
       expect(error.message).toBe('Internal Server Error');
       expect(error.statusCode).toBe(500);
       expect(error.code).toBe('SERVER_ERROR');
+    });
+
+    it('should create a Conflict error via conflict', () => {
+      // Arrange & Act
+      const error = HttpError.conflict();
+
+      // Assert
+      expect(error.message).toBe('Conflict');
+      expect(error.statusCode).toBe(409);
+      expect(error.code).toBe('CONFLICT');
+    });
+
+    it('should create an Unprocessable Entity error via unprocessableEntity', () => {
+      // Arrange & Act
+      const error = HttpError.unprocessableEntity();
+
+      // Assert
+      expect(error.message).toBe('Unprocessable Entity');
+      expect(error.statusCode).toBe(422);
+      expect(error.code).toBe('UNPROCESSABLE_ENTITY');
+    });
+
+    it('should create a Too Many Requests error via tooManyRequests', () => {
+      // Arrange & Act
+      const error = HttpError.tooManyRequests();
+
+      // Assert
+      expect(error.message).toBe('Too Many Requests');
+      expect(error.statusCode).toBe(429);
+      expect(error.code).toBe('TOO_MANY_REQUESTS');
+    });
+
+    it('should create a Bad Gateway error via badGateway', () => {
+      // Arrange & Act
+      const error = HttpError.badGateway();
+
+      // Assert
+      expect(error.message).toBe('Bad Gateway');
+      expect(error.statusCode).toBe(502);
+      expect(error.code).toBe('BAD_GATEWAY');
+    });
+
+    it('should create a Service Unavailable error via serviceUnavailable', () => {
+      // Arrange & Act
+      const error = HttpError.serviceUnavailable();
+
+      // Assert
+      expect(error.message).toBe('Service Unavailable');
+      expect(error.statusCode).toBe(503);
+      expect(error.code).toBe('SERVICE_UNAVAILABLE');
+    });
+
+    it('should honor a custom message and details on the new factories', () => {
+      // Arrange & Act
+      const error = HttpError.tooManyRequests('Slow down', { retryAfter: 30 });
+
+      // Assert
+      expect(error.message).toBe('Slow down');
+      expect(error.details).toEqual({ retryAfter: 30 });
     });
 
     it('should attach details on a factory error', () => {
@@ -296,6 +366,28 @@ describe('Errors', () => {
       expect(error.field).toBe('age');
       expect(error.expected).toBe('number');
       expect(error.actual).toBe('thirty');
+    });
+
+    it('should detect an array actual value as type "array" in invalidType', () => {
+      // Arrange & Act
+      const error = ValidationError.invalidType('tags', 'string', [1, 2, 3]);
+
+      // Assert
+      expect(error.message).toBe(
+        "Field 'tags' must be of type 'string', but got 'array'",
+      );
+      expect(error.actual).toEqual([1, 2, 3]);
+    });
+
+    it('should detect a null actual value as type "null" in invalidType', () => {
+      // Arrange & Act
+      const error = ValidationError.invalidType('name', 'string', null);
+
+      // Assert
+      expect(error.message).toBe(
+        "Field 'name' must be of type 'string', but got 'null'",
+      );
+      expect(error.actual).toBeNull();
     });
 
     it('should create an Invalid Format error via invalidFormat', () => {

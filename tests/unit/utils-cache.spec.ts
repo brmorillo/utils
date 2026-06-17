@@ -78,6 +78,20 @@ describe('Cache', () => {
       expect(result).toBe(1);
     });
 
+    it('should never expire when default ttl is null and no per-key ttl is given', () => {
+      // Arrange - defaultTTL null + omitted per-call ttl must mean NO expiry,
+      // not an immediate expiry at Date.now() + 0.
+      const cache = new Cache<number>(null);
+      cache.set('a', 1);
+
+      // Act
+      jest.advanceTimersByTime(10_000_000);
+      const result = cache.get('a');
+
+      // Assert
+      expect(result).toBe(1);
+    });
+
     it('should never expire when both the default and per-key ttl are null', () => {
       // Arrange
       const cache = new Cache<number>(null);

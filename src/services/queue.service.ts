@@ -2,7 +2,32 @@
  * Queue Service - Provides implementations for various queue-like data structures.
  * Supports generic types and can be used with both local variables and external storage systems.
  */
-import { ValidationError } from '../errors';
+import { ValidationError, QueueFullError } from '../errors';
+
+/**
+ * Validates that a maxSize value is a non-negative integer (or undefined).
+ * A maxSize of 0 is allowed and means "zero capacity" (always full / rejects).
+ * @param maxSize The maxSize value to validate.
+ * @throws {ValidationError} If maxSize is negative, non-integer, or NaN.
+ */
+function validateMaxSize(maxSize?: number): void {
+  if (maxSize === undefined) {
+    return;
+  }
+  if (
+    typeof maxSize !== 'number' ||
+    Number.isNaN(maxSize) ||
+    !Number.isInteger(maxSize) ||
+    maxSize < 0
+  ) {
+    throw new ValidationError(
+      'maxSize must be a non-negative integer',
+      'maxSize',
+      'non-negative integer',
+      maxSize,
+    );
+  }
+}
 
 /**
  * Interface for a basic queue data structure.
@@ -12,7 +37,8 @@ export interface IQueue<T> {
   /**
    * Adds an element to the end of the queue.
    * @param item The item to enqueue.
-   * @returns The updated queue size, or -1 if the queue is full.
+   * @returns The updated queue size.
+   * @throws {QueueFullError} If the queue has reached its maximum size.
    */
   enqueue(item: T): number;
 
@@ -60,7 +86,8 @@ export interface IStack<T> {
   /**
    * Adds an element to the top of the stack.
    * @param item The item to push onto the stack.
-   * @returns The updated stack size, or -1 if the stack is full.
+   * @returns The updated stack size.
+   * @throws {QueueFullError} If the stack has reached its maximum size.
    */
   push(item: T): number;
 
@@ -109,7 +136,8 @@ export interface IMultiQueue<T> {
    * Adds an element to the queue with a specified priority or channel.
    * @param item The item to enqueue.
    * @param channel The channel or priority to assign to the item.
-   * @returns The updated queue size for the specified channel, or -1 if the channel is full.
+   * @returns The updated queue size for the specified channel.
+   * @throws {QueueFullError} If the channel has reached its maximum size.
    */
   enqueue(item: T, channel: string | number): number;
 
@@ -186,8 +214,12 @@ export class Queue<T> implements IQueue<T> {
    * @param maxSize Optional maximum size of the queue. If specified, the queue will not grow beyond this size.
    */
   constructor(initialItems?: T[], maxSize?: number) {
+    validateMaxSize(maxSize);
     if (initialItems && Array.isArray(initialItems)) {
-      this.items = maxSize ? initialItems.slice(0, maxSize) : [...initialItems];
+      this.items =
+        maxSize !== undefined
+          ? initialItems.slice(0, maxSize)
+          : [...initialItems];
     }
     this.maxSize = maxSize;
   }
@@ -195,11 +227,16 @@ export class Queue<T> implements IQueue<T> {
   /**
    * Adds an element to the end of the queue.
    * @param item The item to enqueue.
-   * @returns The updated queue size, or -1 if the queue is full.
+   * @returns The updated queue size.
+   * @throws {QueueFullError} If the queue has reached its maximum size
+   *   (a maxSize of 0 means zero capacity, so it always rejects).
    */
   public enqueue(item: T): number {
     if (this.maxSize !== undefined && this.items.length >= this.maxSize) {
-      return -1; // Queue is full
+      throw new QueueFullError('Queue is full', {
+        size: this.items.length,
+        maxSize: this.maxSize,
+      });
     }
     this.items.push(item);
     return this.items.length;
@@ -283,8 +320,12 @@ export class Stack<T> implements IStack<T> {
    * @param maxSize Optional maximum size of the stack. If specified, the stack will not grow beyond this size.
    */
   constructor(initialItems?: T[], maxSize?: number) {
+    validateMaxSize(maxSize);
     if (initialItems && Array.isArray(initialItems)) {
-      this.items = maxSize ? initialItems.slice(0, maxSize) : [...initialItems];
+      this.items =
+        maxSize !== undefined
+          ? initialItems.slice(0, maxSize)
+          : [...initialItems];
     }
     this.maxSize = maxSize;
   }
@@ -292,11 +333,16 @@ export class Stack<T> implements IStack<T> {
   /**
    * Adds an element to the top of the stack.
    * @param item The item to push onto the stack.
-   * @returns The updated stack size, or -1 if the stack is full.
+   * @returns The updated stack size.
+   * @throws {QueueFullError} If the stack has reached its maximum size
+   *   (a maxSize of 0 means zero capacity, so it always rejects).
    */
   public push(item: T): number {
     if (this.maxSize !== undefined && this.items.length >= this.maxSize) {
-      return -1; // Stack is full
+      throw new QueueFullError('Stack is full', {
+        size: this.items.length,
+        maxSize: this.maxSize,
+      });
     }
     this.items.push(item);
     return this.items.length;
@@ -386,13 +432,20 @@ export class MultiQueue<T> implements IMultiQueue<T> {
     channelMaxSizes?: Record<string | number, number>,
     defaultMaxSize?: number,
   ) {
+    validateMaxSize(defaultMaxSize);
+    if (channelMaxSizes) {
+      for (const channel in channelMaxSizes) {
+        validateMaxSize(channelMaxSizes[channel]);
+      }
+    }
     if (initialItems && typeof initialItems === 'object') {
       for (const channel in initialItems) {
         if (Array.isArray(initialItems[channel])) {
-          const maxSize = channelMaxSizes?.[channel] || defaultMaxSize;
-          this.queues[channel] = maxSize
-            ? initialItems[channel].slice(0, maxSize)
-            : [...initialItems[channel]];
+          const maxSize = channelMaxSizes?.[channel] ?? defaultMaxSize;
+          this.queues[channel] =
+            maxSize !== undefined
+              ? initialItems[channel].slice(0, maxSize)
+              : [...initialItems[channel]];
         }
       }
     }
@@ -404,16 +457,22 @@ export class MultiQueue<T> implements IMultiQueue<T> {
    * Adds an element to the queue with a specified channel.
    * @param item The item to enqueue.
    * @param channel The channel to assign to the item.
-   * @returns The updated queue size for the specified channel, or -1 if the channel is full.
+   * @returns The updated queue size for the specified channel.
+   * @throws {QueueFullError} If the channel has reached its maximum size
+   *   (a maxSize of 0 means zero capacity, so it always rejects).
    */
   public enqueue(item: T, channel: string | number): number {
     if (!this.queues[channel]) {
       this.queues[channel] = [];
     }
 
-    const maxSize = this.channelMaxSizes?.[channel] || this.defaultMaxSize;
+    const maxSize = this.channelMaxSizes?.[channel] ?? this.defaultMaxSize;
     if (maxSize !== undefined && this.queues[channel].length >= maxSize) {
-      return -1; // Channel is full
+      throw new QueueFullError('Channel is full', {
+        channel,
+        size: this.queues[channel].length,
+        maxSize,
+      });
     }
 
     this.queues[channel].push(item);
@@ -471,7 +530,7 @@ export class MultiQueue<T> implements IMultiQueue<T> {
     if (!this.queues[channel]) {
       return false;
     }
-    const maxSize = this.channelMaxSizes?.[channel] || this.defaultMaxSize;
+    const maxSize = this.channelMaxSizes?.[channel] ?? this.defaultMaxSize;
     return maxSize !== undefined && this.queues[channel].length >= maxSize;
   }
 
@@ -481,7 +540,7 @@ export class MultiQueue<T> implements IMultiQueue<T> {
    * @returns The maximum size or undefined if no limit is set.
    */
   public getChannelMaxSize(channel: string | number): number | undefined {
-    return this.channelMaxSizes?.[channel] || this.defaultMaxSize;
+    return this.channelMaxSizes?.[channel] ?? this.defaultMaxSize;
   }
 
   /**
@@ -533,6 +592,11 @@ export class MultiQueue<T> implements IMultiQueue<T> {
 
 /**
  * Implementation of a circular buffer (ring buffer).
+ *
+ * Unlike the bounded {@link Queue}/{@link Stack} structures (whose `enqueue`/
+ * `push` throw a {@link QueueFullError} when full), the CircularBuffer is a ring
+ * and keeps its existing capacity semantics: `add` returns `false` when full,
+ * while `addOverwrite` intentionally overwrites the oldest element to make room.
  * @template T The type of elements stored in the buffer.
  */
 export class CircularBuffer<T> {
@@ -670,11 +734,11 @@ export class CircularBuffer<T> {
       return result;
     }
 
+    // Walk by size/index so legitimate `undefined` values are preserved
+    // instead of being silently dropped.
     let index = this.head;
     for (let i = 0; i < this.size; i++) {
-      if (this.buffer[index] !== undefined) {
-        result.push(this.buffer[index] as T);
-      }
+      result.push(this.buffer[index] as T);
       index = (index + 1) % this.capacity;
     }
     return result;
@@ -798,6 +862,7 @@ export class PriorityQueue<T> implements IPriorityQueue<T> {
    * @param maxSize Optional maximum size of the queue.
    */
   constructor(maxSize?: number) {
+    validateMaxSize(maxSize);
     this.maxSize = maxSize;
   }
 
@@ -805,11 +870,16 @@ export class PriorityQueue<T> implements IPriorityQueue<T> {
    * Adds an element to the queue with a specified priority.
    * @param item The item to enqueue.
    * @param priority The priority of the item (lower number = higher priority).
-   * @returns The updated queue size, or -1 if the queue is full.
+   * @returns The updated queue size.
+   * @throws {QueueFullError} If the queue has reached its maximum size
+   *   (a maxSize of 0 means zero capacity, so it always rejects).
    */
   public enqueue(item: T, priority: number): number {
     if (this.maxSize !== undefined && this.items.length >= this.maxSize) {
-      return -1; // Queue is full
+      throw new QueueFullError('Priority queue is full', {
+        size: this.items.length,
+        maxSize: this.maxSize,
+      });
     }
 
     // Add the item to the end
@@ -1021,6 +1091,7 @@ export class DelayQueue<T> implements IDelayQueue<T> {
    * @param maxSize Optional maximum size of the queue.
    */
   constructor(maxSize?: number) {
+    validateMaxSize(maxSize);
     this.maxSize = maxSize;
   }
 
@@ -1028,11 +1099,16 @@ export class DelayQueue<T> implements IDelayQueue<T> {
    * Adds an element to the queue with a specified delay.
    * @param item The item to enqueue.
    * @param delayMs The delay in milliseconds before the item becomes available.
-   * @returns The updated queue size, or -1 if the queue is full.
+   * @returns The updated queue size.
+   * @throws {QueueFullError} If the queue has reached its maximum size
+   *   (a maxSize of 0 means zero capacity, so it always rejects).
    */
   public enqueue(item: T, delayMs: number): number {
     if (this.maxSize !== undefined && this.items.length >= this.maxSize) {
-      return -1; // Queue is full
+      throw new QueueFullError('Delay queue is full', {
+        size: this.items.length,
+        maxSize: this.maxSize,
+      });
     }
 
     const readyTime = Date.now() + delayMs;

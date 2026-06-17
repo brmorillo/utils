@@ -25,40 +25,43 @@ describe('CryptUtils', () => {
     const testObject = { name: 'Test', value: 123 };
 
     it('should encrypt and decrypt a string correctly', () => {
-      const { encryptedData, iv } = CryptUtils.aesEncrypt({
+      const { encryptedData, iv, authTag } = CryptUtils.aesEncrypt({
         data: testData,
         secretKey,
       });
       expect(encryptedData).toBeTruthy();
-      expect(iv).toHaveLength(32);
+      expect(iv).toHaveLength(24);
+      expect(authTag).toBeTruthy();
 
       const decrypted = CryptUtils.aesDecrypt({
         encryptedData,
         secretKey,
         iv,
+        authTag,
       });
       expect(decrypted).toBe(testData);
     });
 
     it('should encrypt and decrypt a JSON object correctly', () => {
-      const { encryptedData, iv } = CryptUtils.aesEncrypt({
+      const { encryptedData, iv, authTag } = CryptUtils.aesEncrypt({
         data: testObject,
         secretKey,
       });
       expect(encryptedData).toBeTruthy();
-      expect(iv).toHaveLength(32);
+      expect(iv).toHaveLength(24);
 
       const decrypted = CryptUtils.aesDecrypt({
         encryptedData,
         secretKey,
         iv,
+        authTag,
       });
       expect(decrypted).toEqual(testObject);
     });
 
     it('should use the provided IV when specified', () => {
-      const customIV = '1234567890abcdef1234567890abcdef';
-      const { encryptedData, iv } = CryptUtils.aesEncrypt({
+      const customIV = '1234567890abcdef12345678'; // 12 bytes / 24 hex chars
+      const { encryptedData, iv, authTag } = CryptUtils.aesEncrypt({
         data: testData,
         secretKey,
         iv: customIV,
@@ -69,8 +72,41 @@ describe('CryptUtils', () => {
         encryptedData,
         secretKey,
         iv,
+        authTag,
       });
       expect(decrypted).toBe(testData);
+    });
+
+    it('should throw when decrypting with a tampered authTag', () => {
+      const { encryptedData, iv } = CryptUtils.aesEncrypt({
+        data: testData,
+        secretKey,
+      });
+      const wrongTag = Buffer.alloc(16, 0).toString('base64');
+      expect(() => {
+        CryptUtils.aesDecrypt({
+          encryptedData,
+          secretKey,
+          iv,
+          authTag: wrongTag,
+        });
+      }).toThrow('Failed to decrypt data using AES');
+    });
+
+    it('should throw when decrypting tampered ciphertext', () => {
+      const { iv, authTag } = CryptUtils.aesEncrypt({
+        data: testData,
+        secretKey,
+      });
+      const tampered = Buffer.from('totally-different-bytes').toString('base64');
+      expect(() => {
+        CryptUtils.aesDecrypt({
+          encryptedData: tampered,
+          secretKey,
+          iv,
+          authTag,
+        });
+      }).toThrow('Failed to decrypt data using AES');
     });
 
     it('should throw an error for an invalid secret key during encryption', () => {
@@ -80,7 +116,7 @@ describe('CryptUtils', () => {
     });
 
     it('should throw an error for an invalid secret key during decryption', () => {
-      const { encryptedData, iv } = CryptUtils.aesEncrypt({
+      const { encryptedData, iv, authTag } = CryptUtils.aesEncrypt({
         data: testData,
         secretKey,
       });
@@ -89,12 +125,19 @@ describe('CryptUtils', () => {
           encryptedData,
           secretKey: 'short-key',
           iv,
+          authTag,
         });
       }).toThrow('Invalid secretKey');
     });
 
+    it('should throw an error for an invalid IV during encryption', () => {
+      expect(() => {
+        CryptUtils.aesEncrypt({ data: testData, secretKey, iv: 'too-short' });
+      }).toThrow('Invalid IV');
+    });
+
     it('should throw an error for an invalid IV during decryption', () => {
-      const { encryptedData } = CryptUtils.aesEncrypt({
+      const { encryptedData, authTag } = CryptUtils.aesEncrypt({
         data: testData,
         secretKey,
       });
@@ -103,8 +146,25 @@ describe('CryptUtils', () => {
           encryptedData,
           secretKey,
           iv: 'iv-invalido',
+          authTag,
         });
       }).toThrow('Invalid IV');
+    });
+
+    it('should throw an error for a missing authTag during decryption', () => {
+      const { encryptedData, iv } = CryptUtils.aesEncrypt({
+        data: testData,
+        secretKey,
+      });
+      expect(() => {
+        CryptUtils.aesDecrypt({
+          encryptedData,
+          secretKey,
+          iv,
+          // @ts-ignore - Intentionally testing with missing value
+          authTag: '',
+        });
+      }).toThrow('Invalid authTag');
     });
 
     it('should throw an error for invalid data during encryption', () => {
@@ -119,73 +179,68 @@ describe('CryptUtils', () => {
     const key = Buffer.from('12345678901234567890123456789012'); // 32 bytes
     const nonce = Buffer.from('123456789012'); // 12 bytes
     const testData = 'ChaCha20 encryption test';
-    const chacha20Supported = crypto.getCiphers().includes('chacha20');
+    const chacha20Supported = crypto
+      .getCiphers()
+      .includes('chacha20-poly1305');
 
     it('should encrypt and decrypt a string correctly (or throw if unsupported)', () => {
       if (!chacha20Supported) {
         expect(() => {
           CryptUtils.chacha20Encrypt({ data: testData, key, nonce });
-        }).toThrow('ChaCha20 algorithm is not supported');
+        }).toThrow('ChaCha20-Poly1305 algorithm is not supported');
         expect(() => {
-          CryptUtils.chacha20Decrypt({ encryptedData: 'data', key, nonce });
-        }).toThrow('ChaCha20 algorithm is not supported');
+          CryptUtils.chacha20Decrypt({
+            encryptedData: 'data',
+            key,
+            nonce,
+            authTag: 'dGFn',
+          });
+        }).toThrow('ChaCha20-Poly1305 algorithm is not supported');
         return;
       }
 
-      // Some OpenSSL builds expose 'chacha20' but require a 16-byte IV via
-      // createCipheriv, so a 12-byte nonce round-trip may either succeed or
-      // throw a wrapped error. Both paths exercise the production code.
-      try {
-        const encrypted = CryptUtils.chacha20Encrypt({
-          data: testData,
-          key,
-          nonce,
-        });
-        expect(encrypted).toBeTruthy();
+      const { encryptedData, authTag } = CryptUtils.chacha20Encrypt({
+        data: testData,
+        key,
+        nonce,
+      });
+      expect(encryptedData).toBeTruthy();
+      expect(authTag).toBeTruthy();
 
-        const decrypted = CryptUtils.chacha20Decrypt({
-          encryptedData: encrypted,
-          key,
-          nonce,
-        });
-        expect(decrypted).toBe(testData);
-      } catch (error) {
-        expect((error as Error).message).toContain(
-          'Failed to encrypt data using ChaCha20',
-        );
-      }
+      const decrypted = CryptUtils.chacha20Decrypt({
+        encryptedData,
+        key,
+        nonce,
+        authTag,
+      });
+      expect(decrypted).toBe(testData);
     });
 
-    it('should round-trip with a 16-byte nonce when supported', () => {
+    it('should throw when decrypting with a tampered authTag', () => {
       if (!chacha20Supported) {
         return;
       }
-      // Build's createCipheriv may require a 16-byte IV; the source only
-      // validates a 12-byte nonce, so wrap to exercise the success path
-      // where possible without failing on stricter OpenSSL builds.
-      const wideNonce = Buffer.alloc(12, 7);
-      try {
-        const encrypted = CryptUtils.chacha20Encrypt({
-          data: testData,
+      const { encryptedData } = CryptUtils.chacha20Encrypt({
+        data: testData,
+        key,
+        nonce,
+      });
+      const wrongTag = Buffer.alloc(16, 0).toString('base64');
+      expect(() => {
+        CryptUtils.chacha20Decrypt({
+          encryptedData,
           key,
-          nonce: wideNonce,
+          nonce,
+          authTag: wrongTag,
         });
-        const decrypted = CryptUtils.chacha20Decrypt({
-          encryptedData: encrypted,
-          key,
-          nonce: wideNonce,
-        });
-        expect(decrypted).toBe(testData);
-      } catch (error) {
-        expect((error as Error).message).toContain('ChaCha20');
-      }
+      }).toThrow('Failed to decrypt data using ChaCha20-Poly1305');
     });
 
     it('should throw an error for an invalid key during encryption', () => {
       const invalidKey = Buffer.from('short-key');
       const expectedError = chacha20Supported
         ? 'Invalid key'
-        : 'ChaCha20 algorithm is not supported';
+        : 'ChaCha20-Poly1305 algorithm is not supported';
       expect(() => {
         CryptUtils.chacha20Encrypt({ data: testData, key: invalidKey, nonce });
       }).toThrow(expectedError);
@@ -195,7 +250,7 @@ describe('CryptUtils', () => {
       const invalidNonce = Buffer.from('short-nonce');
       const expectedError = chacha20Supported
         ? 'Invalid nonce'
-        : 'ChaCha20 algorithm is not supported';
+        : 'ChaCha20-Poly1305 algorithm is not supported';
       expect(() => {
         CryptUtils.chacha20Encrypt({ data: testData, key, nonce: invalidNonce });
       }).toThrow(expectedError);
@@ -205,12 +260,13 @@ describe('CryptUtils', () => {
       const invalidKey = Buffer.from('short-key');
       const expectedError = chacha20Supported
         ? 'Invalid key'
-        : 'ChaCha20 algorithm is not supported';
+        : 'ChaCha20-Poly1305 algorithm is not supported';
       expect(() => {
         CryptUtils.chacha20Decrypt({
           encryptedData: 'data',
           key: invalidKey,
           nonce,
+          authTag: 'dGFn',
         });
       }).toThrow(expectedError);
     });
@@ -219,14 +275,29 @@ describe('CryptUtils', () => {
       const invalidNonce = Buffer.from('short-nonce');
       const expectedError = chacha20Supported
         ? 'Invalid nonce'
-        : 'ChaCha20 algorithm is not supported';
+        : 'ChaCha20-Poly1305 algorithm is not supported';
       expect(() => {
         CryptUtils.chacha20Decrypt({
           encryptedData: 'data',
           key,
           nonce: invalidNonce,
+          authTag: 'dGFn',
         });
       }).toThrow(expectedError);
+    });
+
+    it('should throw an error for a missing authTag during decryption', () => {
+      if (!chacha20Supported) {
+        return;
+      }
+      expect(() => {
+        CryptUtils.chacha20Decrypt({
+          encryptedData: 'data',
+          key,
+          nonce,
+          authTag: '',
+        });
+      }).toThrow('Invalid authTag');
     });
   });
 
@@ -367,73 +438,6 @@ describe('CryptUtils', () => {
         publicKey,
       });
       expect(isValid).toBe(false);
-    });
-  });
-
-  describe('rc4Encrypt and rc4Decrypt', () => {
-    const key = 'rc4-secret-key';
-    const testData = 'RC4 encryption test';
-    const rc4Supported = crypto.getCiphers().includes('rc4');
-
-    it('should encrypt and decrypt a string correctly (or throw if unsupported)', () => {
-      if (!rc4Supported) {
-        expect(() => {
-          CryptUtils.rc4Encrypt({ data: testData, key });
-        }).toThrow('RC4 algorithm is not supported');
-        expect(() => {
-          CryptUtils.rc4Decrypt({ encryptedData: 'data', key });
-        }).toThrow('RC4 algorithm is not supported');
-        return;
-      }
-
-      const encrypted = CryptUtils.rc4Encrypt({ data: testData, key });
-      expect(encrypted).toBeTruthy();
-
-      const decrypted = CryptUtils.rc4Decrypt({
-        encryptedData: encrypted,
-        key,
-      });
-      expect(decrypted).toBe(testData);
-    });
-
-    it('should throw an error for invalid data during RC4 encryption', () => {
-      const expectedError = rc4Supported
-        ? 'Invalid input'
-        : 'RC4 algorithm is not supported';
-      expect(() => {
-        // @ts-ignore - Intentionally testing with invalid value
-        CryptUtils.rc4Encrypt({ data: null, key });
-      }).toThrow(expectedError);
-    });
-
-    it('should throw an error for an invalid key during RC4 encryption', () => {
-      const expectedError = rc4Supported
-        ? 'Invalid key'
-        : 'RC4 algorithm is not supported';
-      expect(() => {
-        // @ts-ignore - Intentionally testing with invalid value
-        CryptUtils.rc4Encrypt({ data: testData, key: null });
-      }).toThrow(expectedError);
-    });
-
-    it('should throw an error for invalid encrypted data during RC4 decryption', () => {
-      const expectedError = rc4Supported
-        ? 'Invalid input'
-        : 'RC4 algorithm is not supported';
-      expect(() => {
-        // @ts-ignore - Intentionally testing with invalid value
-        CryptUtils.rc4Decrypt({ encryptedData: null, key });
-      }).toThrow(expectedError);
-    });
-
-    it('should throw an error for an invalid key during RC4 decryption', () => {
-      const expectedError = rc4Supported
-        ? 'Invalid key'
-        : 'RC4 algorithm is not supported';
-      expect(() => {
-        // @ts-ignore - Intentionally testing with invalid value
-        CryptUtils.rc4Decrypt({ encryptedData: 'data', key: null });
-      }).toThrow(expectedError);
     });
   });
 
@@ -601,28 +605,30 @@ describe('CryptUtils', () => {
           // @ts-ignore - Intentionally testing with invalid value
           encryptedData: 123,
           secretKey,
-          iv: CryptUtils.generateIV(),
+          iv: CryptUtils.generateGcmIV(),
+          authTag: 'dGFn',
         });
       }).toThrow('Invalid input');
     });
 
     it('should fail to decrypt with a wrong IV length error message', () => {
-      const { encryptedData } = CryptUtils.aesEncrypt({
+      const { encryptedData, authTag } = CryptUtils.aesEncrypt({
         data: 'data',
         secretKey,
       });
       expect(() => {
-        CryptUtils.aesDecrypt({ encryptedData, secretKey, iv: 'abcd' });
+        CryptUtils.aesDecrypt({ encryptedData, secretKey, iv: 'abcd', authTag });
       }).toThrow('Invalid IV');
     });
 
     it('should throw a wrapped error when decryption fails with corrupt data', () => {
-      const iv = CryptUtils.generateIV();
+      const iv = CryptUtils.generateGcmIV();
       expect(() => {
         CryptUtils.aesDecrypt({
           encryptedData: 'not-valid-base64-cipher',
           secretKey,
           iv,
+          authTag: Buffer.alloc(16, 0).toString('base64'),
         });
       }).toThrow('Failed to decrypt data using AES');
     });
@@ -710,7 +716,7 @@ describe('CryptUtils', () => {
         .mockReturnValue(['aes-256-cbc']);
       expect(() => {
         CryptUtils.chacha20Encrypt({ data: 'data', key, nonce });
-      }).toThrow('ChaCha20 algorithm is not supported');
+      }).toThrow('ChaCha20-Poly1305 algorithm is not supported');
     });
 
     it('chacha20Decrypt should throw not-supported when algorithm is absent', () => {
@@ -720,38 +726,27 @@ describe('CryptUtils', () => {
         .spyOn(cryptoCjs, 'getCiphers')
         .mockReturnValue(['aes-256-cbc']);
       expect(() => {
-        CryptUtils.chacha20Decrypt({ encryptedData: 'data', key, nonce });
-      }).toThrow('ChaCha20 algorithm is not supported');
-    });
-
-    it('rc4Encrypt should throw not-supported when algorithm is absent', () => {
-      jest
-        .spyOn(cryptoCjs, 'getCiphers')
-        .mockReturnValue(['aes-256-cbc']);
-      expect(() => {
-        CryptUtils.rc4Encrypt({ data: 'data', key: 'key' });
-      }).toThrow('RC4 algorithm is not supported');
-    });
-
-    it('rc4Decrypt should throw not-supported when algorithm is absent', () => {
-      jest
-        .spyOn(cryptoCjs, 'getCiphers')
-        .mockReturnValue(['aes-256-cbc']);
-      expect(() => {
-        CryptUtils.rc4Decrypt({ encryptedData: 'data', key: 'key' });
-      }).toThrow('RC4 algorithm is not supported');
+        CryptUtils.chacha20Decrypt({
+          encryptedData: 'data',
+          key,
+          nonce,
+          authTag: 'dGFn',
+        });
+      }).toThrow('ChaCha20-Poly1305 algorithm is not supported');
     });
 
     it('chacha20Encrypt body executes end-to-end with a stubbed cipher', () => {
       const key = Buffer.alloc(32, 9);
       const nonce = Buffer.alloc(12, 9);
       // Ensure the supported branch is taken regardless of the build.
-      jest.spyOn(cryptoCjs, 'getCiphers').mockReturnValue(['chacha20']);
-      // Stub the cipher so the post-createCipheriv body runs without the
-      // OpenSSL 12/16-byte IV restriction of this particular build.
+      jest
+        .spyOn(cryptoCjs, 'getCiphers')
+        .mockReturnValue(['chacha20-poly1305']);
+      // Stub the cipher so the post-createCipheriv body runs deterministically.
       const fakeCipher = {
         update: jest.fn().mockReturnValue(Buffer.from('abc')),
         final: jest.fn().mockReturnValue(Buffer.from('def')),
+        getAuthTag: jest.fn().mockReturnValue(Buffer.from('tag')),
       };
       jest
         .spyOn(cryptoCjs, 'createCipheriv')
@@ -761,7 +756,8 @@ describe('CryptUtils', () => {
         key,
         nonce,
       });
-      expect(result).toBe(Buffer.from('abcdef').toString('base64'));
+      expect(result.encryptedData).toBe(Buffer.from('abcdef').toString('base64'));
+      expect(result.authTag).toBe(Buffer.from('tag').toString('base64'));
       expect(fakeCipher.update).toHaveBeenCalled();
       expect(fakeCipher.final).toHaveBeenCalled();
     });
@@ -769,8 +765,11 @@ describe('CryptUtils', () => {
     it('chacha20Decrypt body executes end-to-end with a stubbed decipher', () => {
       const key = Buffer.alloc(32, 9);
       const nonce = Buffer.alloc(12, 9);
-      jest.spyOn(cryptoCjs, 'getCiphers').mockReturnValue(['chacha20']);
+      jest
+        .spyOn(cryptoCjs, 'getCiphers')
+        .mockReturnValue(['chacha20-poly1305']);
       const fakeDecipher = {
+        setAuthTag: jest.fn(),
         update: jest.fn().mockReturnValue(Buffer.from('plain')),
         final: jest.fn().mockReturnValue(Buffer.from('text')),
       };
@@ -781,8 +780,10 @@ describe('CryptUtils', () => {
         encryptedData: 'ZGF0YQ==',
         key,
         nonce,
+        authTag: 'dGFn',
       });
       expect(result).toBe('plaintext');
+      expect(fakeDecipher.setAuthTag).toHaveBeenCalled();
       expect(fakeDecipher.update).toHaveBeenCalled();
       expect(fakeDecipher.final).toHaveBeenCalled();
     });
@@ -790,19 +791,23 @@ describe('CryptUtils', () => {
     it('chacha20Encrypt should wrap underlying cipher errors', () => {
       const key = Buffer.alloc(32, 9);
       const nonce = Buffer.alloc(12, 9);
-      jest.spyOn(cryptoCjs, 'getCiphers').mockReturnValue(['chacha20']);
+      jest
+        .spyOn(cryptoCjs, 'getCiphers')
+        .mockReturnValue(['chacha20-poly1305']);
       jest.spyOn(cryptoCjs, 'createCipheriv').mockImplementation(() => {
         throw new Error('boom');
       });
       expect(() => {
         CryptUtils.chacha20Encrypt({ data: 'payload', key, nonce });
-      }).toThrow('Failed to encrypt data using ChaCha20');
+      }).toThrow('Failed to encrypt data using ChaCha20-Poly1305');
     });
 
     it('chacha20Decrypt should wrap underlying decipher errors', () => {
       const key = Buffer.alloc(32, 9);
       const nonce = Buffer.alloc(12, 9);
-      jest.spyOn(cryptoCjs, 'getCiphers').mockReturnValue(['chacha20']);
+      jest
+        .spyOn(cryptoCjs, 'getCiphers')
+        .mockReturnValue(['chacha20-poly1305']);
       jest.spyOn(cryptoCjs, 'createDecipheriv').mockImplementation(() => {
         throw new Error('boom');
       });
@@ -811,89 +816,9 @@ describe('CryptUtils', () => {
           encryptedData: 'ZGF0YQ==',
           key,
           nonce,
+          authTag: 'dGFn',
         });
-      }).toThrow('Failed to decrypt data using ChaCha20');
-    });
-
-    it('rc4Encrypt body executes end-to-end with a stubbed cipher', () => {
-      jest.spyOn(cryptoCjs, 'getCiphers').mockReturnValue(['rc4']);
-      const fakeCipher = {
-        update: jest.fn().mockReturnValue(Buffer.from('rc')),
-        final: jest.fn().mockReturnValue(Buffer.from('4!')),
-      };
-      jest
-        .spyOn(cryptoCjs, 'createCipheriv')
-        .mockReturnValue(fakeCipher as any);
-      const result = CryptUtils.rc4Encrypt({ data: 'payload', key: 'key' });
-      expect(result).toBe(Buffer.from('rc4!').toString('base64'));
-    });
-
-    it('rc4Decrypt body executes end-to-end with a stubbed decipher', () => {
-      jest.spyOn(cryptoCjs, 'getCiphers').mockReturnValue(['rc4']);
-      const fakeDecipher = {
-        update: jest.fn().mockReturnValue(Buffer.from('de')),
-        final: jest.fn().mockReturnValue(Buffer.from('crypted')),
-      };
-      jest
-        .spyOn(cryptoCjs, 'createDecipheriv')
-        .mockReturnValue(fakeDecipher as any);
-      const result = CryptUtils.rc4Decrypt({
-        encryptedData: 'ZGF0YQ==',
-        key: 'key',
-      });
-      expect(result).toBe('decrypted');
-    });
-
-    it('rc4Encrypt should wrap underlying cipher errors', () => {
-      jest.spyOn(cryptoCjs, 'getCiphers').mockReturnValue(['rc4']);
-      jest.spyOn(cryptoCjs, 'createCipheriv').mockImplementation(() => {
-        throw new Error('boom');
-      });
-      expect(() => {
-        CryptUtils.rc4Encrypt({ data: 'payload', key: 'key' });
-      }).toThrow('Failed to encrypt data using RC4');
-    });
-
-    it('rc4Decrypt should wrap underlying decipher errors', () => {
-      jest.spyOn(cryptoCjs, 'getCiphers').mockReturnValue(['rc4']);
-      jest.spyOn(cryptoCjs, 'createDecipheriv').mockImplementation(() => {
-        throw new Error('boom');
-      });
-      expect(() => {
-        CryptUtils.rc4Decrypt({ encryptedData: 'ZGF0YQ==', key: 'key' });
-      }).toThrow('Failed to decrypt data using RC4');
-    });
-
-    it('rc4Encrypt should reject invalid data when algorithm is supported', () => {
-      jest.spyOn(cryptoCjs, 'getCiphers').mockReturnValue(['rc4']);
-      expect(() => {
-        // @ts-ignore - Intentionally testing with invalid value
-        CryptUtils.rc4Encrypt({ data: null, key: 'key' });
-      }).toThrow('Invalid input');
-    });
-
-    it('rc4Encrypt should reject an invalid key when algorithm is supported', () => {
-      jest.spyOn(cryptoCjs, 'getCiphers').mockReturnValue(['rc4']);
-      expect(() => {
-        // @ts-ignore - Intentionally testing with invalid value
-        CryptUtils.rc4Encrypt({ data: 'data', key: null });
-      }).toThrow('Invalid key');
-    });
-
-    it('rc4Decrypt should reject invalid data when algorithm is supported', () => {
-      jest.spyOn(cryptoCjs, 'getCiphers').mockReturnValue(['rc4']);
-      expect(() => {
-        // @ts-ignore - Intentionally testing with invalid value
-        CryptUtils.rc4Decrypt({ encryptedData: null, key: 'key' });
-      }).toThrow('Invalid input');
-    });
-
-    it('rc4Decrypt should reject an invalid key when algorithm is supported', () => {
-      jest.spyOn(cryptoCjs, 'getCiphers').mockReturnValue(['rc4']);
-      expect(() => {
-        // @ts-ignore - Intentionally testing with invalid value
-        CryptUtils.rc4Decrypt({ encryptedData: 'data', key: null });
-      }).toThrow('Invalid key');
+      }).toThrow('Failed to decrypt data using ChaCha20-Poly1305');
     });
 
     it('isAlgorithmSupported should return false when getCiphers throws', () => {
@@ -908,7 +833,7 @@ describe('CryptUtils', () => {
           key: Buffer.alloc(32),
           nonce: Buffer.alloc(12),
         });
-      }).toThrow('ChaCha20 algorithm is not supported');
+      }).toThrow('ChaCha20-Poly1305 algorithm is not supported');
     });
   });
 });

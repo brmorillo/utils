@@ -1,4 +1,5 @@
 import { ArrayUtils } from '../../src/services/array.service';
+import { ValidationError } from '../../src/errors';
 
 /**
  * Unit tests for the ArrayUtils class.
@@ -157,6 +158,24 @@ describe('ArrayUtils', () => {
 
       // Assert
       expect(result).toEqual([1, 2, 3]);
+    });
+
+    it('should deeply flatten while preserving order', () => {
+      // Arrange
+      const array = [1, [2, [3, [4, [5]]]], 6];
+
+      // Act
+      const result = ArrayUtils.flatten({ array });
+
+      // Assert
+      expect(result).toEqual([1, 2, 3, 4, 5, 6]);
+    });
+
+    it('should accept deeply-nested arrays at compile time', () => {
+      // The recursive NestedArray<T> type must allow arbitrary nesting depth
+      // without `as any` casts on the call.
+      const result = ArrayUtils.flatten<number>({ array: [1, [2, [3, [4]]]] });
+      expect(result).toEqual([1, 2, 3, 4]);
     });
 
     it('should throw an error when the input is not an array', () => {
@@ -349,19 +368,62 @@ describe('ArrayUtils', () => {
       expect(result.map(item => item.name)).toEqual(['John', 'Jack']);
     });
 
+    it('should sort an array of objects with a plain asc direction', () => {
+      // Arrange: objects are comparable via their natural valueOf.
+      const array = [
+        { valueOf: () => 3 },
+        { valueOf: () => 1 },
+        { valueOf: () => 2 },
+      ];
+
+      // Act
+      const result = ArrayUtils.sort({ array, orderBy: 'asc' });
+
+      // Assert
+      expect(result.map(item => item.valueOf())).toEqual([1, 2, 3]);
+    });
+
+    it('should sort an array of objects with a plain desc direction', () => {
+      // Arrange
+      const array = [
+        { valueOf: () => 1 },
+        { valueOf: () => 3 },
+        { valueOf: () => 2 },
+      ];
+
+      // Act
+      const result = ArrayUtils.sort({ array, orderBy: 'desc' });
+
+      // Assert
+      expect(result.map(item => item.valueOf())).toEqual([3, 2, 1]);
+    });
+
+    it('should be stable, returning 0 for equal elements', () => {
+      // Arrange: all elements compare equal.
+      const array = [
+        { id: 1, valueOf: () => 5 },
+        { id: 2, valueOf: () => 5 },
+        { id: 3, valueOf: () => 5 },
+      ];
+
+      // Act
+      const result = ArrayUtils.sort({ array, orderBy: 'asc' });
+
+      // Assert: original relative order preserved.
+      expect(result.map(item => item.id)).toEqual([1, 2, 3]);
+    });
+
     it('should throw an error when the input is not an array', () => {
       // Arrange & Act & Assert
       expect(() => {
         // @ts-ignore - Intentionally testing with invalid value
         ArrayUtils.sort({ array: 'not an array', orderBy: 'asc' });
-      }).toThrow('Input must be a non-empty array');
+      }).toThrow('Input must be an array');
     });
 
-    it('should throw an error when the array is empty', () => {
+    it('should return an empty array when the array is empty', () => {
       // Arrange & Act & Assert
-      expect(() => {
-        ArrayUtils.sort({ array: [], orderBy: 'asc' });
-      }).toThrow('Input must be a non-empty array');
+      expect(ArrayUtils.sort({ array: [], orderBy: 'asc' })).toEqual([]);
     });
 
     it('should throw an error when the orderBy format is invalid', () => {
@@ -449,6 +511,13 @@ describe('ArrayUtils', () => {
       expect(result).not.toBeNull();
       expect(result?.id).toBe(1);
     });
+
+    it('should throw a ValidationError when the input is not an array', () => {
+      expect(() => {
+        // @ts-ignore - Intentionally testing with invalid value
+        ArrayUtils.findSubset({ array: 'not an array', subset: {} });
+      }).toThrow(ValidationError);
+    });
   });
 
   // Tests for the isSubset method
@@ -499,6 +568,23 @@ describe('ArrayUtils', () => {
 
       // Assert
       expect(result).toBe(false);
+    });
+
+    it('should throw a ValidationError when an input is not an object', () => {
+      expect(() => {
+        // @ts-ignore - Intentionally testing with invalid value
+        ArrayUtils.isSubset({ superset: null, subset: {} });
+      }).toThrow(ValidationError);
+    });
+  });
+
+  // Tests for the groupBy guard
+  describe('groupBy validation', () => {
+    it('should throw a ValidationError when the input is not an array', () => {
+      expect(() => {
+        // @ts-ignore - Intentionally testing with invalid value
+        ArrayUtils.groupBy({ array: 'not an array', keyFn: item => item });
+      }).toThrow(ValidationError);
     });
   });
 });

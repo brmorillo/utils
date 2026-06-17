@@ -20,11 +20,11 @@ describe('CryptUtils - Integration Tests', () => {
         },
       };
 
-      // Generate IV
-      const iv = CryptUtils.generateIV();
+      // Generate a 12-byte IV suitable for AES-256-GCM
+      const iv = CryptUtils.generateGcmIV();
 
       // Encrypt data
-      const { encryptedData } = CryptUtils.aesEncrypt({
+      const { encryptedData, authTag } = CryptUtils.aesEncrypt({
         data: originalData,
         secretKey,
         iv,
@@ -35,6 +35,7 @@ describe('CryptUtils - Integration Tests', () => {
         encryptedData,
         secretKey,
         iv,
+        authTag,
       });
 
       // Verify that the data was preserved correctly
@@ -104,29 +105,25 @@ describe('CryptUtils - Integration Tests', () => {
   });
 
   describe('Layered encryption', () => {
-    it.skip('should apply multiple layers of encryption and decrypt correctly', () => {
+    it('should apply multiple layers of encryption and decrypt correctly', () => {
       const originalData =
         'Dados sensíveis para múltiplas camadas de criptografia';
 
-      // Layer 1: RC4
-      const rc4Key = 'chave-rc4-secreta';
-      const rc4Encrypted = CryptUtils.rc4Encrypt({
-        data: originalData,
-        key: rc4Key,
-      });
-
-      // Layer 2: AES
+      // Layer 1: AES-256-GCM
       const aesKey = '12345678901234567890123456789012';
-      const aesIV = CryptUtils.generateIV();
-      const { encryptedData: aesEncrypted } = CryptUtils.aesEncrypt({
-        data: rc4Encrypted,
+      const aesIV = CryptUtils.generateGcmIV();
+      const {
+        encryptedData: aesEncrypted,
+        authTag: aesAuthTag,
+      } = CryptUtils.aesEncrypt({
+        data: originalData,
         secretKey: aesKey,
         iv: aesIV,
       });
 
-      // Layer 3: RSA
+      // Layer 2: RSA (OAEP)
       const { publicKey, privateKey } = CryptUtils.rsaGenerateKeyPair({
-        modulusLength: 1024,
+        modulusLength: 2048,
       });
       const finalEncrypted = CryptUtils.rsaEncrypt({
         data: aesEncrypted,
@@ -134,65 +131,22 @@ describe('CryptUtils - Integration Tests', () => {
       });
 
       // Decrypt in reverse order
-      // Layer 3: RSA
+      // Layer 2: RSA
       const rsaDecrypted = CryptUtils.rsaDecrypt({
         encryptedData: finalEncrypted,
         privateKey,
       });
 
-      // Layer 2: AES
-      const aesDecrypted = CryptUtils.aesDecrypt({
+      // Layer 1: AES-256-GCM
+      const finalDecrypted = CryptUtils.aesDecrypt({
         encryptedData: rsaDecrypted,
         secretKey: aesKey,
         iv: aesIV,
-      });
-
-      // Layer 1: RC4
-      const finalDecrypted = CryptUtils.rc4Decrypt({
-        encryptedData: String(aesDecrypted),
-        key: rc4Key,
+        authTag: aesAuthTag,
       });
 
       // Verify that the original data was recovered
       expect(finalDecrypted).toBe(originalData);
-    });
-  });
-
-  describe('Compatibility between different algorithms', () => {
-    it.skip('should encrypt with different algorithms and compare results', () => {
-      const testData = 'Dados para teste de compatibilidade';
-      const key32 = '12345678901234567890123456789012'; // 32 bytes
-      const iv16 = '1234567890123456'; // 16 bytes
-
-      // Encrypt with AES
-      const { encryptedData: aesEncrypted } = CryptUtils.aesEncrypt({
-        data: testData,
-        secretKey: key32,
-        iv: iv16,
-      });
-
-      // Encrypt with RC4
-      const rc4Encrypted = CryptUtils.rc4Encrypt({
-        data: testData,
-        key: key32,
-      });
-
-      // Verify that the outputs are different (different algorithms)
-      expect(aesEncrypted).not.toBe(rc4Encrypted);
-
-      // Decrypt and verify that both recover the original data
-      const aesDecrypted = CryptUtils.aesDecrypt({
-        encryptedData: aesEncrypted,
-        secretKey: key32,
-        iv: iv16,
-      });
-      const rc4Decrypted = CryptUtils.rc4Decrypt({
-        encryptedData: rc4Encrypted,
-        key: key32,
-      });
-
-      expect(aesDecrypted).toBe(testData);
-      expect(rc4Decrypted).toBe(testData);
     });
   });
 });

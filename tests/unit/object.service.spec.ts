@@ -1,4 +1,5 @@
 import { ObjectUtils } from '../../src/services/object.service';
+import { ValidationError } from '../../src/errors';
 
 describe('ObjectUtils', () => {
   describe('findValue', () => {
@@ -147,6 +148,39 @@ describe('ObjectUtils', () => {
       expect(target).toEqual({ a: 1 });
       expect(source).toEqual({ b: 2 });
     });
+
+    it('should keep the source object when the target value is a primitive', () => {
+      const target = { a: 1 };
+      const source = { a: { b: 2 } };
+      const result = ObjectUtils.deepMerge({ target, source });
+      expect(result).toEqual({ a: { b: 2 } });
+    });
+
+    it('should keep the source object when the key is absent from the target', () => {
+      const target = { a: 1 };
+      const source = { nested: { b: { c: 3 } } };
+      const result = ObjectUtils.deepMerge({ target, source });
+      expect(result).toEqual({ a: 1, nested: { b: { c: 3 } } });
+    });
+
+    it('should deep-clone nested source objects instead of sharing references', () => {
+      const target = {};
+      const source = { a: { b: { c: 1 } } };
+      const result = ObjectUtils.deepMerge({ target, source }) as any;
+
+      // Mutating the source must not affect the merged result.
+      source.a.b.c = 999;
+      expect(result.a.b.c).toBe(1);
+      expect(result.a).not.toBe(source.a);
+      expect(result.a.b).not.toBe(source.a.b);
+    });
+
+    it('should not pollute Object.prototype via dangerous keys', () => {
+      const malicious = JSON.parse('{"__proto__": {"polluted": "yes"}}');
+      ObjectUtils.deepMerge({ target: {}, source: malicious });
+      expect(({} as any).polluted).toBeUndefined();
+      expect((Object.prototype as any).polluted).toBeUndefined();
+    });
   });
 
   describe('pick', () => {
@@ -224,6 +258,12 @@ describe('ObjectUtils', () => {
       expect(result).toEqual({ a: [1, 2, 3] });
     });
 
+    it('should throw a ValidationError for null/undefined input', () => {
+      expect(() =>
+        ObjectUtils.flattenObject({ obj: null as any }),
+      ).toThrow(ValidationError);
+    });
+
     it('should preserve empty objects', () => {
       const obj = { a: {}, b: 1 };
       const result = ObjectUtils.flattenObject({ obj });
@@ -260,6 +300,27 @@ describe('ObjectUtils', () => {
       ObjectUtils.unflattenObject({ obj, path: 'a.b.c', value: 42 });
       expect(obj).toEqual({ a: { d: 1, b: { c: 42 } } });
     });
+
+    it('should NOT pollute Object.prototype via a __proto__ path', () => {
+      ObjectUtils.unflattenObject({
+        obj: {},
+        path: '__proto__.polluted',
+        value: 'x',
+      });
+      expect(({} as any).polluted).toBeUndefined();
+      expect((Object.prototype as any).polluted).toBeUndefined();
+    });
+
+    it('should skip writes that include other dangerous keys', () => {
+      const obj: Record<string, any> = {};
+      ObjectUtils.unflattenObject({
+        obj,
+        path: 'constructor.prototype.polluted',
+        value: 'x',
+      });
+      expect((Object.prototype as any).polluted).toBeUndefined();
+      expect(obj).toEqual({});
+    });
   });
 
   describe('invert', () => {
@@ -280,6 +341,12 @@ describe('ObjectUtils', () => {
       const obj = { a: 1, b: 2, c: 3 };
       const result = ObjectUtils.invert({ obj });
       expect(result).toEqual({ '1': 'a', '2': 'b', '3': 'c' });
+    });
+
+    it('should throw a ValidationError for null/undefined input', () => {
+      expect(() =>
+        ObjectUtils.invert({ obj: null as any }),
+      ).toThrow(ValidationError);
     });
   });
 
@@ -311,6 +378,15 @@ describe('ObjectUtils', () => {
 
     it('should identify non-empty objects', () => {
       expect(ObjectUtils.isEmpty({ obj: { a: 1 } })).toBe(false);
+    });
+
+    it('should throw a ValidationError for null/undefined input', () => {
+      expect(() =>
+        ObjectUtils.isEmpty({ obj: null as any }),
+      ).toThrow(ValidationError);
+      expect(() =>
+        ObjectUtils.isEmpty({ obj: undefined as any }),
+      ).toThrow(ValidationError);
     });
   });
 
@@ -400,6 +476,12 @@ describe('ObjectUtils', () => {
       const result = ObjectUtils.removeUndefined({ obj });
       expect(result).toEqual({ a: 1, b: null, c: 3 });
     });
+
+    it('should throw a ValidationError for null/undefined input', () => {
+      expect(() =>
+        ObjectUtils.removeUndefined({ obj: null as any }),
+      ).toThrow(ValidationError);
+    });
   });
 
   describe('removeNull', () => {
@@ -413,6 +495,12 @@ describe('ObjectUtils', () => {
       const obj = { a: 1, b: undefined, c: 3 };
       const result = ObjectUtils.removeNull({ obj });
       expect(result).toEqual({ a: 1, b: undefined, c: 3 });
+    });
+
+    it('should throw a ValidationError for null/undefined input', () => {
+      expect(() =>
+        ObjectUtils.removeNull({ obj: null as any }),
+      ).toThrow(ValidationError);
     });
   });
 
@@ -434,6 +522,15 @@ describe('ObjectUtils', () => {
       expect(result).toEqual({
         a: { obj1: { b: 1 }, obj2: { b: 2 } },
       });
+    });
+
+    it('should throw a ValidationError for null/undefined input', () => {
+      expect(() =>
+        ObjectUtils.diff({ obj1: null as any, obj2: {} }),
+      ).toThrow(ValidationError);
+      expect(() =>
+        ObjectUtils.diff({ obj1: {}, obj2: undefined as any }),
+      ).toThrow(ValidationError);
     });
   });
 

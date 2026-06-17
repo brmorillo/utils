@@ -64,6 +64,24 @@ describe('DateUtils', () => {
       expect(interval.start!.toISODate()).toBe('2023-01-01');
       expect(interval.end!.toISODate()).toBe('2023-12-31');
     });
+
+    it('should throw for an invalid date string', () => {
+      expect(() => {
+        DateUtils.createInterval({
+          startDate: 'not-a-date',
+          endDate: '2023-12-31',
+        });
+      }).toThrow('Invalid date');
+    });
+
+    it('should throw when the end date is before the start date', () => {
+      expect(() => {
+        DateUtils.createInterval({
+          startDate: '2023-12-31',
+          endDate: '2023-01-01',
+        });
+      }).toThrow('Invalid interval');
+    });
   });
 
   describe('addTime', () => {
@@ -117,6 +135,30 @@ describe('DateUtils', () => {
           timeToAdd: { days: 1, fortnights: 2 } as any,
         });
       }).toThrow('Invalid duration units: fortnights');
+    });
+
+    it('should throw for an invalid date string', () => {
+      expect(() => {
+        DateUtils.addTime({
+          date: 'not-a-date',
+          timeToAdd: { days: 1 } as any,
+        });
+      }).toThrow('Invalid date');
+    });
+
+    it('should throw when timeToAdd is null or not an object', () => {
+      expect(() => {
+        DateUtils.addTime({
+          date: '2023-01-01',
+          timeToAdd: null as any,
+        });
+      }).toThrow('Duration must be');
+      expect(() => {
+        DateUtils.addTime({
+          date: '2023-01-01',
+          timeToAdd: 5 as any,
+        });
+      }).toThrow('Duration must be');
     });
   });
 
@@ -172,6 +214,24 @@ describe('DateUtils', () => {
         });
       }).toThrow('Invalid duration units: fortnights');
     });
+
+    it('should throw for an invalid date string', () => {
+      expect(() => {
+        DateUtils.removeTime({
+          date: 'not-a-date',
+          timeToRemove: { days: 1 } as any,
+        });
+      }).toThrow('Invalid date');
+    });
+
+    it('should throw when timeToRemove is null or not an object', () => {
+      expect(() => {
+        DateUtils.removeTime({
+          date: '2023-01-01',
+          timeToRemove: null as any,
+        });
+      }).toThrow('Duration must be');
+    });
   });
 
   describe('diffBetween', () => {
@@ -212,6 +272,16 @@ describe('DateUtils', () => {
 
       expect(diff.hours).toBe(4); // 12:00 in UTC+8 is 4 hours after 00:00 UTC
     });
+
+    it('should throw for an invalid date string', () => {
+      expect(() => {
+        DateUtils.diffBetween({
+          startDate: 'not-a-date',
+          endDate: '2023-01-11',
+          units: ['days'],
+        });
+      }).toThrow('Invalid date');
+    });
   });
 
   describe('toUTC', () => {
@@ -230,6 +300,12 @@ describe('DateUtils', () => {
 
       expect(utcDate.zoneName).toBe('UTC');
       expect(utcDate.hour).toBe(10); // 12:00 +02:00 = 10:00 UTC
+    });
+
+    it('should throw for an invalid date string', () => {
+      expect(() => {
+        DateUtils.toUTC({ date: 'not-a-date' });
+      }).toThrow('Invalid date');
     });
   });
 
@@ -255,6 +331,24 @@ describe('DateUtils', () => {
       expect(tokyoDate.zoneName).toBe('Asia/Tokyo');
       // Tokyo is +9 hours from UTC, so 12:00 UTC = 21:00 Tokyo
       expect(tokyoDate.hour).toBe(21);
+    });
+
+    it('should throw for an invalid timezone', () => {
+      expect(() => {
+        DateUtils.toTimeZone({
+          date: '2023-01-01T12:00:00Z',
+          timeZone: 'Not/AZone',
+        });
+      }).toThrow('Invalid timezone');
+    });
+
+    it('should throw for an invalid date string', () => {
+      expect(() => {
+        DateUtils.toTimeZone({
+          date: 'not-a-date',
+          timeZone: 'America/New_York',
+        });
+      }).toThrow('Invalid date');
     });
   });
 });

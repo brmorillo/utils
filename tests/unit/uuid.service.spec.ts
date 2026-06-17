@@ -109,6 +109,21 @@ describe('UUIDUtils - Unit Tests', () => {
       // Verify that it is valid using the validation method itself
       expect(UUIDUtils.isValidUuid({ id: uuid })).toBe(true);
     });
+
+    it('should throw a ValidationError for an invalid namespace', () => {
+      expect(() => {
+        UUIDUtils.uuidV5Generate({
+          namespace: 'not-a-valid-uuid',
+          name: 'example.com',
+        });
+      }).toThrow('Invalid namespace');
+    });
+
+    it('should throw a ValidationError for an empty name', () => {
+      expect(() => {
+        UUIDUtils.uuidV5Generate({ name: '' });
+      }).toThrow('Invalid name');
+    });
   });
 
   describe('isValidUuid', () => {

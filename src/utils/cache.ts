@@ -21,8 +21,10 @@ export class Cache<T> {
    * @param ttl Time-to-live in milliseconds (null for no expiration, undefined for default)
    */
   set(key: string, value: T, ttl?: number | null): void {
-    const expires =
-      ttl === null ? null : Date.now() + (ttl ?? this.defaultTTL ?? 0);
+    // Resolve the effective TTL: an explicit per-call ttl wins, otherwise fall
+    // back to the default. A null effective TTL means "no expiry".
+    const effectiveTTL = ttl !== undefined ? ttl : this.defaultTTL;
+    const expires = effectiveTTL === null ? null : Date.now() + effectiveTTL;
     this.cache.set(key, { value, expires });
   }
 

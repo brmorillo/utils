@@ -75,14 +75,14 @@ describe('StringUtils - Benchmark Tests', () => {
     });
   });
 
-  describe('isValidPalindrome', () => {
+  describe('isPalindrome', () => {
     it('should process 1,000,000 palindrome checks in a reasonable time', () => {
       const input = 'racecar';
       const count = 1000000;
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          StringUtils.isValidPalindrome({ input });
+          StringUtils.isPalindrome({ input });
         }
       });
 
@@ -101,7 +101,7 @@ describe('StringUtils - Benchmark Tests', () => {
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          StringUtils.isValidPalindrome({ input });
+          StringUtils.isPalindrome({ input });
         }
       });
 
@@ -380,7 +380,7 @@ describe('StringUtils - Benchmark Tests', () => {
           // Sequence of operations
           const kebabCase = StringUtils.toKebabCase({ input });
           const reversed = StringUtils.reverse({ input: kebabCase });
-          const isValidPalindrome = StringUtils.isValidPalindrome({
+          const isPalindrome = StringUtils.isPalindrome({
             input: reversed,
           });
           const truncated = StringUtils.truncate({

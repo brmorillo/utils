@@ -144,8 +144,8 @@ describe('MathUtils - Integration Tests', () => {
           const prime2 = primes[j];
 
           // Verifies that both are prime
-          const isPrime1 = MathUtils.isValidPrime({ value: prime1 });
-          const isPrime2 = MathUtils.isValidPrime({ value: prime2 });
+          const isPrime1 = MathUtils.isPrime({ value: prime1 });
+          const isPrime2 = MathUtils.isPrime({ value: prime2 });
 
           // Calculates the GCD
           const gcd = MathUtils.gcd({ a: prime1, b: prime2 });

@@ -125,19 +125,26 @@ describe('LazyLoader', () => {
       expect(result).toBe('value');
       expect(factory).toHaveBeenCalledTimes(1);
     });
-  });
 
-  describe('getAsync (static)', () => {
-    it('should resolve the value from the async factory', async () => {
-      // Arrange
-      const asyncFactory = jest.fn(async () => 'static-async');
+    it('should allow a retry after the factory rejects (no permanent poisoning)', async () => {
+      // Arrange - the first load throws, the second succeeds.
+      const factory = jest
+        .fn()
+        .mockImplementationOnce(() => {
+          throw new Error('boom');
+        })
+        .mockImplementationOnce(() => 'recovered');
+      const loader = new LazyLoader<string>(factory);
 
-      // Act
-      const result = await LazyLoader.getAsync(asyncFactory);
+      // Act & Assert - first call rejects.
+      await expect(loader.getAsync()).rejects.toThrow('boom');
+      expect(loader.isLoaded()).toBe(false);
 
-      // Assert
-      expect(result).toBe('static-async');
-      expect(asyncFactory).toHaveBeenCalledTimes(1);
+      // A subsequent call must be able to retry and succeed.
+      const result = await loader.getAsync();
+      expect(result).toBe('recovered');
+      expect(loader.isLoaded()).toBe(true);
+      expect(factory).toHaveBeenCalledTimes(2);
     });
   });
 });

@@ -21,12 +21,12 @@ try {
     util.StringUtils.reverse({ input: 'hello' }),
   );
   console.log(
-    "isValidPalindrome({input: 'radar'}):",
-    util.StringUtils.isValidPalindrome({ input: 'radar' }),
+    "isPalindrome({input: 'radar'}):",
+    util.StringUtils.isPalindrome({ input: 'radar' }),
   );
   console.log(
-    "isValidPalindrome({input: 'hello'}):",
-    util.StringUtils.isValidPalindrome({ input: 'hello' }),
+    "isPalindrome({input: 'hello'}):",
+    util.StringUtils.isPalindrome({ input: 'hello' }),
   );
   console.log(
     "truncate({input: 'This is a long string', maxLength: 10}):",
@@ -59,10 +59,10 @@ try {
 console.log('\n=== TESTING NumberUtils ===');
 try {
   console.log(
-    'isValidEven({value: 4}):',
-    util.NumberUtils.isValidEven({ value: 4 }),
+    'isEven({value: 4}):',
+    util.NumberUtils.isEven({ value: 4 }),
   );
-  console.log('isValidOdd({value: 3}):', util.NumberUtils.isValidOdd({ value: 3 }));
+  console.log('isOdd({value: 3}):', util.NumberUtils.isOdd({ value: 3 }));
   console.log(
     'isPositive({value: 5}):',
     util.NumberUtils.isPositive({ value: 5 }),

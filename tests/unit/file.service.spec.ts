@@ -493,6 +493,23 @@ describe('FileUtils', () => {
         /Failed to read JSON file/,
       );
     });
+
+    it('should return a typed value when readJsonFile is parameterized', () => {
+      // Arrange
+      interface Config {
+        debug: boolean;
+        retries: number;
+      }
+      const filePath = path.join(tempDir, 'typed.json');
+      FileUtils.writeJsonFile({ filePath, data: { debug: true, retries: 3 } });
+
+      // Act
+      const config = FileUtils.readJsonFile<Config>({ filePath });
+
+      // Assert: the generic flows through and the value round-trips.
+      expect(config.debug).toBe(true);
+      expect(config.retries).toBe(3);
+    });
   });
 
   // Additional branch-coverage tests exercising the catch blocks and

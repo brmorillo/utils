@@ -42,7 +42,7 @@ describe('CryptUtils - Benchmark Tests', () => {
   describe('AES encryption in bulk', () => {
     const secretKey = '12345678901234567890123456789012'; // 32 bytes
     const testData = 'AES encryption test for benchmark';
-    const iv = CryptUtils.generateIV();
+    const iv = CryptUtils.generateGcmIV();
 
     it('should encrypt 10,000 strings in a reasonable time', () => {
       const count = 10000;
@@ -72,7 +72,7 @@ describe('CryptUtils - Benchmark Tests', () => {
       const count = 10000;
 
       // Encrypt a string to use in the tests
-      const { encryptedData } = CryptUtils.aesEncrypt({
+      const { encryptedData, authTag } = CryptUtils.aesEncrypt({
         data: testData,
         secretKey,
         iv,
@@ -80,7 +80,7 @@ describe('CryptUtils - Benchmark Tests', () => {
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          CryptUtils.aesDecrypt({ encryptedData, secretKey, iv });
+          CryptUtils.aesDecrypt({ encryptedData, secretKey, iv, authTag });
         }
       });
 
@@ -105,12 +105,12 @@ describe('CryptUtils - Benchmark Tests', () => {
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          const encrypted = CryptUtils.chacha20Encrypt({
+          const { encryptedData } = CryptUtils.chacha20Encrypt({
             data: testData,
             key,
             nonce,
           });
-          encryptedResults.push(encrypted);
+          encryptedResults.push(encryptedData);
         }
       });
 
@@ -127,7 +127,7 @@ describe('CryptUtils - Benchmark Tests', () => {
       const count = 10000;
 
       // Encrypt a string to use in the tests
-      const encrypted = CryptUtils.chacha20Encrypt({
+      const { encryptedData, authTag } = CryptUtils.chacha20Encrypt({
         data: testData,
         key,
         nonce,
@@ -135,7 +135,7 @@ describe('CryptUtils - Benchmark Tests', () => {
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          CryptUtils.chacha20Decrypt({ encryptedData: encrypted, key, nonce });
+          CryptUtils.chacha20Decrypt({ encryptedData, key, nonce, authTag });
         }
       });
 
@@ -146,25 +146,6 @@ describe('CryptUtils - Benchmark Tests', () => {
       // The average time per decryption should be less than 0.5ms
       const avgTimePerDecryption = executionTime / count;
       expect(avgTimePerDecryption).toBeLessThan(0.5);
-    });
-  });
-
-  describe('RC4 encryption in bulk', () => {
-    const key = 'chave-secreta-rc4-para-benchmark';
-    const testData = 'RC4 encryption test for benchmark';
-
-    it('should fail appropriately when RC4 is not supported', () => {
-      // RC4 is deprecated and not supported in modern Node.js versions
-      expect(() => {
-        CryptUtils.rc4Encrypt({ data: testData, key });
-      }).toThrow('RC4 algorithm is not supported in this Node.js version.');
-    });
-
-    it('should fail appropriately on decryption when RC4 is not supported', () => {
-      // RC4 is deprecated and not supported in modern Node.js versions
-      expect(() => {
-        CryptUtils.rc4Decrypt({ encryptedData: 'encrypted-data', key });
-      }).toThrow('RC4 algorithm is not supported in this Node.js version.');
     });
   });
 
@@ -321,38 +302,41 @@ describe('CryptUtils - Benchmark Tests', () => {
   describe('Performance comparison between algorithms', () => {
     const testData = 'Data for performance comparison between algorithms';
     const aesKey = '12345678901234567890123456789012'; // 32 bytes
-    const aesIv = CryptUtils.generateIV();
-    const rc4Key = 'chave-secreta-rc4-para-benchmark';
+    const aesIv = CryptUtils.generateGcmIV();
+    const chachaKey = Buffer.from('12345678901234567890123456789012'); // 32 bytes
+    const chachaNonce = Buffer.from('123456789012'); // 12 bytes
 
-    it('should compare encryption performance between AES and RC4', () => {
+    it('should compare encryption performance between AES-GCM and ChaCha20-Poly1305', () => {
       const count = 5000;
 
-      // Measure the time for AES
+      // Measure the time for AES-256-GCM
       const aesTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
           CryptUtils.aesEncrypt({ data: testData, secretKey: aesKey, iv: aesIv });
         }
       });
 
-      // Measure the time for RC4
-      const rc4Time = measureExecutionTime(() => {
+      // Measure the time for ChaCha20-Poly1305
+      const chachaTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          CryptUtils.rc4Encrypt({ data: testData, key: rc4Key });
+          CryptUtils.chacha20Encrypt({
+            data: testData,
+            key: chachaKey,
+            nonce: chachaNonce,
+          });
         }
       });
 
       console.log(
-        `Time for ${count} AES encryptions: ${aesTime.toFixed(2)}ms`,
+        `Time for ${count} AES-256-GCM encryptions: ${aesTime.toFixed(2)}ms`,
       );
       console.log(
-        `Time for ${count} RC4 encryptions: ${rc4Time.toFixed(2)}ms`,
-      );
-      console.log(
-        `RC4 is approximately ${(aesTime / rc4Time).toFixed(2)}x faster than AES`,
+        `Time for ${count} ChaCha20-Poly1305 encryptions: ${chachaTime.toFixed(2)}ms`,
       );
 
-      // RC4 should be faster than AES
-      expect(rc4Time).toBeLessThan(aesTime);
+      // Both AEAD ciphers should complete the workload.
+      expect(aesTime).toBeGreaterThan(0);
+      expect(chachaTime).toBeGreaterThan(0);
     });
   });
 });

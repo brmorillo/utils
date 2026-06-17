@@ -118,10 +118,20 @@ export class ConvertUtils {
 
   /**
    * Converts a value between types by inferring the type of the input.
+   *
+   * Error model:
+   * - Returns `null` when the input cannot be converted to the requested
+   *   `toType` (e.g. a non-numeric string to `'number'`/`'integer'`/`'bigint'`,
+   *   or a source type that has no conversion branch for the target).
+   * - Returns `null` when `value` is `null`/`undefined` and `toType` is
+   *   `'string'`.
+   * - Throws {@link ValidationError} when converting to `'roman'` and the value
+   *   is not an integer in the classic Roman range (1 to 3999 inclusive).
    * @param {object} params - The parameters for the method.
-   * @param {any} params.value - The value to be converted.
+   * @param {unknown} params.value - The value to be converted.
    * @param {'string' | 'integer' | 'number' | 'bigint' | 'roman'} params.toType - The target type.
-   * @returns {any} The converted value or `null` if conversion is not possible.
+   * @returns {string | number | bigint | null} The converted value or `null` if conversion is not possible.
+   * @throws {ValidationError} When converting to `'roman'` with a value outside the classic range (1-3999) or that is not a positive integer.
    * @example
    * ConvertUtils.value({
    *   value: "42",
@@ -147,19 +157,23 @@ export class ConvertUtils {
     value,
     toType,
   }: {
-    value: any;
+    value: unknown;
     toType: 'string' | 'integer' | 'number' | 'bigint' | 'roman';
-  }): any {
+  }): string | number | bigint | null {
     const typeOfValue = typeof value;
 
-    if (typeOfValue === toType) return value;
+    if (typeOfValue === toType) return value as string | number | bigint;
 
-    if (toType === 'string') return value.toString();
+    if (toType === 'string') {
+      if (value == null) return null;
+      return String(value);
+    }
 
     if (toType === 'integer') {
+      if (typeOfValue === 'number') return Math.trunc(value as number);
       if (typeOfValue === 'bigint') return Number(value);
       if (typeOfValue === 'string') {
-        const parsed = parseInt(value, 10);
+        const parsed = parseInt(value as string, 10);
         return isNaN(parsed) ? null : parsed;
       }
     }
@@ -167,16 +181,16 @@ export class ConvertUtils {
     if (toType === 'number') {
       if (typeOfValue === 'bigint') return Number(value);
       if (typeOfValue === 'string') {
-        const parsed = parseFloat(value);
+        const parsed = parseFloat(value as string);
         return isNaN(parsed) ? null : parsed;
       }
     }
 
     if (toType === 'bigint') {
-      if (typeOfValue === 'number') return BigInt(Math.trunc(value));
+      if (typeOfValue === 'number') return BigInt(Math.trunc(value as number));
       if (typeOfValue === 'string') {
         try {
-          return BigInt(value);
+          return BigInt(value as string);
         } catch {
           return null;
         }
@@ -187,6 +201,12 @@ export class ConvertUtils {
       if (typeof value !== 'number' || value <= 0 || !Number.isInteger(value)) {
         throw new ValidationError(
           'Value must be a positive integer to convert to Roman.',
+        );
+      }
+
+      if (value < 1 || value > 3999) {
+        throw new ValidationError(
+          'Value must be within the classic Roman numeral range (1-3999).',
         );
       }
 

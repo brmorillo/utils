@@ -1,5 +1,6 @@
 import { NumberUtils } from '../../src/services/number.service';
 import { MathUtils } from '../../src/services/math.service';
+import { ValidationError } from '../../src/errors';
 
 describe('NumberUtils', () => {
   describe('normalize', () => {
@@ -208,9 +209,22 @@ describe('NumberUtils', () => {
       expect(NumberUtils.factorial({ value: 5 })).toBe(120);
     });
 
-    it('should return 0 for negative numbers', () => {
-      expect(NumberUtils.factorial({ value: -1 })).toBe(0);
-      expect(NumberUtils.factorial({ value: -5 })).toBe(0);
+    it('should throw a ValidationError for negative numbers', () => {
+      expect(() => NumberUtils.factorial({ value: -1 })).toThrow(
+        ValidationError,
+      );
+      expect(() => NumberUtils.factorial({ value: -5 })).toThrow(
+        ValidationError,
+      );
+    });
+
+    it('should throw a ValidationError for non-integer input', () => {
+      expect(() => NumberUtils.factorial({ value: 2.5 })).toThrow(
+        ValidationError,
+      );
+      expect(() => NumberUtils.factorial({ value: NaN })).toThrow(
+        ValidationError,
+      );
     });
   });
 
@@ -228,83 +242,85 @@ describe('NumberUtils', () => {
     });
   });
 
-  describe('isValidPrime', () => {
+  describe('isPrime', () => {
     it('should identify prime numbers', () => {
-      expect(MathUtils.isValidPrime({ value: 2 })).toBe(true);
-      expect(MathUtils.isValidPrime({ value: 3 })).toBe(true);
-      expect(MathUtils.isValidPrime({ value: 5 })).toBe(true);
-      expect(MathUtils.isValidPrime({ value: 7 })).toBe(true);
-      expect(MathUtils.isValidPrime({ value: 11 })).toBe(true);
+      expect(MathUtils.isPrime({ value: 2 })).toBe(true);
+      expect(MathUtils.isPrime({ value: 3 })).toBe(true);
+      expect(MathUtils.isPrime({ value: 5 })).toBe(true);
+      expect(MathUtils.isPrime({ value: 7 })).toBe(true);
+      expect(MathUtils.isPrime({ value: 11 })).toBe(true);
     });
 
     it('should identify non-prime numbers', () => {
-      expect(MathUtils.isValidPrime({ value: 1 })).toBe(false);
-      expect(MathUtils.isValidPrime({ value: 4 })).toBe(false);
-      expect(MathUtils.isValidPrime({ value: 6 })).toBe(false);
-      expect(MathUtils.isValidPrime({ value: 8 })).toBe(false);
-      expect(MathUtils.isValidPrime({ value: 9 })).toBe(false);
+      expect(MathUtils.isPrime({ value: 1 })).toBe(false);
+      expect(MathUtils.isPrime({ value: 4 })).toBe(false);
+      expect(MathUtils.isPrime({ value: 6 })).toBe(false);
+      expect(MathUtils.isPrime({ value: 8 })).toBe(false);
+      expect(MathUtils.isPrime({ value: 9 })).toBe(false);
     });
 
     it('should identify negative numbers as non-prime', () => {
-      expect(MathUtils.isValidPrime({ value: -2 })).toBe(false);
-      expect(MathUtils.isValidPrime({ value: -3 })).toBe(false);
-      expect(MathUtils.isValidPrime({ value: -5 })).toBe(false);
+      expect(MathUtils.isPrime({ value: -2 })).toBe(false);
+      expect(MathUtils.isPrime({ value: -3 })).toBe(false);
+      expect(MathUtils.isPrime({ value: -5 })).toBe(false);
     });
   });
 
-  describe('isValidEven', () => {
+  describe('isEven', () => {
     it('should identify even numbers', () => {
-      expect(NumberUtils.isValidEven({ value: 2 })).toBe(true);
-      expect(NumberUtils.isValidEven({ value: 4 })).toBe(true);
-      expect(NumberUtils.isValidEven({ value: 0 })).toBe(true);
-      expect(NumberUtils.isValidEven({ value: -2 })).toBe(true);
+      expect(NumberUtils.isEven({ value: 2 })).toBe(true);
+      expect(NumberUtils.isEven({ value: 4 })).toBe(true);
+      expect(NumberUtils.isEven({ value: 0 })).toBe(true);
+      expect(NumberUtils.isEven({ value: -2 })).toBe(true);
     });
 
     it('should identify odd numbers', () => {
-      expect(NumberUtils.isValidEven({ value: 1 })).toBe(false);
-      expect(NumberUtils.isValidEven({ value: 3 })).toBe(false);
-      expect(NumberUtils.isValidEven({ value: -1 })).toBe(false);
-      expect(NumberUtils.isValidEven({ value: -3 })).toBe(false);
-    });
-  });
-
-  describe('isValidOdd', () => {
-    it('should identify odd numbers', () => {
-      expect(NumberUtils.isValidOdd({ value: 1 })).toBe(true);
-      expect(NumberUtils.isValidOdd({ value: 3 })).toBe(true);
-      expect(NumberUtils.isValidOdd({ value: -1 })).toBe(true);
-      expect(NumberUtils.isValidOdd({ value: -3 })).toBe(true);
+      expect(NumberUtils.isEven({ value: 1 })).toBe(false);
+      expect(NumberUtils.isEven({ value: 3 })).toBe(false);
+      expect(NumberUtils.isEven({ value: -1 })).toBe(false);
+      expect(NumberUtils.isEven({ value: -3 })).toBe(false);
     });
 
-    it('should identify even numbers', () => {
-      expect(NumberUtils.isValidOdd({ value: 2 })).toBe(false);
-      expect(NumberUtils.isValidOdd({ value: 4 })).toBe(false);
-      expect(NumberUtils.isValidOdd({ value: 0 })).toBe(false);
-      expect(NumberUtils.isValidOdd({ value: -2 })).toBe(false);
+    it('should throw a ValidationError for non-integer input', () => {
+      expect(() => NumberUtils.isEven({ value: 2.5 })).toThrow(ValidationError);
+      expect(() => NumberUtils.isEven({ value: NaN })).toThrow(ValidationError);
+      expect(() => NumberUtils.isEven({ value: Infinity })).toThrow(
+        ValidationError,
+      );
     });
   });
 
   describe('isOdd', () => {
-    it('should return true for odd numbers', () => {
-      expect(NumberUtils.isValidOdd({ value: 1 })).toBe(true);
-      expect(NumberUtils.isValidOdd({ value: 3 })).toBe(true);
-      expect(NumberUtils.isValidOdd({ value: -5 })).toBe(true);
+    it('should identify odd numbers', () => {
+      expect(NumberUtils.isOdd({ value: 1 })).toBe(true);
+      expect(NumberUtils.isOdd({ value: 3 })).toBe(true);
+      expect(NumberUtils.isOdd({ value: -1 })).toBe(true);
+      expect(NumberUtils.isOdd({ value: -3 })).toBe(true);
     });
 
-    it('should return false for even numbers', () => {
-      expect(NumberUtils.isValidOdd({ value: 2 })).toBe(false);
-      expect(NumberUtils.isValidOdd({ value: 0 })).toBe(false);
-      expect(NumberUtils.isValidOdd({ value: -4 })).toBe(false);
+    it('should identify even numbers', () => {
+      expect(NumberUtils.isOdd({ value: 2 })).toBe(false);
+      expect(NumberUtils.isOdd({ value: 4 })).toBe(false);
+      expect(NumberUtils.isOdd({ value: 0 })).toBe(false);
+      expect(NumberUtils.isOdd({ value: -2 })).toBe(false);
+    });
+
+    it('should throw a ValidationError for non-integer input', () => {
+      expect(() => NumberUtils.isOdd({ value: 3.5 })).toThrow(ValidationError);
+      expect(() => NumberUtils.isOdd({ value: NaN })).toThrow(ValidationError);
+      expect(() => NumberUtils.isOdd({ value: Infinity })).toThrow(
+        ValidationError,
+      );
     });
   });
 
-  describe('isValidPrime - second divisor branch', () => {
+  describe('isPrime - second divisor branch', () => {
     it('should detect composites divisible only by i + 2 in the loop', () => {
       // 49 = 7 * 7: 49 % 5 !== 0 but 49 % 7 === 0, exercising the second
       // operand of the loop condition.
-      expect(MathUtils.isValidPrime({ value: 49 })).toBe(false);
+      expect(MathUtils.isPrime({ value: 49 })).toBe(false);
       // 25 = 5 * 5 keeps a true prime nearby valid.
-      expect(MathUtils.isValidPrime({ value: 23 })).toBe(true);
+      expect(MathUtils.isPrime({ value: 23 })).toBe(true);
     });
   });
 });

@@ -27,16 +27,6 @@ export class LazyLoader<T> {
   }
 
   /**
-   * Gets the instance asynchronously, creating it if necessary
-   * @param asyncFactory Async factory function to create the instance
-   * @returns Promise resolving to the instance
-   */
-  static async getAsync<U>(asyncFactory: () => Promise<U>): Promise<U> {
-    const loader = new LazyLoader<Promise<U>>(() => asyncFactory());
-    return loader.get();
-  }
-
-  /**
    * Checks if the instance has been created
    * @returns True if the instance has been created
    */
@@ -68,12 +58,20 @@ export class LazyLoader<T> {
     }
 
     this.isLoading = true;
-    this.loadPromise = Promise.resolve().then(() => {
-      const instance = this.factory();
-      this.instance = instance;
-      this.isLoading = false;
-      return instance;
-    });
+    this.loadPromise = Promise.resolve()
+      .then(() => {
+        const instance = this.factory();
+        this.instance = instance;
+        this.isLoading = false;
+        return instance;
+      })
+      .catch(error => {
+        // Reset state so a failed load can be retried instead of poisoning
+        // the loader permanently.
+        this.isLoading = false;
+        this.loadPromise = null;
+        throw error;
+      });
 
     return this.loadPromise;
   }

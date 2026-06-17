@@ -337,6 +337,59 @@ describe('LocalStorageProvider (direct)', () => {
     });
   });
 
+  describe('path traversal protection', () => {
+    it('should reject a relative path that escapes the storage root', async () => {
+      // Arrange
+      const provider = new LocalStorageProvider({ basePath: tempDir });
+
+      // Act & Assert: every fs-touching method routes through getFullPath.
+      await expect(
+        provider.downloadFile('../../etc/passwd'),
+      ).rejects.toThrow(/outside storage root/);
+      await expect(provider.deleteFile('../../etc/passwd')).rejects.toThrow(
+        /outside storage root/,
+      );
+      await expect(
+        provider.getFileMetadata('../../etc/passwd'),
+      ).rejects.toThrow(/outside storage root/);
+    });
+
+    it('should reject an absolute path pointing outside the storage root', async () => {
+      // Arrange
+      const provider = new LocalStorageProvider({ basePath: tempDir });
+      const outside =
+        process.platform === 'win32' ? 'C:\\Windows\\System32' : '/etc/passwd';
+
+      // Act & Assert
+      await expect(provider.downloadFile(outside)).rejects.toThrow(
+        /outside storage root/,
+      );
+    });
+
+    it('should throw a StorageError with code INVALID_PATH', async () => {
+      // Arrange
+      const provider = new LocalStorageProvider({ basePath: tempDir });
+
+      // Act & Assert
+      await expect(
+        provider.uploadFile('../escape.txt', 'nope'),
+      ).rejects.toMatchObject({ code: 'INVALID_PATH' });
+    });
+
+    it('should allow legitimate nested paths within the root', async () => {
+      // Arrange
+      const provider = new LocalStorageProvider({ basePath: tempDir });
+
+      // Act
+      await provider.uploadFile('safe/nested/ok.txt', 'fine');
+
+      // Assert
+      await expect(provider.fileExists('safe/nested/ok.txt')).resolves.toBe(
+        true,
+      );
+    });
+  });
+
   describe('getFileMetadata', () => {
     it('should derive content type from the extension', async () => {
       // Arrange
@@ -465,9 +518,10 @@ describe('StorageService (provider selection and guards)', () => {
       },
     });
 
-    // Assert: the URL is built by the S3 provider (no baseUrl => s3 host form).
+    // Assert: the URL is built by the S3 provider (no baseUrl => region-aware
+    // s3 host form).
     expect(service.getFileUrl('path/to/object.txt')).toBe(
-      'https://my-bucket.s3.amazonaws.com/path/to/object.txt',
+      'https://my-bucket.s3.us-east-1.amazonaws.com/path/to/object.txt',
     );
   });
 
@@ -504,7 +558,7 @@ describe('StorageService (provider selection and guards)', () => {
 
     // Assert: now routed to the S3 provider.
     expect(service.getFileUrl('y.txt')).toBe(
-      'https://reconfig-bucket.s3.amazonaws.com/y.txt',
+      'https://reconfig-bucket.s3.eu-west-1.amazonaws.com/y.txt',
     );
   });
 

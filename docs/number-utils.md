@@ -18,22 +18,22 @@ console.log(clamped); // 10
 
 ## Methods
 
-### isValidEven({ value })
+### isEven({ value })
 
-Checks if a number is even.
+Checks if a number is even. Only finite integers are valid input; a non-integer or non-finite value (e.g. `NaN`, `Infinity`, `4.5`) throws a `ValidationError`.
 
 ```javascript
-NumberUtils.isValidEven({ value: 4 }); // true
-NumberUtils.isValidEven({ value: 5 }); // false
+NumberUtils.isEven({ value: 4 }); // true
+NumberUtils.isEven({ value: 5 }); // false
 ```
 
-### isValidOdd({ value })
+### isOdd({ value })
 
-Checks if a number is odd.
+Checks if a number is odd. Only finite integers are valid input; a non-integer or non-finite value (e.g. `NaN`, `Infinity`, `4.5`) throws a `ValidationError`.
 
 ```javascript
-NumberUtils.isValidOdd({ value: 3 }); // true
-NumberUtils.isValidOdd({ value: 4 }); // false
+NumberUtils.isOdd({ value: 3 }); // true
+NumberUtils.isOdd({ value: 4 }); // false
 ```
 
 ### isPositive({ value })
@@ -136,7 +136,7 @@ NumberUtils.randomFloatInRange({ min: 1, max: 10, decimals: 2 }); // e.g., 7.42 
 
 ### factorial({ value })
 
-Calculates the factorial of a number. Returns 0 for negative input.
+Calculates the factorial of a non-negative integer (computed iteratively). Throws a `ValidationError` for negative or non-integer input.
 
 ```javascript
 NumberUtils.factorial({ value: 5 }); // 120
@@ -145,20 +145,20 @@ NumberUtils.factorial({ value: 0 }); // 1
 
 ### clamp({ value, min, max })
 
-Clamps a number within a specified range.
+Clamps a number within a specified range. If `min` is greater than `max`, the bounds are automatically swapped so the range is always valid.
 
 ```javascript
 NumberUtils.clamp({ value: 15, min: 0, max: 10 }); // 10
 NumberUtils.clamp({ value: -5, min: 0, max: 10 }); // 0
+NumberUtils.clamp({ value: 5, min: 10, max: 0 });  // 5 (bounds auto-swapped)
 ```
 
 ### Primality check
 
 `NumberUtils` no longer exposes a prime check. Primality validation lives in
-`MathUtils.isValidPrime`. Use `MathUtils.isValidPrime({ value })` instead.
+`MathUtils.isPrime`. Use `MathUtils.isPrime({ value })` instead.
 
-> Note: For odd-number checks, use `NumberUtils.isValidOdd({ value })`. The
-> former `isOdd` alias has been removed.
+> Note: For odd-number checks, use `NumberUtils.isOdd({ value })`.
 
 ## Examples
 

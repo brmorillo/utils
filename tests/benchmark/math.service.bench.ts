@@ -161,14 +161,14 @@ describe('MathUtils - Benchmark Tests', () => {
     });
   });
 
-  describe('isValidPrime in bulk', () => {
+  describe('isPrime in bulk', () => {
     it('should check 10,000 prime numbers in a reasonable time', () => {
       const count = 10000;
       const results: boolean[] = [];
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          results.push(MathUtils.isValidPrime({ value: 997 })); // A large prime number
+          results.push(MathUtils.isPrime({ value: 997 })); // A large prime number
         }
       });
 
@@ -190,7 +190,7 @@ describe('MathUtils - Benchmark Tests', () => {
 
       const executionTime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          results.push(MathUtils.isValidPrime({ value: 996 })); // A large non-prime number
+          results.push(MathUtils.isPrime({ value: 996 })); // A large non-prime number
         }
       });
 
@@ -254,10 +254,10 @@ describe('MathUtils - Benchmark Tests', () => {
         }
       });
 
-      // Test isValidPrime
-      results.isValidPrime = measureExecutionTime(() => {
+      // Test isPrime
+      results.isPrime = measureExecutionTime(() => {
         for (let i = 0; i < count; i++) {
-          MathUtils.isValidPrime({ value: 997 });
+          MathUtils.isPrime({ value: 997 });
         }
       });
 
@@ -274,7 +274,7 @@ describe('MathUtils - Benchmark Tests', () => {
   });
 
   describe('Performance with different inputs', () => {
-    it('should measure the performance of isValidPrime with numbers of different sizes', () => {
+    it('should measure the performance of isPrime with numbers of different sizes', () => {
       const count = 1000;
       const numbers = [2, 101, 997, 9973, 99991];
       const results: Record<number, number> = {};
@@ -282,7 +282,7 @@ describe('MathUtils - Benchmark Tests', () => {
       for (const num of numbers) {
         results[num] = measureExecutionTime(() => {
           for (let i = 0; i < count; i++) {
-            MathUtils.isValidPrime({ value: num });
+            MathUtils.isPrime({ value: num });
           }
         });
 

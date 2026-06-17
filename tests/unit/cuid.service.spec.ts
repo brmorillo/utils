@@ -51,6 +51,25 @@ describe('CuidUtils', () => {
       // Assert
       expect(CuidUtils.isValidCuid({ id })).toBe(true);
     });
+
+    it('should accept the boundary lengths 2 and 32', () => {
+      expect(CuidUtils.generate({ length: 2 })).toHaveLength(2);
+      expect(CuidUtils.generate({ length: 32 })).toHaveLength(32);
+    });
+
+    it('should throw a ValidationError for a length below 2', () => {
+      expect(() => CuidUtils.generate({ length: 1 })).toThrow('Invalid length');
+    });
+
+    it('should throw a ValidationError for a length above 32', () => {
+      expect(() => CuidUtils.generate({ length: 33 })).toThrow('Invalid length');
+    });
+
+    it('should throw a ValidationError for a non-integer length', () => {
+      expect(() => CuidUtils.generate({ length: 10.5 })).toThrow(
+        'Invalid length',
+      );
+    });
   });
 
   describe('isValidCuid', () => {
