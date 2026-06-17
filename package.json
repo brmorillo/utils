@@ -1,6 +1,6 @@
 {
   "name": "@brmorillo/utils",
-  "version": "14.0.1",
+  "version": "14.0.2",
   "description": "Production-ready utility library for JS/TS — 27 modules behind one type-safe API: arrays, objects, strings, crypto, JWT, UUID, sorting, queues, caches, HTTP, logging, storage and more.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
