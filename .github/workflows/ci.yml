@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Type-check, lint, test, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Type-check
+        run: bun run type-check
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Test (unit + integration, with coverage thresholds)
+        run: bun run test:ci
+
+      - name: Build (CJS + ESM + d.ts)
+        run: bun run build
+
+  secrets-scan:
+    name: Gitleaks secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run gitleaks
+        run: |
+          set -euo pipefail
+          ver="$(curl -sSfL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/gitleaks/gitleaks/releases/latest \
+            | grep -oE '"tag_name": "v[^"]+' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)"
+          echo "Using gitleaks v${ver}"
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${ver}/gitleaks_${ver}_linux_x64.tar.gz" \
+            | tar -xz gitleaks
+          # Scans the checked-out tree (tracked files only — gitignored files like
+          # .env are never present in CI). Fails the job if any secret is found.
+          ./gitleaks detect --source . --no-git --config .gitleaks.toml --redact --verbose --no-banner

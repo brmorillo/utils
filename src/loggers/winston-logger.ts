@@ -6,6 +6,13 @@ import { ILogger } from '../interfaces/logger.interface';
 export class WinstonLogger implements ILogger {
   private logger: any;
 
+  /**
+   * Creates a winston-backed logger. Falls back to a console logger when
+   * winston is not installed.
+   * @param options Logger options.
+   * @param options.level Minimum level to emit (default 'info').
+   * @param options.prettyPrint When true, uses a colorized, human-readable format.
+   */
   constructor(options: { level?: string; prettyPrint?: boolean } = {}) {
     try {
       // Dynamic import to avoid requiring winston as a direct dependency
@@ -54,18 +61,38 @@ export class WinstonLogger implements ILogger {
     }
   }
 
+  /**
+   * Logs an info-level message.
+   * @param message The message to log.
+   * @param meta Additional metadata.
+   */
   info(message: string, ...meta: any[]): void {
     this.logger.info(message, ...meta);
   }
 
+  /**
+   * Logs a warning-level message.
+   * @param message The message to log.
+   * @param meta Additional metadata.
+   */
   warn(message: string, ...meta: any[]): void {
     this.logger.warn(message, ...meta);
   }
 
+  /**
+   * Logs an error-level message.
+   * @param message The message to log.
+   * @param meta Additional metadata.
+   */
   error(message: string, ...meta: any[]): void {
     this.logger.error(message, ...meta);
   }
 
+  /**
+   * Logs a debug-level message.
+   * @param message The message to log.
+   * @param meta Additional metadata.
+   */
   debug(message: string, ...meta: any[]): void {
     this.logger.debug(message, ...meta);
   }

@@ -1,6 +1,48 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
+
+## [14.0.0](https://github.com/brmorillo/util/compare/v12.0.0...v14.0.0) (2026-06-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* **object:** unflattenObject is non-mutating by default (+inPlace)
+* pre-v13 audit hardening — security, validation, contracts (BREAKING)
+* standardize errors, signatures and names (BREAKING, v13)
+
+### Features
+
+* inPlace option on all data-transforming Array/Object methods ([c213e5d](https://github.com/brmorillo/util/commit/c213e5d69b3c101ac8636a1f7ee701d68423ecb1))
+* **sort:** add additive inPlace option; test: lock project invariants ([0d65194](https://github.com/brmorillo/util/commit/0d65194db70a93e8ec9d9cd42ed4f50de3cd5ea8))
+
+
+### Bug Fixes
+
+* dist path ([efd332e](https://github.com/brmorillo/util/commit/efd332e761ec752a9da36fcdf7215845507fc8c1))
+* timSort must not mutate input; isValidSnowflake accepts bigint ([cd45735](https://github.com/brmorillo/util/commit/cd45735842787d9458dc30794c0331dbe92cda8f))
+
+
+### Documentation
+
+* add contributing guidelines and dependency update policy to README ([32bfab1](https://github.com/brmorillo/util/commit/32bfab15332815dd749e92ef616e17c27f75b8ea))
+* add TSDoc to all internal adapter classes and helpers ([c012069](https://github.com/brmorillo/util/commit/c012069627c971ce9eda21f1fe2372c0abebc89b))
+* **CLAUDE:** reflect expanded inPlace coverage and the two mutability invariants ([dfefbe4](https://github.com/brmorillo/util/commit/dfefbe46bc151dfc3bcd02b9c728c98fd1aa3971))
+* reconcile every module doc with the v13 implementation ([932ac11](https://github.com/brmorillo/util/commit/932ac119a36f649648bda5a0a46fb152d89dd62f))
+* refresh CLAUDE.md and docs index for v13 conventions ([d012106](https://github.com/brmorillo/util/commit/d012106ba4f0909dd61c38deeebe69ebb1b4a5f6))
+* restructure into per-module docs, add CLAUDE.md, rewrite README ([3e2db9e](https://github.com/brmorillo/util/commit/3e2db9ef67d8f5d57e72248cc6e0a83ac3b0ba76))
+
+
+### Code Refactoring
+
+* **object:** unflattenObject is non-mutating by default (+inPlace) ([c9c1c1f](https://github.com/brmorillo/util/commit/c9c1c1f51f47ed07d1119ddafd31d296c39b361e))
+* pre-v13 audit hardening — security, validation, contracts (BREAKING) ([cb9d189](https://github.com/brmorillo/util/commit/cb9d189da645e8110a7df7e8cb9041417d5bbe0d))
+* standardize errors, signatures and names (BREAKING, v13) ([8cbdaac](https://github.com/brmorillo/util/commit/8cbdaac1a172906c3b53e12c8319ab5bb8324115))
+
+
+### Tests
+
+* raise unit coverage to ~98% lines / 93% branches ([f3919ed](https://github.com/brmorillo/util/commit/f3919eda563b0109fc186268738d4d97a2154e01))
 
 ## [11.3.0](https://github.com/brmorillo/util/compare/v11.2.3...v11.3.0) (2025-06-18)
 

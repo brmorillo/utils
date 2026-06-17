@@ -839,7 +839,7 @@ export class ObjectUtils {
   }
 }
 
-// Helper function to check if a value is an object
+/** Returns true if `item` is a non-null, non-array plain object. */
 function isObject(item: any): boolean {
   return item && typeof item === 'object' && !Array.isArray(item);
 }

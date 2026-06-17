@@ -11,6 +11,10 @@ import { HttpError } from '../errors';
 export class AxiosClient implements IHttpClient {
   private axios: any;
 
+  /**
+   * Creates an Axios-backed HTTP client.
+   * @throws {HttpError} If axios is not installed as a peer dependency.
+   */
   constructor() {
     try {
       // Dynamic import to avoid requiring axios as a direct dependency

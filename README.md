@@ -187,6 +187,85 @@ bun run lint         # lint
 bun run format       # format with Prettier
 ```
 
+## Contributing
+
+All contributions must follow these conventions:
+
+- **Commit messages** — [Conventional Commits](https://www.conventionalcommits.org/):
+  `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`, `perf:`.  
+  Breaking changes get a `!` suffix (`feat!:`, `refactor!:`) and a `BREAKING CHANGE:` footer.
+- **Branch naming** — `feature/<short-name>`, `fix/<issue>`, `docs/<topic>`, `chore/<task>`.
+- **PR process** — open a PR against `main`; the CI pipeline (type-check → lint → test with
+  coverage gate → build → secret scan) must pass. The `pr-version` workflow automatically commits
+  the version bump (`chore(release): vX.Y.Z`) to your branch before merge.
+- **v13 API contract** — this is a stable, API-frozen line. Only additive, non-breaking changes
+  are accepted: new methods, new optional parameters, new exports. Signature changes, removals, or
+  observable behavior changes require a new major version.
+- **Mutability convention** — data-transforming methods must be non-mutating by default. Opt-in
+  mutation is exposed via `inPlace?: boolean` (default `false`). Both invariant test suites
+  (`immutability.spec.ts` and `inplace-invariant.spec.ts`) must stay green.
+- **Typed errors only** — never `throw new Error(...)`. Use the typed errors from `src/errors`.
+- **TSDoc on every public member** — all public methods, constructors, and exported helpers must
+  have a `/** */` block with at least a summary line.
+- **English only** — all identifiers, comments, doc strings, and test descriptions must be
+  in English.
+
+## Dependency update policy
+
+All runtime and development dependencies are pinned to **exact versions** (no `^`, `~`, or
+`latest`) in `package.json`. This ensures fully reproducible installs and makes every dependency
+change an intentional, reviewable commit.
+
+### Update schedule
+
+Dependency updates are performed **once a month**, on the first working day of each month.
+
+### Version lag — 3-month rule
+
+We intentionally stay **at least 3 months behind the latest published version** of every
+dependency. This buffer gives the community time to discover and disclose supply-chain attacks,
+malicious publishes, and critical regressions before we adopt them.
+
+> Example: if `axios` publishes `2.0.0` on 1 March 2025, the earliest we adopt it is
+> 1 June 2025.
+
+### How to update a dependency
+
+1. Check whether the target version is at least 3 months old:
+   ```bash
+   npm view <package> time --json   # lists publish timestamps for every version
+   ```
+2. Read the changelog and check for breaking changes, CVEs, or supply-chain advisories.
+3. Manually edit the version string in `package.json` (no `^` or `~`).
+4. Run `bun install` to refresh `bun.lock`.
+5. Run the full test suite and build:
+   ```bash
+   bun run build
+   CI=true bun run test:ci
+   ```
+6. Commit with:
+   ```
+   chore(deps): update <package> from X.Y.Z to A.B.C
+   ```
+7. Open a PR. The CI pipeline validates the updated lockfile automatically.
+
+### CJS-compatibility check
+
+Before bumping any **runtime** dependency to a new major, verify it still ships a CommonJS
+build:
+
+```bash
+node -e "require('<package>')"                        # must not throw
+node -p "Object.keys(require('<package>/package.json').exports)"   # must include 'require'
+```
+
+The following packages are permanently pinned to a specific major for CJS compatibility:
+
+| Package | Pinned major | Reason |
+| --- | --- | --- |
+| `uuid` | 11.x | v14+ is ESM-only |
+| `@paralleldrive/cuid2` | 2.x | v3+ is ESM-only |
+
 ## License
 
 MIT © [Bruno Morillo](https://github.com/brmorillo)

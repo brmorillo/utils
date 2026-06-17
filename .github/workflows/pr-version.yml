@@ -1,0 +1,68 @@
+name: PR Version Bump
+
+# Automatically bumps the package version (and CHANGELOG) from the conventional
+# commits in the pull request, committing the bump back to the PR branch BEFORE
+# the merge. When the PR is merged, main already carries the new version.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+
+# Allow the workflow to push the bump commit back to the PR branch.
+permissions:
+  contents: write
+
+concurrency:
+  group: pr-version-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  bump:
+    name: Bump version from conventional commits
+    # GITHUB_TOKEN cannot push to a fork's branch — only run for same-repo PRs.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Skip if this PR already contains a release bump
+        id: guard
+        run: |
+          set -euo pipefail
+          if git log --pretty=%s "origin/${{ github.base_ref }}..HEAD" \
+              | grep -qiE '^chore\(release\)'; then
+            echo "A chore(release) commit already exists in this PR — skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up bun
+        if: steps.guard.outputs.skip == 'false'
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        if: steps.guard.outputs.skip == 'false'
+        run: bun install --frozen-lockfile
+
+      - name: Bump version + CHANGELOG
+        if: steps.guard.outputs.skip == 'false'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Compute the next version from conventional commits, update package.json
+          # and CHANGELOG.md, and commit "chore(release): vX.Y.Z". Tagging happens
+          # at publish time, not here. Config lives in .versionrc.json.
+          bunx commit-and-tag-version --skip.tag
+
+      - name: Push the bump to the PR branch
+        if: steps.guard.outputs.skip == 'false'
+        run: git push origin "HEAD:${{ github.head_ref }}"

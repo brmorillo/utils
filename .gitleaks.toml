@@ -1,0 +1,26 @@
+# Gitleaks configuration for @brmorillo/utils.
+#
+# Uses the built-in default ruleset (≈150 well-tuned rules for AWS, GCP, GitHub,
+# npm, Stripe, private keys, etc.) and allowlists this repo's test fixtures,
+# examples and docs (which contain only throwaway sample values).
+#
+# Run locally with:
+#   gitleaks detect --source . --no-git --config .gitleaks.toml --redact --verbose
+#
+# Reference: https://github.com/gitleaks/gitleaks/blob/master/config/gitleaks.toml
+
+title = "gitleaks config for @brmorillo/utils"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Test fixtures, examples and docs contain only throwaway sample values — not real secrets."
+paths = [
+  '''(^|/)tests/''',
+  '''(^|/)examples/''',
+  '''(^|/)docs/''',
+  '''(^|/)usage-example\.js$''',
+  '''(^|/)CHANGELOG\.md$''',
+  '''(^|/)bun\.lock$''',
+]
