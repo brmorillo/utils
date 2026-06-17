@@ -181,6 +181,14 @@ describe('ObjectUtils', () => {
       expect(({} as any).polluted).toBeUndefined();
       expect((Object.prototype as any).polluted).toBeUndefined();
     });
+
+    it('should mutate the target and return the same reference when inPlace is true', () => {
+      const target: Record<string, any> = { a: 1, b: { c: 2 } };
+      const source = { b: { d: 3 }, e: 4 };
+      const result = ObjectUtils.deepMerge({ target, source, inPlace: true });
+      expect(result).toBe(target);
+      expect(result).toEqual({ a: 1, b: { c: 2, d: 3 }, e: 4 });
+    });
   });
 
   describe('pick', () => {
@@ -201,6 +209,13 @@ describe('ObjectUtils', () => {
       const result = ObjectUtils.pick({ obj, keys: ['c', 'd'] as any });
       expect(result).toEqual({});
     });
+
+    it('should mutate the input and return the same reference when inPlace is true', () => {
+      const obj = { a: 1, b: 2, c: 3, d: 4 };
+      const result = ObjectUtils.pick({ obj, keys: ['a', 'c'], inPlace: true });
+      expect(result).toBe(obj);
+      expect(result).toEqual({ a: 1, c: 3 });
+    });
   });
 
   describe('omit', () => {
@@ -220,6 +235,13 @@ describe('ObjectUtils', () => {
       const obj = { a: 1, b: 2 };
       const result = ObjectUtils.omit({ obj, keys: ['c', 'd'] as any });
       expect(result).toEqual({ a: 1, b: 2 });
+    });
+
+    it('should mutate the input and return the same reference when inPlace is true', () => {
+      const obj = { a: 1, b: 2, c: 3, d: 4 };
+      const result = ObjectUtils.omit({ obj, keys: ['b', 'd'], inPlace: true });
+      expect(result).toBe(obj);
+      expect(result).toEqual({ a: 1, c: 3 });
     });
   });
 
@@ -509,6 +531,14 @@ describe('ObjectUtils', () => {
         ObjectUtils.removeUndefined({ obj: null as any }),
       ).toThrow(ValidationError);
     });
+
+    it('should mutate the input and return the same reference when inPlace is true', () => {
+      const obj = { a: 1, b: undefined, c: 3 };
+      const result = ObjectUtils.removeUndefined({ obj, inPlace: true });
+      expect(result).toBe(obj);
+      expect(result).toEqual({ a: 1, c: 3 });
+      expect('b' in result).toBe(false);
+    });
   });
 
   describe('removeNull', () => {
@@ -528,6 +558,14 @@ describe('ObjectUtils', () => {
       expect(() =>
         ObjectUtils.removeNull({ obj: null as any }),
       ).toThrow(ValidationError);
+    });
+
+    it('should mutate the input and return the same reference when inPlace is true', () => {
+      const obj = { a: 1, b: null, c: 3 };
+      const result = ObjectUtils.removeNull({ obj, inPlace: true });
+      expect(result).toBe(obj);
+      expect(result).toEqual({ a: 1, c: 3 });
+      expect('b' in result).toBe(false);
     });
   });
 

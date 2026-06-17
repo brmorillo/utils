@@ -68,6 +68,20 @@ describe('ArrayUtils', () => {
         ArrayUtils.removeDuplicates({ array: 'not an array' });
       }).toThrow('Input must be an array');
     });
+
+    it('should not mutate the input by default', () => {
+      const array = [1, 2, 2, 3];
+      const result = ArrayUtils.removeDuplicates({ array });
+      expect(array).toEqual([1, 2, 2, 3]);
+      expect(result).not.toBe(array);
+    });
+
+    it('should mutate the input and return the same reference when inPlace is true', () => {
+      const array = [1, 2, 2, 3, 4, 4, 5];
+      const result = ArrayUtils.removeDuplicates({ array, inPlace: true });
+      expect(result).toBe(array);
+      expect(array).toEqual([1, 2, 3, 4, 5]);
+    });
   });
 
   // Tests for the intersect method
@@ -122,6 +136,24 @@ describe('ArrayUtils', () => {
         // @ts-ignore - Intentionally testing with invalid value
         ArrayUtils.intersect({ array1: [1, 2, 3], array2: 'not an array' });
       }).toThrow('Both inputs must be arrays');
+    });
+
+    it('should not mutate the inputs by default', () => {
+      const array1 = [1, 2, 3, 4];
+      const array2 = [3, 4, 5, 6];
+      const result = ArrayUtils.intersect({ array1, array2 });
+      expect(array1).toEqual([1, 2, 3, 4]);
+      expect(array2).toEqual([3, 4, 5, 6]);
+      expect(result).not.toBe(array1);
+    });
+
+    it('should mutate array1 and return the same reference when inPlace is true', () => {
+      const array1 = [1, 2, 3, 4];
+      const array2 = [3, 4, 5, 6];
+      const result = ArrayUtils.intersect({ array1, array2, inPlace: true });
+      expect(result).toBe(array1);
+      expect(array1).toEqual([3, 4]);
+      expect(array2).toEqual([3, 4, 5, 6]);
     });
   });
 
@@ -184,6 +216,20 @@ describe('ArrayUtils', () => {
         // @ts-ignore - Intentionally testing with invalid value
         ArrayUtils.flatten({ array: 'not an array' });
       }).toThrow('Input must be an array');
+    });
+
+    it('should not mutate the input by default', () => {
+      const array = [1, [2, [3, 4]], 5];
+      const result = ArrayUtils.flatten({ array });
+      expect(array).toEqual([1, [2, [3, 4]], 5]);
+      expect(result).not.toBe(array);
+    });
+
+    it('should mutate the input and return the same reference when inPlace is true', () => {
+      const array: any[] = [1, [2, [3, 4]], 5];
+      const result = ArrayUtils.flatten({ array, inPlace: true });
+      expect(result).toBe(array);
+      expect(array).toEqual([1, 2, 3, 4, 5]);
     });
   });
 
@@ -287,6 +333,14 @@ describe('ArrayUtils', () => {
         // @ts-ignore - Intentionally testing with invalid value
         ArrayUtils.shuffle({ array: 'not an array' });
       }).toThrow('Input must be an array');
+    });
+
+    it('should mutate the input and return the same reference when inPlace is true', () => {
+      const array = [1, 2, 3, 4, 5];
+      const result = ArrayUtils.shuffle({ array, inPlace: true });
+      expect(result).toBe(array);
+      // Same elements are preserved after an in-place shuffle.
+      expect([...result].sort((a, b) => a - b)).toEqual([1, 2, 3, 4, 5]);
     });
   });
 
@@ -432,6 +486,20 @@ describe('ArrayUtils', () => {
         // @ts-ignore - Intentionally testing with invalid value
         ArrayUtils.sort({ array: [1, 2, 3], orderBy: 'invalid' });
       }).toThrow("Invalid 'orderBy' format");
+    });
+
+    it('should not mutate the input by default', () => {
+      const array = [5, 3, 1, 4, 2];
+      const result = ArrayUtils.sort({ array, orderBy: 'asc' });
+      expect(array).toEqual([5, 3, 1, 4, 2]);
+      expect(result).not.toBe(array);
+    });
+
+    it('should mutate the input and return the same reference when inPlace is true', () => {
+      const array = [5, 3, 1, 4, 2];
+      const result = ArrayUtils.sort({ array, orderBy: 'asc', inPlace: true });
+      expect(result).toBe(array);
+      expect(array).toEqual([1, 2, 3, 4, 5]);
     });
   });
 

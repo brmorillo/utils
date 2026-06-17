@@ -18,6 +18,15 @@ const picked = ObjectUtils.pick({ obj, keys: ['a', 'c'] });
 console.log(picked); // { a: 1, c: 3 }
 ```
 
+## Mutability
+
+Data transforms are non-mutating by default: they never change the input you pass and return a new object. Pass `inPlace: true` to opt into mutation, where the input object is modified and the same reference is returned (faster, no clone).
+
+- `inPlace` is available on: `deepMerge`, `pick`, `omit`, `removeUndefined`, `removeNull`, and `unflattenObject`.
+- `deepClone`, `flattenObject`, and `invert` have no `inPlace` option — they intentionally produce a new (or differently shaped) object.
+- The read-only checks (`isEmpty`, `compare`, `diff`, `findValue`, `hasCircularReference`, `isSubsetObject`, `findSubsetObjects`, the compress/decompress family) never mutate and have no `inPlace` option.
+- `deepFreeze` freezes the given object **in place** by design (same reference returned), matching `Object.freeze` semantics.
+
 ## Methods
 
 ### deepClone({ obj })
@@ -31,9 +40,11 @@ original.b.c = 3;
 console.log(clone.b.c); // 2 (not affected by the change to original)
 ```
 
-### deepMerge({ target, source })
+### deepMerge({ target, source, inPlace })
 
 Deeply merges two objects. When a key holds an object on both sides, the objects are merged recursively. When the source holds an object but the target holds a primitive or lacks the key, the source object is deep-cloned into the result, so the merged output never shares references with `source`. Dangerous keys (`__proto__`, `constructor`, `prototype`) are skipped to prevent prototype pollution.
+
+By default (`inPlace: false`) `target` is left untouched and the merge is applied to a deep copy of it. Pass `inPlace: true` to merge `source` into `target` (mutating it) and return the same `target` reference.
 
 ```javascript
 const target = { a: 1, b: { c: 2 } };
@@ -42,9 +53,9 @@ const merged = ObjectUtils.deepMerge({ target, source });
 console.log(merged); // { a: 1, b: { c: 2, d: 3 }, e: 4 }
 ```
 
-### pick({ obj, keys })
+### pick({ obj, keys, inPlace })
 
-Selects specific properties from an object.
+Selects specific properties from an object. By default (`inPlace: false`) a new object containing only `keys` is returned and `obj` is left untouched. Pass `inPlace: true` to delete every own key NOT in `keys` from `obj` and return the same `obj` reference.
 
 ```javascript
 const obj = { a: 1, b: 2, c: 3, d: 4 };
@@ -52,9 +63,9 @@ const picked = ObjectUtils.pick({ obj, keys: ['a', 'c'] });
 console.log(picked); // { a: 1, c: 3 }
 ```
 
-### omit({ obj, keys })
+### omit({ obj, keys, inPlace })
 
-Omits specific properties from an object.
+Omits specific properties from an object. By default (`inPlace: false`) a new object without `keys` is returned and `obj` is left untouched. Pass `inPlace: true` to delete `keys` from `obj` and return the same `obj` reference.
 
 ```javascript
 const obj = { a: 1, b: 2, c: 3, d: 4 };
@@ -111,9 +122,9 @@ obj.self = obj;
 ObjectUtils.hasCircularReference({ obj }); // true
 ```
 
-### removeUndefined({ obj })
+### removeUndefined({ obj, inPlace })
 
-Returns a new object without properties whose value is `undefined`. Throws a `ValidationError` if `obj` is not an object.
+Returns a new object without properties whose value is `undefined`. Throws a `ValidationError` if `obj` is not an object. By default (`inPlace: false`) `obj` is left untouched. Pass `inPlace: true` to delete undefined-valued keys from `obj` and return the same `obj` reference.
 
 ```javascript
 const obj = { a: 1, b: undefined, c: 3 };
@@ -121,9 +132,9 @@ const cleaned = ObjectUtils.removeUndefined({ obj });
 console.log(cleaned); // { a: 1, c: 3 }
 ```
 
-### removeNull({ obj })
+### removeNull({ obj, inPlace })
 
-Returns a new object without properties whose value is `null`. Throws a `ValidationError` if `obj` is not an object.
+Returns a new object without properties whose value is `null`. Throws a `ValidationError` if `obj` is not an object. By default (`inPlace: false`) `obj` is left untouched. Pass `inPlace: true` to delete null-valued keys from `obj` and return the same `obj` reference.
 
 ```javascript
 const obj = { a: 1, b: null, c: 3 };

@@ -37,9 +37,9 @@ console.log(groupedByRole);
 
 ## Methods
 
-### removeDuplicates({ array, keyFn })
+### removeDuplicates({ array, keyFn, inPlace })
 
-Removes duplicate items from an array.
+Removes duplicate items from an array. By default returns a new array; pass `inPlace: true` to mutate `array` and return the same reference.
 
 ```javascript
 // Simple array
@@ -60,9 +60,9 @@ const uniqueUsers = ArrayUtils.removeDuplicates({
 // [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }]
 ```
 
-### intersect({ array1, array2 })
+### intersect({ array1, array2, inPlace })
 
-Finds the intersection of two arrays.
+Finds the intersection of two arrays. By default returns a new array; pass `inPlace: true` to mutate `array1` to hold the intersection and return the same reference.
 
 ```javascript
 const array1 = [1, 2, 3, 4];
@@ -71,9 +71,9 @@ const intersection = ArrayUtils.intersect({ array1, array2 });
 // [3, 4]
 ```
 
-### flatten({ array })
+### flatten({ array, inPlace })
 
-Deeply flattens a nested array to a single level, to any nesting depth. The recursive `NestedArray<T>` parameter type accepts deeply-nested array literals at compile time, and the runtime implementation flattens with `push`/`reverse` (avoiding the `O(n^2)` cost of `unshift`) while preserving element order. Throws a `ValidationError` if `array` is not an array.
+Deeply flattens a nested array to a single level, to any nesting depth. The recursive `NestedArray<T>` parameter type accepts deeply-nested array literals at compile time, and the runtime implementation flattens with `push`/`reverse` (avoiding the `O(n^2)` cost of `unshift`) while preserving element order. By default returns a new array; pass `inPlace: true` to mutate `array` to hold the flattened result and return the same reference. Throws a `ValidationError` if `array` is not an array.
 
 ```javascript
 const nestedArray = [1, [2, 3], [4, [5, 6]]];
@@ -101,9 +101,9 @@ const groupedByRole = ArrayUtils.groupBy({
 // }
 ```
 
-### shuffle({ array })
+### shuffle({ array, inPlace })
 
-Randomly shuffles an array.
+Randomly shuffles an array. By default returns a new shuffled array; pass `inPlace: true` to shuffle `array` directly and return the same reference.
 
 ```javascript
 const array = [1, 2, 3, 4, 5];
@@ -111,9 +111,9 @@ const shuffled = ArrayUtils.shuffle({ array });
 // [3, 1, 5, 2, 4] (random order)
 ```
 
-### sort({ array, orderBy })
+### sort({ array, orderBy, inPlace })
 
-Sorts an array with flexible ordering options. `orderBy` may be `'asc'`/`'desc'` (natural comparison, supported for both primitive and object arrays) or an object mapping keys to per-key directions. The comparator is stable (returns `0` for equal elements). Sorting an empty array returns `[]`; a non-array input throws a `ValidationError`.
+Sorts an array with flexible ordering options. `orderBy` may be `'asc'`/`'desc'` (natural comparison, supported for both primitive and object arrays) or an object mapping keys to per-key directions. The comparator is stable (returns `0` for equal elements). By default returns a new sorted array; pass `inPlace: true` to sort `array` in place and return the same reference. Sorting an empty array returns `[]`; a non-array input throws a `ValidationError`.
 
 ```javascript
 // Simple array with ascending order
@@ -167,6 +167,26 @@ ArrayUtils.isSubset({
   subset: { name: 'John' }
 }); // true
 ```
+
+## Mutability
+
+The data-transforming methods are **non-mutating by default**: they leave the caller's input array untouched and return a brand-new array.
+
+To opt into mutation for performance or lower memory usage, pass `inPlace: true` to any of `removeDuplicates`, `flatten`, `sort`, `shuffle`, or `intersect`. With `inPlace: true` the method mutates the input array (for `intersect`, it mutates `array1`) and returns that **same reference** holding the result.
+
+```javascript
+const numbers = [3, 1, 2, 1];
+
+// Default (safe): input is preserved, a new array is returned.
+const sorted = ArrayUtils.sort({ array: numbers, orderBy: 'asc' });
+// numbers -> [3, 1, 2, 1] (unchanged), sorted -> [1, 1, 2, 3]
+
+// inPlace (fast): input is mutated and returned.
+const sameRef = ArrayUtils.sort({ array: numbers, orderBy: 'asc', inPlace: true });
+// numbers -> [1, 1, 2, 3], sameRef === numbers
+```
+
+The `groupBy`, `findSubset`, and `isSubset` methods are non-mutating/read-only — they return a different structure (an object, a found item/`null`, or a boolean) and therefore do **not** accept an `inPlace` option.
 
 ## Examples
 

@@ -68,6 +68,7 @@ export class ObjectUtils {
    * @param {object} params - The parameters for the method.
    * @param {object} params.target - The target object.
    * @param {object} params.source - The source object.
+   * @param {boolean} [params.inPlace=false] - When `false` (default), `source` is merged into a deep copy of `target` and `target` is left untouched. When `true`, `source` is merged into `target` (mutating it) and the same `target` reference is returned.
    * @returns {object} The merged object.
    * @example
    * const target = { a: 1, b: { c: 2 } };
@@ -78,8 +79,16 @@ export class ObjectUtils {
   public static deepMerge<
     T extends Record<string, any>,
     U extends Record<string, any>,
-  >({ target, source }: { target: T; source: U }): T & U {
-    const output = { ...target } as Record<string, any>;
+  >({
+    target,
+    source,
+    inPlace = false,
+  }: {
+    target: T;
+    source: U;
+    inPlace?: boolean;
+  }): T & U {
+    const output = (inPlace ? target : { ...target }) as Record<string, any>;
 
     if (isObject(target) && isObject(source)) {
       Object.keys(source).forEach(key => {
@@ -114,6 +123,7 @@ export class ObjectUtils {
    * @param {object} params - The parameters for the method.
    * @param {object} params.obj - The object to pick properties from.
    * @param {string[]} params.keys - The keys to pick.
+   * @param {boolean} [params.inPlace=false] - When `false` (default), a new object containing only `keys` is returned and `obj` is left untouched. When `true`, every own key NOT in `keys` is deleted from `obj` and the same `obj` reference is returned.
    * @returns {object} A new object with only the specified properties.
    * @example
    * const obj = { a: 1, b: 2, c: 3, d: 4 };
@@ -123,10 +133,22 @@ export class ObjectUtils {
   public static pick<T extends Record<string, any>, K extends keyof T>({
     obj,
     keys,
+    inPlace = false,
   }: {
     obj: T;
     keys: K[];
+    inPlace?: boolean;
   }): Pick<T, K> {
+    if (inPlace) {
+      const keep = new Set<keyof T>(keys);
+      for (const key of Object.keys(obj) as (keyof T)[]) {
+        if (!keep.has(key)) {
+          delete obj[key];
+        }
+      }
+      return obj as Pick<T, K>;
+    }
+
     return keys.reduce(
       (result, key) => {
         if (key in obj) {
@@ -143,6 +165,7 @@ export class ObjectUtils {
    * @param {object} params - The parameters for the method.
    * @param {object} params.obj - The object to omit properties from.
    * @param {string[]} params.keys - The keys to omit.
+   * @param {boolean} [params.inPlace=false] - When `false` (default), a new object without `keys` is returned and `obj` is left untouched. When `true`, `keys` are deleted from `obj` and the same `obj` reference is returned.
    * @returns {object} A new object without the specified properties.
    * @example
    * const obj = { a: 1, b: 2, c: 3, d: 4 };
@@ -152,10 +175,19 @@ export class ObjectUtils {
   public static omit<T extends Record<string, any>, K extends keyof T>({
     obj,
     keys,
+    inPlace = false,
   }: {
     obj: T;
     keys: K[];
+    inPlace?: boolean;
   }): Omit<T, K> {
+    if (inPlace) {
+      for (const key of keys) {
+        delete obj[key];
+      }
+      return obj as unknown as Omit<T, K>;
+    }
+
     return Object.keys(obj).reduce(
       (result, key) => {
         if (!keys.includes(key as K)) {
@@ -382,6 +414,7 @@ export class ObjectUtils {
    * Removes undefined properties from an object.
    * @param {object} params - The parameters for the method.
    * @param {object} params.obj - The object to clean.
+   * @param {boolean} [params.inPlace=false] - When `false` (default), a new object without undefined-valued keys is returned and `obj` is left untouched. When `true`, undefined-valued keys are deleted from `obj` and the same `obj` reference is returned.
    * @returns {object} A new object without undefined properties.
    * @example
    * const obj = { a: 1, b: undefined, c: 3 };
@@ -390,11 +423,22 @@ export class ObjectUtils {
    */
   public static removeUndefined({
     obj,
+    inPlace = false,
   }: {
     obj: Record<string, any>;
+    inPlace?: boolean;
   }): Record<string, any> {
     if (obj === null || typeof obj !== 'object') {
       throw new ValidationError('Input must be an object');
+    }
+
+    if (inPlace) {
+      for (const key of Object.keys(obj)) {
+        if (obj[key] === undefined) {
+          delete obj[key];
+        }
+      }
+      return obj;
     }
 
     return Object.keys(obj).reduce(
@@ -412,6 +456,7 @@ export class ObjectUtils {
    * Removes null properties from an object.
    * @param {object} params - The parameters for the method.
    * @param {object} params.obj - The object to clean.
+   * @param {boolean} [params.inPlace=false] - When `false` (default), a new object without null-valued keys is returned and `obj` is left untouched. When `true`, null-valued keys are deleted from `obj` and the same `obj` reference is returned.
    * @returns {object} A new object without null properties.
    * @example
    * const obj = { a: 1, b: null, c: 3 };
@@ -420,11 +465,22 @@ export class ObjectUtils {
    */
   public static removeNull({
     obj,
+    inPlace = false,
   }: {
     obj: Record<string, any>;
+    inPlace?: boolean;
   }): Record<string, any> {
     if (obj === null || typeof obj !== 'object') {
       throw new ValidationError('Input must be an object');
+    }
+
+    if (inPlace) {
+      for (const key of Object.keys(obj)) {
+        if (obj[key] === null) {
+          delete obj[key];
+        }
+      }
+      return obj;
     }
 
     return Object.keys(obj).reduce(

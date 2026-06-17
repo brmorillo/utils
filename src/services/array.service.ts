@@ -12,6 +12,7 @@ export class ArrayUtils {
    * @param {object} params - The parameters for the method.
    * @param {T[]} params.array - Array of values.
    * @param {Function} [params.keyFn] - Optional function to determine uniqueness based on a key.
+   * @param {boolean} [params.inPlace=false] - When `true`, mutates `array` in place and returns the same reference; when `false` (default), returns a new array and leaves the input untouched.
    * @returns {T[]} Array with unique values.
    * @example
    * ArrayUtils.removeDuplicates({
@@ -26,16 +27,18 @@ export class ArrayUtils {
   public static removeDuplicates<T>({
     array,
     keyFn,
+    inPlace = false,
   }: {
     array: T[];
     keyFn?: (item: T) => string | number;
+    inPlace?: boolean;
   }): T[] {
     if (!Array.isArray(array)) {
       throw new ValidationError('Input must be an array');
     }
 
     const seen = new Set();
-    return keyFn
+    const result = keyFn
       ? array.filter(item => {
           const key = keyFn(item);
           if (seen.has(key)) return false;
@@ -43,6 +46,12 @@ export class ArrayUtils {
           return true;
         })
       : [...new Set(array)];
+
+    if (inPlace) {
+      array.splice(0, array.length, ...result);
+      return array;
+    }
+    return result;
   }
 
   /**
@@ -50,6 +59,7 @@ export class ArrayUtils {
    * @param {object} params - The parameters for the method.
    * @param {T[]} params.array1 - First array.
    * @param {T[]} params.array2 - Second array.
+   * @param {boolean} [params.inPlace=false] - When `true`, mutates `array1` in place to hold the intersection and returns the same reference; when `false` (default), returns a new array and leaves the inputs untouched.
    * @returns {T[]} Array containing values present in both arrays.
    * @example
    * ArrayUtils.intersect({
@@ -60,16 +70,24 @@ export class ArrayUtils {
   public static intersect<T>({
     array1,
     array2,
+    inPlace = false,
   }: {
     array1: T[];
     array2: T[];
+    inPlace?: boolean;
   }): T[] {
     if (!Array.isArray(array1) || !Array.isArray(array2)) {
       throw new ValidationError('Both inputs must be arrays');
     }
 
     const set2 = new Set(array2);
-    return array1.filter(value => set2.has(value));
+    const result = array1.filter(value => set2.has(value));
+
+    if (inPlace) {
+      array1.splice(0, array1.length, ...result);
+      return array1;
+    }
+    return result;
   }
 
   /**
@@ -77,13 +95,20 @@ export class ArrayUtils {
    * Supports arbitrarily deep nesting at both compile time and runtime.
    * @param {object} params - The parameters for the method.
    * @param {NestedArray<T>} params.array - Multi-dimensional array.
+   * @param {boolean} [params.inPlace=false] - When `true`, mutates `array` in place to hold the flattened result and returns the same reference; when `false` (default), returns a new array and leaves the input untouched.
    * @returns {T[]} Flattened array.
    * @example
    * ArrayUtils.flatten({
    *   array: [1, [2, [3, 4]], 5]
    * }); // [1, 2, 3, 4, 5]
    */
-  public static flatten<T>({ array }: { array: NestedArray<T> }): T[] {
+  public static flatten<T>({
+    array,
+    inPlace = false,
+  }: {
+    array: NestedArray<T>;
+    inPlace?: boolean;
+  }): T[] {
     if (!Array.isArray(array)) {
       throw new ValidationError('Input must be an array');
     }
@@ -102,7 +127,13 @@ export class ArrayUtils {
       }
     }
 
-    return result.reverse();
+    result.reverse();
+
+    if (inPlace) {
+      (array as unknown as T[]).splice(0, array.length, ...result);
+      return array as unknown as T[];
+    }
+    return result;
   }
 
   /**
@@ -146,18 +177,25 @@ export class ArrayUtils {
    * Shuffles the elements of an array randomly.
    * @param {object} params - The parameters for the method.
    * @param {T[]} params.array - Array to be shuffled.
+   * @param {boolean} [params.inPlace=false] - When `true`, shuffles `array` in place and returns the same reference; when `false` (default), returns a new shuffled array and leaves the input untouched.
    * @returns {T[]} New array with shuffled elements.
    * @example
    * ArrayUtils.shuffle({
    *   array: [1, 2, 3, 4]
    * }); // [3, 1, 4, 2]
    */
-  public static shuffle<T>({ array }: { array: T[] }): T[] {
+  public static shuffle<T>({
+    array,
+    inPlace = false,
+  }: {
+    array: T[];
+    inPlace?: boolean;
+  }): T[] {
     if (!Array.isArray(array)) {
       throw new ValidationError('Input must be an array');
     }
 
-    const result = [...array];
+    const result = inPlace ? array : [...array];
     for (let i = result.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [result[i], result[j]] = [result[j], result[i]];
@@ -170,6 +208,7 @@ export class ArrayUtils {
    * @param {object} params - The parameters for the method.
    * @param {T[]} params.array - The array to be sorted.
    * @param {'asc' | 'desc' | Record<string, 'asc' | 'desc'>} params.orderBy - Sorting criteria.
+   * @param {boolean} [params.inPlace=false] - When `true`, writes the sorted result back into `array` and returns the same reference; when `false` (default), returns a new sorted array and leaves the input untouched.
    * @returns {T[]} A new array sorted based on the specified criteria.
    * @example
    * ArrayUtils.sort({
@@ -192,9 +231,11 @@ export class ArrayUtils {
   public static sort<T>({
     array,
     orderBy,
+    inPlace = false,
   }: {
     array: T[];
     orderBy: 'asc' | 'desc' | Record<string, 'asc' | 'desc'>;
+    inPlace?: boolean;
   }): T[] {
     if (!Array.isArray(array)) {
       throw new ValidationError('Input must be an array');
@@ -202,13 +243,16 @@ export class ArrayUtils {
 
     // Sorting an empty array is a no-op rather than an error.
     if (array.length === 0) {
-      return [];
+      return inPlace ? array : [];
     }
+
+    // Sort a copy by default; sort the caller's array directly when inPlace.
+    const target = inPlace ? array : [...array];
 
     if (orderBy === 'asc' || orderBy === 'desc') {
       // Natural comparison, used for both primitives and objects. Returns 0
       // for equal elements so the underlying stable sort preserves order.
-      return [...array].sort((a, b) => {
+      return target.sort((a, b) => {
         if (a === b) return 0;
         if ((a as any) > (b as any)) return orderBy === 'asc' ? 1 : -1;
         if ((a as any) < (b as any)) return orderBy === 'asc' ? -1 : 1;
@@ -219,7 +263,7 @@ export class ArrayUtils {
     if (typeof orderBy === 'object' && orderBy !== null) {
       const keys = Object.keys(orderBy);
 
-      return [...array].sort((a, b) => {
+      return target.sort((a, b) => {
         for (const key of keys) {
           const direction = orderBy[key];
           const valueA = (a as Record<string, any>)[key];
