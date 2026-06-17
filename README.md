@@ -2,7 +2,7 @@
 
 [![npm version](https://badge.fury.io/js/@brmorillo%2Futils.svg)](https://www.npmjs.com/package/@brmorillo/utils)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: LGPL-3.0](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 [![Downloads](https://img.shields.io/npm/dm/@brmorillo/utils.svg)](https://www.npmjs.com/package/@brmorillo/utils)
 
 > If you have a problem, it's probably already solved here.
@@ -268,4 +268,8 @@ The following packages are permanently pinned to a specific major for CJS compat
 
 ## License
 
-MIT © [Bruno Morillo](https://github.com/brmorillo)
+[LGPL-3.0-only](./LICENSE) © [Bruno Morillo](https://github.com/brmorillo)
+
+This library is free to use in any project (including commercial ones). You may not distribute
+it as a closed-source product or sell it as your own. Any modifications to the library itself
+must be released under the same license.
