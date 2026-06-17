@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [14.1.1](https://github.com/brmorillo/util/compare/v14.1.0...v14.1.1) (2026-06-17)
+
+
+### Documentation
+
+* add CI badge, CONTRIBUTING.md, PR template and issue templates ([e6b8b9b](https://github.com/brmorillo/util/commit/e6b8b9b0482cbe26edd8f277ccf330fa1832b132))
+
 ## [14.1.0](https://github.com/brmorillo/util/compare/v14.0.2...v14.1.0) (2026-06-17)
 
 
