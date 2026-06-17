@@ -7,8 +7,7 @@ Only the **current major** release line receives security fixes.
 | Version | Status              |
 | ------- | ------------------- |
 | 14.x    | ✅ Actively supported |
-| 13.x    | ⚠️ Critical fixes only (until 2026-12-31) |
-| < 13    | ❌ Not supported     |
+| < 14    | ❌ Not supported     |
 
 Upgrade to the latest `14.x` release to receive all patches.
 
