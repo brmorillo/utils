@@ -6,6 +6,13 @@ import { ILogger } from '../interfaces/logger.interface';
 export class PinoLogger implements ILogger {
   private logger: any;
 
+  /**
+   * Creates a pino-backed logger. Falls back to a console logger when pino is
+   * not installed.
+   * @param options Logger options.
+   * @param options.level Minimum level to emit (default 'info').
+   * @param options.prettyPrint When true, formats output via pino-pretty.
+   */
   constructor(options: { level?: string; prettyPrint?: boolean } = {}) {
     try {
       // Dynamic import to avoid requiring pino as a direct dependency
@@ -37,18 +44,38 @@ export class PinoLogger implements ILogger {
     }
   }
 
+  /**
+   * Logs an info-level message.
+   * @param message The message to log.
+   * @param meta Additional metadata, attached under a `meta` field.
+   */
   info(message: string, ...meta: any[]): void {
     this.logger.info({ meta }, message);
   }
 
+  /**
+   * Logs a warning-level message.
+   * @param message The message to log.
+   * @param meta Additional metadata, attached under a `meta` field.
+   */
   warn(message: string, ...meta: any[]): void {
     this.logger.warn({ meta }, message);
   }
 
+  /**
+   * Logs an error-level message.
+   * @param message The message to log.
+   * @param meta Additional metadata, attached under a `meta` field.
+   */
   error(message: string, ...meta: any[]): void {
     this.logger.error({ meta }, message);
   }
 
+  /**
+   * Logs a debug-level message.
+   * @param message The message to log.
+   * @param meta Additional metadata, attached under a `meta` field.
+   */
   debug(message: string, ...meta: any[]): void {
     this.logger.debug({ meta }, message);
   }
