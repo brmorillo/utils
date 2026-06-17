@@ -46,7 +46,7 @@ export class WinstonLogger implements ILogger {
         format,
         transports: [new winston.transports.Console()],
       });
-    } catch (error) {
+    } catch {
       // Fallback to console if winston is not available
       this.logger = {
         info: (message: string, ...meta: any[]) =>

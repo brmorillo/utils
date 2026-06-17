@@ -37,10 +37,7 @@ export class HttpClient implements IHttpClient {
       const hasBody = options.data !== undefined;
       let body: string | Buffer | undefined;
       if (hasBody) {
-        if (
-          Buffer.isBuffer(options.data) ||
-          typeof options.data === 'string'
-        ) {
+        if (Buffer.isBuffer(options.data) || typeof options.data === 'string') {
           body = options.data;
         } else if (typeof options.data === 'object') {
           body = JSON.stringify(options.data);
@@ -121,7 +118,7 @@ export class HttpClient implements IHttpClient {
               } else {
                 parsedData = data;
               }
-            } catch (e) {
+            } catch {
               // If parsing fails, return the raw data
               parsedData = data;
             }

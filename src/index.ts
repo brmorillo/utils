@@ -5,7 +5,6 @@ import {
   StorageServiceOptions,
 } from './services/storage.service';
 import { LoggerOptions } from './interfaces/logger.interface';
-import { StorageProviderType } from './interfaces/storage.interface';
 
 /**
  * Configuration for the utility library
