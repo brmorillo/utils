@@ -118,8 +118,13 @@ Notes:
 
 ## CI/CD (`.github/workflows/`)
 
-- **`ci.yml`** — on PRs to `main` and pushes to `main`: bun install, `type-check`, `lint`, `test:ci` (coverage gate), `build`, and a **gitleaks** secret scan (`.gitleaks.toml`: default rules + custom generic/AWS/GCP rules; test fixtures/examples/docs are allowlisted). `.env` is gitignored so it is never scanned in CI.
-- **`pr-version.yml`** — on PR open/synchronize/reopen to `main`: computes the next version from the PR's conventional commits with `commit-and-tag-version` (config in `.versionrc.json`), updates `package.json` + `CHANGELOG.md`, and commits `chore(release): vX.Y.Z` **back to the PR branch** (no tag). Guard: skips if the PR already contains a release commit, so it bumps once per PR (re-trigger by removing that commit). Same-repo PRs only (`GITHUB_TOKEN` can't push to forks). Tagging/publishing is not wired up — do it at release time.
+- **`ci.yml`** — on PRs to `main` and pushes to `main`: bun install, `type-check`, `lint`, `test:ci` (coverage gate), `build`, and a **gitleaks** secret scan (`.gitleaks.toml`: `useDefault = true` for the full built-in ruleset; test fixtures/examples/docs are allowlisted). `.env` is gitignored so it is never scanned in CI.
+- **`pr-version.yml`** — on PR open/synchronize/reopen to `main`: computes the next version from the PR's conventional commits with `commit-and-tag-version` (config in `.versionrc.json`), updates `package.json` + `CHANGELOG.md`, and commits `chore(release): vX.Y.Z` **back to the PR branch** (no tag). Guard: skips if the PR already contains a release commit, so it bumps once per PR (re-trigger by removing that commit). Same-repo PRs only (`GITHUB_TOKEN` can't push to forks).
+- **`release.yml`** — on push to `main`: if `package.json`'s version isn't tagged yet, it `git tag`s `vX.Y.Z`, **publishes to npm** (`npm publish --provenance --access public`, needs the `NPM_TOKEN` secret), and creates a GitHub release. The tag anchors the next PR's version computation (the bump is tag-based).
+
+Release flow: open a PR → `pr-version` bumps the version on the PR → merge → `release` tags + publishes. The package version is intentionally the **last released** value between releases (e.g. `12.0.1`) so the PR bump computes the new one (`13.0.0`); do not hand-edit it ahead of the bump.
+
+Required repo settings: **Actions → Workflow permissions → Read and write** (so `pr-version`/`release` can push), and a **`NPM_TOKEN`** Actions secret for publishing.
 
 ## Where to look
 
