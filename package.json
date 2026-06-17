@@ -1,6 +1,6 @@
 {
   "name": "@brmorillo/utils",
-  "version": "14.0.0",
+  "version": "14.0.1",
   "description": "Utility library for JavaScript/TypeScript projects",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -106,7 +106,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/brmorillo/util.git"
+    "url": "git+https://github.com/brmorillo/utils.git"
   },
   "bugs": {
     "url": "https://github.com/brmorillo/utils/issues"
