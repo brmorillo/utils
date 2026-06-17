@@ -73,6 +73,11 @@ describe('Queue Service', () => {
       // Ensure the original queue is not modified
       expect(queue.size()).toBe(3);
     });
+
+    it('should report the configured maximum size', () => {
+      expect(new Queue<number>([], 5).getMaxSize()).toBe(5);
+      expect(new Queue<number>().getMaxSize()).toBeUndefined();
+    });
   });
 
   describe('Stack', () => {
@@ -138,6 +143,11 @@ describe('Queue Service', () => {
 
       // Ensure the original stack is not modified
       expect(stack.size()).toBe(3);
+    });
+
+    it('should report the configured maximum size', () => {
+      expect(new Stack<number>([], 4).getMaxSize()).toBe(4);
+      expect(new Stack<number>().getMaxSize()).toBeUndefined();
     });
   });
 
@@ -270,6 +280,33 @@ describe('Queue Service', () => {
       expect(multiQueue.size('high')).toBe(2);
       expect(multiQueue.size('low')).toBe(2);
     });
+
+    it('should return undefined when peeking a missing or empty channel', () => {
+      const multiQueue = new MultiQueue<number>();
+      // Channel never created.
+      expect(multiQueue.peek('missing')).toBeUndefined();
+      // Channel exists but is empty.
+      multiQueue.enqueue(1, 'used');
+      multiQueue.dequeue('used');
+      expect(multiQueue.peek('used')).toBeUndefined();
+    });
+
+    it('should report a missing channel as not full', () => {
+      const multiQueue = new MultiQueue<number>({}, undefined, 2);
+      expect(multiQueue.isFull('never-created')).toBe(false);
+    });
+
+    it('should report the configured maximum size of a channel', () => {
+      const multiQueue = new MultiQueue<number>(
+        {},
+        { high: 10 },
+        5,
+      );
+      // Channel-specific limit takes precedence.
+      expect(multiQueue.getChannelMaxSize('high')).toBe(10);
+      // Falls back to the default limit.
+      expect(multiQueue.getChannelMaxSize('other')).toBe(5);
+    });
   });
 
   describe('CircularBuffer', () => {
@@ -367,6 +404,11 @@ describe('Queue Service', () => {
       expect(() => new CircularBuffer<number>(0)).toThrow();
       expect(() => new CircularBuffer<number>(-1)).toThrow();
     });
+
+    it('should return an empty array when the buffer is empty', () => {
+      const buffer = new CircularBuffer<number>(3);
+      expect(buffer.toArray()).toEqual([]);
+    });
   });
 
   describe('PriorityQueue', () => {
@@ -431,6 +473,35 @@ describe('Queue Service', () => {
       priorityQueue.clear();
       expect(priorityQueue.isEmpty()).toBe(true);
       expect(priorityQueue.size()).toBe(0);
+    });
+
+    it('should return undefined when dequeuing an empty queue', () => {
+      const priorityQueue = new PriorityQueue<string>();
+      expect(priorityQueue.dequeue()).toBeUndefined();
+    });
+
+    it('should maintain heap order when the right child is the smallest during sift-down', () => {
+      // Build a larger heap so that, after removing the root, the bubble-down
+      // routine must compare and select the RIGHT child as the smallest. The
+      // insertion order is chosen so a right child holds the lower priority.
+      const priorityQueue = new PriorityQueue<number>();
+      const priorities = [5, 1, 8, 9, 2, 7, 3, 6, 4, 10];
+      priorities.forEach((p, i) => priorityQueue.enqueue(i, p));
+
+      // toArray() exercises bubbleDownArray (including the right-child branch).
+      const ordered = priorityQueue.toArray();
+      // The first element drained must be the globally highest priority (1).
+      expect(ordered[0]).toBe(priorities.indexOf(1));
+
+      // Draining via dequeue() exercises bubbleDown (including right-child).
+      const drained: number[] = [];
+      let next = priorityQueue.dequeue();
+      while (next !== undefined) {
+        drained.push(next);
+        next = priorityQueue.dequeue();
+      }
+      expect(drained).toEqual(ordered);
+      expect(priorityQueue.isEmpty()).toBe(true);
     });
   });
 

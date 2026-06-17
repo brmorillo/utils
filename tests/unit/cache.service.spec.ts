@@ -451,4 +451,72 @@ describe('CacheUtils', () => {
       }
     });
   });
+
+  // Targeted edge-branch coverage for the lazy-expiry path inside has().
+  // These call has() directly on an expired item that is still stored, so the
+  // delete-and-return-false branch (not reachable via a prior get()) executes.
+  describe('lazy expiry via has()', () => {
+    it('LRU has() should delete an expired item and return false', () => {
+      // Arrange
+      const cache = CacheUtils.createCache({ ttl: 1000 });
+      const originalDateNow = Date.now;
+      let mockTime = 1000;
+      Date.now = jest.fn(() => mockTime);
+
+      try {
+        cache.set('key1', 'value1');
+
+        // Act - advance past the TTL and check has() first (no get()).
+        mockTime = 2500;
+
+        // Assert
+        expect(cache.has('key1')).toBe(false);
+        expect(cache.keys()).not.toContain('key1');
+      } finally {
+        Date.now = originalDateNow;
+      }
+    });
+
+    it('LFU has() should delete an expired item and return false', () => {
+      // Arrange
+      const cache = CacheUtils.createLFUCache({ ttl: 1000 });
+      const originalDateNow = Date.now;
+      let mockTime = 1000;
+      Date.now = jest.fn(() => mockTime);
+
+      try {
+        cache.set('key1', 'value1');
+
+        // Act
+        mockTime = 2500;
+
+        // Assert
+        expect(cache.has('key1')).toBe(false);
+        expect(cache.keys()).not.toContain('key1');
+      } finally {
+        Date.now = originalDateNow;
+      }
+    });
+
+    it('FIFO has() should delete an expired item and prune insertion order', () => {
+      // Arrange
+      const cache = CacheUtils.createFIFOCache({ ttl: 1000 });
+      const originalDateNow = Date.now;
+      let mockTime = 1000;
+      Date.now = jest.fn(() => mockTime);
+
+      try {
+        cache.set('key1', 'value1');
+
+        // Act
+        mockTime = 2500;
+
+        // Assert
+        expect(cache.has('key1')).toBe(false);
+        expect(cache.keys()).toEqual([]);
+      } finally {
+        Date.now = originalDateNow;
+      }
+    });
+  });
 });

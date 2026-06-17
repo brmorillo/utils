@@ -332,6 +332,23 @@ describe('ArrayUtils', () => {
       expect(result[2].name).toBe('John');
     });
 
+    it('should treat elements as equal when all sort keys match', () => {
+      // Both elements share the same age and city, so the comparator exhausts
+      // every key and falls through to `return 0`.
+      const array = [
+        { name: 'John', age: 30, city: 'New York' },
+        { name: 'Jack', age: 30, city: 'New York' },
+      ];
+
+      const result = ArrayUtils.sort({
+        array,
+        orderBy: { age: 'asc', city: 'asc' },
+      });
+
+      // Stable sort: original relative order is preserved.
+      expect(result.map(item => item.name)).toEqual(['John', 'Jack']);
+    });
+
     it('should throw an error when the input is not an array', () => {
       // Arrange & Act & Assert
       expect(() => {

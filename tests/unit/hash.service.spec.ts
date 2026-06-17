@@ -310,4 +310,201 @@ describe('HashUtils', () => {
       }).toThrow('Invalid length');
     });
   });
+
+  describe('additional edge-case coverage', () => {
+    it('bcryptHash should throw for a non-string value', () => {
+      expect(() => {
+        // @ts-ignore - Intentionally testing with invalid value
+        HashUtils.bcryptHash({ value: 123 });
+      }).toThrow('Invalid input');
+    });
+
+    it('bcryptHash should throw for a non-number saltRounds', () => {
+      expect(() => {
+        // @ts-ignore - Intentionally testing with invalid value
+        HashUtils.bcryptHash({ value: 'password123', saltRounds: 'ten' });
+      }).toThrow('Invalid saltRounds');
+    });
+
+    it('bcryptCompare should return true for a matching value generated via HashUtils', () => {
+      const value = 'topsecret';
+      const hash = HashUtils.bcryptHash({ value, saltRounds: 4 });
+      expect(
+        HashUtils.bcryptCompare({ value, encryptedValue: hash }),
+      ).toBe(true);
+    });
+
+    it('bcryptCompare should return false for a non-matching value', () => {
+      const hash = HashUtils.bcryptHash({ value: 'topsecret', saltRounds: 4 });
+      expect(
+        HashUtils.bcryptCompare({ value: 'wrong', encryptedValue: hash }),
+      ).toBe(false);
+    });
+
+    it('bcryptRandomString should return a valid string for an explicit valid length', () => {
+      const result = HashUtils.bcryptRandomString({ length: 4 });
+      expect(typeof result).toBe('string');
+      expect(result).toMatch(/^\$2[aby]\$04\$/);
+    });
+
+    it('bcryptRandomString should use the default length when none is provided', () => {
+      const result = HashUtils.bcryptRandomString({});
+      expect(result).toMatch(/^\$2[aby]\$10\$/);
+    });
+
+    it('sha256Hash should throw for a non-string value', () => {
+      expect(() => {
+        // @ts-ignore - Intentionally testing with invalid value
+        HashUtils.sha256Hash({ value: 42 });
+      }).toThrow('Invalid input');
+    });
+
+    it('sha512Hash should throw for a non-string value', () => {
+      expect(() => {
+        // @ts-ignore - Intentionally testing with invalid value
+        HashUtils.sha512Hash({ value: 42 });
+      }).toThrow('Invalid input');
+    });
+
+    it('sha256HashJson should throw for a null value', () => {
+      expect(() => {
+        // @ts-ignore - Intentionally testing with invalid value
+        HashUtils.sha256HashJson({ json: null });
+      }).toThrow('Invalid input');
+    });
+
+    it('sha512HashJson should throw for a null value', () => {
+      expect(() => {
+        // @ts-ignore - Intentionally testing with invalid value
+        HashUtils.sha512HashJson({ json: null });
+      }).toThrow('Invalid input');
+    });
+
+    it('sha256GenerateToken should throw for a negative length', () => {
+      expect(() => {
+        HashUtils.sha256GenerateToken({ length: -5 });
+      }).toThrow('Invalid length');
+    });
+
+    it('sha256GenerateToken should throw for a non-number length', () => {
+      expect(() => {
+        // @ts-ignore - Intentionally testing with invalid value
+        HashUtils.sha256GenerateToken({ length: 'abc' });
+      }).toThrow('Invalid length');
+    });
+
+    it('sha512GenerateToken should throw for a negative length', () => {
+      expect(() => {
+        HashUtils.sha512GenerateToken({ length: -5 });
+      }).toThrow('Invalid length');
+    });
+
+    it('sha512GenerateToken should throw for a non-number length', () => {
+      expect(() => {
+        // @ts-ignore - Intentionally testing with invalid value
+        HashUtils.sha512GenerateToken({ length: 'abc' });
+      }).toThrow('Invalid length');
+    });
+
+    it('sha256GenerateToken should produce a custom-length token', () => {
+      const token = HashUtils.sha256GenerateToken({ length: 8 });
+      expect(token).toHaveLength(8);
+    });
+
+    it('sha512GenerateToken should produce a custom-length token', () => {
+      const token = HashUtils.sha512GenerateToken({ length: 8 });
+      expect(token).toHaveLength(8);
+    });
+  });
+
+  describe('wrapped-error (catch block) coverage', () => {
+    const crypto = require('crypto');
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    const bcryptCjs = require('bcryptjs');
+
+    it('bcryptHash should wrap underlying bcrypt errors', () => {
+      jest.spyOn(bcryptCjs, 'hashSync').mockImplementation(() => {
+        throw new Error('boom');
+      });
+      expect(() => {
+        HashUtils.bcryptHash({ value: 'value', saltRounds: 10 });
+      }).toThrow('Failed to hash value using bcrypt');
+    });
+
+    it('bcryptCompare should wrap underlying bcrypt errors', () => {
+      jest.spyOn(bcryptCjs, 'compareSync').mockImplementation(() => {
+        throw new Error('boom');
+      });
+      expect(() => {
+        HashUtils.bcryptCompare({ value: 'value', encryptedValue: 'hash' });
+      }).toThrow('Failed to compare values using bcrypt');
+    });
+
+    it('bcryptRandomString should wrap underlying errors', () => {
+      jest.spyOn(crypto, 'randomBytes').mockImplementation(() => {
+        throw new Error('boom');
+      });
+      expect(() => {
+        HashUtils.bcryptRandomString({ length: 10 });
+      }).toThrow('Failed to generate random string using bcrypt');
+    });
+
+    it('sha256Hash should wrap underlying crypto errors', () => {
+      jest.spyOn(crypto, 'createHash').mockImplementation(() => {
+        throw new Error('boom');
+      });
+      expect(() => {
+        HashUtils.sha256Hash({ value: 'value' });
+      }).toThrow('Failed to hash value using SHA-256');
+    });
+
+    it('sha256HashJson should wrap underlying errors', () => {
+      jest.spyOn(crypto, 'createHash').mockImplementation(() => {
+        throw new Error('boom');
+      });
+      expect(() => {
+        HashUtils.sha256HashJson({ json: { a: 1 } });
+      }).toThrow('Failed to hash JSON object using SHA-256');
+    });
+
+    it('sha256GenerateToken should wrap underlying errors', () => {
+      jest.spyOn(crypto, 'randomBytes').mockImplementation(() => {
+        throw new Error('boom');
+      });
+      expect(() => {
+        HashUtils.sha256GenerateToken({ length: 16 });
+      }).toThrow('Failed to generate random token using SHA-256');
+    });
+
+    it('sha512Hash should wrap underlying crypto errors', () => {
+      jest.spyOn(crypto, 'createHash').mockImplementation(() => {
+        throw new Error('boom');
+      });
+      expect(() => {
+        HashUtils.sha512Hash({ value: 'value' });
+      }).toThrow('Failed to hash value using SHA-512');
+    });
+
+    it('sha512HashJson should wrap underlying errors', () => {
+      jest.spyOn(crypto, 'createHash').mockImplementation(() => {
+        throw new Error('boom');
+      });
+      expect(() => {
+        HashUtils.sha512HashJson({ json: { a: 1 } });
+      }).toThrow('Failed to hash JSON object using SHA-512');
+    });
+
+    it('sha512GenerateToken should wrap underlying errors', () => {
+      jest.spyOn(crypto, 'randomBytes').mockImplementation(() => {
+        throw new Error('boom');
+      });
+      expect(() => {
+        HashUtils.sha512GenerateToken({ length: 16 });
+      }).toThrow('Failed to generate random token using SHA-512');
+    });
+  });
 });

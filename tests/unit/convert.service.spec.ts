@@ -217,5 +217,13 @@ describe('ConvertUtils', () => {
       });
       expect(result).toBe(value);
     });
+
+    it('should return null when the source type cannot be converted to the target', () => {
+      // A boolean does not match any of the integer/number/bigint guarded
+      // branches, so the method falls through to the final `return null`.
+      expect(ConvertUtils.value({ value: true, toType: 'integer' })).toBeNull();
+      expect(ConvertUtils.value({ value: true, toType: 'number' })).toBeNull();
+      expect(ConvertUtils.value({ value: true, toType: 'bigint' })).toBeNull();
+    });
   });
 });

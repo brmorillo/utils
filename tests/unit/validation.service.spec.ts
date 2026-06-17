@@ -345,5 +345,336 @@ describe('ValidationUtils - Unit Tests', () => {
         expect(ValidationUtils.isValidJSON({ jsonString })).toBe(false);
       });
     });
+
+    it('should reject empty and non-string inputs', () => {
+      expect(ValidationUtils.isValidJSON({ jsonString: '' })).toBe(false);
+      expect(
+        ValidationUtils.isValidJSON({ jsonString: null as any }),
+      ).toBe(false);
+      expect(
+        ValidationUtils.isValidJSON({ jsonString: undefined as any }),
+      ).toBe(false);
+      expect(
+        ValidationUtils.isValidJSON({ jsonString: 123 as any }),
+      ).toBe(false);
+    });
+  });
+
+  describe('isValidEmail - additional branches', () => {
+    it('should reject empty and non-string inputs', () => {
+      expect(ValidationUtils.isValidEmail({ email: '' })).toBe(false);
+      expect(ValidationUtils.isValidEmail({ email: null as any })).toBe(false);
+      expect(
+        ValidationUtils.isValidEmail({ email: undefined as any }),
+      ).toBe(false);
+      expect(ValidationUtils.isValidEmail({ email: 12345 as any })).toBe(false);
+    });
+
+    it('should reject emails with leading or trailing dots', () => {
+      expect(ValidationUtils.isValidEmail({ email: '.user@example.com' })).toBe(
+        false,
+      );
+      expect(ValidationUtils.isValidEmail({ email: 'user@example.com.' })).toBe(
+        false,
+      );
+    });
+
+    it('should reject emails with multiple @ symbols', () => {
+      expect(
+        ValidationUtils.isValidEmail({ email: 'user@@example.com' }),
+      ).toBe(false);
+    });
+
+    it('should reject emails with spaces', () => {
+      expect(ValidationUtils.isValidEmail({ email: 'user @example.com' })).toBe(
+        false,
+      );
+    });
+
+    it('should reject emails with empty local or domain parts', () => {
+      expect(ValidationUtils.isValidEmail({ email: '@example.com' })).toBe(
+        false,
+      );
+      expect(ValidationUtils.isValidEmail({ email: 'user@' })).toBe(false);
+    });
+  });
+
+  describe('isValidURL - additional branches', () => {
+    it('should reject empty and non-string inputs', () => {
+      expect(ValidationUtils.isValidURL({ inputUrl: '' })).toBe(false);
+      expect(ValidationUtils.isValidURL({ inputUrl: null as any })).toBe(false);
+      expect(
+        ValidationUtils.isValidURL({ inputUrl: undefined as any }),
+      ).toBe(false);
+      expect(ValidationUtils.isValidURL({ inputUrl: 42 as any })).toBe(false);
+    });
+
+    it('should reject URLs containing spaces or double dots', () => {
+      expect(
+        ValidationUtils.isValidURL({ inputUrl: 'https://exa mple.com' }),
+      ).toBe(false);
+      expect(
+        ValidationUtils.isValidURL({ inputUrl: 'https://example..com' }),
+      ).toBe(false);
+    });
+
+    it('should reject disallowed protocols', () => {
+      expect(
+        ValidationUtils.isValidURL({ inputUrl: 'ftp://example.com' }),
+      ).toBe(false);
+      expect(
+        ValidationUtils.isValidURL({ inputUrl: 'mailto://example.com' }),
+      ).toBe(false);
+    });
+
+    it('should reject http with a single slash', () => {
+      expect(
+        ValidationUtils.isValidURL({ inputUrl: 'http:/example.com' }),
+      ).toBe(false);
+    });
+
+    it('should reject malformed URLs that throw', () => {
+      expect(ValidationUtils.isValidURL({ inputUrl: 'http://' })).toBe(false);
+    });
+  });
+
+  describe('isValidPhoneNumber - additional branches', () => {
+    it('should reject empty and non-string inputs', () => {
+      expect(
+        ValidationUtils.isValidPhoneNumber({ phoneNumber: '' }),
+      ).toBe(false);
+      expect(
+        ValidationUtils.isValidPhoneNumber({ phoneNumber: null as any }),
+      ).toBe(false);
+      expect(
+        ValidationUtils.isValidPhoneNumber({ phoneNumber: 1234567890 as any }),
+      ).toBe(false);
+    });
+  });
+
+  describe('isNumber - additional branches', () => {
+    it('should reject boolean values', () => {
+      expect(ValidationUtils.isNumber({ value: true })).toBe(false);
+      expect(ValidationUtils.isNumber({ value: false })).toBe(false);
+    });
+
+    it('should reject null and undefined', () => {
+      expect(ValidationUtils.isNumber({ value: null })).toBe(false);
+      expect(ValidationUtils.isNumber({ value: undefined })).toBe(false);
+    });
+
+    it('should reject Infinity values', () => {
+      expect(ValidationUtils.isNumber({ value: Infinity })).toBe(false);
+      expect(ValidationUtils.isNumber({ value: -Infinity })).toBe(false);
+    });
+  });
+
+  describe('isValidHexColor - additional branches', () => {
+    it('should reject empty and non-string inputs', () => {
+      expect(ValidationUtils.isValidHexColor({ hexColor: '' })).toBe(false);
+      expect(
+        ValidationUtils.isValidHexColor({ hexColor: null as any }),
+      ).toBe(false);
+      expect(
+        ValidationUtils.isValidHexColor({ hexColor: 123456 as any }),
+      ).toBe(false);
+    });
+  });
+
+  describe('hasMinLength - additional branches', () => {
+    it('should reject non-string inputs', () => {
+      expect(
+        ValidationUtils.hasMinLength({ input: 123 as any, minLength: 1 }),
+      ).toBe(false);
+      expect(
+        ValidationUtils.hasMinLength({ input: null as any, minLength: 1 }),
+      ).toBe(false);
+    });
+  });
+
+  describe('hasMaxLength - additional branches', () => {
+    it('should reject non-string inputs', () => {
+      expect(
+        ValidationUtils.hasMaxLength({ input: 123 as any, maxLength: 5 }),
+      ).toBe(false);
+      expect(
+        ValidationUtils.hasMaxLength({ input: null as any, maxLength: 5 }),
+      ).toBe(false);
+    });
+  });
+
+  describe('isValidCPF', () => {
+    it('should validate correct CPFs in both formatted and digits-only forms', () => {
+      const validCPFs = [
+        '529.982.247-25',
+        '52998224725',
+        '111.444.777-35',
+        '11144477735',
+      ];
+
+      validCPFs.forEach(cpf => {
+        expect(ValidationUtils.isValidCPF({ cpf })).toBe(true);
+      });
+    });
+
+    it('should reject CPFs with invalid check digits', () => {
+      const invalidCPFs = [
+        '529.982.247-26', // wrong second digit
+        '529.982.247-05', // wrong first check digit
+        '52998224724', // wrong second digit
+        '111.444.777-30', // wrong digits
+        '12345678901', // invalid checksum
+      ];
+
+      invalidCPFs.forEach(cpf => {
+        expect(ValidationUtils.isValidCPF({ cpf })).toBe(false);
+      });
+    });
+
+    it('should reject CPFs with all identical digits', () => {
+      const repeatedCPFs = [
+        '000.000.000-00',
+        '111.111.111-11',
+        '222.222.222-22',
+        '99999999999',
+      ];
+
+      repeatedCPFs.forEach(cpf => {
+        expect(ValidationUtils.isValidCPF({ cpf })).toBe(false);
+      });
+    });
+
+    it('should reject CPFs with the wrong length', () => {
+      expect(ValidationUtils.isValidCPF({ cpf: '123456789' })).toBe(false);
+      expect(ValidationUtils.isValidCPF({ cpf: '529.982.247-2' })).toBe(false);
+      expect(ValidationUtils.isValidCPF({ cpf: '5299822472555' })).toBe(false);
+    });
+
+    it('should reject empty and non-string inputs', () => {
+      expect(ValidationUtils.isValidCPF({ cpf: '' })).toBe(false);
+      expect(ValidationUtils.isValidCPF({ cpf: null as any })).toBe(false);
+      expect(ValidationUtils.isValidCPF({ cpf: undefined as any })).toBe(false);
+      expect(ValidationUtils.isValidCPF({ cpf: 52998224725 as any })).toBe(
+        false,
+      );
+    });
+  });
+
+  describe('isValidCNPJ', () => {
+    it('should validate correct CNPJs in both formatted and digits-only forms', () => {
+      const validCNPJs = ['11.222.333/0001-81', '11222333000181'];
+
+      validCNPJs.forEach(cnpj => {
+        expect(ValidationUtils.isValidCNPJ({ cnpj })).toBe(true);
+      });
+    });
+
+    it('should reject CNPJs with invalid check digits', () => {
+      const invalidCNPJs = [
+        '11.222.333/0001-82', // wrong second digit
+        '11222333000182',
+        '11222333000180',
+        '12345678000100',
+      ];
+
+      invalidCNPJs.forEach(cnpj => {
+        expect(ValidationUtils.isValidCNPJ({ cnpj })).toBe(false);
+      });
+    });
+
+    it('should reject CNPJs with all identical digits', () => {
+      const repeatedCNPJs = [
+        '00.000.000/0000-00',
+        '11111111111111',
+        '22.222.222/2222-22',
+      ];
+
+      repeatedCNPJs.forEach(cnpj => {
+        expect(ValidationUtils.isValidCNPJ({ cnpj })).toBe(false);
+      });
+    });
+
+    it('should reject CNPJs with the wrong length', () => {
+      expect(ValidationUtils.isValidCNPJ({ cnpj: '1122233300018' })).toBe(
+        false,
+      );
+      expect(ValidationUtils.isValidCNPJ({ cnpj: '112223330001811' })).toBe(
+        false,
+      );
+      expect(ValidationUtils.isValidCNPJ({ cnpj: '11.222.333/0001' })).toBe(
+        false,
+      );
+    });
+
+    it('should reject empty and non-string inputs', () => {
+      expect(ValidationUtils.isValidCNPJ({ cnpj: '' })).toBe(false);
+      expect(ValidationUtils.isValidCNPJ({ cnpj: null as any })).toBe(false);
+      expect(
+        ValidationUtils.isValidCNPJ({ cnpj: undefined as any }),
+      ).toBe(false);
+      expect(
+        ValidationUtils.isValidCNPJ({ cnpj: 11222333000181 as any }),
+      ).toBe(false);
+    });
+  });
+
+  describe('isValidRG', () => {
+    it('should validate a correctly formatted RG without a state', () => {
+      expect(ValidationUtils.isValidRG({ rg: '12.345.678-9' })).toBe(true);
+      expect(ValidationUtils.isValidRG({ rg: '123456789' })).toBe(true);
+    });
+
+    it('should validate an RG ending with X (generic path)', () => {
+      expect(ValidationUtils.isValidRG({ rg: '12.345.678-X' })).toBe(true);
+      expect(ValidationUtils.isValidRG({ rg: '12345678x' })).toBe(true);
+    });
+
+    it('should validate a correct SP RG (9 digits)', () => {
+      expect(
+        ValidationUtils.isValidRG({ rg: '12.345.678-9', state: 'SP' }),
+      ).toBe(true);
+      expect(
+        ValidationUtils.isValidRG({ rg: '123456789', state: 'sp' }),
+      ).toBe(true);
+      expect(
+        ValidationUtils.isValidRG({ rg: '12.345.678-X', state: 'SP' }),
+      ).toBe(true);
+    });
+
+    it('should reject an SP RG that does not have exactly 9 characters', () => {
+      expect(
+        ValidationUtils.isValidRG({ rg: '12.345.678', state: 'SP' }),
+      ).toBe(false);
+      expect(
+        ValidationUtils.isValidRG({ rg: '1234567890', state: 'SP' }),
+      ).toBe(false);
+    });
+
+    it('should reject an SP RG whose body is not numeric', () => {
+      expect(
+        ValidationUtils.isValidRG({ rg: '1234567X9', state: 'SP' }),
+      ).toBe(false);
+    });
+
+    it('should validate other states via the default path', () => {
+      expect(
+        ValidationUtils.isValidRG({ rg: '12345678', state: 'RJ' }),
+      ).toBe(true);
+      expect(
+        ValidationUtils.isValidRG({ rg: '1234567X', state: 'MG' }),
+      ).toBe(true);
+    });
+
+    it('should reject RGs outside the allowed length range', () => {
+      expect(ValidationUtils.isValidRG({ rg: '1234' })).toBe(false);
+      expect(ValidationUtils.isValidRG({ rg: '1234567890123' })).toBe(false);
+    });
+
+    it('should reject empty and non-string inputs', () => {
+      expect(ValidationUtils.isValidRG({ rg: '' })).toBe(false);
+      expect(ValidationUtils.isValidRG({ rg: null as any })).toBe(false);
+      expect(ValidationUtils.isValidRG({ rg: undefined as any })).toBe(false);
+      expect(ValidationUtils.isValidRG({ rg: 123456789 as any })).toBe(false);
+    });
   });
 });

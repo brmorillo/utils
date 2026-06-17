@@ -109,6 +109,15 @@ describe('DateUtils', () => {
 
       expect(result.toISODate()).toBe('2023-01-15');
     });
+
+    it('should throw when the timeToAdd object contains invalid duration units', () => {
+      expect(() => {
+        DateUtils.addTime({
+          date: '2023-01-01',
+          timeToAdd: { days: 1, fortnights: 2 } as any,
+        });
+      }).toThrow('Invalid duration units: fortnights');
+    });
   });
 
   describe('removeTime', () => {
@@ -153,6 +162,15 @@ describe('DateUtils', () => {
       });
 
       expect(result.toISODate()).toBe('2023-01-01');
+    });
+
+    it('should throw when the timeToRemove object contains invalid duration units', () => {
+      expect(() => {
+        DateUtils.removeTime({
+          date: '2023-01-01',
+          timeToRemove: { days: 1, fortnights: 2 } as any,
+        });
+      }).toThrow('Invalid duration units: fortnights');
     });
   });
 

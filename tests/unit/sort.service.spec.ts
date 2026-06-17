@@ -516,4 +516,297 @@ describe('SortUtils - Unit Tests', () => {
       }).toThrow('Input must be an array');
     });
   });
+
+  // Additional edge-case coverage for radixSort
+  describe('radixSort - additional cases', () => {
+    it('should keep an already sorted array', () => {
+      expect(SortUtils.radixSort([1, 2, 3, 4, 5])).toEqual([1, 2, 3, 4, 5]);
+    });
+
+    it('should sort a reverse sorted array', () => {
+      expect(SortUtils.radixSort([5, 4, 3, 2, 1])).toEqual([1, 2, 3, 4, 5]);
+    });
+
+    it('should handle numbers with a varying number of digits', () => {
+      expect(SortUtils.radixSort([1, 1000, 10, 100])).toEqual([
+        1, 10, 100, 1000,
+      ]);
+    });
+  });
+
+  // Additional edge-case coverage for bucketSort
+  describe('bucketSort - additional cases', () => {
+    it('should keep an already sorted array', () => {
+      const sorted = [0.1, 0.2, 0.3, 0.4, 0.5];
+      expect(SortUtils.bucketSort(sorted)).toEqual(sorted);
+    });
+
+    it('should sort a reverse sorted array', () => {
+      const reverse = [0.5, 0.4, 0.3, 0.2, 0.1];
+      const sorted = [0.1, 0.2, 0.3, 0.4, 0.5];
+      expect(SortUtils.bucketSort(reverse)).toEqual(sorted);
+    });
+
+    it('should sort integers using a default bucket size', () => {
+      expect(SortUtils.bucketSort([29, 25, 3, 49, 9, 37, 21, 43])).toEqual([
+        3, 9, 21, 25, 29, 37, 43, 49,
+      ]);
+    });
+  });
+
+  // Additional edge-case coverage for the less common comparison sorts
+  describe('gnomeSort - additional cases', () => {
+    it('should keep an already sorted array', () => {
+      expect(SortUtils.gnomeSort(sortedArray)).toEqual(sortedArray);
+    });
+
+    it('should handle an empty array', () => {
+      expect(SortUtils.gnomeSort(emptyArray)).toEqual([]);
+    });
+
+    it('should handle a single-element array', () => {
+      expect(SortUtils.gnomeSort(singleElementArray)).toEqual(
+        singleElementArray,
+      );
+    });
+
+    it('should sort an array with duplicate elements', () => {
+      expect(SortUtils.gnomeSort(duplicatesArray)).toEqual(
+        sortedDuplicatesArray,
+      );
+    });
+
+    it('should sort a reverse sorted array', () => {
+      expect(SortUtils.gnomeSort([5, 4, 3, 2, 1])).toEqual([1, 2, 3, 4, 5]);
+    });
+
+    it('should sort an array with negative numbers', () => {
+      expect(SortUtils.gnomeSort(negativeArray)).toEqual(sortedNegativeArray);
+    });
+
+    it('should sort an array with mixed numbers', () => {
+      expect(SortUtils.gnomeSort(mixedArray)).toEqual(sortedMixedArray);
+    });
+  });
+
+  describe('combSort - additional cases', () => {
+    it('should keep an already sorted array', () => {
+      expect(SortUtils.combSort(sortedArray)).toEqual(sortedArray);
+    });
+
+    it('should handle an empty array', () => {
+      expect(SortUtils.combSort(emptyArray)).toEqual([]);
+    });
+
+    it('should handle a single-element array', () => {
+      expect(SortUtils.combSort(singleElementArray)).toEqual(
+        singleElementArray,
+      );
+    });
+
+    it('should sort an array with duplicate elements', () => {
+      expect(SortUtils.combSort(duplicatesArray)).toEqual(
+        sortedDuplicatesArray,
+      );
+    });
+
+    it('should sort a reverse sorted array', () => {
+      expect(SortUtils.combSort([5, 4, 3, 2, 1])).toEqual([1, 2, 3, 4, 5]);
+    });
+
+    it('should sort an array with negative numbers', () => {
+      expect(SortUtils.combSort(negativeArray)).toEqual(sortedNegativeArray);
+    });
+
+    it('should sort an array with mixed numbers', () => {
+      expect(SortUtils.combSort(mixedArray)).toEqual(sortedMixedArray);
+    });
+  });
+
+  describe('cocktailShakerSort - additional cases', () => {
+    it('should keep an already sorted array', () => {
+      expect(SortUtils.cocktailShakerSort(sortedArray)).toEqual(sortedArray);
+    });
+
+    it('should handle an empty array', () => {
+      expect(SortUtils.cocktailShakerSort(emptyArray)).toEqual([]);
+    });
+
+    it('should handle a single-element array', () => {
+      expect(SortUtils.cocktailShakerSort(singleElementArray)).toEqual(
+        singleElementArray,
+      );
+    });
+
+    it('should sort an array with duplicate elements', () => {
+      expect(SortUtils.cocktailShakerSort(duplicatesArray)).toEqual(
+        sortedDuplicatesArray,
+      );
+    });
+
+    it('should sort a reverse sorted array', () => {
+      expect(SortUtils.cocktailShakerSort([5, 4, 3, 2, 1])).toEqual([
+        1, 2, 3, 4, 5,
+      ]);
+    });
+
+    it('should sort an array with negative numbers', () => {
+      expect(SortUtils.cocktailShakerSort(negativeArray)).toEqual(
+        sortedNegativeArray,
+      );
+    });
+
+    it('should sort an array with mixed numbers', () => {
+      expect(SortUtils.cocktailShakerSort(mixedArray)).toEqual(sortedMixedArray);
+    });
+  });
+
+  describe('pancakeSort - additional cases', () => {
+    it('should keep an already sorted array', () => {
+      expect(SortUtils.pancakeSort(sortedArray)).toEqual(sortedArray);
+    });
+
+    it('should handle an empty array', () => {
+      expect(SortUtils.pancakeSort(emptyArray)).toEqual([]);
+    });
+
+    it('should handle a single-element array', () => {
+      expect(SortUtils.pancakeSort(singleElementArray)).toEqual(
+        singleElementArray,
+      );
+    });
+
+    it('should sort an array with duplicate elements', () => {
+      expect(SortUtils.pancakeSort(duplicatesArray)).toEqual(
+        sortedDuplicatesArray,
+      );
+    });
+
+    it('should sort a reverse sorted array', () => {
+      expect(SortUtils.pancakeSort([5, 4, 3, 2, 1])).toEqual([1, 2, 3, 4, 5]);
+    });
+
+    it('should sort an array with negative numbers', () => {
+      expect(SortUtils.pancakeSort(negativeArray)).toEqual(sortedNegativeArray);
+    });
+
+    it('should sort an array with mixed numbers', () => {
+      expect(SortUtils.pancakeSort(mixedArray)).toEqual(sortedMixedArray);
+    });
+  });
+
+  describe('bitonicSort - additional cases', () => {
+    // Bitonic sort requires a power-of-two length to fully sort the array.
+    const unsortedPow2 = [5, 3, 8, 4, 2, 9, 1, 7];
+    const sortedPow2 = [1, 2, 3, 4, 5, 7, 8, 9];
+
+    it('should keep an already sorted power-of-two array', () => {
+      expect(SortUtils.bitonicSort(sortedPow2)).toEqual(sortedPow2);
+    });
+
+    it('should sort a reverse sorted power-of-two array', () => {
+      expect(SortUtils.bitonicSort([8, 7, 6, 5, 4, 3, 2, 1])).toEqual([
+        1, 2, 3, 4, 5, 6, 7, 8,
+      ]);
+    });
+
+    it('should sort a power-of-two array with duplicate elements', () => {
+      expect(SortUtils.bitonicSort([4, 2, 4, 1, 3, 2, 1, 3])).toEqual([
+        1, 1, 2, 2, 3, 3, 4, 4,
+      ]);
+    });
+
+    it('should sort a power-of-two array with negative numbers', () => {
+      expect(SortUtils.bitonicSort([-1, -8, -3, -5, -2, -7, -4, -6])).toEqual([
+        -8, -7, -6, -5, -4, -3, -2, -1,
+      ]);
+    });
+
+    it('should handle an empty array', () => {
+      expect(SortUtils.bitonicSort(emptyArray)).toEqual([]);
+    });
+
+    it('should handle a single-element array', () => {
+      expect(SortUtils.bitonicSort(singleElementArray)).toEqual(
+        singleElementArray,
+      );
+    });
+
+    it('should sort a two-element array', () => {
+      expect(SortUtils.bitonicSort(unsortedPow2.slice(0, 2))).toEqual([3, 5]);
+    });
+  });
+
+  describe('stoogeSort', () => {
+    it('should sort an unsorted array', () => {
+      expect(SortUtils.stoogeSort(unsortedArray)).toEqual(sortedArray);
+    });
+
+    it('should keep an already sorted array', () => {
+      expect(SortUtils.stoogeSort(sortedArray)).toEqual(sortedArray);
+    });
+
+    it('should handle an empty array', () => {
+      expect(SortUtils.stoogeSort(emptyArray)).toEqual([]);
+    });
+
+    it('should handle a single-element array', () => {
+      expect(SortUtils.stoogeSort(singleElementArray)).toEqual(
+        singleElementArray,
+      );
+    });
+
+    it('should sort an array with duplicate elements', () => {
+      expect(SortUtils.stoogeSort(duplicatesArray)).toEqual(
+        sortedDuplicatesArray,
+      );
+    });
+
+    it('should sort a reverse sorted array', () => {
+      expect(SortUtils.stoogeSort([5, 4, 3, 2, 1])).toEqual([1, 2, 3, 4, 5]);
+    });
+
+    it('should sort an array with negative numbers', () => {
+      expect(SortUtils.stoogeSort(negativeArray)).toEqual(sortedNegativeArray);
+    });
+
+    it('should sort an array with mixed numbers', () => {
+      expect(SortUtils.stoogeSort(mixedArray)).toEqual(sortedMixedArray);
+    });
+
+    it('should throw an error for non-array input', () => {
+      expect(() => {
+        // @ts-ignore - Intentionally testing with invalid value
+        SortUtils.stoogeSort(123);
+      }).toThrow('Input must be an array');
+    });
+  });
+
+  describe('bogoSort', () => {
+    // Use only tiny arrays to avoid the factorial-time worst case.
+    it('should sort a tiny unsorted array', () => {
+      expect(SortUtils.bogoSort([2, 1])).toEqual([1, 2]);
+    });
+
+    it('should keep an already sorted tiny array', () => {
+      expect(SortUtils.bogoSort([1, 2])).toEqual([1, 2]);
+    });
+
+    it('should handle an empty array', () => {
+      expect(SortUtils.bogoSort(emptyArray)).toEqual([]);
+    });
+
+    it('should handle a single-element array', () => {
+      expect(SortUtils.bogoSort(singleElementArray)).toEqual(
+        singleElementArray,
+      );
+    });
+
+    it('should throw an error for non-array input', () => {
+      expect(() => {
+        // @ts-ignore - Intentionally testing with invalid value
+        SortUtils.bogoSort(123);
+      }).toThrow('Input must be an array');
+    });
+  });
 });

@@ -164,4 +164,44 @@ describe('LogService', () => {
       expect(warnSpy).toHaveBeenCalledWith('[WARN] second warn');
     });
   });
+
+  describe('createLogger (logger type switch)', () => {
+    it('should build each supported logger type without throwing', () => {
+      const service = LogService.getInstance();
+
+      // Each branch of the internal createLogger switch.
+      expect(() =>
+        service.configure({ type: 'pino', level: 'info', prettyPrint: false }),
+      ).not.toThrow();
+      expect(() => service.info('via pino')).not.toThrow();
+
+      expect(() =>
+        service.configure({
+          type: 'winston',
+          level: 'info',
+          prettyPrint: false,
+        }),
+      ).not.toThrow();
+      expect(() => service.info('via winston')).not.toThrow();
+
+      expect(() =>
+        service.configure({ type: 'console', level: 'info' }),
+      ).not.toThrow();
+      expect(() => service.info('via console')).not.toThrow();
+    });
+
+    it('should fall back to the default logger for an unknown type', () => {
+      const service = LogService.getInstance();
+
+      // An unrecognized type hits the switch default branch.
+      expect(() =>
+        // @ts-expect-error - intentionally passing an unsupported type
+        service.configure({ type: 'unknown', level: 'info', prettyPrint: false }),
+      ).not.toThrow();
+      expect(() => service.info('via default')).not.toThrow();
+
+      // Restore a quiet console logger so later suites are unaffected.
+      service.configure({ type: 'console', level: 'info' });
+    });
+  });
 });

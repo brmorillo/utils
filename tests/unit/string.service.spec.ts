@@ -117,6 +117,16 @@ describe('StringUtils - Unit Tests', () => {
       });
       expect(result).toBe('Hell...');
     });
+
+    it('should return just the ellipsis when maxLength is 3 or less', () => {
+      // When maxLength <= 3 there is no room for content, so only '...' is kept.
+      expect(
+        StringUtils.truncate({ input: 'Hello world', maxLength: 3 }),
+      ).toBe('...');
+      expect(
+        StringUtils.truncate({ input: 'Hello world', maxLength: 1 }),
+      ).toBe('...');
+    });
   });
 
   describe('toKebabCase', () => {
@@ -349,6 +359,17 @@ describe('StringUtils - Unit Tests', () => {
         substring: 'xyz',
         replacement: 'abc',
         occurrences: 1,
+      });
+      expect(result).toBe('hello world');
+    });
+
+    it('should return the original string when the substring is empty', () => {
+      // An empty substring short-circuits to the unchanged input.
+      const result = StringUtils.replaceOccurrences({
+        input: 'hello world',
+        substring: '',
+        replacement: 'abc',
+        occurrences: 3,
       });
       expect(result).toBe('hello world');
     });

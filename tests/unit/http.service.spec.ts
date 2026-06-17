@@ -221,4 +221,74 @@ describe('HttpService (native http client)', () => {
       expect(response.data.error).toBe('not found');
     });
   });
+
+  /**
+   * Additional edge/error branch coverage.
+   * Targets previously uncovered lines:
+   * 69 (configure timeout), 83 (createClient default case),
+   * 92 (buildUrl with an absolute URL).
+   */
+  describe('edge cases and configuration branches', () => {
+    describe('configure - timeout option (line 69)', () => {
+      it('should apply a configured timeout and still complete a request', async () => {
+        // Setting a timeout exercises the `options.timeout !== undefined` branch.
+        service.configure({ timeout: 5000 });
+
+        const response = await service.get('/');
+        expect(response.status).toBe(200);
+        expect(response.data.method).toBe('GET');
+
+        // Cleanup so the timeout does not affect other suites.
+        service.configure({ timeout: undefined as unknown as number });
+      });
+    });
+
+    describe('createClient - default/unknown client type (line 83)', () => {
+      it('should fall back to the default client for an unknown client type', async () => {
+        // An unknown clientType hits the switch `default` branch, which falls
+        // back to the axios client. The request must still succeed.
+        service.configure({
+          clientType: 'unknown' as any,
+          baseUrl,
+        });
+
+        const response = await service.get('/');
+        expect(response.status).toBe(200);
+        expect(response.data.method).toBe('GET');
+
+        // Restore the native http client for any subsequent tests.
+        service.configure({ clientType: 'http', baseUrl });
+      });
+    });
+
+    describe('buildUrl - absolute URL passthrough (line 92)', () => {
+      it('should use an absolute http URL as-is without prepending baseUrl', async () => {
+        // Passing a fully-qualified URL exercises the early-return branch.
+        const response = await service.get(`${baseUrl}/`);
+
+        expect(response.status).toBe(200);
+        expect(response.data.method).toBe('GET');
+      });
+    });
+
+    describe('post/put/patch - request without a body', () => {
+      it('should perform a POST without a body', async () => {
+        const response = await service.post('/');
+        expect(response.status).toBe(200);
+        expect(response.data.method).toBe('POST');
+      });
+
+      it('should perform a PUT without a body', async () => {
+        const response = await service.put('/');
+        expect(response.status).toBe(200);
+        expect(response.data.method).toBe('PUT');
+      });
+
+      it('should perform a PATCH without a body', async () => {
+        const response = await service.patch('/');
+        expect(response.status).toBe(200);
+        expect(response.data.method).toBe('PATCH');
+      });
+    });
+  });
 });

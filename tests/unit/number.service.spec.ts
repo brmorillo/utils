@@ -179,7 +179,8 @@ describe('NumberUtils', () => {
       for (let i = 0; i < 100; i++) {
         const result = NumberUtils.randomFloatInRange({ min, max });
         expect(result).toBeGreaterThanOrEqual(min);
-        expect(result).toBeLessThan(max);
+        // Rounding to the requested decimals can legitimately yield `max`.
+        expect(result).toBeLessThanOrEqual(max);
       }
     });
 
@@ -279,6 +280,30 @@ describe('NumberUtils', () => {
       expect(NumberUtils.isValidOdd({ value: 4 })).toBe(false);
       expect(NumberUtils.isValidOdd({ value: 0 })).toBe(false);
       expect(NumberUtils.isValidOdd({ value: -2 })).toBe(false);
+    });
+  });
+
+  describe('isOdd', () => {
+    it('should return true for odd numbers', () => {
+      expect(NumberUtils.isOdd({ value: 1 })).toBe(true);
+      expect(NumberUtils.isOdd({ value: 3 })).toBe(true);
+      expect(NumberUtils.isOdd({ value: -5 })).toBe(true);
+    });
+
+    it('should return false for even numbers', () => {
+      expect(NumberUtils.isOdd({ value: 2 })).toBe(false);
+      expect(NumberUtils.isOdd({ value: 0 })).toBe(false);
+      expect(NumberUtils.isOdd({ value: -4 })).toBe(false);
+    });
+  });
+
+  describe('isValidPrime - second divisor branch', () => {
+    it('should detect composites divisible only by i + 2 in the loop', () => {
+      // 49 = 7 * 7: 49 % 5 !== 0 but 49 % 7 === 0, exercising the second
+      // operand of the loop condition.
+      expect(NumberUtils.isValidPrime({ value: 49 })).toBe(false);
+      // 25 = 5 * 5 keeps a true prime nearby valid.
+      expect(NumberUtils.isValidPrime({ value: 23 })).toBe(true);
     });
   });
 });

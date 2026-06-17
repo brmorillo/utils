@@ -255,4 +255,183 @@ describe('JWTUtils - Unit Tests', () => {
       }).toThrow('missing expiration claim');
     });
   });
+
+  /**
+   * Additional edge/error branch coverage.
+   * Targets previously uncovered lines:
+   * 44-45 (generate catch), 79 (verify empty token),
+   * 83 (verify empty secretKey), 125 (decode empty token),
+   * 212 (isExpired empty token), 247 (getExpirationTime empty token).
+   */
+  describe('edge cases and error branches', () => {
+    describe('generate - underlying sign failure (lines 44-45)', () => {
+      it('should wrap an error thrown by jwt.sign into a descriptive Error', () => {
+        // An invalid expiresIn string causes jsonwebtoken to throw inside the
+        // try/catch, exercising the error-message extraction and re-throw.
+        expect(() => {
+          JWTUtils.generate({
+            payload,
+            secretKey,
+            options: { expiresIn: 'not-a-valid-duration' as any },
+          });
+        }).toThrow('Failed to generate JWT token');
+      });
+    });
+
+    describe('verify - input validation (lines 79, 83)', () => {
+      it('should throw for an empty token (line 79)', () => {
+        expect(() => {
+          JWTUtils.verify({ token: '', secretKey });
+        }).toThrow('Invalid token: must be a non-empty string.');
+      });
+
+      it('should throw for a non-string token (line 79)', () => {
+        expect(() => {
+          // @ts-ignore - Intentionally testing with invalid value
+          JWTUtils.verify({ token: 12345, secretKey });
+        }).toThrow('Invalid token: must be a non-empty string.');
+      });
+
+      it('should throw for an empty secretKey (line 83)', () => {
+        const token = JWTUtils.generate({ payload, secretKey });
+        expect(() => {
+          JWTUtils.verify({ token, secretKey: '' });
+        }).toThrow('Invalid secretKey: must be a non-empty string.');
+      });
+
+      it('should throw for an expired token', () => {
+        const pastTime = Math.floor(Date.now() / 1000) - 10;
+        const expiredToken = JWTUtils.generate({
+          payload: { ...payload, exp: pastTime },
+          secretKey,
+        });
+        expect(() => {
+          JWTUtils.verify({ token: expiredToken, secretKey });
+        }).toThrow('Failed to verify JWT token');
+      });
+
+      it('should throw for a malformed token', () => {
+        expect(() => {
+          JWTUtils.verify({ token: 'a.b.c', secretKey });
+        }).toThrow('Failed to verify JWT token');
+      });
+    });
+
+    describe('decode - input validation and complete option (line 125)', () => {
+      it('should throw for an empty token (line 125)', () => {
+        expect(() => {
+          JWTUtils.decode({ token: '' });
+        }).toThrow('Invalid token: must be a non-empty string.');
+      });
+
+      it('should throw for a non-string token (line 125)', () => {
+        expect(() => {
+          // @ts-ignore - Intentionally testing with invalid value
+          JWTUtils.decode({ token: null });
+        }).toThrow('Invalid token: must be a non-empty string.');
+      });
+
+      it('should throw for a malformed token that cannot be decoded', () => {
+        expect(() => {
+          JWTUtils.decode({ token: 'malformed', complete: true });
+        }).toThrow('Failed to decode JWT token');
+      });
+
+      it('should decode header and payload with complete=true', () => {
+        const token = JWTUtils.generate({ payload, secretKey });
+        const decoded = JWTUtils.decode({ token, complete: true }) as any;
+        expect(decoded).toHaveProperty('header');
+        expect(decoded).toHaveProperty('signature');
+        expect(decoded.payload).toHaveProperty('userId', '123');
+      });
+    });
+
+    describe('refresh - valid round-trip and error path', () => {
+      it('should refresh a valid (non-expired) token preserving the payload', () => {
+        const token = JWTUtils.generate({
+          payload,
+          secretKey,
+          options: { expiresIn: '1h' },
+        });
+
+        const newToken = JWTUtils.refresh({
+          token,
+          secretKey,
+          options: { expiresIn: '2h' },
+        });
+
+        const decoded = JWTUtils.verify({ token: newToken, secretKey }) as any;
+        expect(decoded).toHaveProperty('userId', '123');
+        expect(decoded).toHaveProperty('role', 'admin');
+        // Standard claims should be regenerated, not carried over verbatim.
+        expect(decoded).toHaveProperty('iat');
+        expect(decoded).toHaveProperty('exp');
+      });
+
+      it('should throw when refreshing with the wrong secret', () => {
+        const token = JWTUtils.generate({ payload, secretKey });
+        expect(() => {
+          JWTUtils.refresh({ token, secretKey: 'wrong-secret' });
+        }).toThrow('Failed to refresh JWT token');
+      });
+    });
+
+    describe('isExpired - input validation (line 212)', () => {
+      it('should throw for an empty token (line 212)', () => {
+        expect(() => {
+          JWTUtils.isExpired({ token: '' });
+        }).toThrow('Invalid token: must be a non-empty string.');
+      });
+
+      it('should throw for a non-string token (line 212)', () => {
+        expect(() => {
+          // @ts-ignore - Intentionally testing with invalid value
+          JWTUtils.isExpired({ token: undefined });
+        }).toThrow('Invalid token: must be a non-empty string.');
+      });
+
+      it('should return true for a token with a past exp claim', () => {
+        const expiredToken = JWTUtils.generate({
+          payload: { ...payload, exp: Math.floor(Date.now() / 1000) - 5 },
+          secretKey,
+        });
+        expect(JWTUtils.isExpired({ token: expiredToken })).toBe(true);
+      });
+
+      it('should throw for a malformed token', () => {
+        expect(() => {
+          JWTUtils.isExpired({ token: 'not-a-jwt' });
+        }).toThrow('Failed to check JWT token expiration');
+      });
+    });
+
+    describe('getExpirationTime - input validation (line 247)', () => {
+      it('should throw for an empty token (line 247)', () => {
+        expect(() => {
+          JWTUtils.getExpirationTime({ token: '' });
+        }).toThrow('Invalid token: must be a non-empty string.');
+      });
+
+      it('should throw for a non-string token (line 247)', () => {
+        expect(() => {
+          // @ts-ignore - Intentionally testing with invalid value
+          JWTUtils.getExpirationTime({ token: 0 });
+        }).toThrow('Invalid token: must be a non-empty string.');
+      });
+
+      it('should return 0 for a token whose exp is already in the past', () => {
+        const expiredToken = JWTUtils.generate({
+          payload: { ...payload, exp: Math.floor(Date.now() / 1000) - 5 },
+          secretKey,
+        });
+        expect(JWTUtils.getExpirationTime({ token: expiredToken })).toBe(0);
+      });
+
+      it('should throw for a malformed token', () => {
+        expect(() => {
+          JWTUtils.getExpirationTime({ token: 'not-a-jwt' });
+        }).toThrow('Failed to get JWT token expiration time');
+      });
+    });
+  });
 });

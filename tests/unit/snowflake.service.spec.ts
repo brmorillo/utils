@@ -202,4 +202,176 @@ describe('SnowflakeUtils', () => {
     // Removing the tests that are causing problems
     // These tests would be better implemented as integration tests
   });
+
+  /**
+   * Additional edge/error branch coverage.
+   * Targets previously uncovered lines:
+   * 90 (decode invalid epoch), 143 (isValidSnowflake invalid input),
+   * 157 (isValidSnowflake catch), 217 (fromTimestamp invalid epoch),
+   * 254 (convert null/undefined), 269 (convert BigInt failure),
+   * 293 (convert unsupported format), 301 (convert outer catch).
+   */
+  describe('edge cases and error branches', () => {
+    describe('decode - validation branches (lines 83, 90)', () => {
+      it('should throw for a non-numeric string id', () => {
+        expect(() => {
+          SnowflakeUtils.decode({ snowflakeId: 'not-a-number' });
+        }).toThrow('Invalid Snowflake ID');
+      });
+
+      it('should throw for an empty string id', () => {
+        expect(() => {
+          SnowflakeUtils.decode({ snowflakeId: '' });
+        }).toThrow('Invalid Snowflake ID');
+      });
+
+      it('should throw for an invalid epoch (line 90)', () => {
+        const id = SnowflakeUtils.generate({ epoch: testEpoch });
+        expect(() => {
+          SnowflakeUtils.decode({
+            snowflakeId: id,
+            epoch: new Date('invalid-date'),
+          });
+        }).toThrow('Invalid epoch');
+      });
+    });
+
+    describe('getTimestamp - validation branches', () => {
+      it('should throw for an invalid Snowflake ID', () => {
+        expect(() => {
+          // @ts-ignore - Intentionally testing with invalid value
+          SnowflakeUtils.getTimestamp({ snowflakeId: 'abc' });
+        }).toThrow('Invalid Snowflake ID');
+      });
+
+      it('should throw for an invalid epoch', () => {
+        const id = SnowflakeUtils.generate({ epoch: testEpoch });
+        expect(() => {
+          SnowflakeUtils.getTimestamp({
+            snowflakeId: id,
+            epoch: new Date('invalid-date'),
+          });
+        }).toThrow('Invalid epoch');
+      });
+    });
+
+    describe('isValidSnowflake - invalid inputs (lines 143, 157)', () => {
+      it('should return false for an empty string (line 143)', () => {
+        expect(SnowflakeUtils.isValidSnowflake({ snowflakeId: '' })).toBe(false);
+      });
+
+      it('should return false for a non-string input (line 143)', () => {
+        expect(
+          // @ts-ignore - Intentionally testing with invalid value
+          SnowflakeUtils.isValidSnowflake({ snowflakeId: 123 }),
+        ).toBe(false);
+      });
+
+      it('should return false for a null input (line 143)', () => {
+        expect(
+          // @ts-ignore - Intentionally testing with invalid value
+          SnowflakeUtils.isValidSnowflake({ snowflakeId: null }),
+        ).toBe(false);
+      });
+
+      it('should return true for a long valid numeric string', () => {
+        expect(
+          SnowflakeUtils.isValidSnowflake({
+            snowflakeId: '1322717493961297921',
+          }),
+        ).toBe(true);
+      });
+    });
+
+    describe('compare - all ordering branches', () => {
+      it('should return 1 when the first id is greater', () => {
+        expect(SnowflakeUtils.compare({ first: '100', second: '50' })).toBe(1);
+      });
+
+      it('should return -1 when the second id is greater', () => {
+        expect(SnowflakeUtils.compare({ first: '50', second: '100' })).toBe(-1);
+      });
+
+      it('should return 0 when the ids are equal', () => {
+        expect(SnowflakeUtils.compare({ first: 100n, second: 100n })).toBe(0);
+      });
+
+      it('should accept bigint inputs', () => {
+        expect(SnowflakeUtils.compare({ first: 200n, second: 100n })).toBe(1);
+      });
+    });
+
+    describe('fromTimestamp - invalid epoch (line 217)', () => {
+      it('should throw for an invalid epoch', () => {
+        expect(() => {
+          SnowflakeUtils.fromTimestamp({
+            timestamp: new Date('2023-06-15T12:30:45.000Z'),
+            epoch: new Date('invalid-date'),
+          });
+        }).toThrow('Invalid epoch');
+      });
+    });
+
+    describe('convert - error branches (lines 254, 269, 293, 301)', () => {
+      it('should throw for a null id (line 254)', () => {
+        expect(() => {
+          // @ts-ignore - Intentionally testing with invalid value
+          SnowflakeUtils.convert({ snowflakeId: null, toFormat: 'bigint' });
+        }).toThrow('must not be null or undefined');
+      });
+
+      it('should throw for an undefined id (line 254)', () => {
+        expect(() => {
+          SnowflakeUtils.convert({
+            // @ts-ignore - Intentionally testing with invalid value
+            snowflakeId: undefined,
+            toFormat: 'bigint',
+          });
+        }).toThrow('must not be null or undefined');
+      });
+
+      it('should throw for a string with non-digit characters', () => {
+        expect(() => {
+          SnowflakeUtils.convert({
+            snowflakeId: '12a34',
+            toFormat: 'string',
+          });
+        }).toThrow('must contain only digits');
+      });
+
+      it('should throw when a non-integer number cannot be converted to BigInt (line 269)', () => {
+        expect(() => {
+          SnowflakeUtils.convert({ snowflakeId: 1.5, toFormat: 'bigint' });
+        }).toThrow('cannot be converted to BigInt');
+      });
+
+      it('should throw for an unsupported target format (line 293)', () => {
+        expect(() => {
+          SnowflakeUtils.convert({
+            snowflakeId: 123n,
+            // @ts-ignore - Intentionally testing with an unsupported format
+            toFormat: 'hex' as SnowflakeFormat,
+          });
+        }).toThrow('Unsupported format');
+      });
+
+      it('should convert a small bigint to a number', () => {
+        expect(
+          SnowflakeUtils.convert({ snowflakeId: 42n, toFormat: 'number' }),
+        ).toBe(42);
+      });
+
+      it('should convert a numeric string to a number', () => {
+        expect(
+          SnowflakeUtils.convert({ snowflakeId: '7', toFormat: 'number' }),
+        ).toBe(7);
+      });
+
+      it('should return the same bigint when converting to bigint', () => {
+        expect(
+          SnowflakeUtils.convert({ snowflakeId: 99n, toFormat: 'bigint' }),
+        ).toBe(99n);
+      });
+    });
+  });
 });

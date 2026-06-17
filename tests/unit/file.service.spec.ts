@@ -4,6 +4,16 @@ import * as path from 'path';
 import { FileUtils } from '../../src/services/file.service';
 
 /**
+ * The CommonJS `require('fs')` object exposes writable/configurable properties,
+ * which lets `jest.spyOn` redefine its methods. The ESM namespace import (`fs`
+ * above) has non-configurable bindings and cannot be spied on directly. Both
+ * references point at the same underlying module instance that the source code
+ * uses, so spying on this object intercepts the calls made by FileUtils.
+ */
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const fsSpyable = require('fs');
+
+/**
  * Unit tests for the FileUtils class.
  * These tests exercise real file system operations within an isolated
  * temporary directory created under the OS tmpdir.
@@ -482,6 +492,477 @@ describe('FileUtils', () => {
       expect(() => FileUtils.readJsonFile(filePath)).toThrow(
         /Failed to read JSON file/,
       );
+    });
+  });
+
+  // Additional branch-coverage tests exercising the catch blocks and
+  // conditional branches of each method by spying on the underlying fs calls.
+  describe('branch coverage: error handling and conditionals', () => {
+    afterEach(() => {
+      // Restore every spy created within this block.
+      jest.restoreAllMocks();
+    });
+
+    describe('readFile', () => {
+      it('should read with a non-default encoding', () => {
+        // Arrange
+        const filePath = path.join(tempDir, 'latin1.txt');
+        FileUtils.writeFile(filePath, 'plain ascii');
+
+        // Act
+        const result = FileUtils.readFile({ filePath, encoding: 'latin1' });
+
+        // Assert
+        expect(result).toBe('plain ascii');
+      });
+
+      it('should wrap the original error as cause when reading fails', () => {
+        // Arrange
+        const filePath = path.join(tempDir, 'boom.txt');
+        const original = new Error('disk failure');
+        jest.spyOn(fsSpyable, 'readFileSync').mockImplementation(() => {
+          throw original;
+        });
+
+        // Act & Assert
+        try {
+          FileUtils.readFile({ filePath });
+          throw new Error('expected readFile to throw');
+        } catch (err) {
+          expect(err).toBeInstanceOf(Error);
+          expect((err as Error).message).toContain(filePath);
+          expect((err as Error).message).toContain('disk failure');
+          expect((err as Error).cause).toBe(original);
+        }
+      });
+
+      it('should stringify non-Error throwables when reading fails', () => {
+        // Arrange
+        const filePath = path.join(tempDir, 'nonerr.txt');
+        jest.spyOn(fsSpyable, 'readFileSync').mockImplementation(() => {
+          // eslint-disable-next-line no-throw-literal
+          throw 'string failure';
+        });
+
+        // Act & Assert
+        expect(() => FileUtils.readFile({ filePath })).toThrow(
+          /Failed to read file .*string failure/,
+        );
+      });
+    });
+
+    describe('writeFile', () => {
+      it('should wrap the original error as cause when writing fails', () => {
+        // Arrange
+        const filePath = path.join(tempDir, 'wfail.txt');
+        const original = new Error('write denied');
+        jest.spyOn(fsSpyable, 'writeFileSync').mockImplementation(() => {
+          throw original;
+        });
+
+        // Act & Assert
+        try {
+          FileUtils.writeFile(filePath, 'data');
+          throw new Error('expected writeFile to throw');
+        } catch (err) {
+          expect((err as Error).message).toContain(filePath);
+          expect((err as Error).message).toContain('write denied');
+          expect((err as Error).cause).toBe(original);
+        }
+      });
+    });
+
+    describe('writeFileAsync', () => {
+      it('should reject and wrap the original error when writing fails', async () => {
+        // Arrange
+        const filePath = path.join(tempDir, 'wafail.txt');
+        const original = new Error('async write denied');
+        jest
+          .spyOn(fsSpyable, 'writeFile')
+          .mockImplementation((...args: unknown[]) => {
+            // The promisified call passes the node-style callback last.
+            const cb = args[args.length - 1] as (err: Error) => void;
+            cb(original);
+          });
+
+        // Act & Assert
+        await expect(
+          FileUtils.writeFileAsync(filePath, 'data'),
+        ).rejects.toThrow(/Failed to write file .*async write denied/);
+      });
+
+      it('should stringify a non-Error rejection', async () => {
+        // Arrange
+        const filePath = path.join(tempDir, 'wanonerr.txt');
+        jest
+          .spyOn(fsSpyable, 'writeFile')
+          .mockImplementation((...args: unknown[]) => {
+            const cb = args[args.length - 1] as (err: unknown) => void;
+            cb('async string failure');
+          });
+
+        // Act & Assert
+        await expect(
+          FileUtils.writeFileAsync(filePath, 'data'),
+        ).rejects.toThrow(/Failed to write file .*async string failure/);
+      });
+    });
+
+    // Each catch block uses `error instanceof Error ? error.message :
+    // String(error)`; these cases exercise the String(error) (non-Error) side
+    // for the remaining synchronous methods to raise branch coverage.
+    describe('non-Error throwables across methods', () => {
+      it('writeFile stringifies a non-Error', () => {
+        jest.spyOn(fsSpyable, 'writeFileSync').mockImplementation(() => {
+          // eslint-disable-next-line no-throw-literal
+          throw 'wf string';
+        });
+        expect(() =>
+          FileUtils.writeFile(path.join(tempDir, 'x'), 'd'),
+        ).toThrow(/Failed to write file .*wf string/);
+      });
+
+      it('appendFile stringifies a non-Error', () => {
+        jest.spyOn(fsSpyable, 'appendFileSync').mockImplementation(() => {
+          // eslint-disable-next-line no-throw-literal
+          throw 'af string';
+        });
+        expect(() =>
+          FileUtils.appendFile(path.join(tempDir, 'x'), 'd'),
+        ).toThrow(/Failed to append to file .*af string/);
+      });
+
+      it('createDirectory stringifies a non-Error (non-EEXIST path)', () => {
+        jest.spyOn(fsSpyable, 'mkdirSync').mockImplementation(() => {
+          // eslint-disable-next-line no-throw-literal
+          throw 'mkdir string';
+        });
+        expect(() =>
+          FileUtils.createDirectory(path.join(tempDir, 'x')),
+        ).toThrow(/Failed to create directory .*mkdir string/);
+      });
+
+      it('listFiles stringifies a non-Error', () => {
+        jest.spyOn(fsSpyable, 'readdirSync').mockImplementation(() => {
+          // eslint-disable-next-line no-throw-literal
+          throw 'ls string';
+        });
+        expect(() => FileUtils.listFiles(path.join(tempDir, 'x'))).toThrow(
+          /Failed to list files .*ls string/,
+        );
+      });
+
+      it('getFileInfo stringifies a non-Error', () => {
+        jest.spyOn(fsSpyable, 'statSync').mockImplementation(() => {
+          // eslint-disable-next-line no-throw-literal
+          throw 'stat string';
+        });
+        expect(() => FileUtils.getFileInfo(path.join(tempDir, 'x'))).toThrow(
+          /Failed to get file info .*stat string/,
+        );
+      });
+
+      it('deleteFile stringifies a non-Error', () => {
+        jest.spyOn(fsSpyable, 'unlinkSync').mockImplementation(() => {
+          // eslint-disable-next-line no-throw-literal
+          throw 'unlink string';
+        });
+        expect(() => FileUtils.deleteFile(path.join(tempDir, 'x'))).toThrow(
+          /Failed to delete file .*unlink string/,
+        );
+      });
+
+      it('deleteDirectory stringifies a non-Error', () => {
+        jest.spyOn(fsSpyable, 'rmSync').mockImplementation(() => {
+          // eslint-disable-next-line no-throw-literal
+          throw 'rm string';
+        });
+        expect(() =>
+          FileUtils.deleteDirectory(path.join(tempDir, 'x')),
+        ).toThrow(/Failed to delete directory .*rm string/);
+      });
+
+      it('moveFile stringifies a non-Error (non-EXDEV path)', () => {
+        jest.spyOn(fsSpyable, 'renameSync').mockImplementation(() => {
+          // eslint-disable-next-line no-throw-literal
+          throw 'rename string';
+        });
+        expect(() =>
+          FileUtils.moveFile(path.join(tempDir, 'a'), path.join(tempDir, 'b')),
+        ).toThrow(/Failed to move file .*rename string/);
+      });
+
+      it('copyFile stringifies a non-Error', () => {
+        jest.spyOn(fsSpyable, 'copyFileSync').mockImplementation(() => {
+          // eslint-disable-next-line no-throw-literal
+          throw 'copy string';
+        });
+        expect(() =>
+          FileUtils.copyFile(path.join(tempDir, 'a'), path.join(tempDir, 'b')),
+        ).toThrow(/Failed to copy file .*copy string/);
+      });
+    });
+
+    describe('appendFile', () => {
+      it('should wrap the original error as cause when appending fails', () => {
+        // Arrange
+        const filePath = path.join(tempDir, 'afail.txt');
+        const original = new Error('append denied');
+        jest.spyOn(fsSpyable, 'appendFileSync').mockImplementation(() => {
+          throw original;
+        });
+
+        // Act & Assert
+        expect(() => FileUtils.appendFile(filePath, 'x')).toThrow(
+          /Failed to append to file/,
+        );
+      });
+    });
+
+    describe('createDirectory', () => {
+      it('should swallow an EEXIST error', () => {
+        // Arrange
+        const dirPath = path.join(tempDir, 'eexist');
+        const eexist = Object.assign(new Error('exists'), { code: 'EEXIST' });
+        jest.spyOn(fsSpyable, 'mkdirSync').mockImplementation(() => {
+          throw eexist;
+        });
+
+        // Act & Assert
+        expect(() => FileUtils.createDirectory(dirPath)).not.toThrow();
+      });
+
+      it('should rethrow a non-EEXIST error wrapped with cause', () => {
+        // Arrange
+        const dirPath = path.join(tempDir, 'eacces');
+        const eacces = Object.assign(new Error('denied'), { code: 'EACCES' });
+        jest.spyOn(fsSpyable, 'mkdirSync').mockImplementation(() => {
+          throw eacces;
+        });
+
+        // Act & Assert
+        try {
+          FileUtils.createDirectory(dirPath);
+          throw new Error('expected createDirectory to throw');
+        } catch (err) {
+          expect((err as Error).message).toContain('Failed to create directory');
+          expect((err as Error).cause).toBe(eacces);
+        }
+      });
+    });
+
+    describe('listFiles', () => {
+      it('should wrap the original error as cause when listing fails', () => {
+        // Arrange
+        const dirPath = path.join(tempDir, 'lfail');
+        const original = new Error('read dir failure');
+        jest.spyOn(fsSpyable, 'readdirSync').mockImplementation(() => {
+          throw original;
+        });
+
+        // Act & Assert
+        try {
+          FileUtils.listFiles(dirPath);
+          throw new Error('expected listFiles to throw');
+        } catch (err) {
+          expect((err as Error).message).toContain('Failed to list files');
+          expect((err as Error).cause).toBe(original);
+        }
+      });
+    });
+
+    describe('getFileInfo', () => {
+      it('should wrap the original error as cause when stat fails', () => {
+        // Arrange
+        const filePath = path.join(tempDir, 'infofail.txt');
+        const original = new Error('stat failure');
+        jest.spyOn(fsSpyable, 'statSync').mockImplementation(() => {
+          throw original;
+        });
+
+        // Act & Assert
+        expect(() => FileUtils.getFileInfo(filePath)).toThrow(
+          /Failed to get file info/,
+        );
+      });
+    });
+
+    describe('deleteFile', () => {
+      it('should wrap the original error as cause when unlink fails', () => {
+        // Arrange
+        const filePath = path.join(tempDir, 'dfail.txt');
+        const original = new Error('unlink failure');
+        jest.spyOn(fsSpyable, 'unlinkSync').mockImplementation(() => {
+          throw original;
+        });
+
+        // Act & Assert
+        try {
+          FileUtils.deleteFile(filePath);
+          throw new Error('expected deleteFile to throw');
+        } catch (err) {
+          expect((err as Error).message).toContain('Failed to delete file');
+          expect((err as Error).cause).toBe(original);
+        }
+      });
+    });
+
+    describe('deleteDirectory', () => {
+      it('should wrap the original error as cause when rm fails', () => {
+        // Arrange
+        const dirPath = path.join(tempDir, 'ddfail');
+        const original = new Error('rm failure');
+        jest.spyOn(fsSpyable, 'rmSync').mockImplementation(() => {
+          throw original;
+        });
+
+        // Act & Assert
+        try {
+          FileUtils.deleteDirectory(dirPath);
+          throw new Error('expected deleteDirectory to throw');
+        } catch (err) {
+          expect((err as Error).message).toContain('Failed to delete directory');
+          expect((err as Error).cause).toBe(original);
+        }
+      });
+    });
+
+    describe('deleteDirectoryRecursive', () => {
+      it('should wrap the original error as cause when removal fails', () => {
+        // Arrange
+        const dirPath = path.join(tempDir, 'recfail');
+        FileUtils.createDirectory(dirPath);
+        const original = new Error('rmdir failure');
+        jest.spyOn(fsSpyable, 'rmdirSync').mockImplementation(() => {
+          throw original;
+        });
+
+        // Act & Assert
+        expect(() => FileUtils.deleteDirectoryRecursive(dirPath)).toThrow(
+          /Failed to recursively delete directory/,
+        );
+      });
+    });
+
+    describe('calculateFileHash', () => {
+      it('should stringify a non-Error stream failure', async () => {
+        // Arrange
+        const { EventEmitter } = require('events');
+        const fakeStream = new EventEmitter();
+        jest
+          .spyOn(fsSpyable, 'createReadStream')
+          .mockReturnValue(fakeStream as unknown as fs.ReadStream);
+        const promise = FileUtils.calculateFileHash(
+          path.join(tempDir, 'whatever.txt'),
+        );
+
+        // Act: emit a non-Error value on the stream
+        fakeStream.emit('error', 'stream string error');
+
+        // Assert
+        await expect(promise).rejects.toThrow(
+          /Failed to calculate file hash .*stream string error/,
+        );
+      });
+    });
+
+    describe('copyFile', () => {
+      it('should wrap the original error as cause when copy fails', () => {
+        // Arrange
+        const source = path.join(tempDir, 'csrc.txt');
+        const dest = path.join(tempDir, 'cdst.txt');
+        const original = new Error('copy failure');
+        jest.spyOn(fsSpyable, 'copyFileSync').mockImplementation(() => {
+          throw original;
+        });
+
+        // Act & Assert
+        try {
+          FileUtils.copyFile(source, dest);
+          throw new Error('expected copyFile to throw');
+        } catch (err) {
+          expect((err as Error).message).toContain('Failed to copy file');
+          expect((err as Error).cause).toBe(original);
+        }
+      });
+    });
+
+    describe('moveFile', () => {
+      it('should fall back to copy + delete on a cross-device (EXDEV) error', () => {
+        // Arrange
+        const source = path.join(tempDir, 'mvsrc.txt');
+        const dest = path.join(tempDir, 'mvdst.txt');
+        const exdev = Object.assign(new Error('cross-device'), {
+          code: 'EXDEV',
+        });
+        jest.spyOn(fsSpyable, 'renameSync').mockImplementation(() => {
+          throw exdev;
+        });
+        const copySpy = jest
+          .spyOn(fsSpyable, 'copyFileSync')
+          .mockImplementation(() => undefined);
+        const unlinkSpy = jest
+          .spyOn(fsSpyable, 'unlinkSync')
+          .mockImplementation(() => undefined);
+
+        // Act
+        FileUtils.moveFile(source, dest);
+
+        // Assert: the copy + delete fallback ran
+        expect(copySpy).toHaveBeenCalledWith(source, dest);
+        expect(unlinkSpy).toHaveBeenCalledWith(source);
+      });
+
+      it('should rethrow a non-EXDEV error wrapped with cause', () => {
+        // Arrange
+        const source = path.join(tempDir, 'mvsrc2.txt');
+        const dest = path.join(tempDir, 'mvdst2.txt');
+        const original = Object.assign(new Error('move denied'), {
+          code: 'EACCES',
+        });
+        jest.spyOn(fsSpyable, 'renameSync').mockImplementation(() => {
+          throw original;
+        });
+
+        // Act & Assert
+        try {
+          FileUtils.moveFile(source, dest);
+          throw new Error('expected moveFile to throw');
+        } catch (err) {
+          expect((err as Error).message).toContain('Failed to move file');
+          expect((err as Error).cause).toBe(original);
+        }
+      });
+    });
+
+    describe('writeJsonFile', () => {
+      it('should write compact JSON when pretty is false', () => {
+        // Arrange
+        const filePath = path.join(tempDir, 'compact.json');
+        const data = { a: 1, b: 2 };
+
+        // Act
+        FileUtils.writeJsonFile(filePath, data, false);
+        const raw = FileUtils.readFile({ filePath });
+
+        // Assert
+        expect(raw).toBe(JSON.stringify(data));
+        expect(raw).not.toContain('\n');
+      });
+
+      it('should wrap the original error as cause when writing fails', () => {
+        // Arrange
+        const filePath = path.join(tempDir, 'jfail.json');
+        const original = new Error('json write failure');
+        jest.spyOn(fsSpyable, 'writeFileSync').mockImplementation(() => {
+          throw original;
+        });
+
+        // Act & Assert
+        expect(() => FileUtils.writeJsonFile(filePath, { a: 1 })).toThrow(
+          /Failed to (write file|write JSON file)/,
+        );
+      });
     });
   });
 });

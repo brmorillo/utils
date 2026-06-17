@@ -23,6 +23,13 @@ describe('ObjectUtils', () => {
         ObjectUtils.findValue({ obj, path: 'a/b/c', delimiter: '/' }),
       ).toBe(42);
     });
+
+    it('should return undefined when traversal hits a nullish value mid-path', () => {
+      // `a.b` is null, so `current` becomes null before the final key, hitting
+      // the `current === null` guard inside the loop.
+      const obj = { a: { b: null } };
+      expect(ObjectUtils.findValue({ obj, path: 'a.b.c.d' })).toBeUndefined();
+    });
   });
 
   describe('deepClone', () => {
@@ -337,6 +344,19 @@ describe('ObjectUtils', () => {
       const obj4 = { a: [1, 2, 4] };
       expect(ObjectUtils.compare({ obj1: obj3, obj2: obj4 })).toBe(false);
     });
+
+    it('should return false when objects have a different number of keys', () => {
+      const obj1 = { a: 1, b: 2 };
+      const obj2 = { a: 1 };
+      expect(ObjectUtils.compare({ obj1, obj2 })).toBe(false);
+    });
+
+    it('should return false when a key is missing from the second object', () => {
+      // Same key count, but the keys differ so obj2 lacks a key from obj1.
+      const obj1 = { a: 1, b: 2 };
+      const obj2 = { a: 1, c: 2 };
+      expect(ObjectUtils.compare({ obj1, obj2 })).toBe(false);
+    });
   });
 
   describe('hasCircularReference', () => {
@@ -355,6 +375,16 @@ describe('ObjectUtils', () => {
     it('should not detect non-circular references', () => {
       const obj = { a: { b: { c: 42 } } };
       expect(ObjectUtils.hasCircularReference({ obj })).toBe(false);
+    });
+
+    it('should return false when given a non-object value', () => {
+      // Exercises the early `typeof obj !== 'object'` guard inside detect().
+      expect(
+        ObjectUtils.hasCircularReference({ obj: 42 as any }),
+      ).toBe(false);
+      expect(
+        ObjectUtils.hasCircularReference({ obj: null as any }),
+      ).toBe(false);
     });
   });
 
@@ -457,6 +487,23 @@ describe('ObjectUtils', () => {
         urlSafe: true,
       });
       expect(decompressed).toEqual(obj);
+    });
+
+    it('should re-add stripped padding when decompressing URL-safe base64', () => {
+      // Try several payloads so at least one yields a URL-safe string whose
+      // length is not a multiple of 4, forcing the padding loop to run.
+      for (let i = 0; i < 8; i++) {
+        const obj = { index: i, name: `item-${i}`, tags: ['a', 'b', 'c'] };
+        const compressed = ObjectUtils.compressObjectToBase64({
+          json: obj,
+          urlSafe: true,
+        });
+        const decompressed = ObjectUtils.decompressBase64ToObject({
+          base64String: compressed,
+          urlSafe: true,
+        });
+        expect(decompressed).toEqual(obj);
+      }
     });
   });
 

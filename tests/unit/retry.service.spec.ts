@@ -251,4 +251,127 @@ describe('RetryUtils', () => {
       expect(original).toHaveBeenCalledTimes(1);
     });
   });
+
+  /**
+   * Additional edge/error branch coverage.
+   * Targets previously uncovered lines:
+   * 46 (retry non-Error/non-string throw),
+   * 99-102 (retryWithStrategy string + non-Error throw),
+   * 165-168 (withRetry string + non-Error throw).
+   */
+  describe('edge cases and error branches', () => {
+    describe('retry - non-Error rejection (line 46)', () => {
+      it('should wrap a non-Error, non-string rejection into a generic Error', async () => {
+        // Rejecting with a plain object hits the final `else` branch.
+        const fn = jest.fn().mockRejectedValue({ code: 500 });
+
+        await expect(
+          RetryUtils.retry({ fn, maxAttempts: 2, delay: 1 }),
+        ).rejects.toThrow('Unknown error occurred during retry');
+        expect(fn).toHaveBeenCalledTimes(2);
+      });
+
+      it('should reach the exponential backoff branch and still exhaust attempts', async () => {
+        const fn = jest.fn().mockRejectedValue(new Error('boom'));
+
+        await expect(
+          RetryUtils.retry({
+            fn,
+            maxAttempts: 3,
+            delay: 1,
+            exponentialBackoff: true,
+          }),
+        ).rejects.toThrow('boom');
+        expect(fn).toHaveBeenCalledTimes(3);
+      });
+    });
+
+    describe('retryWithStrategy - rejection wrapping (lines 99-102)', () => {
+      it('should wrap a thrown string into an Error', async () => {
+        const fn = jest.fn().mockRejectedValue('string failure');
+
+        await expect(
+          RetryUtils.retryWithStrategy({
+            fn,
+            shouldRetry: () => true,
+            getDelay: () => 1,
+            maxAttempts: 2,
+          }),
+        ).rejects.toThrow('string failure');
+        expect(fn).toHaveBeenCalledTimes(2);
+      });
+
+      it('should wrap a non-Error, non-string rejection into a generic Error', async () => {
+        const fn = jest.fn().mockRejectedValue(42);
+
+        await expect(
+          RetryUtils.retryWithStrategy({
+            fn,
+            shouldRetry: () => true,
+            getDelay: () => 1,
+            maxAttempts: 2,
+          }),
+        ).rejects.toThrow('Unknown error occurred during retry');
+        expect(fn).toHaveBeenCalledTimes(2);
+      });
+
+      it('should retry using getDelay and then succeed', async () => {
+        const fn = jest
+          .fn()
+          .mockRejectedValueOnce(new Error('transient'))
+          .mockResolvedValue('done');
+        const getDelay = jest.fn().mockReturnValue(1);
+
+        const result = await RetryUtils.retryWithStrategy({
+          fn,
+          shouldRetry: () => true,
+          getDelay,
+          maxAttempts: 3,
+        });
+
+        expect(result).toBe('done');
+        expect(getDelay).toHaveBeenCalledWith(1);
+      });
+    });
+
+    describe('withRetry - rejection wrapping (lines 165-168)', () => {
+      it('should wrap a thrown string into an Error', async () => {
+        const original = jest.fn().mockRejectedValue('wrapped string');
+        const wrapped = RetryUtils.withRetry({
+          fn: original,
+          options: { maxAttempts: 2, delay: 1 },
+        });
+
+        await expect(wrapped()).rejects.toThrow('wrapped string');
+        expect(original).toHaveBeenCalledTimes(2);
+      });
+
+      it('should wrap a non-Error, non-string rejection into a generic Error', async () => {
+        const original = jest.fn().mockRejectedValue({ status: 'bad' });
+        const wrapped = RetryUtils.withRetry({
+          fn: original,
+          options: { maxAttempts: 2, delay: 1 },
+        });
+
+        await expect(wrapped()).rejects.toThrow(
+          'Unknown error occurred during retry',
+        );
+        expect(original).toHaveBeenCalledTimes(2);
+      });
+
+      it('should retry the wrapped function using exponential backoff', async () => {
+        const original = jest
+          .fn()
+          .mockRejectedValueOnce(new Error('fail once'))
+          .mockResolvedValue('ok');
+        const wrapped = RetryUtils.withRetry({
+          fn: original,
+          options: { maxAttempts: 2, delay: 1, exponentialBackoff: true },
+        });
+
+        await expect(wrapped()).resolves.toBe('ok');
+        expect(original).toHaveBeenCalledTimes(2);
+      });
+    });
+  });
 });
