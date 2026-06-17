@@ -171,6 +171,9 @@ Wrapped errors keep the original under the standard `cause` property. `BaseError
 - **Storage** — the local provider confines all paths to its configured root.
 - **Object utilities** — `deepMerge`/`unflattenObject` reject prototype-pollution keys.
 
+To report a vulnerability or read the full list of supported versions and security
+guarantees, see the [Security Policy](./SECURITY.md).
+
 ## Documentation
 
 - 📚 **[Module reference](./docs/README.md)** — one page per module
