@@ -18,7 +18,7 @@ jobs:
     name: Type-check, lint, test, build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up bun
         uses: oven-sh/setup-bun@v2
@@ -44,7 +44,7 @@ jobs:
     name: Gitleaks secret scan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Run gitleaks
         run: |
