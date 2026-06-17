@@ -288,12 +288,17 @@ The `Queue`, `Stack`, `MultiQueue`, `PriorityQueue`, and `DelayQueue` implementa
 const boundedQueue = QueueUtils.createQueue<number>({ maxSize: 3 });
 
 // Add elements up to the limit
-boundedQueue.enqueue(1); // returns 1
-boundedQueue.enqueue(2); // returns 2
-boundedQueue.enqueue(3); // returns 3
+boundedQueue.enqueue(1); // returns the new size: 1
+boundedQueue.enqueue(2); // returns the new size: 2
+boundedQueue.enqueue(3); // returns the new size: 3
 
-// Try to add beyond the limit
-const result = boundedQueue.enqueue(4); // returns -1 (failure)
+// Try to add beyond the limit -> throws QueueFullError
+try {
+  boundedQueue.enqueue(4);
+} catch (error) {
+  // error instanceof QueueFullError, error.code === 'QUEUE_FULL'
+  console.error(error.message);
+}
 
 // Check whether the queue is full
 const isFull = boundedQueue.isFull(); // true

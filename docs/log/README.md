@@ -166,5 +166,3 @@ function processOrder(order) {
   }
 }
 ```
-
-For more detailed examples and advanced usage, see the [complete LogService documentation](./log-service-detailed.md).
