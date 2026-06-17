@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [14.1.0](https://github.com/brmorillo/util/compare/v14.0.2...v14.1.0) (2026-06-17)
+
+
+### Features
+
+* package metadata, SECURITY.md and CI Node 24 ([#25](https://github.com/brmorillo/utils/issues/25)) ([395b7dc](https://github.com/brmorillo/util/commit/395b7dc885ea9f77512af5aa4e2ed9f0cc34a043))
+
+
+### Documentation
+
+* link Security Policy from README ([4c707e5](https://github.com/brmorillo/util/commit/4c707e5f87e9770f96c45dfdf82f16c6bf3bbc25))
+
 ## [14.0.2](https://github.com/brmorillo/util/compare/v14.0.1...v14.0.2) (2026-06-17)
 
 ## [14.0.1](https://github.com/brmorillo/util/compare/v12.0.0...v14.0.1) (2026-06-17)

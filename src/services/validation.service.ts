@@ -78,7 +78,7 @@ export class ValidationUtils {
     }
 
     // Check specific format for http:/example.com (missing slash)
-    if (inputUrl.match(/^https?:\/[^\/]/)) {
+    if (inputUrl.match(/^https?:\/[^/]/)) {
       return false;
     }
 

@@ -29,7 +29,7 @@ export class PinoLogger implements ILogger {
             }
           : undefined,
       });
-    } catch (error) {
+    } catch {
       // Fallback to console if pino is not available
       this.logger = {
         info: (meta: any, message: string) =>

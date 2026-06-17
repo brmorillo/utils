@@ -26,11 +26,9 @@ module.exports = [
     rules: {
       ...js.configs.recommended.rules,
 
-      // Code style - relaxed for CI
-      indent: ['warn', 2],
-      quotes: ['warn', 'single'],
-      semi: ['warn', 'always'],
-      'comma-dangle': ['warn', 'always-multiline'],
+      // Formatting is owned by Prettier (`bun run format`); ESLint does not
+      // police style. Enabling indent/quotes/semi/comma-dangle here only
+      // duplicates Prettier and produces conflicting warnings.
 
       // TypeScript specific - relaxed
       '@typescript-eslint/no-unused-vars': [
@@ -38,7 +36,12 @@ module.exports = [
         { argsIgnorePattern: '^_' },
       ],
       '@typescript-eslint/explicit-function-return-type': 'off',
-      '@typescript-eslint/no-explicit-any': 'warn',
+      // `any` is a deliberate design choice across this library (dynamic
+      // require() of optional peer deps, generic `<T = any>` passthrough,
+      // logger `...meta: any[]`). The API is frozen (v14), so retyping public
+      // signatures is out of scope; the rule is disabled rather than silenced
+      // line-by-line with ~180 inline disable comments.
+      '@typescript-eslint/no-explicit-any': 'off',
 
       // Best practices - relaxed
       'no-console': 'off',

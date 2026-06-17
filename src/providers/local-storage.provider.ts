@@ -41,7 +41,7 @@ export class LocalStorageProvider implements IStorageProvider {
   async uploadFile(
     filePath: string,
     content: Buffer | string | NodeJS.ReadableStream,
-    metadata?: FileMetadata,
+    _metadata?: FileMetadata,
   ): Promise<string> {
     const fullPath = this.getFullPath(filePath);
 
