@@ -80,6 +80,8 @@ utils.configure({
 | `local.basePath` | string | Base directory path for file storage | required |
 | `local.baseUrl` | string | Base URL for accessing files (optional) | '' |
 
+> **Security:** the local provider confines every operation to `basePath`. A `path` that resolves outside the storage root (e.g. `'../../etc/passwd'`, or an absolute path elsewhere) is rejected with a `StorageError` (`code: 'INVALID_PATH'`).
+
 #### S3 Storage Options
 
 | Option | Type | Description | Default |
@@ -139,7 +141,7 @@ const url = storage.getFileUrl('images/photo.jpg');
 
 ### listFiles(prefix)
 
-Lists files in a directory/prefix.
+Lists files in a directory/prefix. The S3 provider pages through results (via `ContinuationToken`) until the full key set is returned, so it is not capped at the 1000-key per-response limit. The local provider walks the directory recursively, bounded to a maximum depth (32) to guard against symlink loops.
 
 ```javascript
 const files = await storage.listFiles('images/');

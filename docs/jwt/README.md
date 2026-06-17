@@ -2,6 +2,8 @@
 
 The JWTUtils class provides utility methods for generating, verifying, decoding, and inspecting JSON Web Tokens (JWT).
 
+> Errors: invalid arguments (missing/empty `token`, `secretKey`, or `payload`) throw a `ValidationError`. Operational failures — a bad signature, an expired token in `verify()`, or a malformed token in `decode()` — throw a `BaseError` with code `JWT_ERROR`.
+
 ## Basic Usage
 
 ```javascript

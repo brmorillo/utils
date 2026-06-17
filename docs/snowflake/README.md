@@ -13,7 +13,7 @@ console.log(id.toString());
 
 // Decode a Snowflake ID into its components
 const components = SnowflakeUtils.decode({ snowflakeId: id });
-console.log(components); // { timestamp, workerId, processId, increment }
+console.log(components); // { timestamp, workerId, processId, increment, epoch }
 
 // Validate a Snowflake ID
 const valid = SnowflakeUtils.isValidSnowflake({ snowflakeId: '1322717493961297921' });
@@ -71,10 +71,11 @@ console.log(timestamp); // Date object
 
 ### isValidSnowflake({ snowflakeId })
 
-Validates whether a string is a valid Snowflake ID (a numeric string convertible to BigInt).
+Validates whether a value is a valid Snowflake ID. The `snowflakeId` parameter accepts a `bigint | string`. A `bigint` is valid when it is non-negative (`>= 0n`); a `string` is valid when it is an all-digit value convertible to BigInt. Other inputs return `false`.
 
 ```javascript
 SnowflakeUtils.isValidSnowflake({ snowflakeId: '1322717493961297921' }); // true
+SnowflakeUtils.isValidSnowflake({ snowflakeId: 1322717493961297921n }); // true (non-negative bigint)
 SnowflakeUtils.isValidSnowflake({ snowflakeId: 'not-a-number' }); // false
 ```
 

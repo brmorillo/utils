@@ -85,3 +85,55 @@ console.log(cache.keys());      // ['key2', 'key3'] (insertion order)
 ```
 
 The returned cache instance exposes the same methods as `createCache` (`get`, `set`, `has`, `delete`, `clear`, `keys`, `size`, `prune`). Note that `keys()` returns keys in insertion order.
+
+## `Cache<T>` class
+
+In addition to the `CacheUtils` factories, the library exports a generic `Cache<T>` class for typed, single-value caching with `async` compute-on-miss support.
+
+```typescript
+import { Cache } from '@brmorillo/utils';
+
+// Default TTL is 60000ms (60s). Pass null for no expiration.
+const cache = new Cache<number>();
+
+// No-expiry cache
+const persistent = new Cache<string>(null);
+```
+
+### TTL semantics
+
+- The constructor takes `defaultTTL` (milliseconds), defaulting to `60000`. Pass `null` for no expiration.
+- `set`/`getOrCompute` accept an optional per-call `ttl`: an explicit number overrides the default, `null` means "no expiry", and `undefined` (omitted) falls back to the default TTL.
+
+### Methods
+
+- `set(key, value, ttl?)` - stores a value. `ttl` is in milliseconds; `null` = no expiry, `undefined` = use the default TTL. Returns `void`.
+- `get(key)` - returns the cached value, or `undefined` if missing or expired (expired entries are deleted on access).
+- `getOrCompute(key, factory, ttl?)` - `async`; returns the cached value if present, otherwise awaits `factory()` (a `() => Promise<T>`), stores the result with the given `ttl`, and returns it.
+- `has(key)` - returns `true` if the key exists and is not expired.
+- `delete(key)` - removes a key; returns `true` if it existed.
+- `clear()` - removes all items.
+- `prune()` - removes all expired items and returns the count removed.
+- `size` - getter returning the number of items currently in the cache.
+
+```typescript
+const users = new Cache<{ name: string }>(5000); // 5s default TTL
+
+users.set('user:1', { name: 'Alice' });
+users.set('user:2', { name: 'Bob' }, null); // never expires
+users.set('user:3', { name: 'Carol' }, 1000); // expires in 1s
+
+console.log(users.get('user:1')); // { name: 'Alice' }
+console.log(users.has('user:2')); // true
+console.log(users.size);          // 3
+
+// Compute-on-miss (async)
+const value = await users.getOrCompute(
+  'user:4',
+  async () => ({ name: 'Dave' }),
+);
+
+users.prune();         // removes expired items, returns the count removed
+users.delete('user:1');
+users.clear();
+```

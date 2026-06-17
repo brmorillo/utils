@@ -2,6 +2,8 @@
 
 The HashUtils class provides utility methods for hashing and token generation using bcrypt, SHA-256, and SHA-512.
 
+> Errors: invalid arguments (e.g. an empty `value`, a non-object `json`, `saltRounds`/`length` below the minimum) throw a `ValidationError`. Failures in the underlying hashing operation throw a `BaseError` with code `HASH_ERROR`.
+
 ## Basic Usage
 
 ```javascript

@@ -30,6 +30,10 @@ Extracts relevant data from an HTTP request object. Reads headers and IP informa
 - `os`
 - `device`
 
+`request` is typed as `HttpRequestLike` — an object with an optional `headers` map (values may be `string`, `string[]`, or `undefined`; array-valued headers are normalized to their first entry) and an optional `ip` string. Passing `null`/`undefined` throws a `ValidationError`.
+
+> **Security:** `xForwardedFor` and `xRealIp` come from the `x-forwarded-for` / `x-real-ip` headers, which are client-controlled and trivially spoofable. Only trust them when your app sits behind a trusted reverse proxy that overwrites them; do not use them for authorization, rate-limiting, or audit logging otherwise.
+
 ```javascript
 // Example with an Express-style request object
 const requestData = RequestUtils.extractRequestData({ request });

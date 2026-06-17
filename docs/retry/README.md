@@ -22,9 +22,18 @@ const result = await RetryUtils.retry({
 
 ## Methods
 
-### retry({ fn, maxAttempts, delay, exponentialBackoff })
+### retry({ fn, maxAttempts, delay, exponentialBackoff, maxDelay, jitter })
 
-Retries an async function until it succeeds or the maximum number of attempts is reached. `maxAttempts` defaults to `3`, `delay` (in milliseconds) defaults to `1000`, and `exponentialBackoff` defaults to `false`. When all attempts fail, the last encountered error is thrown.
+Retries an async function until it succeeds or the maximum number of attempts is reached. When all attempts fail, the last encountered error is thrown.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `fn` | `() => Promise<T>` | required | The async function to retry. |
+| `maxAttempts` | number | `3` | Maximum number of attempts. |
+| `delay` | number | `1000` | Base delay between attempts, in milliseconds. |
+| `exponentialBackoff` | boolean | `false` | When `true`, the delay grows as `delay * 2^(attempt - 1)`. |
+| `maxDelay` | number | `30000` | Upper bound (in ms) the computed delay is clamped to. |
+| `jitter` | boolean | `false` | When `true`, randomizes the (clamped) delay to a value in `[0, delay]` to avoid thundering-herd retries. |
 
 ```javascript
 const result = await RetryUtils.retry({
@@ -35,7 +44,9 @@ const result = await RetryUtils.retry({
   },
   maxAttempts: 5,
   delay: 1000,
-  exponentialBackoff: true
+  exponentialBackoff: true,
+  maxDelay: 30000,
+  jitter: true
 });
 ```
 
@@ -54,7 +65,7 @@ const result = await RetryUtils.retryWithStrategy({
 
 ### withRetry({ fn, options })
 
-Wraps a function so it automatically retries on failure, returning a new function with the same signature. `options` may include `maxAttempts` (default `3`), `delay` (default `1000`), and `exponentialBackoff` (default `false`).
+Wraps a function so it automatically retries on failure, returning a new function with the same signature. `options` may include `maxAttempts` (default `3`), `delay` (default `1000`), `exponentialBackoff` (default `false`), `maxDelay` (default `30000`, the cap the computed delay is clamped to), and `jitter` (default `false`, randomizes the delay to `[0, delay]`).
 
 ```javascript
 const fetchWithRetry = RetryUtils.withRetry({

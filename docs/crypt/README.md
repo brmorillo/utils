@@ -9,6 +9,7 @@ The CryptUtils class provides utility methods for symmetric and asymmetric crypt
 - The symmetric ciphers (`aesEncrypt`/`aesDecrypt`, `chacha20Encrypt`/`chacha20Decrypt`) are **authenticated** (AEAD). Encryption returns an `authTag` that **must** be supplied to decryption; decryption throws if the ciphertext, IV/nonce, or tag has been tampered with.
 - An IV/nonce **must be unique for every message** encrypted with the same key. Reusing an IV/nonce with GCM or Poly1305 breaks both confidentiality and authenticity. Prefer omitting `iv` (a fresh random IV is generated) over supplying a fixed value.
 - `rsaGenerateKeyPair` and `eccGenerateKeyPair` emit the **private key as an unencrypted PEM**. Treat it as a secret: never log it, and store it encrypted at rest.
+- Errors: invalid arguments throw a `ValidationError` (e.g. a `secretKey` that is not 32 bytes, a malformed IV/nonce, or a missing `authTag`). Failures during the underlying crypto operation — including a failed AEAD tag verification on decryption — throw a `BaseError` with code `CRYPTO_ERROR`.
 
 ## Basic Usage
 

@@ -20,7 +20,7 @@ if (response.status >= 200 && response.status < 300) {
 
 A rejected promise only indicates a transport-level failure (the connection could not be established, or the request timed out). It does **not** indicate a 4xx/5xx response. This behavior is consistent across both the `axios` and native `http` clients.
 
-The native `http` client does not follow redirects: a 3xx response is resolved as-is (inspect `response.status` and the `location` header).
+The native `http` client does not follow redirects: a 3xx response is resolved as-is (inspect `response.status` and the `location` header). When sending an object body it serializes it to JSON and sets `Content-Type: application/json` (and `Content-Length`) unless you already provided them. When a `timeout` is set, the request is aborted on timeout and the promise rejects with an `HttpError` (`code: 'REQUEST_TIMEOUT'`, `statusCode: 408`) rather than hanging.
 
 ## Basic Usage
 

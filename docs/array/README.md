@@ -71,28 +71,6 @@ const intersection = ArrayUtils.intersect({ array1, array2 });
 // [3, 4]
 ```
 
-### difference({ array1, array2 })
-
-Finds the difference between two arrays (items in array1 that are not in array2).
-
-```javascript
-const array1 = [1, 2, 3, 4];
-const array2 = [3, 4, 5, 6];
-const difference = ArrayUtils.difference({ array1, array2 });
-// [1, 2]
-```
-
-### union({ array1, array2 })
-
-Finds the union of two arrays.
-
-```javascript
-const array1 = [1, 2, 3];
-const array2 = [3, 4, 5];
-const union = ArrayUtils.union({ array1, array2 });
-// [1, 2, 3, 4, 5]
-```
-
 ### flatten({ array })
 
 Deeply flattens a nested array to a single level, to any nesting depth. The recursive `NestedArray<T>` parameter type accepts deeply-nested array literals at compile time, and the runtime implementation flattens with `push`/`reverse` (avoiding the `O(n^2)` cost of `unshift`) while preserving element order. Throws a `ValidationError` if `array` is not an array.
@@ -101,16 +79,6 @@ Deeply flattens a nested array to a single level, to any nesting depth. The recu
 const nestedArray = [1, [2, 3], [4, [5, 6]]];
 const flattened = ArrayUtils.flatten({ array: nestedArray });
 // [1, 2, 3, 4, 5, 6]
-```
-
-### chunk({ array, size })
-
-Splits an array into chunks of the specified size.
-
-```javascript
-const array = [1, 2, 3, 4, 5, 6, 7, 8];
-const chunks = ArrayUtils.chunk({ array, size: 3 });
-// [[1, 2, 3], [4, 5, 6], [7, 8]]
 ```
 
 ### groupBy({ array, keyFn })
@@ -174,6 +142,30 @@ const sorted = ArrayUtils.sort({
 //   { name: 'Charlie', age: 30 },
 //   { name: 'Alice', age: 30 }
 // ]
+```
+
+### findSubset({ array, subset })
+
+Finds the first object in an array of objects whose properties match the given `subset`, returning that object or `null` if none match. Array-valued subset properties match when the target array contains all the given values. Throws a `ValidationError` if `array` is not an array.
+
+```javascript
+const users = [
+  { id: 1, name: 'John' },
+  { id: 2, name: 'Jane' }
+];
+const found = ArrayUtils.findSubset({ array: users, subset: { name: 'John' } });
+// { id: 1, name: 'John' }
+```
+
+### isSubset({ superset, subset })
+
+Checks whether `subset` is fully contained within `superset`. Array-valued subset properties match when the superset array contains all the given values. Throws a `ValidationError` if either input is not an object.
+
+```javascript
+ArrayUtils.isSubset({
+  superset: { id: 1, name: 'John' },
+  subset: { name: 'John' }
+}); // true
 ```
 
 ## Examples
@@ -268,10 +260,6 @@ import { ArrayUtils } from '@brmorillo/utils';
 // Create a range of numbers
 const range = Array.from({ length: 10 }, (_, i) => i + 1);
 console.log('Range:', range); // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-
-// Split into chunks
-const chunks = ArrayUtils.chunk({ array: range, size: 3 });
-console.log('Chunks:', chunks); // [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10]]
 
 // Flatten a nested structure
 const nested = [[1, 2], [3, [4, 5]], 6];

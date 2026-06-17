@@ -174,13 +174,14 @@ Returns the size of a file in bytes.
 console.log(FileUtils.getFileSize({ filePath: './data.txt' })); // 1024
 ```
 
-### readJsonFile({ filePath })
+### readJsonFile<T = unknown>({ filePath })
 
-Reads and parses a JSON file, returning the parsed object. Throws a `StorageError` if the file cannot be read or parsed.
+Reads and parses a JSON file, returning the parsed value typed as `T`. The generic defaults to `unknown`; the value is not validated at runtime, so a caller asserting a `T` is responsible for ensuring the file matches. Throws a `StorageError` if the file cannot be read or parsed.
 
-```javascript
-const config = FileUtils.readJsonFile({ filePath: './config.json' });
-console.log(config);
+```typescript
+interface Config { debug: boolean }
+const config = FileUtils.readJsonFile<Config>({ filePath: './config.json' });
+console.log(config.debug);
 ```
 
 ### writeJsonFile({ filePath, data, pretty })
